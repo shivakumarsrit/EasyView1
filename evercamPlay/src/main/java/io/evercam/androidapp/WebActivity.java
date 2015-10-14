@@ -2,6 +2,7 @@ package io.evercam.androidapp;
 
 import android.graphics.Bitmap;
 import android.os.Bundle;
+import android.util.Log;
 import android.view.MenuItem;
 import android.webkit.WebView;
 import android.webkit.WebViewClient;
@@ -57,6 +58,22 @@ public abstract class WebActivity  extends ParentAppCompatActivity
             public void onPageFinished(WebView view, String url)
             {
                 progressDialog.dismiss();
+            }
+
+            //TODO: Refactor the code - currently all web view subclasses are using
+            // the same WebViewClient.
+            @Override
+            public boolean shouldOverrideUrlLoading(WebView view, String url) {
+                Log.e(TAG, "shouldOverrideUrlLoading " + url);
+
+                if(url.startsWith("data:image/jpeg;"))
+                {
+                    //TODO: Decode base64 and save the image
+
+                    return true;
+                }
+
+                return super.shouldOverrideUrlLoading(view, url);
             }
         };
         return client;
