@@ -57,6 +57,7 @@ import io.evercam.PTZHome;
 import io.evercam.PTZPreset;
 import io.evercam.PTZPresetControl;
 import io.evercam.PTZRelativeBuilder;
+import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.FeedbackActivity;
@@ -569,22 +570,22 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     public boolean onPrepareOptionsMenu(Menu menu)
     {
         MenuItem shortcutItem = menu.findItem(R.id.video_menu_create_shortcut);
+        MenuItem sharingItem = menu.findItem(R.id.video_menu_share);
 
         if(evercamCamera != null)
         {
-            if(evercamCamera.isOffline())
-            {
-                shortcutItem.setVisible(false);
-            }
-            else
-            {
-                shortcutItem.setVisible(true);
-            }
+            //Only show the shortcut menu if camera is online
+            shortcutItem.setVisible(!evercamCamera.isOffline());
+
+            //Only show the sharing menu if the user has full rights
+            Right right = new Right(evercamCamera.getRights());
+            sharingItem.setVisible(right.isFullRight());
         }
         else
         {
             Log.e(TAG, "EvercamCamera is null");
         }
+
         return true;
     }
 
@@ -1778,6 +1779,10 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 if(!evercamCamera.isOffline())
                 {
                     onlineCameraList.add(evercamCamera);
+                }
+                else
+                {
+                    Log.e(TAG, evercamCamera.toString());
                 }
             }
 

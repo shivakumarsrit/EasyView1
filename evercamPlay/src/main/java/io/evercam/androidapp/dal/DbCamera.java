@@ -22,6 +22,7 @@ public class DbCamera extends DatabaseMaster
     private final String KEY_REAL_OWNER = "realOwner";
     private final String KEY_CAN_EDIT = "canEdit";
     private final String KEY_CAN_DELETE = "canDelete";
+    private final String KEY_RIGHTS = "rights";
     private final String KEY_USERNAME = "username";
     private final String KEY_PASSWORD = "password";
     private final String KEY_TIMEZONE = "timezone";
@@ -67,7 +68,8 @@ public class DbCamera extends DatabaseMaster
                 "" + KEY_INTERNAL_HTTP + " INTEGER NULL" + "," + KEY_EXTERNAL_HTTP + " INTEGER " +
                 "NULL" + "," + KEY_INTERNAL_RTSP + " INTEGER NULL" + "," +
                 "" + KEY_EXTERNAL_RTSP + " INTEGER NULL" + "," + KEY_THUMBNAIL_URL + " TEXT NULL" +
-                "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" + "," + KEY_CAN_DELETE + " TEXT NULL" + ")";
+                "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" +
+                "," + KEY_CAN_DELETE + " TEXT NULL" + "," + KEY_RIGHTS + " TEXT NULL" + ")";
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
@@ -104,7 +106,7 @@ public class DbCamera extends DatabaseMaster
                 KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_STATUS, KEY_HAS_CREDENTIAL,
                 KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                 KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
-                KEY_CAN_DELETE}, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
+                KEY_CAN_DELETE, KEY_RIGHTS}, KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
         if(cursor != null)
         {
@@ -208,6 +210,7 @@ public class DbCamera extends DatabaseMaster
         values.put(KEY_REAL_OWNER, evercamCamera.getRealOwner());
         values.put(KEY_CAN_EDIT, evercamCamera.getCanEditInt());
         values.put(KEY_CAN_DELETE, evercamCamera.getCanDeleteInt());
+        values.put(KEY_RIGHTS, evercamCamera.getRights());
 
         return values;
     }
@@ -266,6 +269,7 @@ public class DbCamera extends DatabaseMaster
         evercamCamera.setRealOwner(cursor.getString(23));
         evercamCamera.setCanEdit(cursor.getInt(24) == 1);
         evercamCamera.setCanDelete(cursor.getInt(25) == 1);
+        evercamCamera.setRights(cursor.getString(26));
 
         return evercamCamera;
     }

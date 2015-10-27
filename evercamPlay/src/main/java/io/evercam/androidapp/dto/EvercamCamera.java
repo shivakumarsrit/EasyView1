@@ -26,6 +26,7 @@ public class EvercamCamera
     private String realOwner = "";// The owner of camera
     private boolean canEdit = false;
     private boolean canDelete = false;
+    private String rights = "";
     private String username = "";
     private String password = "";
     private String timezone = "";
@@ -65,6 +66,7 @@ public class EvercamCamera
                 owner = AppData.defaultUser.getUsername();
             }
             realOwner = camera.getOwner();
+            rights = camera.getRights().toString();
             canEdit = camera.getRights().canEdit();
             canDelete = camera.getRights().canDelete();
             if(camera.hasCredentials())
@@ -372,6 +374,16 @@ public class EvercamCamera
         return externalRtsp;
     }
 
+    public String getRights()
+    {
+        return rights;
+    }
+
+    public void setRights(String rights)
+    {
+        this.rights = rights;
+    }
+
     public String getJpgPath()
     {
         try
@@ -494,7 +506,7 @@ public class EvercamCamera
                 .externalHost) && internalHttp == other.internalHttp && externalHttp == other
                 .externalHttp && internalRtsp == other.internalRtsp && externalRtsp == other
                 .externalRtsp && realOwner.equals(other.realOwner) && canEdit == other.canEdit &&
-                canDelete == other.canDelete)
+                canDelete == other.canDelete && status == other.status && rights == other.rights)
         {
             return true;
         }
@@ -507,7 +519,7 @@ public class EvercamCamera
         return "EvercamCamera [loadingStatus=" + loadingStatus + ", id=" + id + ", " +
                 "cameraId=" + cameraId + ", name=" + name + ", owner=" + owner + ", " +
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +
-                "canDelete=" + canDelete + ", username=" + username + ", " +
+                "canDelete=" + canDelete + ", rights=" + rights + ", username=" + username + ", " +
                 "password=" + password + ", timezone=" + timezone + ", vendor=" + vendor + ", " +
                 "model=" + model + ", mac=" + mac + ", externalSnapshotUrl=" +
                 externalSnapshotUrl + ", internalSnapshotUrl=" + internalSnapshotUrl + ", " +
