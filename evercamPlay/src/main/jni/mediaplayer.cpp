@@ -2,6 +2,7 @@
 #include <string>
 #include <algorithm>
 #include <gst/video/video.h>
+#include <gst/app/gstappsink.h>
 #include <pthread.h>
 #include "debug.h"
 #include "eventloop.h"
@@ -228,6 +229,24 @@ bool MediaPlayer::isInitialized() const
     return m_initialized;
 }
 
+
+static void
+eos(GstAppSink *, gpointer )
+{
+}
+
+static GstFlowReturn
+new_preroll(GstAppSink *, gpointer )
+{
+    return GST_FLOW_OK;
+}
+
+static GstFlowReturn
+new_sample (GstAppSink *, gpointer )
+{
+    return GST_FLOW_OK;
+}
+
 void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 {
     if (!msp_pipeline) {
@@ -245,6 +264,56 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 
             throw std::runtime_error(error_message);
         }
+
+        //====================================================================
+        // Prepare "tee" with sink & appsink.
+        GstElement *video_sink = gst_element_factory_make ("autovideosink", "video_sink");
+        GstElement *tee_sink = gst_element_factory_make ("tee", "tee_sink");
+        GstElement *app_sink = gst_element_factory_make ("appsink", "app_sink");
+        GstElement *sink_queue = gst_element_factory_make ("queue", "sink_queue");
+        GstElement *app_queue = gst_element_factory_make ("queue", "app_queue");
+
+        GstElement *bin = gst_bin_new ("video_sink_bin");
+        gst_bin_add_many (GST_BIN (bin), tee_sink, sink_queue, video_sink, app_queue, app_sink, NULL);
+        if (!gst_element_link_many (sink_queue, video_sink, NULL)
+                || !gst_element_link_many (app_queue, app_sink, NULL)) {
+            throw std::runtime_error("Snapshot: tee link error");
+        }
+
+        // Manually link the Tee, which has "Request" pads
+        GstPadTemplate *tee_src_pad_template = gst_element_class_get_pad_template (GST_ELEMENT_GET_CLASS (tee_sink), "src_%u");
+
+        GstPad *tee_sink_pad = gst_element_request_pad (tee_sink, tee_src_pad_template, NULL, NULL);
+        LOGD ("Snapshot: Obtained request pad %s for sink branch.\n", gst_pad_get_name (tee_sink_pad));
+        GstPad *queue_sink_pad = gst_element_get_static_pad (sink_queue, "sink");
+        if (gst_pad_link (tee_sink_pad, queue_sink_pad) != GST_PAD_LINK_OK) {
+            throw std::runtime_error("Snapshot: pad link error");
+        }
+        gst_object_unref (queue_sink_pad);
+
+        GstPad *tee_app_pad = gst_element_request_pad (tee_sink, tee_src_pad_template, NULL, NULL);
+        LOGD ("Snapshot: Obtained request pad %s for app branch.\n", gst_pad_get_name (tee_app_pad));
+        GstPad *queue_app_pad = gst_element_get_static_pad (app_queue, "sink");
+        if (gst_pad_link (tee_app_pad, queue_app_pad) != GST_PAD_LINK_OK) {
+            throw std::runtime_error("Snapshot: Tee could not be linked.\n");
+        }
+        gst_object_unref (queue_app_pad);
+
+        GstPad *pad = gst_element_get_static_pad (tee_sink, "sink");
+
+        GstPad *ghost_pad = gst_ghost_pad_new ("sink", pad);
+        gst_pad_set_active (ghost_pad, TRUE);
+        gst_element_add_pad (bin, ghost_pad);
+        gst_object_unref (pad);
+
+        GstAppSinkCallbacks cb;
+        cb.eos = eos;
+        cb.new_preroll = new_preroll;
+        cb.new_sample = new_sample;
+        gst_app_sink_set_callbacks((GstAppSink*)app_sink, &cb, NULL, NULL);
+
+        g_object_set(pipeline, "video-sink", bin, NULL);
+        //====================================================================
 
         GstBus *bus = gst_element_get_bus (pipeline);
         GSource *bus_source = gst_bus_create_watch (bus);
