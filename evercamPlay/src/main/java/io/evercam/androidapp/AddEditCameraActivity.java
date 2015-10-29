@@ -488,9 +488,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     {
         textView.setVisibility(View.VISIBLE);
         textView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
-        textView.setTextColor(isPortOpen
-                ? getResources().getColor(R.color.mint_green)
-                : getResources().getColor(R.color.orange_red));
+        textView.setTextColor(isPortOpen ? getResources().getColor(R.color.mint_green) :
+                getResources().getColor(R.color.orange_red));
     }
 
     public void updateHttpPortStatus(boolean isOpen)
@@ -674,8 +673,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      */
     private CameraBuilder buildCameraWithLocalCheck()
     {
-        CameraBuilder cameraBuilder = null;
-
         String cameraName = cameraNameEdit.getText().toString();
 
         if(cameraName.isEmpty())
@@ -683,14 +680,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             CustomToast.showInCenter(this, getString(R.string.name_required));
             return null;
         }
-        try
-        {
-            cameraBuilder = new CameraBuilder(cameraName, false);
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+
+        CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
         String vendorId = getVendorIdFromSpinner();
         if(!vendorId.isEmpty())
@@ -831,16 +822,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      */
     private PatchCameraBuilder buildPatchCameraWithLocalCheck()
     {
-        PatchCameraBuilder patchCameraBuilder = null;
-
-        try
-        {
-            patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+        PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
         String cameraName = cameraNameEdit.getText().toString();
         if(cameraName.isEmpty())
