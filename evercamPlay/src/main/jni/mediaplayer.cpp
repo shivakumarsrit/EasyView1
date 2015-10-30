@@ -3,6 +3,7 @@
 #include <algorithm>
 #include <gst/video/video.h>
 #include <gst/app/gstappsink.h>
+#include <gst/video/videooverlay.h>
 #include <pthread.h>
 #include "debug.h"
 #include "eventloop.h"
@@ -40,8 +41,8 @@ void MediaPlayer::pause()
 {
     m_target_state = GST_STATE_PAUSED;
 
-    GstSample *sample;
-    g_object_get(msp_pipeline.get(), "sample", &sample, NULL);
+    GstSample *sample = NULL;
+    // g_object_get(msp_pipeline.get(), "sample", &sample, NULL);
 
     if (sample)
         msp_last_sample = std::shared_ptr<GstSample>(sample, gst_object_unref);
@@ -147,22 +148,27 @@ void MediaPlayer::requestSample(const std::string &fmt)
 
 void MediaPlayer::setUri(const std::string& uri)
 {
-    LOGD("uri %s", uri.c_str());
-    g_object_set(msp_pipeline.get(), "uri", uri.c_str(), NULL);
+    LOGD("Snapshot: uri %s", uri.c_str());
+    if (msp_source) {
+        g_object_set(msp_source.get(), "location", uri.c_str(), NULL);
+    }
+    // g_object_set(msp_pipeline.get(), "uri", uri.c_str(), NULL);
     m_target_state = GST_STATE_READY;
     gst_element_set_state (msp_pipeline.get(), GST_STATE_READY);
+
+    mfn_stream_sucess_handler();
 }
 
 void MediaPlayer::setTcpTimeout(int value)
 {
     m_tcp_timeout = value;
-    GstElement *src;
-    g_object_get(msp_pipeline.get(), "source", &src, nullptr);
+    // GstElement *src;
+    // g_object_get(msp_pipeline.get(), "source", &src, nullptr);
 
-    if (src)
-        g_object_set(src, "tcp-timeout", m_tcp_timeout, NULL);
-    else
-        LOGE("MediaPLayer: can't get src element");
+    // if (src)
+        // g_object_set(src, "tcp-timeout", m_tcp_timeout, NULL);
+    // else
+        // LOGE("MediaPLayer: can't get src element");
 }
 
 void MediaPlayer::recordVideo(const std::string& /* fileName */) throw (std::runtime_error)
@@ -195,22 +201,27 @@ void MediaPlayer::setSurface(ANativeWindow *window)
     if (m_window != 0) {
         ANativeWindow_release (m_window);
         if (m_window == window) {
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+            // gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+            // gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
+            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
         } else
             m_initialized = false;
     }
 
     m_window = window;
-    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_pipeline.get()), reinterpret_cast<guintptr> (m_window));
+    // gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_pipeline.get()), reinterpret_cast<guintptr> (m_window));
+    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_sink.get()), reinterpret_cast<guintptr> (m_window));
     m_initialized = true;
 }
 
 void MediaPlayer::expose()
 {
     if (m_window) {
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+        // gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+        // gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
+        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
+        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
     }
 }
 
@@ -251,6 +262,46 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 {
     if (!msp_pipeline) {
         GError *err = nullptr;
+
+#if 1
+        // gchar const *pipeline_str =
+        //         "rtspsrc name=video_src latency=0 drop-on-latency=1 protocol=4 !"
+        //         "rtph264depay ! h264parse ! avdec_h264 !"
+        //         "tee name=video_sink "
+        //         "video_sink. ! queue ! autovideosink "
+        //         "video_sink. ! queue ! appsink name=app_sink";
+        gchar const *pipeline_str =
+                "rtspsrc name=video_src latency=0 drop-on-latency=1 protocol=4 !"
+                "rtph264depay ! h264parse ! avdec_h264 ! glimagesink sync=false name=video_sink";
+        LOGD("Snapshot: pipeline: %s\n", pipeline_str);
+        GstElement *pipeline = gst_parse_launch(pipeline_str, &err);
+
+        if (!pipeline) {
+            std::string error_message = "Could not to create pipeline";
+
+            if (err) {
+                error_message = err->message;
+                g_error_free(err);
+            }
+
+            throw std::runtime_error(error_message);
+        }
+
+        GstElement *video_src = gst_bin_get_by_name(GST_BIN(pipeline), "video_src");
+        if (!video_src) {
+            LOGD("Snapshot: can't find video_src\n");
+        }
+        LOGD("Snapshot: found src: %p\n", video_src);
+        msp_source = std::shared_ptr<GstElement>(video_src, gst_object_unref);
+
+        GstElement *video_sink = gst_bin_get_by_name(GST_BIN(pipeline), "video_sink");
+        if (!video_sink) {
+            LOGD("Snapshot: can't find video_sink\n");
+        }
+        LOGD("Snapshot: found sink: %p\n", video_sink);
+        msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
+
+#else
         GstElement *pipeline = gst_parse_launch("playbin", &err);
 
         if (!pipeline) {
@@ -267,6 +318,9 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 
         //====================================================================
         // Prepare "tee" with sink & appsink.
+        //
+        GstElement *video_src = gst_element_factory_make ("rtspsrc", "video_src");
+
         GstElement *video_sink = gst_element_factory_make ("autovideosink", "video_sink");
         GstElement *tee_sink = gst_element_factory_make ("tee", "tee_sink");
         GstElement *app_sink = gst_element_factory_make ("appsink", "app_sink");
@@ -328,6 +382,7 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         g_signal_connect (pipeline, "video-changed", G_CALLBACK (handle_video_changed), const_cast<MediaPlayer*> (this));
         g_object_set (pipeline, "buffer-size", 0, NULL);
         gst_element_set_state(pipeline, GST_STATE_READY);
+#endif
 
         msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
     }

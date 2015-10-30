@@ -55,6 +55,8 @@ private:
     int m_tcp_timeout;
     std::shared_ptr<GstElement> msp_pipeline;
     std::shared_ptr<GstSample> msp_last_sample;
+    std::shared_ptr<GstElement> msp_source;
+    std::shared_ptr<GstElement> msp_sink;
     GstState m_target_state;
 
     SampleReadyHandler m_sample_ready_handler;
