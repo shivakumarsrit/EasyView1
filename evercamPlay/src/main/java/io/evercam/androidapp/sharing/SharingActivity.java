@@ -2,6 +2,7 @@ package io.evercam.androidapp.sharing;
 
 import android.os.Bundle;
 import android.view.MenuItem;
+
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.EvercamCamera;
