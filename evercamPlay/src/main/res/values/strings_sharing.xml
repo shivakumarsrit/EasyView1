@@ -7,5 +7,9 @@
     <string name="sharing_status_detail_specific_user">Is Public: [No] &amp; Discoverable: [No]</string>
     <string name="sharing_status_detail_link">Is Public: [Yes] &amp; Discoverable: [No]</string>
     <string name="sharing_status_detail_public">Is Public: [Yes] &amp; Discoverable: [Yes]</string>
+    
+    <string name="full_rights">Full Rights</string>
+    <string name="read_only">Read Only</string>
+    <string name="pending">&#8230;pending</string>
 
 </resources>
