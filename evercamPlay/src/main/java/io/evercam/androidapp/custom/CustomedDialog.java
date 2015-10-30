@@ -18,9 +18,15 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
 
+import java.util.Arrays;
+
+import io.evercam.CameraShareInterface;
+import io.evercam.EvercamObject;
+import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
-import io.evercam.androidapp.sharing.SharingActivity;
+import io.evercam.androidapp.sharing.RightsStatus;
+import io.evercam.androidapp.sharing.SharingListFragment;
 import io.evercam.androidapp.sharing.SharingStatus;
 import io.evercam.androidapp.tasks.CreatePresetTask;
 import io.evercam.androidapp.video.VideoActivity;
@@ -394,14 +400,19 @@ public class CustomedDialog
         return dialogBuilder.create();
     }
 
-    public static AlertDialog getShareStatusDialog(final SharingActivity.SharingListFragment fragment)
+    /**
+     * The dialog that allow user changing the access permission on the specific camera
+     */
+    public static AlertDialog getShareStatusDialog(final SharingListFragment fragment,
+                                                   String selectedItem)
     {
         final Activity activity = fragment.getActivity();
         final CharSequence[] shareStatusItems = {activity.getString(R.string.sharing_status_public),
                                                 activity.getString(R.string.sharing_status_link),
                                                 activity.getString(R.string.sharing_status_specific_user)};
+        int selectedItemPosition = Arrays.asList(shareStatusItems).indexOf(selectedItem);
         AlertDialog alertDialog = new AlertDialog.Builder(activity)
-                .setSingleChoiceItems(shareStatusItems, 0, null)
+                .setSingleChoiceItems(shareStatusItems, selectedItemPosition, null)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener()
                 {
                     @Override
@@ -415,6 +426,43 @@ public class CustomedDialog
                                 activity);
 
                         fragment.patchSharingStatusAndUpdateUi(status);
+                    }
+                })
+                .setNegativeButton(R.string.cancel, null).create();
+        return  alertDialog;
+    }
+
+    public static AlertDialog getRightsStatusDialog(final SharingListFragment fragment
+                                                    , final CameraShareInterface shareInterface)
+    {
+        final Activity activity = fragment.getActivity();
+        String readOnlyString = activity.getString(R.string.read_only);
+        String fullRightsString = activity.getString(R.string.full_rights);
+        final CharSequence[] statusItems = {fullRightsString, readOnlyString
+                , activity.getString(R.string.no_access)};
+
+        String selectedItem = readOnlyString;
+        Right rights = EvercamObject.getRightsFrom(shareInterface);
+        if(rights!= null && rights.isFullRight())
+        {
+            selectedItem = fullRightsString;
+        }
+        int selectedItemPosition = Arrays.asList(statusItems).indexOf(selectedItem);
+
+        AlertDialog alertDialog = new AlertDialog.Builder(activity)
+                .setTitle(R.string.sharing_settings_title)
+                .setSingleChoiceItems(statusItems, selectedItemPosition, null)
+                .setPositiveButton(R.string.save, new DialogInterface.OnClickListener()
+                {
+                    @Override
+                    public void onClick(DialogInterface dialog, int which)
+                    {
+                        ListView listView = ((AlertDialog)dialog).getListView();
+                        Object checkedItem = listView.getAdapter().getItem(listView
+                                .getCheckedItemPosition());
+
+                        RightsStatus newRightStatus = new RightsStatus(activity, checkedItem.toString());
+                        newRightStatus.updateOnShare(shareInterface);
                     }
                 })
                 .setNegativeButton(R.string.cancel, null).create();

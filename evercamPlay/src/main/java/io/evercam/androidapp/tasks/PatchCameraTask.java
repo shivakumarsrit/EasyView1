@@ -68,6 +68,11 @@ public class PatchCameraTask extends AsyncTask<Void, Void, EvercamCamera>
             }
             else if(activity instanceof SharingActivity)
             {
+                /**
+                 * Successfully updated the access permission
+                 */
+                VideoActivity.evercamCamera = evercamCamera;
+                SharingActivity.evercamCamera = evercamCamera;
                 SharingStatus patchedStatus = new SharingStatus(evercamCamera.isDiscoverable(),
                                                     evercamCamera.isPublic());
                 ((SharingActivity) activity).sharingListFragment.updateSharingStatusUi(patchedStatus);

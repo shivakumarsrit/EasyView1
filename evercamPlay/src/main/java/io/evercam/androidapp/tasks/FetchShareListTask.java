@@ -51,14 +51,16 @@ public class FetchShareListTask extends AsyncTask<Void, Void, ArrayList<CameraSh
     @Override
     protected void onPostExecute(ArrayList<CameraShareInterface> cameraShareList)
     {
-        Log.e(TAG, "Share list size: " + cameraShareList.size());
-        if(cameraShareList.size() > 0)
+        if(activity instanceof SharingActivity)
         {
-            if(activity instanceof SharingActivity)
-            {
-                ((SharingActivity) activity).sharingListFragment
-                        .updateShareListOnUi(cameraShareList);
-            }
+            ((SharingActivity) activity).sharingListFragment
+                    .updateShareListOnUi(cameraShareList);
         }
+    }
+
+    public static void launch(String cameraId, Activity activity)
+    {
+        new FetchShareListTask(cameraId, activity)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }
