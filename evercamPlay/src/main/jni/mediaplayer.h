@@ -7,6 +7,7 @@
 #include <stdexcept>
 #include <string>
 #include <android/native_window.h>
+#include <gst/app/gstappsink.h>
 
 namespace evercam {
 
@@ -46,11 +47,12 @@ public:
 private:
     void initialize(const EventLoop& loop) throw (std::runtime_error);
     static void handle_bus_error(GstBus *,  GstMessage *message, MediaPlayer *self);
-    static void handle_source_setup(GstElement *, GstElement *src, MediaPlayer *self);
-    static void handle_video_changed(GstElement *playbin,  MediaPlayer *self);
     static void process_converted_sample(GstSample *sample, GError *err, ConvertSampleContext *data);
     static void *convert_thread_func(void *arg);
     static void convert_sample(ConvertSampleContext *ctx);
+    static void eos(GstAppSink *, gpointer );
+    static GstFlowReturn new_preroll(GstAppSink *, gpointer );
+    static GstFlowReturn new_sample (GstAppSink *, gpointer );
 
     int m_tcp_timeout;
     std::shared_ptr<GstElement> msp_pipeline;
