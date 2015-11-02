@@ -284,6 +284,15 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         cb.new_sample = new_sample;
         gst_app_sink_set_callbacks((GstAppSink*)app_sink, &cb, this, NULL);
 
+        GstBus *bus = gst_element_get_bus (pipeline);
+        GSource *bus_source = gst_bus_create_watch (bus);
+        g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
+        gint res = g_source_attach (bus_source, loop.msp_main_ctx.get());
+        LOGD("res %d ctx %p pipeline %p", res, loop.msp_main_ctx.get(), pipeline);
+        g_source_unref (bus_source);
+        g_signal_connect (G_OBJECT (bus), "message::error", (GCallback) handle_bus_error, const_cast<MediaPlayer*> (this));
+        gst_object_unref (bus);
+
         msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
         msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
     }
