@@ -185,6 +185,10 @@
             android:name=".sharing.SharingActivity"
             android:label="@string/title_sharing">
         </activity>
+        <activity
+            android:name=".sharing.CreateShareActivity"
+            android:label="@string/title_create_sharing">
+        </activity>
     </application>
 
 </manifest>

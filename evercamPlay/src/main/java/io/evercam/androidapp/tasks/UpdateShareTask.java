@@ -13,6 +13,7 @@ import io.evercam.CameraShareRequest;
 import io.evercam.EvercamException;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.sharing.SharingActivity;
 
@@ -53,11 +54,7 @@ public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
 
         if(isSuccess)
         {
-            //TODO: Replace Snackbar with Android design API
-            Snackbar snackbar = Snackbar.with(activity).text(R.string.msg_share_updated)
-                    .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                    .color(activity.getResources().getColor(R.color.dark_gray_background));
-            SnackbarManager.show(snackbar);
+            CustomSnackbar.show(activity, R.string.msg_share_updated);
 
             //Update share list in the sharing activity
             FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), activity);

@@ -60,6 +60,7 @@
     <string name="title_activity_recording_web">Cloud Recordings</string>
     <string name="title_activity_about_web">About Evercam</string>
     <string name="title_sharing">Who has access</string>
+    <string name="title_create_sharing">Share camera with</string>
 
     <!-- Menu -->
     <string name="menu_settings">Settings</string>
@@ -85,6 +86,8 @@
     <string name="menu_create_shortcut">Add to homescreen</string>
     <string name="menu_view_recordings">Cloud Recordings</string>
     <string name="menu_cancel_scan">Cancel</string>
+    <string name="menu_create_share">Share with</string>
+    <string name="menu_action_share">Share</string>
 
     <!-- Feedback -->
     <string name="feedback_title">E-Play Feedback</string>

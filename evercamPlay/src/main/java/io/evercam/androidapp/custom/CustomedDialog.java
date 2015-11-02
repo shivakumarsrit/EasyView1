@@ -436,16 +436,14 @@ public class CustomedDialog
                                                     , final CameraShareInterface shareInterface)
     {
         final Activity activity = fragment.getActivity();
-        String readOnlyString = activity.getString(R.string.read_only);
-        String fullRightsString = activity.getString(R.string.full_rights);
-        final CharSequence[] statusItems = {fullRightsString, readOnlyString
-                , activity.getString(R.string.no_access)};
 
-        String selectedItem = readOnlyString;
+        final CharSequence[] statusItems = RightsStatus.getFullItems(activity);
+
+        String selectedItem = fragment.getString(R.string.read_only);
         Right rights = EvercamObject.getRightsFrom(shareInterface);
         if(rights!= null && rights.isFullRight())
         {
-            selectedItem = fullRightsString;
+            selectedItem = fragment.getString(R.string.full_rights);
         }
         int selectedItemPosition = Arrays.asList(statusItems).indexOf(selectedItem);
 

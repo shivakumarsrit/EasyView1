@@ -14,6 +14,12 @@
     <string name="sharing_settings_title">Sharing Settings</string>
     <string name="pending">&#8230;pending</string>
 
+    <string name="create_sharing_hint_username">Email or Username</string>
+    <string name="create_sharing_hint_message">Message to send in Email (Optional)</string>
+
     <string name="msg_share_updated">Share successfully updated</string>
+    <string name="msg_share_created">Camera successfully shared with user</string>
+    <string name="msg_share_request_created">A notification Email has been sent to the specified Email address</string>
+    <string name="msg_sharing">Sharing</string>
 
 </resources>
