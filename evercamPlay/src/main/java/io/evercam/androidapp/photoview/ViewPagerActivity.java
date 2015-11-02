@@ -35,7 +35,7 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 	private ViewPager mViewPager;
 	private SnapshotPagerAdapter mViewPagerAdapter;
 	private FrameLayout mPlaceHolderLayout;
-	private static List<String> mImagePathList;
+	private static List<String> mImagePathList = new ArrayList<>();
 	
     @Override
 	public void onCreate(Bundle savedInstanceState)

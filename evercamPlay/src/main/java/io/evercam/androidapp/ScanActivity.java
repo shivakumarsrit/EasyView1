@@ -299,11 +299,7 @@ public class ScanActivity extends ParentAppCompatActivity
 
     public boolean isScanning()
     {
-        if(cancelMenuItem.isVisible())
-        {
-            return true;
-        }
-        return false;
+        return cancelMenuItem != null && cancelMenuItem.isVisible();
     }
 
     public void showScanResults(ArrayList<DiscoveredCamera> discoveredCameras)

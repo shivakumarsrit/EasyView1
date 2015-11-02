@@ -614,7 +614,10 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             {
                 feedbackStarted = true;
                 Intent feedbackIntent = new Intent(VideoActivity.this, FeedbackActivity.class);
-                feedbackIntent.putExtra(Constants.BUNDLE_KEY_CAMERA_ID, evercamCamera.getCameraId());
+                if(evercamCamera != null)
+                {
+                    feedbackIntent.putExtra(Constants.BUNDLE_KEY_CAMERA_ID, evercamCamera.getCameraId());
+                }
                 startActivityForResult(feedbackIntent, Constants.REQUEST_CODE_FEEDBACK);
             }
             else if(itemId == R.id.video_menu_view_snapshots)
@@ -681,7 +684,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         finish();
     }
-
 
     private void readShortcutCameraId()
     {
