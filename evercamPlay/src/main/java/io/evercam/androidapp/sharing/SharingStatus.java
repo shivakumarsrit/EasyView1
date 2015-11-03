@@ -75,7 +75,7 @@ public class SharingStatus
             case USER:
                 setIsDiscoverable(false);
                 setIsPublic(false);
-                setImageResourceId(R.drawable.ic_users);
+                setImageResourceId(R.drawable.ic_fontawsome_users);
                 setStatusStringId(R.string.sharing_status_specific_user);
                 setStatusDetailStringId(R.string.sharing_status_detail_specific_user);
                 break;

@@ -61,7 +61,7 @@ public class SharingActivity extends ParentAppCompatActivity
 
             case R.id.menu_create_share:
                 Intent createShareIntent = new Intent(this, CreateShareActivity.class);
-                startActivityForResult(createShareIntent, Constants.REQUEST_CODE_SHARE);
+                startActivityForResult(createShareIntent, Constants.REQUEST_CODE_CREATE_SHARE);
                 return true;
 
             default:
@@ -72,7 +72,7 @@ public class SharingActivity extends ParentAppCompatActivity
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        if(requestCode == Constants.REQUEST_CODE_SHARE)
+        if(requestCode == Constants.REQUEST_CODE_CREATE_SHARE)
         {
             FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), this);
 

@@ -12,7 +12,7 @@
         <ImageView
             android:id="@+id/share_status_icon_image_view"
             style="@style/SharingListItemImage"
-            android:src="@drawable/ic_users"/>
+            android:src="@drawable/ic_fontawsome_users"/>
 
         <LinearLayout
             style="@style/SharingListItemTextLayout"

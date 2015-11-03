@@ -29,7 +29,8 @@ public final class Constants
     public static final int REQUEST_CODE_SIGN_IN = 7;
     public static final int REQUEST_CODE_SIGN_UP = 8;
     public static final int REQUEST_CODE_RECORDING = 9;
-    public static final int REQUEST_CODE_SHARE = 10;
+    public static final int REQUEST_CODE_CREATE_SHARE = 10;
+    public static final int REQUEST_CODE_SHARE = 11;
     public static final int RESULT_TRUE = 1;
     public static final int RESULT_FALSE = 0;
     public static final int RESULT_DELETED = 2;

@@ -52,8 +52,8 @@ public class RightsStatus
 
     public static String[] getDefaultItems(Context context)
     {
-        return new String[] {context.getString(fullRightsStringId),
-                context.getString(readOnlyStringId)};
+        return new String[] {context.getString(readOnlyStringId),
+                context.getString(fullRightsStringId)};
     }
 
     public static CharSequence[] getFullItems(Context context)

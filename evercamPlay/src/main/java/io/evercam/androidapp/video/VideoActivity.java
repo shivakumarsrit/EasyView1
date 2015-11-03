@@ -160,6 +160,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private boolean editStarted = false;
     private boolean feedbackStarted = false;
     private boolean recordingsStarted = false;
+    private boolean sharingStarted = false;
 
     private Handler timerHandler = new Handler();
     private Thread timerThread;
@@ -259,6 +260,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.e(TAG, "onActivityResult");
         // Here actually no matter what result is returned, all restart video
         // play, but keep the verbose code for future extension.
         if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA)
@@ -299,6 +301,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             editStarted = false;
             feedbackStarted = false;
             recordingsStarted = false;
+            sharingStarted = false;
 
             if(optionsActivityStarted)
             {
@@ -351,6 +354,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             editStarted = false;
             feedbackStarted = false;
             recordingsStarted = false;
+            sharingStarted = false;
 
             if(optionsActivityStarted)
             {
@@ -388,8 +392,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             {
                 this.paused = true;
             }
-            // Do not finish if user get into edit camera screen, feedback screen, or recording
-            if(!editStarted && !feedbackStarted && !recordingsStarted)
+            // Do not finish if user get into edit camera screen, feedback screen recording or sharing
+            if(!editStarted && !feedbackStarted && !recordingsStarted && !sharingStarted)
             {
                 this.finish();
             }
@@ -608,7 +612,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
             else if(itemId == R.id.video_menu_share)
             {
-                startActivity(new Intent(VideoActivity.this, SharingActivity.class));
+                sharingStarted = true;
+                Intent shareIntent = new Intent(VideoActivity.this, SharingActivity.class);
+                startActivityForResult(shareIntent, Constants.REQUEST_CODE_SHARE);
             }
             else if(itemId == R.id.video_menu_feedback)
             {

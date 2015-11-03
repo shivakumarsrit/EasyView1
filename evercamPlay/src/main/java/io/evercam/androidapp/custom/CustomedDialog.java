@@ -21,6 +21,7 @@ import android.widget.ListView;
 import java.util.Arrays;
 
 import io.evercam.CameraShareInterface;
+import io.evercam.CameraShareRequest;
 import io.evercam.EvercamObject;
 import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
@@ -70,8 +71,7 @@ public class CustomedDialog
                         activity.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
                     }
                 }).setNegativeButton(R.string.notNow, negativeistener);
-        AlertDialog alertDialog = dialogBuilder.create();
-        return alertDialog;
+        return dialogBuilder.create();
     }
 
     /**
@@ -116,27 +116,18 @@ public class CustomedDialog
                                                      DialogInterface.OnClickListener
                                                              negativeListener)
     {
-        AlertDialog confirmCreateDialog = getStandardStyledDialog(activity,
+        return  getStandardStyledDialog(activity,
                 R.string.dialog_title_warning, R.string.msg_confirm_create, positiveListener,
                 negativeListener, R.string.yes, R.string.no);
-        return confirmCreateDialog;
     }
 
     public static AlertDialog getConfirmQuitFeedbackDialog(Activity activity,
                                                            DialogInterface.OnClickListener
                                                                    positiveListener)
     {
-        AlertDialog confirmFeedbackDialog = getStandardStyledDialog(activity,
+        return getStandardStyledDialog(activity,
                 R.string.dialog_title_warning, R.string.msg_confirm_quit_feedback,
-                positiveListener, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-
-                    }
-                }, R.string.yes, R.string.cancel);
-        return confirmFeedbackDialog;
+                positiveListener, null, R.string.yes, R.string.cancel);
     }
 
     /**
@@ -181,42 +172,23 @@ public class CustomedDialog
     public static AlertDialog getConfirmLogoutDialog(Activity activity,
                                                      DialogInterface.OnClickListener listener)
     {
-        AlertDialog confirmLogoutDialog = new AlertDialog.Builder(activity)
-
+        return new AlertDialog.Builder(activity)
                 .setMessage(R.string.msg_confirm_sign_out).setPositiveButton(R.string.yes,
-                        listener).setNegativeButton(R.string.no,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return confirmLogoutDialog;
+                        listener).setNegativeButton(R.string.no, null).create();
     }
 
     public static AlertDialog getConfirmCancelScanDialog(Activity activity,
                                                          DialogInterface.OnClickListener listener)
     {
-        AlertDialog confirmCancelDialog = new AlertDialog.Builder(activity)
+        return new AlertDialog.Builder(activity)
 
                 .setMessage(R.string.msg_confirm_cancel_scan).setPositiveButton(R.string.yes,
-                        listener).setNegativeButton(R.string.no,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return confirmCancelDialog;
+                        listener).setNegativeButton(R.string.no, null).create();
     }
 
     public static AlertDialog getConfirmCancelAddCameraDialog(final Activity activity)
     {
-        AlertDialog confirmCancelDialog = new AlertDialog.Builder(activity)
+        return new AlertDialog.Builder(activity)
 
                 .setMessage(R.string.msg_confirm_cancel_add_camera).setPositiveButton(R.string
                         .yes, new DialogInterface.OnClickListener()
@@ -226,53 +198,31 @@ public class CustomedDialog
                     {
                         activity.finish();
                     }
-                }).setNegativeButton(R.string.no, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        return;
-                    }
-                }).create();
-        return confirmCancelDialog;
+                }).setNegativeButton(R.string.no, null).create();
     }
 
     public static AlertDialog getConfirmRemoveDialog(Activity activity,
                                                      DialogInterface.OnClickListener listener,
                                                      int message)
     {
-        AlertDialog confirmLogoutDialog = new AlertDialog.Builder(activity)
+        return getConfirmDialog(activity, listener, message, R.string.remove);
+    }
 
-                .setMessage(message).setPositiveButton(R.string.remove,
-                        listener).setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return confirmLogoutDialog;
+    public static AlertDialog getConfirmDialog(Activity activity,
+                                               DialogInterface.OnClickListener listener,
+                                               int message,
+                                               int positiveButtonText)
+    {
+        return new AlertDialog.Builder(activity)
+                .setMessage(message).setPositiveButton(positiveButtonText,
+                        listener).setNegativeButton(R.string.cancel, null).create();
     }
 
     public static AlertDialog getConfirmDeleteDialog(Activity activity,
                                                      DialogInterface.OnClickListener listener,
                                                      int message)
     {
-        AlertDialog confirmLogoutDialog = new AlertDialog.Builder(activity)
-
-                .setMessage(message).setPositiveButton(R.string.delete,
-                        listener).setNegativeButton(R.string.cancel,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return confirmLogoutDialog;
+        return getConfirmDialog(activity, listener, message, R.string.delete);
     }
 
     /**
@@ -335,18 +285,8 @@ public class CustomedDialog
      */
     public static AlertDialog getMessageDialog(Activity activity, int message)
     {
-        AlertDialog messageDialog = new AlertDialog.Builder(activity)
-
-                .setMessage(message).setNegativeButton(R.string.ok,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return messageDialog;
+        return new AlertDialog.Builder(activity)
+                .setMessage(message).setNegativeButton(R.string.ok, null).create();
     }
 
     /**
@@ -359,19 +299,9 @@ public class CustomedDialog
                                                      DialogInterface.OnClickListener listener,
                                                      int message)
     {
-        AlertDialog alertDialog = new AlertDialog.Builder(activity)
-
+        return new AlertDialog.Builder(activity)
                 .setMessage(message).setPositiveButton(R.string.yes, listener).setNegativeButton
-                        (R.string.no,
-                        new DialogInterface.OnClickListener()
-                        {
-                            @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
-                                return;
-                            }
-                        }).create();
-        return alertDialog;
+                        (R.string.no, null).create();
     }
 
     /**
@@ -411,7 +341,7 @@ public class CustomedDialog
                                                 activity.getString(R.string.sharing_status_link),
                                                 activity.getString(R.string.sharing_status_specific_user)};
         int selectedItemPosition = Arrays.asList(shareStatusItems).indexOf(selectedItem);
-        AlertDialog alertDialog = new AlertDialog.Builder(activity)
+        return new AlertDialog.Builder(activity)
                 .setSingleChoiceItems(shareStatusItems, selectedItemPosition, null)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener()
                 {
@@ -429,7 +359,6 @@ public class CustomedDialog
                     }
                 })
                 .setNegativeButton(R.string.cancel, null).create();
-        return  alertDialog;
     }
 
     public static AlertDialog getRightsStatusDialog(final SharingListFragment fragment
@@ -447,7 +376,7 @@ public class CustomedDialog
         }
         int selectedItemPosition = Arrays.asList(statusItems).indexOf(selectedItem);
 
-        AlertDialog alertDialog = new AlertDialog.Builder(activity)
+        return new AlertDialog.Builder(activity)
                 .setTitle(R.string.sharing_settings_title)
                 .setSingleChoiceItems(statusItems, selectedItemPosition, null)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener()
@@ -455,15 +384,45 @@ public class CustomedDialog
                     @Override
                     public void onClick(DialogInterface dialog, int which)
                     {
-                        ListView listView = ((AlertDialog)dialog).getListView();
-                        Object checkedItem = listView.getAdapter().getItem(listView
-                                .getCheckedItemPosition());
+                        ListView listView = ((AlertDialog) dialog).getListView();
+                        Object checkedItem = listView.getAdapter().getItem(listView.getCheckedItemPosition());
 
                         RightsStatus newRightStatus = new RightsStatus(activity, checkedItem.toString());
-                        newRightStatus.updateOnShare(shareInterface);
+
+
+                        //If user selected 'No access', show warning dialog before delete the share
+                        //or revoking the share request
+                        if(newRightStatus.getRightString() == null)
+                        {
+                            CustomedDialog.getConfirmRemoveShareDialog(activity, shareInterface,
+                                    newRightStatus).show();
+                        }
+                        else
+                        {
+                            newRightStatus.updateOnShare(shareInterface);
+                        }
                     }
-                })
-                .setNegativeButton(R.string.cancel, null).create();
-        return  alertDialog;
+                }).setNegativeButton(R.string.cancel, null).create();
+    }
+
+    public static AlertDialog getConfirmRemoveShareDialog(Activity activity,
+                                                          final CameraShareInterface shareInterface,
+                                                          final RightsStatus newRightStatus)
+    {
+        int positiveButtonTextId = R.string.remove;
+        int messageTextId = R.string.msg_confirm_remove_share;
+        if(shareInterface instanceof CameraShareRequest)
+        {
+            positiveButtonTextId = R.string.revoke;
+            messageTextId = R.string.msg_confirm_revoke_share_request;
+        }
+
+        return getConfirmDialog(activity, new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which)
+            {
+                newRightStatus.updateOnShare(shareInterface);
+            }
+        }, messageTextId, positiveButtonTextId);
     }
 }
