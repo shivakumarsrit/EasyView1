@@ -260,7 +260,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Log.e(TAG, "onActivityResult");
         // Here actually no matter what result is returned, all restart video
         // play, but keep the verbose code for future extension.
         if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA)
