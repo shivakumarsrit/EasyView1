@@ -182,9 +182,10 @@ void MediaPlayer::setSampleFailedHandler(SampleFailedHandler handler)
 
 void MediaPlayer::setSurface(ANativeWindow *window)
 {
+    LOGD("Snapshot: setSurface: %p\n", window);
     if (m_window != 0) {
         ANativeWindow_release (m_window);
-        if (m_window == window) {
+        if (m_window == window && msp_sink) {
             gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
             gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
         } else
@@ -192,13 +193,15 @@ void MediaPlayer::setSurface(ANativeWindow *window)
     }
 
     m_window = window;
-    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_sink.get()), reinterpret_cast<guintptr> (m_window));
+    if (msp_sink) {
+        gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_sink.get()), reinterpret_cast<guintptr> (m_window));
+    }
     m_initialized = true;
 }
 
 void MediaPlayer::expose()
 {
-    if (m_window) {
+    if (m_window && msp_sink) {
         gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
         gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
     }
@@ -256,7 +259,7 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         gchar const *pipeline_str =
                 "rtspsrc name=video_src latency=0 drop-on-latency=1 protocols=4 !"
                 "rtph264depay ! h264parse ! avdec_h264 ! tee name=tee_sink "
-                "tee_sink. ! queue ! glimagesink sync=false name=video_sink "
+                "tee_sink. ! queue ! autovideosink sync=false name=video_sink "
                 "tee_sink. ! queue ! appsink sync=false name=app_sink"
                 ;
         GstElement *pipeline = gst_parse_launch(pipeline_str, &err);
@@ -271,6 +274,7 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 
             throw std::runtime_error(error_message);
         }
+        LOGD ("Snapshot: pipeline (%p)%s\n", pipeline, pipeline_str);
 
         GstElement *video_src = gst_bin_get_by_name(GST_BIN(pipeline), "video_src");
         msp_source = std::shared_ptr<GstElement>(video_src, gst_object_unref);
@@ -287,15 +291,42 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         GstBus *bus = gst_element_get_bus (pipeline);
         GSource *bus_source = gst_bus_create_watch (bus);
         g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
+        gst_bus_set_sync_handler (bus, (GstBusSyncHandler) bus_sync_handler, this, NULL);
         gint res = g_source_attach (bus_source, loop.msp_main_ctx.get());
         LOGD("res %d ctx %p pipeline %p", res, loop.msp_main_ctx.get(), pipeline);
         g_source_unref (bus_source);
         g_signal_connect (G_OBJECT (bus), "message::error", (GCallback) handle_bus_error, const_cast<MediaPlayer*> (this));
         gst_object_unref (bus);
 
-        msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
+        // msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
         msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
     }
+}
+
+GstBusSyncReply
+MediaPlayer::bus_sync_handler (GstBus * bus, GstMessage * message, gpointer data)
+{
+    MediaPlayer *player = (MediaPlayer*)data;
+     // ignore anything but 'prepare-window-handle' element messages
+     if (!gst_is_video_overlay_prepare_window_handle_message (message))
+         return GST_BUS_PASS;
+
+    LOGD("Snapshot: bus_sync_handler prepare window handle\n");
+
+    GstVideoOverlay *overlay;
+
+    if (player->m_window) {
+        // GST_MESSAGE_SRC (message) will be the video sink element
+        overlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
+        gst_video_overlay_set_window_handle (overlay, (guintptr)player->m_window);
+    }
+
+    GstElement *video_sink = GST_ELEMENT(GST_MESSAGE_SRC(message));
+    LOGD("Snapshot: video sink %p\n", video_sink);
+    player->msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
+
+    gst_message_unref (message);
+    return GST_BUS_DROP;
 }
 
 void MediaPlayer::handle_bus_error(GstBus *, GstMessage *message, MediaPlayer *self)

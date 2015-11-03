@@ -53,6 +53,7 @@ private:
     static void eos(GstAppSink *, gpointer );
     static GstFlowReturn new_preroll(GstAppSink *, gpointer );
     static GstFlowReturn new_sample (GstAppSink *, gpointer );
+    static GstBusSyncReply bus_sync_handler (GstBus * bus, GstMessage * message, gpointer data);
 
     int m_tcp_timeout;
     std::shared_ptr<GstElement> msp_pipeline;
