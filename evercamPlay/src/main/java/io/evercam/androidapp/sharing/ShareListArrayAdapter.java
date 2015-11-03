@@ -77,4 +77,9 @@ public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface>
 
         return view;
     }
+
+    public List<CameraShareInterface> getShareList()
+    {
+        return mCameraShareList;
+    }
 }

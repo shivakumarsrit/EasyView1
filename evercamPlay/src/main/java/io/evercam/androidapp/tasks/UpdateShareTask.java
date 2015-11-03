@@ -4,9 +4,6 @@ import android.app.Activity;
 import android.os.AsyncTask;
 import android.util.Log;
 
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
-
 import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
 import io.evercam.CameraShareRequest;

@@ -1,7 +1,9 @@
 package io.evercam.androidapp.sharing;
 
 import android.content.Intent;
+import android.content.res.Configuration;
 import android.os.Bundle;
+import android.os.Handler;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -76,11 +78,25 @@ public class SharingActivity extends ParentAppCompatActivity
 
             if(resultCode == Constants.RESULT_SHARE_CREATED)
             {
-                CustomSnackbar.show(this, R.string.msg_share_created);
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        CustomSnackbar.show(SharingActivity.this, R.string.msg_share_created);
+                    }
+                }, 1000);
             }
             else if(resultCode == Constants.RESULT_SHARE_REQUEST_CREATED)
             {
-                CustomSnackbar.showMultiLine(this, R.string.msg_share_request_created);
+                new Handler().postDelayed(new Runnable()
+                {
+                    @Override
+                    public void run()
+                    {
+                        CustomSnackbar.showMultiLine(SharingActivity.this, R.string.msg_share_request_created);
+                    }
+                }, 1000);
             }
         }
     }

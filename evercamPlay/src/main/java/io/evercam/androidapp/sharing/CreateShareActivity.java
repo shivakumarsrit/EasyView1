@@ -24,6 +24,7 @@ public class CreateShareActivity extends ParentAppCompatActivity
         setContentView(R.layout.activity_create_share);
 
         setUpDefaultToolbar();
+        setHomeIconAsCancel();
 
         setUpRightsSpinner();
     }

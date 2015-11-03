@@ -3,6 +3,7 @@ package io.evercam.androidapp.sharing;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -22,6 +23,8 @@ import io.evercam.androidapp.tasks.PatchCameraTask;
 
 public class SharingListFragment extends ListFragment
 {
+    private final String TAG = "SharingListFragment";
+
     private ImageView mSharingStatusImageView;
     private TextView mSharingStatusTextView;
     private TextView mSharingStatusDetailTextView;
@@ -65,7 +68,6 @@ public class SharingListFragment extends ListFragment
         mShareAdapter = new ShareListArrayAdapter(getActivity(),
                 R.layout.share_list_item, mShareList);
 
-        setListAdapter(null);
         //Add header for the sharing status
         getListView().addHeaderView(headerView);
         //Remove divider from list
@@ -78,6 +80,7 @@ public class SharingListFragment extends ListFragment
         mSharingStatusDetailTextView = (TextView) headerView.findViewById(R.id.sharing_status_detail_text_view);
 
         retrieveSharingStatusFromCamera();
+
         FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), getActivity());
     }
 

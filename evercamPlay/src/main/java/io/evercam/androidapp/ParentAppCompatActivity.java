@@ -190,6 +190,15 @@ public class ParentAppCompatActivity extends AppCompatActivity
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
     }
 
+    protected void setHomeIconAsCancel()
+    {
+        ActionBar actionBar = getSupportActionBar();
+        if(actionBar != null)
+        {
+            actionBar.setHomeAsUpIndicator(R.drawable.ic_cancel_padding);
+        }
+    }
+
     protected void updateTitleText(int textId)
     {
         ActionBar actionBar = getSupportActionBar();

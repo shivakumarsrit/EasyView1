@@ -9,7 +9,6 @@ import io.evercam.CameraShareRequest;
 import io.evercam.EvercamException;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
-import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.sharing.CreateShareActivity;
 import io.evercam.androidapp.utils.Constants;
