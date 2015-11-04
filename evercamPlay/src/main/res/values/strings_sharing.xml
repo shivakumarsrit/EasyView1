@@ -14,9 +14,14 @@
     <string name="sharing_settings_title">Sharing Settings</string>
     <string name="pending">&#8230;pending</string>
     <string name="revoke">Revoke</string>
+    <string name="transfer">Transfer</string>
 
     <string name="create_sharing_hint_username">Email or Username</string>
     <string name="create_sharing_hint_message">Message to send in Email (Optional)</string>
+    <string name="transfer_dialog_title">Transfer Camera Ownership</string>
+    <string name="transfer_dialog_content">Transfer ownership to a user who you are already sharing the camera with.
+        \n\nOnce you Transfer, you may lose all rights to the camera and associated artifacts.</string>
+    <string name="transfer_select_title">Select a new owner</string>
 
     <string name="msg_share_updated">Share successfully updated</string>
     <string name="msg_share_created">Camera successfully shared with user</string>
@@ -24,5 +29,7 @@
     <string name="msg_sharing">Sharing</string>
     <string name="msg_confirm_remove_share">Are you sure you want to remove this share?</string>
     <string name="msg_confirm_revoke_share_request">Are you sure you want to revoke this share?</string>
+    <string name="msg_transfer_success">Camera ownership has been successfully transferred.</string>
+    <string name="msg_transferring">Transferring</string>
 
 </resources>

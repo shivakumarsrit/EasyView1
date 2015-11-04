@@ -19,6 +19,7 @@
         <TextView
             android:id="@+id/sharing_email_text_view"
             style="@style/SharingListItemTextSubTitle"/>
+
     </LinearLayout>
 
     <TextView

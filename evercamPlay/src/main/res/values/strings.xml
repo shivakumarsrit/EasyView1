@@ -87,6 +87,7 @@
     <string name="menu_view_recordings">Cloud Recordings</string>
     <string name="menu_cancel_scan">Cancel</string>
     <string name="menu_create_share">Share with</string>
+    <string name="menu_transfer">Transfer</string>
     <string name="menu_action_share">Share</string>
 
     <!-- Feedback -->

@@ -6,7 +6,14 @@
         android:id="@+id/menu_create_share"
         android:icon="@drawable/ic_add_user_padding"
         android:orderInCategory="1"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_create_share"/>
+
+    <item
+        android:id="@+id/menu_transfer"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:visible="false"
+        android:title="@string/menu_transfer"/>
 
 </menu>

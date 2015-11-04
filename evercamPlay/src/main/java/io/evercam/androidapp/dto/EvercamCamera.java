@@ -22,7 +22,7 @@ public class EvercamCamera
 
     private String cameraId = "";
     private String name = "";
-    private String owner = ""; // The user's user name
+    private String user = ""; // The user's user name
     private String realOwner = "";// The owner of camera
     private boolean canEdit = false;
     private boolean canDelete = false;
@@ -66,7 +66,7 @@ public class EvercamCamera
             name = camera.getName();
             if(AppData.defaultUser != null)
             {
-                owner = AppData.defaultUser.getUsername();
+                username = AppData.defaultUser.getUsername();
             }
             realOwner = camera.getOwner();
             rights = camera.getRights().toString();
@@ -190,9 +190,9 @@ public class EvercamCamera
         return vendor;
     }
 
-    public String getOwner()
+    public String getUser()
     {
-        return owner;
+        return user;
     }
 
     public String getRealOwner()
@@ -275,9 +275,9 @@ public class EvercamCamera
         this.vendor = vendor;
     }
 
-    public void setOwner(String owner)
+    public void setUser(String user)
     {
-        this.owner = owner;
+        this.user = user;
     }
 
     public void setRealOwner(String realOwner)
@@ -537,7 +537,7 @@ public class EvercamCamera
                 internalRtspUrl.equals(other.internalRtspUrl) && externalSnapshotUrl.equals(other
                 .externalSnapshotUrl) && internalSnapshotUrl.equals(other.internalSnapshotUrl) &&
                 mac.equals(other.mac) && model.equals(other.model) && name.equals(other.name) &&
-                owner.equals(other.owner) && password.equals(other.password) && timezone.equals
+                user.equals(other.user) && password.equals(other.password) && timezone.equals
                 (other.timezone) && username.equals(other.username) && vendor.equals(other
                 .vendor) && internalHost.equals(other.internalHost) && externalHost.equals(other
                 .externalHost) && internalHttp == other.internalHttp && externalHttp == other
@@ -555,7 +555,7 @@ public class EvercamCamera
     public String toString()
     {
         return "EvercamCamera [loadingStatus=" + loadingStatus + ", id=" + id + ", " +
-                "cameraId=" + cameraId + ", name=" + name + ", owner=" + owner + ", " +
+                "cameraId=" + cameraId + ", name=" + name + ", user=" + user + ", " +
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +
                 "canDelete=" + canDelete + ", rights=" + rights + ", username=" + username + ", " +
                 "password=" + password + ", timezone=" + timezone + ", vendor=" + vendor + ", " +

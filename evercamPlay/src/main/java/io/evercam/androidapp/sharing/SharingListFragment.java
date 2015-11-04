@@ -3,6 +3,7 @@ package io.evercam.androidapp.sharing;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -13,10 +14,14 @@ import android.widget.TextView;
 import java.util.ArrayList;
 import java.util.List;
 
+import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
+import io.evercam.CameraShareRequest;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
+import io.evercam.androidapp.dto.AppData;
+import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.FetchShareListTask;
 import io.evercam.androidapp.tasks.PatchCameraTask;
 
@@ -88,6 +93,8 @@ public class SharingListFragment extends ListFragment
         mShareList.clear();
         mShareList.addAll(shareList);
         mShareAdapter.notifyDataSetChanged();
+
+        updateMenuInSharingActivity();
     }
 
     public void retrieveSharingStatusFromCamera()
@@ -115,8 +122,59 @@ public class SharingListFragment extends ListFragment
     {
         PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(SharingActivity.evercamCamera
                 .getCameraId());
-        patchCameraBuilder.setPublic(status.isPublic()).setDiscoverable(status.isDiscoverable
-                ());
+        patchCameraBuilder.setPublic(status.isPublic()).setDiscoverable(status.isDiscoverable());
         return patchCameraBuilder;
+    }
+
+    private void updateMenuInSharingActivity()
+    {
+        if(getActivity() instanceof SharingActivity)
+        {
+            AppUser defaultUser = AppData.defaultUser;
+            if(defaultUser != null)
+            {
+                String username = defaultUser.getUsername();
+                ((SharingActivity) getActivity()).showTransferMenu(isOwner(username));
+            }
+        }
+    }
+
+    /**
+     * TODO: Update the logic after adding owner info in the share list
+     */
+    private boolean isOwner(String username)
+    {
+        boolean userExists = false;
+        if(mShareList.size() > 0)
+        {
+            for(CameraShareInterface shareInterface : mShareList)
+            {
+                String userId = "";
+                if(shareInterface instanceof CameraShare)
+                {
+                    userId = ((CameraShare) shareInterface).getUserId();
+                }
+
+                if(userId.equals(username)) userExists = true;
+            }
+        }
+
+        return !userExists;
+    }
+
+    public ArrayList<String> getUsernameList()
+    {
+        ArrayList<String> usernameList = new ArrayList<>();
+        if(mShareList.size() > 0)
+        {
+            for(CameraShareInterface shareInterface : mShareList)
+            {
+                if(shareInterface instanceof CameraShare)
+                {
+                    usernameList.add(((CameraShare) shareInterface).getUserId());
+                }
+            }
+        }
+        return usernameList;
     }
 }

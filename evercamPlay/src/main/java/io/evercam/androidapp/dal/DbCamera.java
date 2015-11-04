@@ -253,7 +253,7 @@ public class DbCamera extends DatabaseMaster
         evercamCamera.setId(Integer.parseInt(cursor.getString(0)));
         evercamCamera.setCameraId(cursor.getString(1));
         evercamCamera.setName(cursor.getString(2));
-        evercamCamera.setOwner(cursor.getString(3));
+        evercamCamera.setUser(cursor.getString(3));
         evercamCamera.setUsername(cursor.getString(4));
         evercamCamera.setPassword(cursor.getString(5));
         evercamCamera.setTimezone(cursor.getString(6));

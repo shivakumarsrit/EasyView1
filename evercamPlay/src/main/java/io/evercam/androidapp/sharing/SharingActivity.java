@@ -3,6 +3,7 @@ package io.evercam.androidapp.sharing;
 import android.content.Intent;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -22,6 +23,8 @@ public class SharingActivity extends ParentAppCompatActivity
     public static EvercamCamera evercamCamera;
 
     public SharingListFragment sharingListFragment;
+
+    private MenuItem transferMenu;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -43,8 +46,11 @@ public class SharingActivity extends ParentAppCompatActivity
     @Override
     public boolean onCreateOptionsMenu(Menu menu)
     {
+        super.onPrepareOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.sharing_menu, menu);
+
+        transferMenu = menu.findItem(R.id.menu_transfer);
 
         return true;
     }
@@ -61,6 +67,10 @@ public class SharingActivity extends ParentAppCompatActivity
             case R.id.menu_create_share:
                 Intent createShareIntent = new Intent(this, CreateShareActivity.class);
                 startActivityForResult(createShareIntent, Constants.REQUEST_CODE_CREATE_SHARE);
+                return true;
+
+            case R.id.menu_transfer:
+                showTransferDlalog();
                 return true;
 
             default:
@@ -98,5 +108,22 @@ public class SharingActivity extends ParentAppCompatActivity
                 }, 1000);
             }
         }
+    }
+
+    public void showTransferMenu(boolean show)
+    {
+        if(transferMenu != null)
+        {
+            transferMenu.setVisible(show);
+        }
+    }
+
+    private void showTransferDlalog()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        TransferOwnerDialogFragment dialogFragment = new TransferOwnerDialogFragment()
+                .setCameraId(evercamCamera.getCameraId())
+                .setUserList(sharingListFragment.getUsernameList());
+        dialogFragment.show(fragmentManager, "Transfer dialog");
     }
 }
