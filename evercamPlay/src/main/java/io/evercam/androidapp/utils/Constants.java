@@ -37,6 +37,7 @@ public final class Constants
     public static final int RESULT_ACCOUNT_CHANGED = 1;
     public static final int RESULT_SHARE_REQUEST_CREATED = 3;
     public static final int RESULT_SHARE_CREATED = 4;
+    public static final int RESULT_TRANSFERRED = 5;
 
     /**
      * Bundle keys

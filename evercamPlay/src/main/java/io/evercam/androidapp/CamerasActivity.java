@@ -42,6 +42,7 @@ import java.util.concurrent.RejectedExecutionException;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CameraLayout;
 import io.evercam.androidapp.custom.CustomProgressDialog;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
@@ -259,12 +260,18 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             // return from shortcut live view
             if(resultCode == Constants.RESULT_TRUE)
             {
-               reloadCameraList = true;
+                reloadCameraList = true;
             }
         }
         else if(requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT)
         {
             reloadCameraList = (resultCode == Constants.RESULT_ACCOUNT_CHANGED);
+        }
+
+        if(resultCode == Constants.RESULT_TRANSFERRED)
+        {
+            reloadCameraList = true;
+            CustomSnackbar.showMultiLine(activity, R.string.msg_transfer_success);
         }
     }
 

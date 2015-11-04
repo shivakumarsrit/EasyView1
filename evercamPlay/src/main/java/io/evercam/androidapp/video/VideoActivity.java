@@ -275,12 +275,16 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
         }
         else
-        // If back from view camera or feedback or recording
+        // If back from view camera or feedback or recording or sharing
         {
             if(resultCode == Constants.RESULT_DELETED)
             {
-                //Only close the activity if
                 setResult(Constants.RESULT_TRUE);
+                finish();
+            }
+            else if(resultCode == Constants.RESULT_TRANSFERRED)
+            {
+                setResult(Constants.RESULT_TRANSFERRED);
                 finish();
             }
             else

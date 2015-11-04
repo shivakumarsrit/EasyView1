@@ -58,9 +58,11 @@ public class TransferOwnershipTask extends AsyncTask<Void, Void, Boolean>
 
         if(success)
         {
-            CustomSnackbar.showMultiLine(activity, R.string.msg_transfer_success);
-
-            FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), activity);
+            if(activity instanceof SharingActivity)
+            {
+                activity.setResult(Constants.RESULT_TRANSFERRED);
+                activity.finish();
+            }
         }
         else
         {
