@@ -8,6 +8,7 @@
 #include <string>
 #include <android/native_window.h>
 #include <gst/app/gstappsink.h>
+#include "frameflipper.h"
 
 namespace evercam {
 
@@ -66,6 +67,7 @@ private:
     SampleFailedHandler m_sample_failed_handler;
     StreamSuccessHandler mfn_stream_sucess_handler;
     StreamFailedHandler mfn_stream_failed_handler;
+    std::unique_ptr<FrameFlipper> m_renderer;
     ANativeWindow *m_window;
     bool m_initialized;
 };

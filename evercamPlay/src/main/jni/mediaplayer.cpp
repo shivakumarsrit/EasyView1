@@ -7,6 +7,8 @@
 #include <pthread.h>
 #include "debug.h"
 #include "eventloop.h"
+#include <thread>
+#include <chrono>
 
 using namespace evercam;
 
@@ -182,7 +184,7 @@ void MediaPlayer::setSampleFailedHandler(SampleFailedHandler handler)
 
 void MediaPlayer::setSurface(ANativeWindow *window)
 {
-    LOGD("Snapshot: setSurface: %p\n", window);
+    LOGD("sink: setSurface: %p\n", window);
     if (m_window != 0) {
         ANativeWindow_release (m_window);
         if (m_window == window && msp_sink) {
@@ -190,6 +192,13 @@ void MediaPlayer::setSurface(ANativeWindow *window)
             gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
         } else
             m_initialized = false;
+    }
+    if (m_window != window) {
+        delete m_renderer.release();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        RenderTarget *rt = RenderTarget::create(window, RenderTarget::RGB24);
+        m_renderer.reset(new FrameFlipper(std::shared_ptr<RenderTarget>(rt)));
+        m_renderer->start();
     }
 
     m_window = window;
@@ -244,6 +253,58 @@ MediaPlayer::new_sample (GstAppSink * sink, gpointer data)
     }
     GstSample *sample = gst_app_sink_pull_sample(sink);
     player->msp_last_sample = std::shared_ptr<GstSample>(sample, gst_sample_unref);
+
+    if (player->m_renderer) {
+        GstBuffer *buf = gst_sample_get_buffer(sample);
+        GstCaps *caps = gst_sample_get_caps(sample);
+
+        GstVideoInfo info;
+        GstVideoFormat fmt;
+        gint w, h, s, par_n, par_d;
+        FrameFlipper::FrameFormat format;
+
+        if (!gst_video_info_from_caps (&info, caps)) {
+            LOGD("sink: can't get information from caps");
+            return GST_FLOW_OK;
+        }
+
+        fmt = GST_VIDEO_INFO_FORMAT (&info);
+        w = GST_VIDEO_INFO_WIDTH (&info);
+        h = GST_VIDEO_INFO_HEIGHT (&info);
+        s = GST_VIDEO_INFO_PLANE_STRIDE(&info, 0);
+        par_n = GST_VIDEO_INFO_PAR_N (&info);
+        par_d = GST_VIDEO_INFO_PAR_N (&info);
+
+        switch (fmt) {
+            case GST_VIDEO_FORMAT_RGB16:
+                // LOGD("sink: format RGB565");
+                format = FrameFlipper::RGB565;
+                break;
+            case GST_VIDEO_FORMAT_RGB:
+                // LOGD("sink: format RGB24");
+                format = FrameFlipper::RGB24;
+                break;
+            case GST_VIDEO_FORMAT_RGBA:
+                // LOGD("sink: format RGBA32");
+                format = FrameFlipper::RGBA32;
+                break;
+            case GST_VIDEO_FORMAT_I420:
+                // LOGD("sink: format I420");
+                format = FrameFlipper::I420;
+                break;
+            default:
+                LOGD("sink: format unknow");
+                format = FrameFlipper::RGB24;
+        }
+
+        // LOGD("sink:format             : %d", fmt);
+        // LOGD("sink:width x height     : %d x %d", w, h);
+        // LOGD("sink:stride             : %d", s);
+        // LOGD("sink:pixel-aspect-ratio : %d/%d", par_n, par_d);
+
+        player->m_renderer->setFrame(gst_buffer_ref(buf), w, h, s, format);
+    }
+
     return GST_FLOW_OK;
 }
 
@@ -259,7 +320,6 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         gchar const *pipeline_str =
                 "rtspsrc name=video_src latency=0 drop-on-latency=1 protocols=4 !"
                 "rtph264depay ! h264parse ! avdec_h264 ! tee name=tee_sink "
-                "tee_sink. ! queue ! autovideosink sync=false name=video_sink "
                 "tee_sink. ! queue ! appsink sync=false name=app_sink"
                 ;
         GstElement *pipeline = gst_parse_launch(pipeline_str, &err);
