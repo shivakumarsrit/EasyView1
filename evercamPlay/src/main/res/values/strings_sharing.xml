@@ -31,5 +31,7 @@
     <string name="msg_confirm_revoke_share_request">Are you sure you want to revoke this share?</string>
     <string name="msg_transfer_success">Camera ownership has been successfully transferred.</string>
     <string name="msg_transferring">Transferring</string>
+    <string name="msg_confirm_remove_self">You will lose access for this camera. Are you sure?</string>
+    <string name="msg_share_before_transfer">This camera is not shared with anyone. You need to share it before transferring ownership.</string>
 
 </resources>

@@ -12,7 +12,9 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
+import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.sharing.SharingActivity;
+import io.evercam.androidapp.utils.Constants;
 
 public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
 {
@@ -22,6 +24,7 @@ public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
     private Activity activity;
     private CustomProgressDialog customProgressDialog;
     private String errorMessage;
+    private boolean userDeletedSelf = false;
 
     public UpdateShareTask(Activity activity, CameraShareInterface shareInterface, String newRights)
     {
@@ -51,10 +54,21 @@ public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
 
         if(isSuccess)
         {
-            CustomSnackbar.show(activity, R.string.msg_share_updated);
+            if(!userDeletedSelf)
+            {
+                CustomSnackbar.show(activity, R.string.msg_share_updated);
 
-            //Update share list in the sharing activity
-            FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), activity);
+                //Update share list in the sharing activity
+                FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), activity);
+            }
+            else //If user deleted his own access, reload camera list
+            {
+                if(activity instanceof SharingActivity)
+                {
+                    activity.setResult(Constants.RESULT_ACCESS_REMOVED);
+                    activity.finish();
+                }
+            }
         }
         else
         {
@@ -95,7 +109,12 @@ public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
             {
                 String cameraId = ((CameraShare) shareInterface).getCameraId();
                 String userEmail = ((CameraShare) shareInterface).getUserEmail();
-                return CameraShare.delete(cameraId, userEmail);
+                boolean isDeleted = CameraShare.delete(cameraId, userEmail);
+                if(((CameraShare) shareInterface).getUserId().equals(AppData.defaultUser.getUsername()))
+                {
+                    userDeletedSelf = true;
+                }
+                return isDeleted;
             }
             else if(shareInterface instanceof CameraShareRequest)
             {

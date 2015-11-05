@@ -273,6 +273,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             reloadCameraList = true;
             CustomSnackbar.showMultiLine(activity, R.string.msg_transfer_success);
         }
+        else if(resultCode == Constants.RESULT_ACCESS_REMOVED)
+        {
+            reloadCameraList = true;
+            CustomSnackbar.show(activity, R.string.msg_share_updated);
+        }
     }
 
     private void startLoadingCameras()

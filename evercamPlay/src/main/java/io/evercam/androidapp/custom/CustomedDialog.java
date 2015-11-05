@@ -22,12 +22,14 @@ import android.widget.ListView;
 import java.util.ArrayList;
 import java.util.Arrays;
 
+import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
 import io.evercam.CameraShareRequest;
 import io.evercam.EvercamObject;
 import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.sharing.RightsStatus;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.sharing.SharingListFragment;
@@ -65,16 +67,16 @@ public class CustomedDialog
         AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity)
                 .setTitle(R.string.msg_network_not_connected)
                 .setMessage(R.string.msg_try_network_again)
-                .setCancelable(false).setPositiveButton(R.string.settings_capital,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        dialog.dismiss();
-                        activity.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
-                    }
-                }).setNegativeButton(R.string.notNow, negativeistener);
+                .setCancelable(false).setPositiveButton(R.string.settings_capital, new
+                        DialogInterface.OnClickListener()
+                        {
+                            @Override
+                            public void onClick(DialogInterface dialog, int which)
+                            {
+                                dialog.dismiss();
+                                activity.startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+                            }
+                        }).setNegativeButton(R.string.notNow, negativeistener);
         return dialogBuilder.create();
     }
 
@@ -420,6 +422,13 @@ public class CustomedDialog
             positiveButtonTextId = R.string.revoke;
             messageTextId = R.string.msg_confirm_revoke_share_request;
         }
+        else if(shareInterface instanceof CameraShare)
+        {
+            if(((CameraShare) shareInterface).getUserId().equals(AppData.defaultUser.getUsername()))
+            {
+                messageTextId = R.string.msg_confirm_remove_self;
+            }
+        }
 
         return getConfirmDialog(activity, new DialogInterface.OnClickListener()
         {
@@ -431,28 +440,39 @@ public class CustomedDialog
         }, messageTextId, positiveButtonTextId);
     }
 
-    public static AlertDialog getSelectNewOwnerDialog(final Activity activity, ArrayList<String> usernameList)
+    public static AlertDialog getSelectNewOwnerDialog(final Activity activity, final ArrayList<String> usernameList)
     {
         CharSequence[] listCharArray = usernameList.toArray(new CharSequence[usernameList.size()]);
 
-        return new AlertDialog.Builder(activity)
-                .setTitle(R.string.transfer_select_title)
-                .setSingleChoiceItems(listCharArray, 0, null)
-                .setPositiveButton(R.string.transfer, new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        ListView listView = ((AlertDialog) dialog).getListView();
-                        Object checkedItem = listView.getAdapter().getItem(listView.getCheckedItemPosition());
-                        String selectedUsername = checkedItem.toString();
+        Builder dialogBuilder = new AlertDialog.Builder(activity)
+                .setNegativeButton(R.string.cancel, null);
 
-                        if(activity instanceof SharingActivity)
+        if(usernameList.size() > 0)
+        {
+            dialogBuilder.setSingleChoiceItems(listCharArray, 0, null)
+                    .setPositiveButton(R.string.transfer, new DialogInterface.OnClickListener()
+                    {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which)
                         {
-                            TransferOwnershipTask.launch(activity,
-                                    SharingActivity.evercamCamera.getCameraId(), selectedUsername);
+                            ListView listView = ((AlertDialog) dialog).getListView();
+                            Object checkedItem = listView.getAdapter().getItem(listView
+                                    .getCheckedItemPosition());
+                            String selectedUsername = checkedItem.toString();
+
+                            if(activity instanceof SharingActivity)
+                            {
+                                TransferOwnershipTask.launch(activity, SharingActivity
+                                        .evercamCamera.getCameraId(), selectedUsername);
+                            }
                         }
-                    }
-                }).setNegativeButton(R.string.cancel, null).create();
+                    }).setTitle(R.string.transfer_select_title);
+        }
+        else
+        {
+            dialogBuilder.setMessage(R.string.msg_share_before_transfer);
+        }
+
+        return dialogBuilder.create();
     }
 }
