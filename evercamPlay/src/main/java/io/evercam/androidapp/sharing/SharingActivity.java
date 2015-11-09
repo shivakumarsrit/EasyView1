@@ -33,6 +33,9 @@ public class SharingActivity extends ParentAppCompatActivity
 
         evercamCamera = VideoActivity.evercamCamera;
 
+        //Validate if the user still has access to the camera
+        new Thread(new ValidateSharingRunnable(this, evercamCamera.getCameraId())).start();
+
         setContentView(R.layout.activity_sharing);
 
         setUpDefaultToolbar();
@@ -70,7 +73,7 @@ public class SharingActivity extends ParentAppCompatActivity
                 return true;
 
             case R.id.menu_transfer:
-                showTransferDlalog();
+                showTransferDialog();
                 return true;
 
             default:
@@ -118,7 +121,7 @@ public class SharingActivity extends ParentAppCompatActivity
         }
     }
 
-    private void showTransferDlalog()
+    private void showTransferDialog()
     {
         FragmentManager fragmentManager = getSupportFragmentManager();
         TransferOwnerDialogFragment dialogFragment = new TransferOwnerDialogFragment()

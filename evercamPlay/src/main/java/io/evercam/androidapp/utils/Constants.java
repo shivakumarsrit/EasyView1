@@ -39,6 +39,7 @@ public final class Constants
     public static final int RESULT_SHARE_CREATED = 4;
     public static final int RESULT_TRANSFERRED = 5;
     public static final int RESULT_ACCESS_REMOVED = 6;
+    public static final int RESULT_NO_ACCESS = 7;
 
     /**
      * Bundle keys

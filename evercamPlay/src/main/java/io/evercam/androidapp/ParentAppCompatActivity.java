@@ -154,12 +154,18 @@ public class ParentAppCompatActivity extends AppCompatActivity
 
     protected void setGradientTitleBackground()
     {
-        mToolbar.setBackgroundResource(R.drawable.gradient_title);
+        if(mToolbar != null)
+        {
+            mToolbar.setBackgroundResource(R.drawable.gradient_title);
+        }
     }
 
     protected void setOpaqueTitleBackground()
     {
-        mToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray_background));
+        if(mToolbar != null)
+        {
+            mToolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray_background));
+        }
     }
 
     /**
