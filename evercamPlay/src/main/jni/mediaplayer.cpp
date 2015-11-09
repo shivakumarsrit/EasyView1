@@ -37,6 +37,7 @@ void MediaPlayer::play()
     gst_element_set_state(msp_pipeline.get(), m_target_state);
     msp_last_sample.reset();
 
+
     if (currentTarget == GST_STATE_PAUSED)
         mfn_stream_sucess_handler();
 }
@@ -144,7 +145,7 @@ void MediaPlayer::requestSample(const std::string &fmt)
 
 void MediaPlayer::setUri(const std::string& uri)
 {
-    LOGD("Snapshot: uri %s", uri.c_str());
+    LOGD("MediaPlayer: uri %s", uri.c_str());
     if (msp_source) {
         g_object_set(msp_source.get(), "location", uri.c_str(), NULL);
     }
@@ -184,36 +185,29 @@ void MediaPlayer::setSampleFailedHandler(SampleFailedHandler handler)
 
 void MediaPlayer::setSurface(ANativeWindow *window)
 {
-    LOGD("sink: setSurface: %p\n", window);
+    LOGD("MediaPlayer: setSurface: %p\n", window);
     if (m_window != 0) {
         ANativeWindow_release (m_window);
-        if (m_window == window && msp_sink) {
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
-        } else
-            m_initialized = false;
+        m_initialized = false;
     }
     if (m_window != window) {
         delete m_renderer.release();
+        // Need to wait for destroy complete
         std::this_thread::sleep_for(std::chrono::milliseconds(100));
         RenderTarget *rt = RenderTarget::create(window, RenderTarget::RGB24);
         m_renderer.reset(new FrameFlipper(std::shared_ptr<RenderTarget>(rt)));
         m_renderer->start();
+        // Need to wait for construction complete
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     m_window = window;
-    if (msp_sink) {
-        gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_sink.get()), reinterpret_cast<guintptr> (m_window));
-    }
     m_initialized = true;
 }
 
 void MediaPlayer::expose()
 {
-    if (m_window && msp_sink) {
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_sink.get()));
-    }
+    drawFrame(msp_last_sample.get());
 }
 
 void MediaPlayer::releaseSurface()
@@ -231,16 +225,62 @@ bool MediaPlayer::isInitialized() const
     return m_initialized;
 }
 
-
 void
-MediaPlayer::eos(GstAppSink *, gpointer )
+MediaPlayer::drawFrame(GstSample* sample)
 {
-}
+    if (!m_renderer)
+        return;
 
-GstFlowReturn
-MediaPlayer::new_preroll(GstAppSink *, gpointer )
-{
-    return GST_FLOW_OK;
+    GstBuffer *buf = gst_sample_get_buffer(sample);
+    GstCaps *caps = gst_sample_get_caps(sample);
+
+    GstVideoInfo info;
+    GstVideoFormat fmt;
+    gint w, h, s, par_n, par_d;
+    FrameFlipper::FrameFormat format;
+
+    if (!gst_video_info_from_caps (&info, caps)) {
+        LOGD("MediaPlayer: can't get information from caps");
+        return;
+    }
+
+    fmt = GST_VIDEO_INFO_FORMAT (&info);
+    w = GST_VIDEO_INFO_WIDTH (&info);
+    h = GST_VIDEO_INFO_HEIGHT (&info);
+    s = GST_VIDEO_INFO_PLANE_STRIDE(&info, 0);
+    par_n = GST_VIDEO_INFO_PAR_N (&info);
+    par_d = GST_VIDEO_INFO_PAR_N (&info);
+
+    // LOGD("MediaPlayer::drawFrame: (%d, %d)", w, h);
+
+    switch (fmt) {
+        case GST_VIDEO_FORMAT_RGB16:
+            // LOGD("MediaPlayer: format RGB565");
+            format = FrameFlipper::RGB565;
+            break;
+        case GST_VIDEO_FORMAT_RGB:
+            // LOGD("MediaPlayer: format RGB24");
+            format = FrameFlipper::RGB24;
+            break;
+        case GST_VIDEO_FORMAT_RGBA:
+            // LOGD("MediaPlayer: format RGBA32");
+            format = FrameFlipper::RGBA32;
+            break;
+        case GST_VIDEO_FORMAT_I420:
+            // LOGD("MediaPlayer: format I420");
+            format = FrameFlipper::I420;
+            break;
+        default:
+            LOGD("MediaPlayer: format unknow");
+            format = FrameFlipper::RGB24;
+    }
+
+    // LOGD("MediaPlayer:format             : %d", fmt);
+    // LOGD("MediaPlayer:width x height     : %d x %d", w, h);
+    // LOGD("MediaPlayer:stride             : %d", s);
+    // LOGD("MediaPlayer:pixel-aspect-ratio : %d/%d", par_n, par_d);
+
+    m_renderer->setFrame(gst_buffer_ref(buf), w, h, s, format);
 }
 
 GstFlowReturn
@@ -254,56 +294,7 @@ MediaPlayer::new_sample (GstAppSink * sink, gpointer data)
     GstSample *sample = gst_app_sink_pull_sample(sink);
     player->msp_last_sample = std::shared_ptr<GstSample>(sample, gst_sample_unref);
 
-    if (player->m_renderer) {
-        GstBuffer *buf = gst_sample_get_buffer(sample);
-        GstCaps *caps = gst_sample_get_caps(sample);
-
-        GstVideoInfo info;
-        GstVideoFormat fmt;
-        gint w, h, s, par_n, par_d;
-        FrameFlipper::FrameFormat format;
-
-        if (!gst_video_info_from_caps (&info, caps)) {
-            LOGD("sink: can't get information from caps");
-            return GST_FLOW_OK;
-        }
-
-        fmt = GST_VIDEO_INFO_FORMAT (&info);
-        w = GST_VIDEO_INFO_WIDTH (&info);
-        h = GST_VIDEO_INFO_HEIGHT (&info);
-        s = GST_VIDEO_INFO_PLANE_STRIDE(&info, 0);
-        par_n = GST_VIDEO_INFO_PAR_N (&info);
-        par_d = GST_VIDEO_INFO_PAR_N (&info);
-
-        switch (fmt) {
-            case GST_VIDEO_FORMAT_RGB16:
-                // LOGD("sink: format RGB565");
-                format = FrameFlipper::RGB565;
-                break;
-            case GST_VIDEO_FORMAT_RGB:
-                // LOGD("sink: format RGB24");
-                format = FrameFlipper::RGB24;
-                break;
-            case GST_VIDEO_FORMAT_RGBA:
-                // LOGD("sink: format RGBA32");
-                format = FrameFlipper::RGBA32;
-                break;
-            case GST_VIDEO_FORMAT_I420:
-                // LOGD("sink: format I420");
-                format = FrameFlipper::I420;
-                break;
-            default:
-                LOGD("sink: format unknow");
-                format = FrameFlipper::RGB24;
-        }
-
-        // LOGD("sink:format             : %d", fmt);
-        // LOGD("sink:width x height     : %d x %d", w, h);
-        // LOGD("sink:stride             : %d", s);
-        // LOGD("sink:pixel-aspect-ratio : %d/%d", par_n, par_d);
-
-        player->m_renderer->setFrame(gst_buffer_ref(buf), w, h, s, format);
-    }
+    player->drawFrame(sample);
 
     return GST_FLOW_OK;
 }
@@ -313,10 +304,6 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
     if (!msp_pipeline) {
         GError *err = nullptr;
 
-        // gchar const *pipeline_str =
-        //         "rtspsrc name=video_src latency=0 drop-on-latency=1 protocol=4 !"
-        //         "rtph264depay ! h264parse ! avdec_h264 ! "
-        //         "glimagesink sync=false name=video_sink";
         gchar const *pipeline_str =
                 "rtspsrc name=video_src latency=0 drop-on-latency=1 protocols=4 !"
                 "rtph264depay ! h264parse ! avdec_h264 ! tee name=tee_sink "
@@ -334,7 +321,7 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 
             throw std::runtime_error(error_message);
         }
-        LOGD ("Snapshot: pipeline (%p)%s\n", pipeline, pipeline_str);
+        LOGD ("MediaPlayer: pipeline (%p)%s\n", pipeline, pipeline_str);
 
         GstElement *video_src = gst_bin_get_by_name(GST_BIN(pipeline), "video_src");
         msp_source = std::shared_ptr<GstElement>(video_src, gst_object_unref);
@@ -342,16 +329,12 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         GstElement *video_sink = gst_bin_get_by_name(GST_BIN(pipeline), "video_sink");
         GstElement *app_sink = gst_bin_get_by_name (GST_BIN(pipeline), "app_sink");
 
-        GstAppSinkCallbacks cb;
-        cb.eos = eos;
-        cb.new_preroll = new_preroll;
-        cb.new_sample = new_sample;
-        gst_app_sink_set_callbacks((GstAppSink*)app_sink, &cb, this, NULL);
+        gst_app_sink_set_emit_signals (GST_APP_SINK(app_sink), true);
+        g_signal_connect (G_OBJECT (app_sink), "new-sample", G_CALLBACK(new_sample), this);
 
         GstBus *bus = gst_element_get_bus (pipeline);
         GSource *bus_source = gst_bus_create_watch (bus);
         g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
-        gst_bus_set_sync_handler (bus, (GstBusSyncHandler) bus_sync_handler, this, NULL);
         gint res = g_source_attach (bus_source, loop.msp_main_ctx.get());
         LOGD("res %d ctx %p pipeline %p", res, loop.msp_main_ctx.get(), pipeline);
         g_source_unref (bus_source);
@@ -361,32 +344,6 @@ void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
         // msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
         msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
     }
-}
-
-GstBusSyncReply
-MediaPlayer::bus_sync_handler (GstBus * bus, GstMessage * message, gpointer data)
-{
-    MediaPlayer *player = (MediaPlayer*)data;
-     // ignore anything but 'prepare-window-handle' element messages
-     if (!gst_is_video_overlay_prepare_window_handle_message (message))
-         return GST_BUS_PASS;
-
-    LOGD("Snapshot: bus_sync_handler prepare window handle\n");
-
-    GstVideoOverlay *overlay;
-
-    if (player->m_window) {
-        // GST_MESSAGE_SRC (message) will be the video sink element
-        overlay = GST_VIDEO_OVERLAY (GST_MESSAGE_SRC (message));
-        gst_video_overlay_set_window_handle (overlay, (guintptr)player->m_window);
-    }
-
-    GstElement *video_sink = GST_ELEMENT(GST_MESSAGE_SRC(message));
-    LOGD("Snapshot: video sink %p\n", video_sink);
-    player->msp_sink = std::shared_ptr<GstElement>(video_sink, gst_object_unref);
-
-    gst_message_unref (message);
-    return GST_BUS_DROP;
 }
 
 void MediaPlayer::handle_bus_error(GstBus *, GstMessage *message, MediaPlayer *self)

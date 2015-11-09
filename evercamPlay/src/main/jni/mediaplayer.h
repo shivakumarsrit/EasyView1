@@ -47,14 +47,12 @@ public:
     bool isInitialized() const;
 private:
     void initialize(const EventLoop& loop) throw (std::runtime_error);
+    void drawFrame(GstSample* sample);
     static void handle_bus_error(GstBus *,  GstMessage *message, MediaPlayer *self);
     static void process_converted_sample(GstSample *sample, GError *err, ConvertSampleContext *data);
     static void *convert_thread_func(void *arg);
     static void convert_sample(ConvertSampleContext *ctx);
-    static void eos(GstAppSink *, gpointer );
-    static GstFlowReturn new_preroll(GstAppSink *, gpointer );
     static GstFlowReturn new_sample (GstAppSink *, gpointer );
-    static GstBusSyncReply bus_sync_handler (GstBus * bus, GstMessage * message, gpointer data);
 
     int m_tcp_timeout;
     std::shared_ptr<GstElement> msp_pipeline;
