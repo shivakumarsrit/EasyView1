@@ -3,7 +3,6 @@ package io.evercam.androidapp.sharing;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.ListFragment;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,7 +15,6 @@ import java.util.List;
 
 import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
-import io.evercam.CameraShareRequest;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;

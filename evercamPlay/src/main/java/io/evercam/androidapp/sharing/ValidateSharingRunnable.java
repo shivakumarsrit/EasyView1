@@ -1,7 +1,6 @@
 package io.evercam.androidapp.sharing;
 
 import android.app.Activity;
-import android.util.Log;
 
 import io.evercam.Camera;
 import io.evercam.EvercamException;
