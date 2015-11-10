@@ -250,6 +250,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
+        Log.e(TAG, "onActivityResult " +requestCode + " " + resultCode);
         if(requestCode == Constants.REQUEST_CODE_ADD_CAMERA)
         {
             reloadCameraList = (resultCode == Constants.RESULT_TRUE);

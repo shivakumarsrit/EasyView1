@@ -13,6 +13,7 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.tasks.FetchShareListTask;
+import io.evercam.androidapp.tasks.ValidateRightsRunnable;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
 
@@ -34,7 +35,7 @@ public class SharingActivity extends ParentAppCompatActivity
         evercamCamera = VideoActivity.evercamCamera;
 
         //Validate if the user still has access to the camera
-        new Thread(new ValidateSharingRunnable(this, evercamCamera.getCameraId())).start();
+        new Thread(new ValidateRightsRunnable(this, evercamCamera.getCameraId())).start();
 
         setContentView(R.layout.activity_sharing);
 

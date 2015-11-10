@@ -292,6 +292,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 setResult(Constants.RESULT_ACCESS_REMOVED);
                 finish();
             }
+            else if(resultCode == Constants.RESULT_NO_ACCESS)
+            {
+                setResult(Constants.RESULT_NO_ACCESS);
+                finish();
+            }
             else
             {
                 startPlay();
