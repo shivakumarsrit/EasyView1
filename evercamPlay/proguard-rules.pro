@@ -1,7 +1,3 @@
-
--keep class !android.support.v7.internal.view.menu.*MenuBuilder*, android.support.v7.** { *; }
--keep interface android.support.v7.** { *; }
-
 # Don't show warnings for the following libraries
 -dontwarn io.evercam.**
 -dontwarn okio.**
@@ -28,3 +24,8 @@
     void onSampleRequestSuccess(byte[], int);
     void onSampleRequestFailed();
 }
+
+# Fix the MenuBuilder NoClassDefFoundError
+-keep class !android.support.v7.internal.view.menu.*MenuBuilder*, android.support.v7.** { *; }
+-keep interface android.support.v7.** { *; }
+
