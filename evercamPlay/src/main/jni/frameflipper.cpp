@@ -315,8 +315,8 @@ struct FrameFlipper::FrameFlipperPriv
             std::chrono::duration<double, std::milli> elapsed = e - s;
 
             m_mutex.unlock();
-            if (r)
-                LOGD("sink::Render time: %g", elapsed.count());
+            // if (r)
+                // LOGD("sink::Render time: %g", elapsed.count());
             std::this_thread::yield();
         }
 

@@ -9,10 +9,10 @@
 #include <android/native_window.h>
 #include <gst/app/gstappsink.h>
 #include "frameflipper.h"
+#include "eventloop.h"
 
 namespace evercam {
 
-class EventLoop;
 class MediaPlayer;
 
 typedef struct {
@@ -48,6 +48,7 @@ public:
 private:
     void initialize(const EventLoop& loop) throw (std::runtime_error);
     void drawFrame(GstSample* sample);
+    void dropPipeline();
     static void handle_bus_error(GstBus *,  GstMessage *message, MediaPlayer *self);
     static void process_converted_sample(GstSample *sample, GError *err, ConvertSampleContext *data);
     static void *convert_thread_func(void *arg);
@@ -68,6 +69,8 @@ private:
     std::unique_ptr<FrameFlipper> m_renderer;
     ANativeWindow *m_window;
     bool m_initialized;
+    EventLoop m_loop;
+    std::string m_uri;
 };
 
 } // evercam
