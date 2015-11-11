@@ -43,13 +43,6 @@ void MediaPlayer::play()
     GstState currentTarget = m_target_state;
     m_target_state = GST_STATE_PLAYING;
 
-    // Create pipeline and set uri
-    initialize(m_loop);
-    if (msp_source) {
-        g_object_set(msp_source.get(), "location", m_uri.c_str(), NULL);
-    }
-    gst_element_set_state (msp_pipeline.get(), GST_STATE_READY);
-
     gst_element_set_state(msp_pipeline.get(), m_target_state);
     msp_last_sample.reset();
 
@@ -60,13 +53,13 @@ void MediaPlayer::play()
 void MediaPlayer::pause()
 {
     m_target_state = GST_STATE_PAUSED;
-    dropPipeline();
+    gst_element_set_state(msp_pipeline.get(), m_target_state);
 }
 
 void MediaPlayer::stop()
 {
     m_target_state = GST_STATE_NULL;
-    dropPipeline();
+    gst_element_set_state(msp_pipeline.get(), m_target_state);
 }
 
 /* Handle sample conversion */
@@ -161,6 +154,12 @@ void MediaPlayer::setUri(const std::string& uri)
 {
     LOGD("MediaPlayer: uri %s", uri.c_str());
     m_uri = uri;
+
+    initialize(m_loop);
+    if (msp_source) {
+        g_object_set(msp_source.get(), "location", uri.c_str(), NULL);
+    }
+    gst_element_set_state (msp_pipeline.get(), GST_STATE_READY);
 }
 
 void MediaPlayer::setTcpTimeout(int value)
