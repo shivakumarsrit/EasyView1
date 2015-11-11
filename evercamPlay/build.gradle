@@ -56,6 +56,15 @@ android {
     lintOptions {
         abortOnError false
     }
+
+    splits {
+        abi {
+            enable true
+            reset()
+            include 'armeabi'
+            universalApk true
+        }
+    }
 }
 
 apply plugin: 'com.android.application'
