@@ -7,6 +7,7 @@ import android.os.Bundle;
 
 import com.crashlytics.android.Crashlytics;
 
+import com.crashlytics.android.ndk.CrashlyticsNdk;
 import io.evercam.API;
 import io.evercam.EvercamException;
 import io.evercam.User;
@@ -34,7 +35,7 @@ public class MainActivity extends ParentAppCompatActivity
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        Fabric.with(this, new Crashlytics());
+        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
         setContentView(R.layout.main_activity_layout);
 

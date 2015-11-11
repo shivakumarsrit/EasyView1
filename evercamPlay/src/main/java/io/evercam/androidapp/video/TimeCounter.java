@@ -40,7 +40,7 @@ public class TimeCounter
 
     public void stop()
     {
-        timeTextView.setVisibility(View.GONE);
+        timeTextView.setVisibility(View.INVISIBLE);
         thread.interrupt();
         thread = null;
     }
@@ -52,11 +52,6 @@ public class TimeCounter
             @Override
             public void run()
             {
-                //	    		Date now = new Date(System.currentTimeMillis());
-                //	    		SimpleDateFormat formatter = new SimpleDateFormat("dd/MM/yyyy
-                // HH:mm:ss");
-                //	    		String timeString = formatter.format(now);
-                //	    		timeTextView.setText(timeString);
                 org.joda.time.DateTimeZone timeZone = org.joda.time.DateTimeZone.forID(timezone);
                 org.joda.time.DateTime dateTime = new org.joda.time.DateTime(timeZone);
                 org.joda.time.format.DateTimeFormatter formatter = org.joda.time.format
