@@ -27,6 +27,7 @@ android {
         }
     }
 
+    // ./gradlew crashlyticsUploadSymbolsRelease
     signingConfigs {
         release
     }
