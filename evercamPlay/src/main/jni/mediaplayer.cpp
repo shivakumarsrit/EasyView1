@@ -2,20 +2,26 @@
 #include <string>
 #include <algorithm>
 #include <gst/video/video.h>
+#include <gst/app/gstappsink.h>
+#include <gst/video/videooverlay.h>
 #include <pthread.h>
 #include "debug.h"
 #include "eventloop.h"
+#include <thread>
+#include <chrono>
 
 using namespace evercam;
 
 MediaPlayer::MediaPlayer(const EventLoop &loop)
-    : m_tcp_timeout(0), m_target_state(GST_STATE_NULL)
+    : m_tcp_timeout(0)
+    , m_target_state(GST_STATE_NULL)
+    , m_sample_ready_handler(0)
     , m_sample_failed_handler(0)
-    , m_sample_ready_handler(0),
-      m_window(0), m_initialized(false)
+    , m_window(0)
+    , m_initialized(false)
+    , m_loop(loop)
 {
     LOGD("MediaPlayer::MediaPlayer()");
-    initialize(loop);
 }
 
 MediaPlayer::~MediaPlayer()
@@ -24,10 +30,19 @@ MediaPlayer::~MediaPlayer()
     stop();
 }
 
+void MediaPlayer::dropPipeline()
+{
+    if (msp_pipeline) {
+        msp_pipeline.reset();
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+    }
+}
+
 void MediaPlayer::play()
 {
     GstState currentTarget = m_target_state;
     m_target_state = GST_STATE_PLAYING;
+
     gst_element_set_state(msp_pipeline.get(), m_target_state);
     msp_last_sample.reset();
 
@@ -38,13 +53,6 @@ void MediaPlayer::play()
 void MediaPlayer::pause()
 {
     m_target_state = GST_STATE_PAUSED;
-
-    GstSample *sample;
-    g_object_get(msp_pipeline.get(), "sample", &sample, NULL);
-
-    if (sample)
-        msp_last_sample = std::shared_ptr<GstSample>(sample, gst_object_unref);
-
     gst_element_set_state(msp_pipeline.get(), m_target_state);
 }
 
@@ -120,12 +128,10 @@ void MediaPlayer::requestSample(const std::string &fmt)
         return;
     }
 
-    GstSample *sample;
+    GstSample *sample = NULL;
 
     if (msp_last_sample)
         sample = msp_last_sample.get();
-    else
-        g_object_get(msp_pipeline.get(), "sample", &sample, NULL);
 
     if (sample) {
         ConvertSampleContext *ctx = reinterpret_cast<ConvertSampleContext *> (g_malloc(sizeof(ConvertSampleContext)));
@@ -146,22 +152,19 @@ void MediaPlayer::requestSample(const std::string &fmt)
 
 void MediaPlayer::setUri(const std::string& uri)
 {
-    LOGD("uri %s", uri.c_str());
-    g_object_set(msp_pipeline.get(), "uri", uri.c_str(), NULL);
-    m_target_state = GST_STATE_READY;
+    LOGD("MediaPlayer: uri %s", uri.c_str());
+    m_uri = uri;
+
+    initialize(m_loop);
+    if (msp_source) {
+        g_object_set(msp_source.get(), "location", uri.c_str(), NULL);
+    }
     gst_element_set_state (msp_pipeline.get(), GST_STATE_READY);
 }
 
 void MediaPlayer::setTcpTimeout(int value)
 {
     m_tcp_timeout = value;
-    GstElement *src;
-    g_object_get(msp_pipeline.get(), "source", &src, nullptr);
-
-    if (src)
-        g_object_set(src, "tcp-timeout", m_tcp_timeout, NULL);
-    else
-        LOGE("MediaPLayer: can't get src element");
 }
 
 void MediaPlayer::recordVideo(const std::string& /* fileName */) throw (std::runtime_error)
@@ -191,26 +194,29 @@ void MediaPlayer::setSampleFailedHandler(SampleFailedHandler handler)
 
 void MediaPlayer::setSurface(ANativeWindow *window)
 {
+    LOGD("MediaPlayer: setSurface: %p\n", window);
     if (m_window != 0) {
         ANativeWindow_release (m_window);
-        if (m_window == window) {
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-            gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-        } else
-            m_initialized = false;
+        m_initialized = false;
+    }
+    if (m_window != window) {
+        delete m_renderer.release();
+        // Need to wait for destroy complete
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
+        RenderTarget *rt = RenderTarget::create(window, RenderTarget::RGB24);
+        m_renderer.reset(new FrameFlipper(std::shared_ptr<RenderTarget>(rt)));
+        m_renderer->start();
+        // Need to wait for construction complete
+        std::this_thread::sleep_for(std::chrono::milliseconds(100));
     }
 
     m_window = window;
-    gst_video_overlay_set_window_handle (GST_VIDEO_OVERLAY (msp_pipeline.get()), reinterpret_cast<guintptr> (m_window));
     m_initialized = true;
 }
 
 void MediaPlayer::expose()
 {
-    if (m_window) {
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-        gst_video_overlay_expose(GST_VIDEO_OVERLAY (msp_pipeline.get()));
-    }
+    drawFrame(msp_last_sample.get());
 }
 
 void MediaPlayer::releaseSurface()
@@ -228,40 +234,126 @@ bool MediaPlayer::isInitialized() const
     return m_initialized;
 }
 
+void
+MediaPlayer::drawFrame(GstSample* sample)
+{
+    if (!m_renderer)
+        return;
+
+    GstBuffer *buf = gst_sample_get_buffer(sample);
+    GstCaps *caps = gst_sample_get_caps(sample);
+
+    GstVideoInfo info;
+    GstVideoFormat fmt;
+    gint w, h, s, par_n, par_d;
+    FrameFlipper::FrameFormat format;
+
+    if (!gst_video_info_from_caps (&info, caps)) {
+        LOGD("MediaPlayer: can't get information from caps");
+        return;
+    }
+
+    fmt = GST_VIDEO_INFO_FORMAT (&info);
+    w = GST_VIDEO_INFO_WIDTH (&info);
+    h = GST_VIDEO_INFO_HEIGHT (&info);
+    s = GST_VIDEO_INFO_PLANE_STRIDE(&info, 0);
+    par_n = GST_VIDEO_INFO_PAR_N (&info);
+    par_d = GST_VIDEO_INFO_PAR_N (&info);
+
+    // LOGD("MediaPlayer::drawFrame: (%d, %d)", w, h);
+
+    switch (fmt) {
+        case GST_VIDEO_FORMAT_RGB16:
+            // LOGD("MediaPlayer: format RGB565");
+            format = FrameFlipper::RGB565;
+            break;
+        case GST_VIDEO_FORMAT_RGB:
+            // LOGD("MediaPlayer: format RGB24");
+            format = FrameFlipper::RGB24;
+            break;
+        case GST_VIDEO_FORMAT_RGBA:
+            // LOGD("MediaPlayer: format RGBA32");
+            format = FrameFlipper::RGBA32;
+            break;
+        case GST_VIDEO_FORMAT_I420:
+            // LOGD("MediaPlayer: format I420");
+            format = FrameFlipper::I420;
+            break;
+        default:
+            LOGD("MediaPlayer: format unknow");
+            format = FrameFlipper::RGB24;
+    }
+
+    // LOGD("MediaPlayer:format             : %d", fmt);
+    // LOGD("MediaPlayer:width x height     : %d x %d", w, h);
+    // LOGD("MediaPlayer:stride             : %d", s);
+    // LOGD("MediaPlayer:pixel-aspect-ratio : %d/%d", par_n, par_d);
+
+    m_renderer->setFrame(gst_buffer_ref(buf), w, h, s, format);
+}
+
+GstFlowReturn
+MediaPlayer::new_sample (GstAppSink * sink, gpointer data)
+{
+    MediaPlayer *player = (MediaPlayer*)data;
+    if (!player->m_initialized) {
+        player->mfn_stream_sucess_handler();
+        player->m_initialized = true;
+    }
+    GstSample *sample = gst_app_sink_pull_sample(sink);
+    player->msp_last_sample = std::shared_ptr<GstSample>(sample, gst_sample_unref);
+
+    player->drawFrame(sample);
+
+    return GST_FLOW_OK;
+}
+
 void MediaPlayer::initialize(const EventLoop& loop) throw (std::runtime_error)
 {
-    if (!msp_pipeline) {
-        GError *err = nullptr;
-        GstElement *pipeline = gst_parse_launch("playbin", &err);
+    dropPipeline();
 
-        if (!pipeline) {
+    m_initialized = false;
+    GError *err = nullptr;
 
-            std::string error_message = "Could not to create pipeline";
+    gchar const *pipeline_str =
+            "rtspsrc name=video_src latency=0 drop-on-latency=1 protocols=4 !"
+            "rtph264depay ! h264parse ! avdec_h264 ! tee name=tee_sink "
+            "tee_sink. ! queue ! appsink sync=false name=app_sink"
+            ;
+    GstElement *pipeline = gst_parse_launch(pipeline_str, &err);
 
-            if (err) {
-                error_message = err->message;
-                g_error_free(err);
-            }
+    if (!pipeline) {
+        std::string error_message = "Could not to create pipeline";
 
-            throw std::runtime_error(error_message);
+        if (err) {
+            error_message = err->message;
+            g_error_free(err);
         }
 
-        GstBus *bus = gst_element_get_bus (pipeline);
-        GSource *bus_source = gst_bus_create_watch (bus);
-        g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
-        gint res = g_source_attach (bus_source, loop.msp_main_ctx.get());
-        LOGD("res %d ctx %p pipeline %p", res, loop.msp_main_ctx.get(), pipeline);
-        g_source_unref (bus_source);
-        g_signal_connect (G_OBJECT (bus), "message::error", (GCallback) handle_bus_error, const_cast<MediaPlayer*> (this));
-        gst_object_unref (bus);
-
-        g_signal_connect (pipeline, "source-setup", G_CALLBACK (handle_source_setup), const_cast<MediaPlayer*> (this));
-        g_signal_connect (pipeline, "video-changed", G_CALLBACK (handle_video_changed), const_cast<MediaPlayer*> (this));
-        g_object_set (pipeline, "buffer-size", 0, NULL);
-        gst_element_set_state(pipeline, GST_STATE_READY);
-
-        msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
+        throw std::runtime_error(error_message);
     }
+    LOGD ("MediaPlayer: pipeline (%p)%s\n", pipeline, pipeline_str);
+
+    GstElement *video_src = gst_bin_get_by_name(GST_BIN(pipeline), "video_src");
+    msp_source = std::shared_ptr<GstElement>(video_src, gst_object_unref);
+
+    GstElement *video_sink = gst_bin_get_by_name(GST_BIN(pipeline), "video_sink");
+    GstElement *app_sink = gst_bin_get_by_name (GST_BIN(pipeline), "app_sink");
+
+    gst_app_sink_set_emit_signals (GST_APP_SINK(app_sink), true);
+    g_signal_connect (G_OBJECT (app_sink), "new-sample", G_CALLBACK(new_sample), this);
+
+    GstBus *bus = gst_element_get_bus (pipeline);
+    GSource *bus_source = gst_bus_create_watch (bus);
+    g_source_set_callback (bus_source, (GSourceFunc) gst_bus_async_signal_func, NULL, NULL);
+    gint res = g_source_attach (bus_source, loop.msp_main_ctx.get());
+    LOGD("res %d ctx %p pipeline %p", res, loop.msp_main_ctx.get(), pipeline);
+    g_source_unref (bus_source);
+    g_signal_connect (G_OBJECT (bus), "message::error", (GCallback) handle_bus_error, const_cast<MediaPlayer*> (this));
+    gst_object_unref (bus);
+
+
+    msp_pipeline = std::shared_ptr<GstElement>(pipeline, gst_object_unref);
 }
 
 void MediaPlayer::handle_bus_error(GstBus *, GstMessage *message, MediaPlayer *self)
@@ -278,26 +370,4 @@ void MediaPlayer::handle_bus_error(GstBus *, GstMessage *message, MediaPlayer *s
         self->mfn_stream_failed_handler();
 
     self->m_target_state == GST_STATE_NULL;
-}
-
-void MediaPlayer::handle_source_setup(GstElement *, GstElement *src, MediaPlayer *self)
-{
-    if (self->m_tcp_timeout > 0)
-         g_object_set (G_OBJECT (src), "tcp-timeout", self->m_tcp_timeout, NULL);
-
-     g_object_set (G_OBJECT (src), "latency", 0, NULL);
-     g_object_set (G_OBJECT (src), "drop-on-latency", 1, NULL);
-     g_object_set (G_OBJECT (src), "protocols", 4, NULL);
-}
-
-void MediaPlayer::handle_video_changed(GstElement *playbin,  MediaPlayer *self)
-{
-    // Don't catch bad_function_call, it should be thrown if user didn't set handler
-
-    LOGD("MediaPlayer::handle_video_changed");
-
-    if (self->m_target_state == GST_STATE_PLAYING)
-        self->mfn_stream_sucess_handler();
-
-    self->m_target_state = GST_STATE_NULL;
 }
