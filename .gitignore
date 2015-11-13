@@ -48,3 +48,7 @@ evercamPlay/src/main/gst-build-armeabi/
 evercamPlay/src/main/libs/
 evercamPlay/src/main/obj/
 evercamPlay/src/main/src/
+
+# Keystore
+release.properties
+io.evercam.androidapp.key
