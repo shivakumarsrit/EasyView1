@@ -1,10 +1,7 @@
 package io.evercam.androidapp.tasks;
 
 import android.app.Activity;
-import android.content.pm.PackageManager;
 import android.graphics.Bitmap;
-import android.os.Build;
-import android.util.Log;
 
 import java.io.ByteArrayOutputStream;
 import java.io.File;
@@ -72,7 +69,7 @@ public class CaptureSnapshotRunnable implements Runnable
                 ((VideoActivity) activity).setTempSnapshotBitmap(snapshotBitmap);
             }
 
-            Permission.request(activity, new String[] {Permission.STORAGE});
+            Permission.request(activity, new String[]{Permission.STORAGE});
         }
         return "";
     }
