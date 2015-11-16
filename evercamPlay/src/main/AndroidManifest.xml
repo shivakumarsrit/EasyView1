@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
           package="io.evercam.androidapp"
-          android:versionCode="158"
+          android:versionCode="159"
           android:versionName="1.6.5 Alpha 13/11">
 
     <uses-permission android:name="android.permission.INTERNET"/>
