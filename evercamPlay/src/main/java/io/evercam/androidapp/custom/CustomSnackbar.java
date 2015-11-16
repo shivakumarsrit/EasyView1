@@ -1,31 +1,27 @@
 package io.evercam.androidapp.custom;
 
 import android.app.Activity;
-
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
-import com.nispok.snackbar.enums.SnackbarType;
+import android.support.design.widget.Snackbar;
+import android.view.View;
 
 import io.evercam.androidapp.R;
 
 public class CustomSnackbar
 {
-    public static void show(Activity activity, int messageId)
+    public static void showShort(Activity activity, int messageId)
     {
-        //TODO: Replace Snackbar with Android design API
-        Snackbar snackbar = Snackbar.with(activity).text(messageId)
-                .duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-                .color(activity.getResources().getColor(R.color.dark_gray_background));
-        SnackbarManager.show(snackbar);
+        Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), messageId, Snackbar.LENGTH_SHORT);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(activity.getResources().getColor(R.color.dark_gray_background));
+        snackbar.show();
+
     }
 
-    public static void showMultiLine(Activity activity, int messageId)
+    public static void showLong(Activity activity, int messageId)
     {
-        //TODO: Replace Snackbar with Android design API
-        Snackbar snackbar = Snackbar.with(activity).text(messageId)
-                .type(SnackbarType.MULTI_LINE)
-                .duration(Snackbar.SnackbarDuration.LENGTH_LONG)
-                .color(activity.getResources().getColor(R.color.dark_gray_background));
-        SnackbarManager.show(snackbar);
+        Snackbar snackbar = Snackbar.make(activity.findViewById(android.R.id.content), messageId, Snackbar.LENGTH_LONG);
+        View snackbarView = snackbar.getView();
+        snackbarView.setBackgroundColor(activity.getResources().getColor(R.color.dark_gray_background));
+        snackbar.show();
     }
 }

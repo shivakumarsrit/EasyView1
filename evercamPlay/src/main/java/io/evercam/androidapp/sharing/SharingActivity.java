@@ -96,7 +96,7 @@ public class SharingActivity extends ParentAppCompatActivity
                     @Override
                     public void run()
                     {
-                        CustomSnackbar.show(SharingActivity.this, R.string.msg_share_created);
+                        CustomSnackbar.showShort(SharingActivity.this, R.string.msg_share_created);
                     }
                 }, 1000);
             }
@@ -107,7 +107,7 @@ public class SharingActivity extends ParentAppCompatActivity
                     @Override
                     public void run()
                     {
-                        CustomSnackbar.showMultiLine(SharingActivity.this, R.string.msg_share_request_created);
+                        CustomSnackbar.showLong(SharingActivity.this, R.string.msg_share_request_created);
                     }
                 }, 1000);
             }
