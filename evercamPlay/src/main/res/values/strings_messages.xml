@@ -45,4 +45,5 @@
     <string name="msg_camera_is_hidden">The camera you added is offline and it\'s hidden. You can make it visible from Settings.</string>
     <string name="msg_snapshot_deleted">Snapshot deleted</string>
     <string name="msg_confirm_delete_snapshot">Are you sure you want to delete this snapshot?</string>
+    <string name="msg_permission_denied">Permission denied</string>
 </resources>

@@ -11,13 +11,13 @@ apply plugin: 'com.android.application'
 apply plugin: 'io.fabric'
 
 android {
-    compileSdkVersion 22
-    buildToolsVersion "22.0.1"
+    compileSdkVersion 23
+    buildToolsVersion "23.0.1"
 
     defaultConfig {
         applicationId "io.evercam.androidapp"
         minSdkVersion 14
-        targetSdkVersion 22
+        targetSdkVersion 23
 
         //Enable multiDex, but the better solution is to reduce method number
         multiDexEnabled = true
@@ -27,8 +27,19 @@ android {
         }
     }
 
+    //Increase memory to avoid build error 'OutOfMemoryError: GC overhead limit exceeded'
+    dexOptions {
+        javaMaxHeapSize "2048M"
+    }
+
+    // ./gradlew crashlyticsUploadSymbolsRelease
+    signingConfigs {
+        release
+    }
+
     buildTypes {
         release {
+            signingConfig signingConfigs.release
             minifyEnabled true
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
@@ -84,18 +95,16 @@ repositories {
 dependencies {
     compile project(':supertoasts')
     compile fileTree(dir: 'libs', include: ['*.jar'])
-    compile 'com.android.support:support-v4:22.0.1'
-    compile 'com.android.support:appcompat-v7:22.2.0'
-    //Snackbar - Should be replaced with com.android.support:design:23.1.0
-    //Now continue using the nispok snackbar lib because 22.2.0 doesn't have callback provided
-    compile 'com.nispok:snackbar:2.11.0'
-    compile 'joda-time:joda-time:2.9'
-    compile 'com.squareup.picasso:picasso:2.5.2'
-    compile 'io.keen:keen-client-api-android:2.1.2'
+    compile 'com.android.support:support-v4:23.1.1'
+    compile 'com.android.support:appcompat-v7:23.1.1'
+    compile 'com.android.support:design:23.1.1'
+    compile 'joda-time:joda-time:2.6'
+    compile 'com.squareup.picasso:picasso:2.5.0'
+    compile 'io.keen:keen-client-api-android:2.1.1@aar'
     compile 'com.squareup.okhttp:okhttp:2.3.0'
-    compile "com.mixpanel.android:mixpanel-android:4.7.0"
-    compile 'com.google.android.gms:play-services:7.8.0'
-    compile "com.splunk.mint:mint:4.4.0"
+    compile "com.mixpanel.android:mixpanel-android:4.6.4"
+    compile 'com.google.android.gms:play-services:8.3.0'
+    compile "com.splunk.mint:mint:4.2.1"
     //Material floating action button
     compile 'com.getbase:floatingactionbutton:1.10.0'
     //The scroll view library to show/hide toolbar
@@ -127,3 +136,15 @@ crashlytics {
     androidNdkOut 'src/main/obj'
     androidNdkLibsOut 'src/main/libs'
 }
+
+def props = new Properties()
+
+props.load(new FileInputStream(rootProject.file("release.properties")))
+
+android.signingConfigs.release.storeFile rootProject.file(props.keyStore)
+
+android.signingConfigs.release.storePassword props.keyStorePassword
+
+android.signingConfigs.release.keyAlias props.keyAlias
+
+android.signingConfigs.release.keyPassword props.keyAliasPassword

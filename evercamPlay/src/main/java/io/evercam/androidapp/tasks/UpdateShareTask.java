@@ -56,7 +56,7 @@ public class UpdateShareTask extends AsyncTask<Void, Void, Boolean>
         {
             if(!userDeletedSelf)
             {
-                CustomSnackbar.show(activity, R.string.msg_share_updated);
+                CustomSnackbar.showLong(activity, R.string.msg_share_updated);
 
                 //Update share list in the sharing activity
                 FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), activity);

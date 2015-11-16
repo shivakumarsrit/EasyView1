@@ -6,6 +6,7 @@ import android.content.Intent;
 import android.net.Uri;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.Snackbar;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.view.Menu;
@@ -14,10 +15,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.FrameLayout;
 import android.widget.ImageButton;
-
-import com.nispok.snackbar.Snackbar;
-import com.nispok.snackbar.SnackbarManager;
-import com.nispok.snackbar.listeners.EventListener;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -168,42 +165,23 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 
 	public void showSnapshotDeletedSnackbar()
 	{
-		SnackbarManager.show(Snackbar.with(ViewPagerActivity.this).text(R.string
-				.msg_snapshot_deleted).duration(Snackbar.SnackbarDuration.LENGTH_SHORT)
-				.eventListener(new EventListener()
-				{
+		Snackbar.make(mPlaceHolderLayout, R.string.msg_snapshot_deleted, Snackbar.LENGTH_SHORT)
+				.setCallback(new Snackbar.Callback() {
 					@Override
-					public void onShow(Snackbar snackbar)
+					public void onDismissed(Snackbar snackbar, int event)
 					{
-						mPlaceHolderLayout.setVisibility(View.INVISIBLE);
-					}
-
-					@Override
-					public void onShowByReplace(Snackbar snackbar)
-					{}
-
-					@Override
-					public void onShown(Snackbar snackbar)
-					{}
-
-					@Override
-					public void onDismiss(Snackbar snackbar)
-					{
+						super.onDismissed(snackbar, event);
 						mPlaceHolderLayout.setVisibility(View.GONE);
 					}
 
 					@Override
-					public void onDismissByReplace(Snackbar snackbar)
-					{}
-
-					@Override
-					public void onDismissed(Snackbar snackbar)
-					{}
-				}));
-		//TODO: Replace with:
-//		Snackbar.make(mPlaceHolderLayout, R.string.msg_snapshot_deleted, Snackbar.LENGTH_SHORT)
-//				.setCallback //Android support library 23
-//				.show();
+					public void onShown(Snackbar snackbar)
+					{
+						super.onShown(snackbar);
+						mPlaceHolderLayout.setVisibility(View.INVISIBLE);
+					}
+				})
+				.show();
 	}
 
 	static class SnapshotPagerAdapter extends PagerAdapter

@@ -9,7 +9,9 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import io.evercam.androidapp.custom.CustomToast;
+import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
+import io.evercam.androidapp.video.VideoActivity;
 
 public class CaptureSnapshotRunnable implements Runnable
 {
@@ -32,25 +34,42 @@ public class CaptureSnapshotRunnable implements Runnable
 
     public String capture(Bitmap snapshotBitmap)
     {
-        if(snapshotBitmap != null)
+        if(Permission.isGranted(activity, Permission.STORAGE))
         {
-            ByteArrayOutputStream bytes = new ByteArrayOutputStream();
-            snapshotBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
-
-            File f = new File(path);
-
-            try
+            if(activity instanceof VideoActivity)
             {
-                f.createNewFile();
-                FileOutputStream fo = new FileOutputStream(f);
-                fo.write(bytes.toByteArray());
-                fo.close();
-                return f.getPath();
+                ((VideoActivity) activity).setTempSnapshotBitmap(null);
             }
-            catch(IOException e)
+
+            if(snapshotBitmap != null)
             {
-                e.printStackTrace();
+                ByteArrayOutputStream bytes = new ByteArrayOutputStream();
+                snapshotBitmap.compress(Bitmap.CompressFormat.JPEG, 40, bytes);
+
+                File f = new File(path);
+
+                try
+                {
+                    f.createNewFile();
+                    FileOutputStream fo = new FileOutputStream(f);
+                    fo.write(bytes.toByteArray());
+                    fo.close();
+                    return f.getPath();
+                }
+                catch(IOException e)
+                {
+                    e.printStackTrace();
+                }
             }
+        }
+        else
+        {
+            if(activity instanceof VideoActivity)
+            {
+                ((VideoActivity) activity).setTempSnapshotBitmap(snapshotBitmap);
+            }
+
+            Permission.request(activity, new String[]{Permission.STORAGE});
         }
         return "";
     }
@@ -61,6 +80,7 @@ public class CaptureSnapshotRunnable implements Runnable
         if(bitmap != null)
         {
             final String savedPath = capture(bitmap);
+
             if(!savedPath.isEmpty())
             {
                 activity.runOnUiThread(new Runnable()

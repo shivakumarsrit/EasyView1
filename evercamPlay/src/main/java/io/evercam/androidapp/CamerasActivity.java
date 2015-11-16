@@ -250,7 +250,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        Log.e(TAG, "onActivityResult " +requestCode + " " + resultCode);
         if(requestCode == Constants.REQUEST_CODE_ADD_CAMERA)
         {
             reloadCameraList = (resultCode == Constants.RESULT_TRUE);
@@ -272,17 +271,17 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         if(resultCode == Constants.RESULT_TRANSFERRED)
         {
             reloadCameraList = true;
-            CustomSnackbar.showMultiLine(activity, R.string.msg_transfer_success);
+            CustomSnackbar.showLong(this, R.string.msg_transfer_success);
         }
         else if(resultCode == Constants.RESULT_ACCESS_REMOVED)
         {
             reloadCameraList = true;
-            CustomSnackbar.show(activity, R.string.msg_share_updated);
+            CustomSnackbar.showShort(this, R.string.msg_share_updated);
         }
         else if(resultCode == Constants.RESULT_NO_ACCESS)
         {
             reloadCameraList = true;
-            CustomSnackbar.showMultiLine(activity, R.string.msg_no_access);
+            CustomSnackbar.showLong(this, R.string.msg_no_access);
         }
     }
 

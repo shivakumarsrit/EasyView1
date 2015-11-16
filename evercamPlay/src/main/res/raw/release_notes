@@ -1,8 +1,15 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.6.2 - 1.6.5 Alpha 11/11</h5>
+<h5>1.6.5</h5>
 <ul>
-	<li>- Browsing saved snapshots within the app<br/></li>
+	<li>- Fixed the black screen issue when playing camera live view<br/></li>
+	<li>- Bug fix for saving camera snapshot on Android 6.0<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.2 - 1.6.4</b>
+<ul>
+	<li><br/>- Browsing saved snapshots within the app<br/></li>
 	<li>- Options to share and delete saved snapshots<br/></li>
 	<li>- Sharing<br/></li>
 	<li>- Transfer camera ownership<br/></li>

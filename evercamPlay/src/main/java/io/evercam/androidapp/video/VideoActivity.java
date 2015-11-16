@@ -6,6 +6,7 @@ import android.app.TaskStackBuilder;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.pm.ActivityInfo;
+import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
@@ -100,6 +101,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     public ArrayList<PTZPreset> presetList = new ArrayList<>();
 
     private boolean showImagesVideo = false;
+
+    private Bitmap mBitmap = null; /* The temp snapshot data while asking for permission */
 
     /**
      * UI elements
@@ -301,6 +304,33 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             {
                 startPlay();
             }
+        }
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
+            grantResults)
+    {
+        switch(requestCode)
+        {
+            case 200:
+
+                boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                /* If storage permission is granted, continue saving the requested snapshot */
+                if(storageAccepted)
+                {
+                    if(mBitmap != null)
+                    {
+                        new Thread(new CaptureSnapshotRunnable(VideoActivity
+                                .this, evercamCamera.getCameraId(), FileType.JPG, mBitmap)).start();
+                    }
+                }
+                else
+                {
+                    CustomToast.showInCenter(this, R.string.msg_permission_denied);
+                }
+                break;
         }
     }
 
@@ -1040,9 +1070,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     {
         if(!Commons.isOnline(this))
         {
-            CustomedDialog.getNoInternetDialog(this, new DialogInterface.OnClickListener() {
+            CustomedDialog.getNoInternetDialog(this, new DialogInterface.OnClickListener()
+            {
                 @Override
-                public void onClick(DialogInterface dialog, int which) {
+                public void onClick(DialogInterface dialog, int which)
+                {
                     paused = true;
                     dialog.dismiss();
                     hideProgressView();
@@ -1331,6 +1363,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 //                clearControlMenuAnimation();
 //            }
 //        });
+    }
+
+    public void setTempSnapshotBitmap(Bitmap bitmap)
+    {
+        this.mBitmap = bitmap;
     }
 
     private Bitmap getBitmapFromImageView(ImageView imageView)

@@ -4,6 +4,7 @@
 -dontwarn org.joda.time.**
 -dontwarn org.simpleframework.xml.**
 -dontwarn com.mixpanel.android.**
+-dontwarn com.google.android.gms.**
 
 # Keep JNI methods
 -keepclassmembers class **.VideoActivity {
