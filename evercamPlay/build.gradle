@@ -73,7 +73,7 @@ android {
             enable true
             reset()
             include 'armeabi'
-            universalApk true
+            universalApk false
         }
     }
 }
