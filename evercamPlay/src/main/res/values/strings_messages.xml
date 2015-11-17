@@ -46,4 +46,5 @@
     <string name="msg_snapshot_deleted">Snapshot deleted</string>
     <string name="msg_confirm_delete_snapshot">Are you sure you want to delete this snapshot?</string>
     <string name="msg_permission_denied">Permission denied</string>
+    <string name="msg_allow_contacts_permission">Please ALLOW access in the next dialog if you want the app auto populate your name and Email address in the sign up form.</string>
 </resources>

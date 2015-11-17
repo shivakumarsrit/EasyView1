@@ -79,6 +79,7 @@ import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.ShortcutFeedbackItem;
 import io.evercam.androidapp.feedback.StreamFeedbackItem;
+import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.photoview.SnapshotManager.FileType;
 import io.evercam.androidapp.ptz.PresetsListAdapter;
@@ -330,7 +331,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     {
         switch(requestCode)
         {
-            case 200:
+            case Permission.REQUEST_CODE_STORAGE:
 
                 boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 

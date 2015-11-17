@@ -69,7 +69,8 @@ public class CaptureSnapshotRunnable implements Runnable
                 ((VideoActivity) activity).setTempSnapshotBitmap(snapshotBitmap);
             }
 
-            Permission.request(activity, new String[]{Permission.STORAGE});
+            Permission.request(activity, new String[]{Permission.STORAGE},
+                    Permission.REQUEST_CODE_STORAGE);
         }
         return "";
     }

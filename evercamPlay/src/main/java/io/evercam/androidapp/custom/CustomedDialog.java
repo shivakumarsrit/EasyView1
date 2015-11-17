@@ -223,6 +223,16 @@ public class CustomedDialog
                         listener).setNegativeButton(R.string.cancel, null).create();
     }
 
+    public static AlertDialog getSingleButtonDialog(Activity activity,
+                                               DialogInterface.OnClickListener listener,
+                                               int message,
+                                               int positiveButtonText)
+    {
+        return new AlertDialog.Builder(activity)
+                .setMessage(message).setPositiveButton(positiveButtonText,
+                        listener).create();
+    }
+
     public static AlertDialog getConfirmDeleteDialog(Activity activity,
                                                      DialogInterface.OnClickListener listener,
                                                      int message)
