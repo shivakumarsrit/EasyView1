@@ -165,6 +165,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private boolean feedbackStarted = false;
     private boolean recordingsStarted = false;
     private boolean sharingStarted = false;
+    public static boolean snapshotStarted = false;
 
     public static boolean showCameraCreated = false;
 
@@ -363,6 +364,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             feedbackStarted = false;
             recordingsStarted = false;
             sharingStarted = false;
+            snapshotStarted = false;
 
             if(optionsActivityStarted)
             {
@@ -416,6 +418,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             feedbackStarted = false;
             recordingsStarted = false;
             sharingStarted = false;
+            snapshotStarted = false;
 
             if(optionsActivityStarted)
             {
@@ -453,8 +456,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             {
                 this.paused = true;
             }
-            // Do not finish if user get into edit camera screen, feedback screen recording or sharing
-            if(!editStarted && !feedbackStarted && !recordingsStarted && !sharingStarted)
+            // Do not finish if user get into edit camera screen,
+            // feedback screen recording, sharing, or view snapshot
+            if(!editStarted && !feedbackStarted && !recordingsStarted && !sharingStarted && !snapshotStarted)
             {
                 this.finish();
             }
@@ -1550,7 +1554,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         runOnUiThread(new Runnable() {
             public void run() {
                 Log.d(TAG, "onSampleRequestFailed");
-                CustomToast.showInCenterLong(VideoActivity.this, "Requesting snapshot failed");
+                CustomToast.showInCenterLong(VideoActivity.this, R.string.msg_snapshot_saved_failed);
             }
         });
     }

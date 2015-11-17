@@ -24,6 +24,8 @@ import java.util.List;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
+import io.evercam.androidapp.utils.Constants;
+import io.evercam.androidapp.video.VideoActivity;
 import uk.co.senab.photoview.PhotoView;
 
 public class ViewPagerActivity extends ParentAppCompatActivity
@@ -115,7 +117,7 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 		switch(item.getItemId())
 		{
 			case android.R.id.home:
-
+				setResult(Constants.RESULT_FALSE);
 				finish();
 
 			default:
@@ -129,6 +131,13 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 		super.onSaveInstanceState(outState);
 	}
 
+	@Override
+	public void onBackPressed()
+	{
+		setResult(Constants.RESULT_FALSE);
+		finish();
+	}
+
 	/**
 	 * Call this method to launch ViewPagerActivity by passing the image path array
 	 *
@@ -138,8 +147,9 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 	public static void showSavedSnapshots(Activity activity, String[] imagePaths)
 	{
 		mImagePathList = new ArrayList<>(Arrays.asList(imagePaths));
+		VideoActivity.snapshotStarted = true;
 		Intent intent = new Intent(activity, ViewPagerActivity.class);
-		activity.startActivity(intent);
+		activity.startActivityForResult(intent, Constants.REQUEST_CODE_SNAPSHOT);
 	}
 
 	public void launchShareIntent(String imagePath)
