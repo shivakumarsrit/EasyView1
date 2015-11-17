@@ -261,6 +261,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             if(resultCode == Constants.RESULT_TRUE)
             {
                 reloadCameraList = true;
+                CustomSnackbar.showLong(activity, R.string.msg_delete_success);
             }
         }
         else if(requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT)

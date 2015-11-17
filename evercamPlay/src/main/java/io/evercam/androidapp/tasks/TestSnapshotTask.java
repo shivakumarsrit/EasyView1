@@ -92,7 +92,6 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
 
         if(drawable != null)
         {
-            CustomToast.showSnapshotTestResult(activity, R.string.snapshot_test_success);
             CustomedDialog.getSnapshotDialog(activity, drawable).show();
 
             new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)

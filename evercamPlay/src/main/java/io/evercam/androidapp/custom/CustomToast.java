@@ -22,13 +22,6 @@ public class CustomToast
         toast.show();
     }
 
-    public static void showInBottom(Context context, int message)
-    {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_SHORT);
-        toast.setGravity(Gravity.BOTTOM, 0, 0);
-        toast.show();
-    }
-
     public static void showInCenterLong(Context context, String message)
     {
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
@@ -40,13 +33,6 @@ public class CustomToast
     {
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 0);
-        toast.show();
-    }
-
-    public static void showSnapshotTestResult(Context context, int message)
-    {
-        Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
-        toast.setGravity(Gravity.CENTER, 0, 200);
         toast.show();
     }
 

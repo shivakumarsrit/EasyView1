@@ -10,6 +10,7 @@ import io.evercam.EvercamException;
 import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
@@ -53,8 +54,6 @@ public class PatchCameraTask extends AsyncTask<Void, Void, EvercamCamera>
         customProgressDialog.dismiss();
         if(evercamCamera != null)
         {
-            CustomToast.showInBottom(activity, R.string.patch_success);
-
             if(activity instanceof AddEditCameraActivity)
             {
                 /**
@@ -76,6 +75,8 @@ public class PatchCameraTask extends AsyncTask<Void, Void, EvercamCamera>
                 SharingStatus patchedStatus = new SharingStatus(evercamCamera.isDiscoverable(),
                                                     evercamCamera.isPublic());
                 ((SharingActivity) activity).sharingListFragment.updateSharingStatusUi(patchedStatus);
+
+                CustomSnackbar.showLong(activity, R.string.patch_success);
             }
         }
         else

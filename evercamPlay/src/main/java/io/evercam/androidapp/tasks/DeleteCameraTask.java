@@ -76,13 +76,12 @@ public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean>
         customProgressDialog.dismiss();
         if(success)
         {
-            CustomToast.showInBottom(activity, R.string.msg_delete_success);
             activity.setResult(Constants.RESULT_DELETED);
             activity.finish();
         }
         else
         {
-            CustomToast.showInBottom(activity, R.string.msg_delete_failed);
+            CustomToast.showInCenter(activity, R.string.msg_delete_failed);
         }
     }
 }

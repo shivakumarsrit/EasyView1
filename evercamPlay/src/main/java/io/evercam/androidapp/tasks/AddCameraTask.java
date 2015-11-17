@@ -5,6 +5,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import org.json.JSONException;
@@ -18,6 +19,7 @@ import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dal.DbCamera;
@@ -90,8 +92,6 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
 
             newCameraItem.sendToKeenIo(KeenHelper.getClient(activity));
 
-            CustomToast.showInBottom(activity, R.string.create_success);
-
             /**
              * Successfully added a camera, so refresh camera list.
              */
@@ -103,6 +103,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
              * Successfully added camera, show camera live view and finish add
              * camera activity
              */
+            VideoActivity.showCameraCreated = true;
             VideoActivity.startPlayingVideoForCamera(activity, evercamCamera.getCameraId());
             activity.finish();
         }

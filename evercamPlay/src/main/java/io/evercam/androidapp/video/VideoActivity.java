@@ -18,6 +18,7 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
+import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -166,6 +167,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private boolean recordingsStarted = false;
     private boolean sharingStarted = false;
 
+    public static boolean showCameraCreated = false;
+
     private Handler timerHandler = new Handler();
     private Thread timerThread;
     private Runnable timerRunnable;
@@ -254,6 +257,12 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             checkIsShortcutCameraExists();
 
             startPlay();
+
+            if(showCameraCreated)
+            {
+                CustomSnackbar.showLong(this, R.string.create_success);
+                showCameraCreated = false;
+            }
         }
         catch(OutOfMemoryError e)
         {
@@ -264,13 +273,20 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data)
     {
-        // Here actually no matter what result is returned, all restart video
-        // play, but keep the verbose code for future extension.
-        if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA)
+        if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA
+                || requestCode == Constants.REQUEST_CODE_VIEW_CAMERA)
         {
             // Restart video playing no matter the patch is success or not.
             if(resultCode == Constants.RESULT_TRUE)
             {
+                new Handler().postDelayed(new Runnable() {
+                    @Override
+                    public void run()
+                    {
+                        CustomSnackbar.showLong(VideoActivity.this, R.string.patch_success);
+                    }
+                }, 1000);
+
                 startPlay();
             }
             else if(resultCode == Constants.RESULT_FALSE)
@@ -1497,10 +1513,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         {
             public void run()
             {
-                EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
-                        R.string.category_streaming_rtsp,
-                        R.string.action_streaming_rtsp_failed,
-                        R.string.label_streaming_rtsp_failed);
+                EvercamPlayApplication.sendEventAnalytics(VideoActivity.this, R.string
+                        .category_streaming_rtsp, R.string.action_streaming_rtsp_failed, R.string
+                        .label_streaming_rtsp_failed);
                 StreamFeedbackItem failedItem = new StreamFeedbackItem
                         (VideoActivity.this, AppData.defaultUser.getUsername(),
                                 false);
@@ -1513,7 +1528,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 failedItem.sendToKeenIo(client);
 
                 isPlayingJpg = true;
-                CustomToast.showInBottom(VideoActivity.this, R.string.msg_switch_to_jpg);
+                CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
                 showImagesVideo = true;
                 createBrowseJpgTask();
             }
