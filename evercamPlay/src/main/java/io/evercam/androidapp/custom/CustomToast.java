@@ -1,18 +1,10 @@
 package io.evercam.androidapp.custom;
 
-import android.app.Activity;
 import android.content.Context;
-import android.os.Parcelable;
 import android.view.Gravity;
-import android.view.View;
 import android.widget.Toast;
 
-import com.github.johnpersano.supertoasts.SuperActivityToast;
 import com.github.johnpersano.supertoasts.SuperToast;
-import com.github.johnpersano.supertoasts.util.OnClickWrapper;
-
-import io.evercam.androidapp.R;
-import io.evercam.androidapp.photoview.SnapshotManager;
 
 public class CustomToast
 {
@@ -56,24 +48,6 @@ public class CustomToast
         Toast toast = Toast.makeText(context, message, Toast.LENGTH_LONG);
         toast.setGravity(Gravity.CENTER, 0, 200);
         toast.show();
-    }
-
-    public static void showSuperToastShort(Activity activity, int message)
-    {
-        SuperActivityToast.cancelAllSuperActivityToasts();
-        SuperToast superToast = new SuperToast(activity);
-        superToast.setDuration(SuperToast.Duration.SHORT);
-        superToast.setText(activity.getString(message));
-        superToast.show();
-    }
-
-    public static void showSuperToastShort(Activity activity, String message)
-    {
-        SuperActivityToast.cancelAllSuperActivityToasts();
-        SuperToast superToast = new SuperToast(activity);
-        superToast.setDuration(SuperToast.Duration.SHORT);
-        superToast.setText(message);
-        superToast.show();
     }
 
     public static void showInCenterExtraLong(Context context, int message)

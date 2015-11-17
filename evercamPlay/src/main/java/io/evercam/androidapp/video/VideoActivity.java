@@ -68,6 +68,7 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.ViewCameraActivity;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CameraListAdapter;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.custom.ProgressView;
@@ -506,15 +507,15 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
                     if(matchedUser != null)
                     {
-                        CustomToast.showSuperToastShort(this, getString(R
-                                .string.msg_switch_account) + " - " + matchedUser.getUsername());
+                        CustomToast.showInCenterLong(this, getString(R.string.msg_switch_account)
+                                + " - " + matchedUser.getUsername());
                         evercamAccount.updateDefaultUser(matchedUser.getEmail());
                         checkIsShortcutCameraExists();
                     }
                     else
                     {
-                        CustomToast.showSuperToastShort(this, getString(R
-                                .string.msg_can_not_access_camera) + " - " + username);
+                        CustomToast.showInCenterLong(this, getString(R
+                                                                .string.msg_can_not_access_camera) + " - " + username);
                         new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
                                 ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_FAILED)
                                 .sendToKeenIo(client);
@@ -679,7 +680,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 {
                     Bitmap bitmap = getBitmapFromImageView(imageView);
                     HomeShortcut.create(getApplicationContext(), evercamCamera, bitmap);
-                    CustomToast.showSuperToastShort(this, R.string.msg_shortcut_created);
+                    CustomSnackbar.showShort(this, R.string.msg_shortcut_created);
                     EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut, R.string.action_shortcut_create, R.string.label_shortcut_create);
 
                     new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), evercamCamera.getCameraId(), ShortcutFeedbackItem.ACTION_TYPE_CREATE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS).sendToKeenIo(client);
