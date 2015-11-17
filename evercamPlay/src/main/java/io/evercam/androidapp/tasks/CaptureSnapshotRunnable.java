@@ -8,6 +8,7 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
@@ -88,7 +89,7 @@ public class CaptureSnapshotRunnable implements Runnable
                     @Override
                     public void run()
                     {
-                        CustomToast.showSuperSnapshotSaved(activity, cameraId);
+                        CustomSnackbar.showSnapshotSaved(activity, cameraId);
                     }
                 });
             }

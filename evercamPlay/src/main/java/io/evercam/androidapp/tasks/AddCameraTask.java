@@ -219,9 +219,6 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
 
                     if(bitmap != null)
                     {
-                        // Save this image.
-                        //FIXME: cameraDetail.getId() is always empty. Saving image here should be broken now
-                        new Thread(new SaveImageRunnable(activity, bitmap, cameraDetail.getId())).start();
                         return true;
                     }
                 }

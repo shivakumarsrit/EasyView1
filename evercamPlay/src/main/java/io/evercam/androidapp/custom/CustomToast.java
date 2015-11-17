@@ -58,37 +58,6 @@ public class CustomToast
         toast.show();
     }
 
-    public static void showSuperSnapshotSaved(final Activity activity, final String cameraId)
-    {
-        /**
-         * The OnClickWrapper is needed to reattach SuperToast.OnClickListeners on orientation
-         * changes.
-         * It does this via a unique String tag defined in the first parameter so each
-         * OnClickWrapper's tag
-         * should be unique.
-         */
-        OnClickWrapper onClickWrapper = new OnClickWrapper("snapshotsavedtoast",
-                new SuperToast.OnClickListener()
-        {
-
-            @Override
-            public void onClick(View view, Parcelable token)
-            {
-                SnapshotManager.showSnapshotsForCamera(activity, cameraId);
-            }
-        });
-
-        SuperActivityToast.cancelAllSuperActivityToasts();
-        SuperActivityToast superActivityToast = new SuperActivityToast(activity,
-                SuperToast.Type.BUTTON);
-        superActivityToast.setDuration(SuperToast.Duration.EXTRA_LONG);
-        superActivityToast.setText(activity.getString(R.string.msg_snapshot_saved));
-        superActivityToast.setButtonIcon(R.drawable.icon_gallery, activity.getString(R.string
-                .view_in_gallery));
-        superActivityToast.setOnClickWrapper(onClickWrapper);
-        superActivityToast.show();
-    }
-
     public static void showSuperToastShort(Activity activity, int message)
     {
         SuperActivityToast.cancelAllSuperActivityToasts();

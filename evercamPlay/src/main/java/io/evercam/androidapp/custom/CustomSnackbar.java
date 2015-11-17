@@ -5,6 +5,7 @@ import android.support.design.widget.Snackbar;
 import android.view.View;
 
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.photoview.SnapshotManager;
 
 public class CustomSnackbar
 {
@@ -23,5 +24,17 @@ public class CustomSnackbar
         View snackbarView = snackbar.getView();
         snackbarView.setBackgroundColor(activity.getResources().getColor(R.color.dark_gray_background));
         snackbar.show();
+    }
+
+    public static void showSnapshotSaved(final Activity activity, final String cameraId)
+    {
+        Snackbar.make(activity.findViewById(android.R.id.content), R.string.msg_snapshot_saved, Snackbar.LENGTH_LONG)
+                .setAction(R.string.view_in_gallery, new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v)
+                    {
+                        SnapshotManager.showSnapshotsForCamera(activity, cameraId);
+                    }
+                }).show();
     }
 }
