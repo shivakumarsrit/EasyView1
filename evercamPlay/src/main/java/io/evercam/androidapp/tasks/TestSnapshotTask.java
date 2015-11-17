@@ -70,8 +70,11 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
         try
         {
             Snapshot snapshot = Camera.testSnapshot(url, ending, username, password);
-            byte[] snapshotData = snapshot.getData();
-            return new BitmapDrawable(BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length));
+            if(snapshot != null)
+            {
+                byte[] snapshotData = snapshot.getData();
+                return new BitmapDrawable(BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length));
+            }
         }
         catch(Exception e)
         {
