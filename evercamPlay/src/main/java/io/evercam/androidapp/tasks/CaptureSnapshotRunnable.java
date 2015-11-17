@@ -9,7 +9,6 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 
 import io.evercam.androidapp.custom.CustomSnackbar;
-import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.video.VideoActivity;

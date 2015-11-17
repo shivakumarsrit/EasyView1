@@ -18,7 +18,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.SystemClock;
-import android.support.design.widget.Snackbar;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -153,8 +152,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private int defaultCameraIndex;
 
     private boolean paused = false;
-    private boolean isPlayingJpg = false;// If true, stop trying video
-    // URL for reconnecting.
+
     private boolean isJpgSuccessful = false; //Whether or not the JPG view ever
     //got successfully played
 
@@ -293,16 +291,18 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             {
                 startPlay();
             }
-        }
-        else
-        // If back from view camera or feedback or recording or sharing
-        {
-            if(resultCode == Constants.RESULT_DELETED)
+            /* Returned from view camera and the camera has been deleted */
+            else if(resultCode == Constants.RESULT_DELETED)
             {
                 setResult(Constants.RESULT_TRUE);
                 finish();
             }
-            else if(resultCode == Constants.RESULT_TRANSFERRED)
+        }
+        else
+        // If back from feedback or recording or sharing
+        {
+
+            if(resultCode == Constants.RESULT_TRANSFERRED)
             {
                 setResult(Constants.RESULT_TRANSFERRED);
                 finish();
@@ -849,8 +849,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     {
         imageView.setImageDrawable(null);
 
-//        Bitmap cacheBitmap = EvercamFile.loadBitmapForCamera(this, cameraId);
-//        imageView.setImageBitmap(cacheBitmap);
         if(camera.hasThumbnailUrl())
         {
             Picasso.with(this).load(camera.getThumbnailUrl()).into(imageView);
@@ -1473,7 +1471,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             public void run()
             {
                 //View gets played, show time count, and start buffering
-                isPlayingJpg = false;
                 hideProgressView();
                 surfaceView.setVisibility(View.VISIBLE);
                 imageView.setVisibility(View.GONE);
@@ -1527,7 +1524,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 sendToLogentries(logger, failedItem.toJson());
                 failedItem.sendToKeenIo(client);
 
-                isPlayingJpg = true;
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
                 showImagesVideo = true;
                 createBrowseJpgTask();
@@ -1577,12 +1573,20 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     // requests. Rather wait for the play
                     // command
                     {
-                        DownloadImageTask downloadImageTask = new DownloadImageTask(evercamCamera
+                        final DownloadImageTask downloadImageTask = new DownloadImageTask(evercamCamera
                                 .getCameraId());
 
                         if(downloadStartCount - downloadEndCount < 9)
                         {
-                            downloadImageTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            VideoActivity.this.runOnUiThread(new Runnable()
+                            {
+                                @Override
+                                public void run()
+                                {
+                                    downloadImageTask.executeOnExecutor(AsyncTask
+                                            .THREAD_POOL_EXECUTOR);
+                                }
+                            });
                         }
 
                         if(downloadStartCount - downloadEndCount > 9 && sleepInterval < 2000)
