@@ -460,9 +460,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }
         });
 
-        manuallyAddButton.setOnClickListener(new OnClickListener() {
+        manuallyAddButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string
@@ -474,7 +476,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 actionMenu.collapse();
             }
         });
-        scanButton.setOnClickListener(new OnClickListener() {
+        scanButton.setOnClickListener(new OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -724,7 +727,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     public static void logOutDefaultUser(Activity activity)
     {
         getMixpanel().identifyUser(UUID.randomUUID().toString());
-        new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);
+
+        if(AppData.defaultUser != null)
+        {
+            new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);
+        }
 
         // clear real-time default app data
         AppData.reset();

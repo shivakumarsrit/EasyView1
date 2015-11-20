@@ -35,7 +35,10 @@ public class SharingActivity extends ParentAppCompatActivity
         evercamCamera = VideoActivity.evercamCamera;
 
         //Validate if the user still has access to the camera
-        new Thread(new ValidateRightsRunnable(this, evercamCamera.getCameraId())).start();
+        if(evercamCamera != null)
+        {
+            new Thread(new ValidateRightsRunnable(this, evercamCamera.getCameraId())).start();
+        }
 
         setContentView(R.layout.activity_sharing);
 

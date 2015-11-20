@@ -3,7 +3,6 @@ package io.evercam.androidapp.permission;
 import android.app.Activity;
 import android.content.pm.PackageManager;
 import android.os.Build;
-import android.util.Log;
 
 public class Permission
 {
