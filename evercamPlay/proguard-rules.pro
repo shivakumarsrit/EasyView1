@@ -30,3 +30,6 @@
 -keep class !android.support.v7.internal.view.menu.*MenuBuilder*, android.support.v7.** { *; }
 -keep interface android.support.v7.** { *; }
 
+# Keep line numbers for Crashlytics bug reports
+-keepattributes SourceFile,LineNumberTable
+
