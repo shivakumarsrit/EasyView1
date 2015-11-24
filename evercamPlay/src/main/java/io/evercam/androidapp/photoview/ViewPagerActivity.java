@@ -23,6 +23,7 @@ import java.util.List;
 
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
@@ -165,7 +166,16 @@ public class ViewPagerActivity extends ParentAppCompatActivity
 	public void updateViewAfterDelete(int position)
 	{
 		mViewPagerAdapter.removeView(position);
-		updateTitleWithPage(mViewPager.getCurrentItem() + 1);
+		if(mViewPagerAdapter.getCount() > 0)
+		{
+			updateTitleWithPage(mViewPager.getCurrentItem() + 1);
+		}
+		/* The last image has been deleted, close snapshot page*/
+		else
+		{
+			CustomToast.showInCenter(this, R.string.msg_no_snapshot_saved_camera);
+			finish();
+		}
 	}
 
 	private void updateTitleWithPage(int currentPageNumber)
