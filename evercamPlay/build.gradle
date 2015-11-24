@@ -103,7 +103,7 @@ dependencies {
     compile 'com.squareup.okhttp:okhttp:2.3.0'
     compile "com.mixpanel.android:mixpanel-android:4.6.4"
     compile 'com.google.android.gms:play-services:8.3.0'
-    compile "com.splunk.mint:mint:4.2.1"
+    compile "com.splunk.mint:mint:4.4.0"
     //Material floating action button
     compile 'com.getbase:floatingactionbutton:1.10.0'
     //The scroll view library to show/hide toolbar
