@@ -15,7 +15,6 @@
 
         <TextView
             android:id="@+id/device_ip_text_view"
-            android:layout_marginTop="5dp"
             style="@style/DarkText"/>
 
         <TextView
@@ -29,5 +28,19 @@
             style="@style/DarkText"/>
 
     </LinearLayout>
+
+
+    <TextView
+        android:id="@+id/report_camera_button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:padding="10sp"
+        android:layout_marginRight="10dp"
+        android:text="@string/report_camera"
+        android:textSize="13sp"
+        style="@style/SelectableItemBackgroundOnLightTheme"
+        android:clickable="true"
+        android:layout_alignParentRight="true"
+        android:textColor="@color/orange_red"/>
 
 </RelativeLayout>

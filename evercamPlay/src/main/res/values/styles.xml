@@ -1,6 +1,7 @@
 <resources> xmlns:android="http://schemas.android.com/apk/res/android">
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
+        <!--<item name="colorAccent">@color/orange_red</item>-->
     </style>
 
     <style name="ToolbarTheme" parent="AppTheme">
@@ -259,5 +260,14 @@
         <item name="android:paddingTop">20dp</item>
         <item name="android:paddingBottom">20dp</item>
         <item name="android:textSize">16sp</item>
+    </style>
+
+    <!-- Enable dark color ripple on white background -->
+    <style name="SelectableItemThemeLight">
+        <item name="colorControlHighlight">@color/ripple_material_light</item>
+    </style>
+    <style name="SelectableItemBackgroundOnLightTheme">
+        <item name="android:theme">@style/SelectableItemThemeLight</item>
+        <item name="android:background">?attr/selectableItemBackground</item>
     </style>
 </resources>

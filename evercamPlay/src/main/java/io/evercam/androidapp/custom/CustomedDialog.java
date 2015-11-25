@@ -3,6 +3,7 @@ package io.evercam.androidapp.custom;
 import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.AlertDialog.Builder;
+import android.bluetooth.BluetoothClass;
 import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
@@ -10,6 +11,7 @@ import android.graphics.Bitmap;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
@@ -17,6 +19,8 @@ import android.view.WindowManager;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
+
+import com.afollestad.materialdialogs.MaterialDialog;
 
 import java.util.ArrayList;
 import java.util.Arrays;
@@ -29,6 +33,7 @@ import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
+import io.evercam.androidapp.feedback.FeedbackSender;
 import io.evercam.androidapp.sharing.RightsStatus;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.sharing.SharingListFragment;
@@ -36,6 +41,7 @@ import io.evercam.androidapp.sharing.SharingStatus;
 import io.evercam.androidapp.tasks.CreatePresetTask;
 import io.evercam.androidapp.tasks.TransferOwnershipTask;
 import io.evercam.androidapp.video.VideoActivity;
+import io.evercam.network.discovery.Device;
 
 public class CustomedDialog
 {
@@ -483,5 +489,32 @@ public class CustomedDialog
         }
 
         return dialogBuilder.create();
+    }
+
+    public static void showReportCameraModelDialog(final Context context, final Device device)
+    {
+        new MaterialDialog.Builder(context)
+                .title(R.string.msg_specify_camera_model)
+                .content(R.string.msg_report_camera_model)
+                .negativeText(R.string.cancel)
+                .positiveText(R.string.report)
+                .input(R.string.hint_camera_model, R.string.empty, new MaterialDialog
+                        .InputCallback()
+                {
+                    @Override
+                    public void onInput(MaterialDialog dialog, final CharSequence input)
+                    {
+                        CustomToast.showInCenterLong(context, R.string.msg_feedback_sent);
+                        new Thread(new Runnable()
+                        {
+                            @Override
+                            public void run()
+                            {
+                                FeedbackSender feedbackSender = new FeedbackSender(context);
+                                feedbackSender.send(String.valueOf(input), null, device);
+                            }
+                        }).start();
+                    }
+                }).show();
     }
 }

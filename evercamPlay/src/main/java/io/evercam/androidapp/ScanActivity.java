@@ -491,7 +491,10 @@ public class ScanActivity extends ParentAppCompatActivity
         //Hide the cancel button
         showCancelMenuItem(false);
         //Show all device menu item
-        showAllDeviceMenu(true);
+        if(nonCameraDevices.size() > 0)
+        {
+            showAllDeviceMenu(true);
+        }
 
         updateTitleText("Finished. " + cameraList.size() + " Camera(s) Found.");
     }

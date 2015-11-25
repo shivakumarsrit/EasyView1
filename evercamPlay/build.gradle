@@ -90,6 +90,7 @@ repositories {
         url "https://mint.splunk.com/gradle/"
     }
     maven { url 'https://maven.fabric.io/public' }
+    maven { url "https://jitpack.io" }
 }
 
 dependencies {
@@ -128,6 +129,9 @@ dependencies {
     }
     compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.2@aar') {
         transitive = true;
+    }
+    compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
+        transitive = true
     }
 }
 
