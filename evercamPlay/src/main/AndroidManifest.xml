@@ -189,6 +189,10 @@
             android:name=".sharing.CreateShareActivity"
             android:label="@string/title_create_sharing">
         </activity>
+        <activity
+            android:name=".scan.AllDevicesActivity"
+            android:label="@string/title_all_devices">
+        </activity>
     </application>
 
 </manifest>

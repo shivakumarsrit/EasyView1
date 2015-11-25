@@ -34,12 +34,15 @@ import java.util.ArrayList;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
+import io.evercam.androidapp.scan.AllDevicesActivity;
 import io.evercam.androidapp.scan.ScanResultAdapter;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.ScanForCameraTask;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.network.EvercamDiscover;
+import io.evercam.network.discovery.Device;
+import io.evercam.network.discovery.DeviceInterface;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.query.EvercamQuery;
 
@@ -54,9 +57,11 @@ public class ScanActivity extends ParentAppCompatActivity
 
     private ListView cameraListView;
     private MenuItem cancelMenuItem;
+    private MenuItem showAllDeviceMenu;
 
     private ScanResultAdapter deviceAdapter;
     public ArrayList<DiscoveredCamera> discoveredCameras = new ArrayList<>();
+    private ArrayList<DeviceInterface> nonCameraDevices = new ArrayList<>();
     private SparseArray<Drawable> drawableArray = new SparseArray<>();
     private ScanForCameraTask scanTask;
 
@@ -137,6 +142,7 @@ public class ScanActivity extends ParentAppCompatActivity
         inflater.inflate(R.menu.menu_scan, menu);
 
         cancelMenuItem = menu.findItem(R.id.action_cancel_scan);
+        showAllDeviceMenu = menu.findItem(R.id.action_show_all_devices);
 
         return true;
     }
@@ -162,6 +168,12 @@ public class ScanActivity extends ParentAppCompatActivity
             case R.id.action_cancel_scan:
 
                 showConfirmCancelScanDialog();
+
+                return true;
+
+            case R.id.action_show_all_devices:
+
+                AllDevicesActivity.showAllDevices(this, nonCameraDevices);
 
                 return true;
 
@@ -283,6 +295,25 @@ public class ScanActivity extends ParentAppCompatActivity
         }
     }
 
+    public void showAllDeviceMenu(final boolean show)
+    {
+        if(showAllDeviceMenu == null)
+        {
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if(showAllDeviceMenu != null) showAllDeviceMenu.setVisible(show);
+                }
+            }, 1000);
+        }
+        else
+        {
+            showAllDeviceMenu.setVisible(show);
+        }
+    }
+
     public void showConfirmCancelScanDialog()
     {
         CustomedDialog.getConfirmCancelScanDialog(ScanActivity.this, new DialogInterface
@@ -317,6 +348,11 @@ public class ScanActivity extends ParentAppCompatActivity
             showCameraListView(false);
             showNoCameraView(true);
         }
+    }
+
+    public void addNonCameraDevice(Device device)
+    {
+        nonCameraDevices.add(device);
     }
 
     public void addNewCameraToResultList(DiscoveredCamera discoveredCamera)
@@ -441,6 +477,7 @@ public class ScanActivity extends ParentAppCompatActivity
         showHorizontalProgress(true);
         showTextProgress(true);
         showCancelMenuItem(true);
+        showAllDeviceMenu(false);
     }
 
     public void onScanningFinished(ArrayList<DiscoveredCamera> cameraList)
@@ -453,6 +490,8 @@ public class ScanActivity extends ParentAppCompatActivity
         showHorizontalProgress(false);
         //Hide the cancel button
         showCancelMenuItem(false);
+        //Show all device menu item
+        showAllDeviceMenu(true);
 
         updateTitleText("Finished. " + cameraList.size() + " Camera(s) Found.");
     }
@@ -480,12 +519,6 @@ public class ScanActivity extends ParentAppCompatActivity
                 }
             }
         });
-    }
-
-    public void setActivityBackgroundColor(int color)
-    {
-        View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(color);
     }
 
     class ScanCheckInternetTask extends CheckInternetTask

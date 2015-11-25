@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.view.View;
 
 import com.logentries.android.AndroidLogger;
 import com.nineoldandroids.view.ViewHelper;
@@ -221,5 +222,11 @@ public class ParentAppCompatActivity extends AppCompatActivity
         {
             actionBar.setTitle(title);
         }
+    }
+
+    protected void setActivityBackgroundColor(int color)
+    {
+        View view = this.getWindow().getDecorView();
+        view.setBackgroundColor(color);
     }
 }
