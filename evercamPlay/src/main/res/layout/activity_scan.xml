@@ -88,12 +88,24 @@
                 android:id="@+id/button_add_camera_manually"
                 android:layout_width="wrap_content"
                 android:layout_height="40dp"
-                android:background="@drawable/btn_selector"
+                android:background="@android:color/transparent"
+                android:layout_marginBottom="4dp"
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="@string/btn_text_add_manually"
-                android:textColor="@color/white"/>
+                android:textColor="@drawable/button_text_selector"/>
+
+            <Button
+                android:id="@+id/button_show_all_devices"
+                android:layout_width="wrap_content"
+                android:layout_height="40dp"
+                android:background="@android:color/transparent"
+                android:gravity="center"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="@string/show_all_devices"
+                android:textColor="@drawable/button_text_selector"/>
         </LinearLayout>
     </RelativeLayout>
 

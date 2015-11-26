@@ -287,8 +287,8 @@
                     android:layout_width="0sp"
                     android:layout_height="40dp"
                     android:layout_weight=".75"
-                    android:background="@+drawable/signup_btn_selector"
-                    android:textColor="@+drawable/signup_btn_txt_selector"/>
+                    android:background="@drawable/signup_btn_selector"
+                    android:textColor="@drawable/signup_btn_txt_selector"/>
 
                 <Button
                     android:id="@+id/button_test_snapshot"

@@ -85,6 +85,7 @@ public class ScanActivity extends ParentAppCompatActivity
 
         cameraListView = (ListView) findViewById(R.id.scan_result_list);
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);
+        Button showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
 
         deviceAdapter = new ScanResultAdapter(this, R.layout.scan_list_layout, discoveredCameras,
                 drawableArray);
@@ -129,6 +130,14 @@ public class ScanActivity extends ParentAppCompatActivity
             {
                 startActivityForResult(new Intent(ScanActivity.this, AddEditCameraActivity.class)
                         , Constants.REQUEST_CODE_ADD_CAMERA);
+            }
+        });
+
+        showAllDeviceButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                AllDevicesActivity.showAllDevices(ScanActivity.this, nonCameraDevices);
             }
         });
 

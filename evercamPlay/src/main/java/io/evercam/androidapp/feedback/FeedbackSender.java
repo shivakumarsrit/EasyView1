@@ -1,13 +1,11 @@
 package io.evercam.androidapp.feedback;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.github.sendgrid.SendGrid;
 
 import io.evercam.User;
-import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.utils.DataCollector;
