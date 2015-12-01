@@ -97,10 +97,12 @@ public class SharingListFragment extends ListFragment
 
     public void retrieveSharingStatusFromCamera()
     {
-        SharingStatus status = new SharingStatus(SharingActivity.evercamCamera.isDiscoverable(),
-                SharingActivity.evercamCamera.isPublic());
-
-        updateSharingStatusUi(status);
+        if(SharingActivity.evercamCamera != null)
+        {
+            SharingStatus status = new SharingStatus(SharingActivity.evercamCamera.isDiscoverable(),
+                    SharingActivity.evercamCamera.isPublic());
+            updateSharingStatusUi(status);
+        }
     }
 
     public void updateSharingStatusUi(SharingStatus status)

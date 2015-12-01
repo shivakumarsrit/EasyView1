@@ -105,9 +105,13 @@ public class DataCollector
      */
     private NetworkInfo getNetworkInfo()
     {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService
-                (Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getActiveNetworkInfo();
+        if(mContext != null)
+        {
+            ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            return connectivityManager.getActiveNetworkInfo();
+        }
+        return null;
     }
 
     private static String capitalize(String s)
