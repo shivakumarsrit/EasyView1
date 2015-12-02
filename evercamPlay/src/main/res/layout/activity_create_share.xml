@@ -22,7 +22,7 @@
             android:layout_height="wrap_content">
             <EditText
                 android:id="@+id/create_share_user_edit_text"
-                style="@style/SharingEditText"
+                style="@style/EditTextWithPadding"
                 android:singleLine="true"
                 android:hint="@string/create_sharing_hint_username"
                 android:paddingRight="120dp"/>
@@ -35,7 +35,7 @@
         </RelativeLayout>
         <EditText
             android:id="@+id/create_share_message_edit_text"
-            style="@style/SharingEditText"
+            style="@style/EditTextWithPadding"
             android:hint="@string/create_sharing_hint_message"/>
     </LinearLayout>
 </LinearLayout>

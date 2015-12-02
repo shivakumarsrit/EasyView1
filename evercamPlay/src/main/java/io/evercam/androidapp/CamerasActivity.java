@@ -729,8 +729,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     {
         getMixpanel().identifyUser(UUID.randomUUID().toString());
 
-        Intercom.client().reset();
-
         if(AppData.defaultUser != null)
         {
             new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);

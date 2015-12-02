@@ -30,7 +30,6 @@ public class EvercamPlayApplication extends MultiDexApplication
     public EvercamPlayApplication()
     {
         super();
-        Log.d(TAG, "E-Play launched");
     }
 
     @Override
@@ -43,6 +42,9 @@ public class EvercamPlayApplication extends MultiDexApplication
         final String intercomAndroidApiKey = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_ANDROID_KEY);
         final String intercomAppId = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
         Intercom.initialize(this, intercomAndroidApiKey, intercomAppId);
+
+        //Don't show any in-app messages
+        Intercom.client().setVisibility(Intercom.GONE);
 
 //            // Redirect URL, just for temporary testing
 //            API.URL = "http://proxy.evr.cm:9292/v1/";

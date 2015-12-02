@@ -181,6 +181,10 @@ public class EvercamAccount
                 {
                     mAccountManager.setUserData(account, KEY_IS_DEFAULT, TRUE);
                     AppData.defaultUser = retrieveUserByEmail(email);
+
+                    //It seems reset() has to be called first for switching user
+                    Intercom.client().reset();
+
                     new MixpanelHelper(mContext).identifyUser(AppData.defaultUser.getUsername());
                     ParentAppCompatActivity.registerUserWithIntercom(AppData.defaultUser);
                 }
