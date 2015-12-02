@@ -91,6 +91,7 @@ repositories {
     }
     maven { url 'https://maven.fabric.io/public' }
     maven { url "https://jitpack.io" }
+    maven { url 'https://dl.bintray.com/intercom/intercom-maven' }
 }
 
 dependencies {
@@ -131,6 +132,9 @@ dependencies {
         transitive = true;
     }
     compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
+        transitive = true
+    }
+    compile ('io.intercom.android:intercom-sdk-base:1.+@aar') {
         transitive = true
     }
 }

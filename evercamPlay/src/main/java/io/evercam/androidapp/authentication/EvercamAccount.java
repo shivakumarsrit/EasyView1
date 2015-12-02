@@ -9,10 +9,13 @@ import android.os.Bundle;
 
 import java.util.ArrayList;
 
+import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
+import io.intercom.android.sdk.Intercom;
+import io.intercom.android.sdk.identity.Registration;
 
 public class EvercamAccount
 {
@@ -179,6 +182,7 @@ public class EvercamAccount
                     mAccountManager.setUserData(account, KEY_IS_DEFAULT, TRUE);
                     AppData.defaultUser = retrieveUserByEmail(email);
                     new MixpanelHelper(mContext).identifyUser(AppData.defaultUser.getUsername());
+                    ParentAppCompatActivity.registerUserWithIntercom(AppData.defaultUser);
                 }
                 else
                 {

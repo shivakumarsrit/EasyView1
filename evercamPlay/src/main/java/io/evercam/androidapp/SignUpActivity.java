@@ -328,6 +328,8 @@ public class SignUpActivity extends ParentAppCompatActivity
                 getMixpanel().identifyUser(newUser.getUsername());
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_up, null);
 
+                registerUserWithIntercom(newUser);
+
                 new EvercamAccount(SignUpActivity.this).add(newUser);
                 AppData.defaultUser = newUser;
 

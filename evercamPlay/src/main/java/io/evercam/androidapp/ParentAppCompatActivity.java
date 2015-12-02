@@ -11,9 +11,12 @@ import com.logentries.android.AndroidLogger;
 import com.nineoldandroids.view.ViewHelper;
 import com.splunk.mint.Mint;
 
+import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PropertyReader;
+import io.intercom.android.sdk.Intercom;
+import io.intercom.android.sdk.identity.Registration;
 
 public class ParentAppCompatActivity extends AppCompatActivity
 {
@@ -112,6 +115,14 @@ public class ParentAppCompatActivity extends AppCompatActivity
     public static void sendWithMsgToMint(String messageName, String message, Exception e)
     {
         Mint.logExceptionMessage(messageName, message, e);
+    }
+
+    public static void registerUserWithIntercom(AppUser user)
+    {
+        if(user != null)
+        {
+            Intercom.client().registerIdentifiedUser(new Registration().withUserId(user.getUsername()));
+        }
     }
 
     protected boolean toolbarIsShown()

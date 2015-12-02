@@ -253,6 +253,8 @@ public class LoginActivity extends ParentAppCompatActivity
 
                 getMixpanel().identifyUser(newUser.getUsername());
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
+
+                registerUserWithIntercom(newUser);
             }
             else
             {

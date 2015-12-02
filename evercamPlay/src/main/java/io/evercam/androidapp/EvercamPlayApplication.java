@@ -10,6 +10,9 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
+import io.evercam.androidapp.utils.PropertyReader;
+import io.intercom.android.sdk.Intercom;
+
 public class EvercamPlayApplication extends MultiDexApplication
 {
     private static final String PROPERTY_ID = "UA-52483995-1";
@@ -30,13 +33,20 @@ public class EvercamPlayApplication extends MultiDexApplication
         Log.d(TAG, "E-Play launched");
     }
 
-    //    @Override
-    //    public void onCreate()
-    //    {
-    //        super.onCreate();
-    //        // Redirect URL, just for temporary testing
-    //        API.URL = "http://proxy.evr.cm:9292/v1/";
-    //    }
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        PropertyReader propertyReader = new PropertyReader(this);
+
+        final String intercomAndroidApiKey = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_ANDROID_KEY);
+        final String intercomAppId = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
+        Intercom.initialize(this, intercomAndroidApiKey, intercomAppId);
+
+//            // Redirect URL, just for temporary testing
+//            API.URL = "http://proxy.evr.cm:9292/v1/";
+    }
 
     synchronized Tracker getTracker(TrackerName trackerId)
     {

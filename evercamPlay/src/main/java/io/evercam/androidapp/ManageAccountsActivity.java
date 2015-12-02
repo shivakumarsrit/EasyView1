@@ -11,6 +11,7 @@ import android.content.Intent;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -39,6 +40,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.CheckKeyExpirationTask;
 import io.evercam.androidapp.utils.Constants;
+import io.intercom.android.sdk.Intercom;
 
 public class ManageAccountsActivity extends ParentAppCompatActivity
 {
@@ -312,6 +314,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         AppData.appUsers = evercamAccount.retrieveUserList();
 
         getMixpanel().identifyUser(AppData.defaultUser.getUsername());
+        registerUserWithIntercom(AppData.defaultUser);
 
         if(closeActivity)
         {
@@ -419,6 +422,10 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 alertDialog.dismiss();
 
                 getMixpanel().identifyUser(newUser.getUsername());
+                getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
+
+                Intercom.client().reset();
+                registerUserWithIntercom(newUser);
             }
         }
     }
@@ -481,6 +488,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 updateDefaultUser(appUser.getEmail(), true, dialogToDismiss);
 
                 getMixpanel().identifyUser(appUser.getUsername());
+                registerUserWithIntercom(appUser);
 
                 viewToDismiss.setEnabled(false);
                 viewToDismiss.setClickable(false);

@@ -7,6 +7,8 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
+import com.mashape.unirest.http.Unirest;
+
 import java.util.ArrayList;
 
 import io.evercam.androidapp.R;

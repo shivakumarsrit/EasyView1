@@ -25,6 +25,10 @@ public class PropertyReader
 
     public static final String KEY_MIXPANEL = "MixpanelToken";
 
+    public static final String KEY_INTERCOM_ANDROID_KEY = "IntercomAndroidApiKey";
+    public static final String KEY_INTERCOM_KEY = "IntercomApiKey";
+    public static final String KEY_INTERCOM_APP_ID = "IntercomAppId";
+
     public PropertyReader(Context context)
     {
         this.context = context;
