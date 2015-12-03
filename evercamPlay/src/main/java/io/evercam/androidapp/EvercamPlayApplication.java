@@ -10,6 +10,7 @@ import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
 
+import io.evercam.androidapp.feedback.IntercomApi;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 
@@ -39,9 +40,10 @@ public class EvercamPlayApplication extends MultiDexApplication
 
         PropertyReader propertyReader = new PropertyReader(this);
 
-        final String intercomAndroidApiKey = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_ANDROID_KEY);
-        final String intercomAppId = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
-        Intercom.initialize(this, intercomAndroidApiKey, intercomAppId);
+        IntercomApi.ANDROID_API_KEY = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_ANDROID_KEY);
+        IntercomApi.APP_ID = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
+        IntercomApi.WEB_API_KEY = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_KEY);
+        Intercom.initialize(this, IntercomApi.ANDROID_API_KEY, IntercomApi.APP_ID);
 
         //Don't show any in-app messages
         Intercom.client().setVisibility(Intercom.GONE);

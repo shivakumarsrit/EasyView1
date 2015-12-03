@@ -32,7 +32,7 @@ public class FeedbackSender
         sendgrid = new SendGrid(sandGridUsername, sandGridPassword);
     }
 
-    public void send(String feedbackString, String cameraId, Device device)
+    public void send(String feedbackString, String cameraId)
     {
         if(sendgrid != null)
         {
@@ -61,12 +61,7 @@ public class FeedbackSender
             }
             sendgrid.setSubject(TITLE_FEEDBACK);
 
-            if(device != null)
-            {
-                feedbackString = device.toString() + " \n\nCamera model name: " + feedbackString;
-            }
-
-            String contentString = fullName + " says: \n\nThis is a camera:  " + feedbackString + "\n\n\n\nApp version: " +
+            String contentString = fullName + " says: \n\n" + feedbackString + "\n\n\n\nApp version: " +
                     dataCollector.getAppVersion() + "\n\nDevice: " + DataCollector.getDeviceName() +
                     "\n\nAndroid version: " + DataCollector.getAndroidVersion() + "\n\nNetwork: " + dataCollector.getNetworkString();
 
@@ -75,6 +70,7 @@ public class FeedbackSender
                 contentString += "\n\nCamera ID: " + cameraId;
             }
             sendgrid.setText(contentString);
+
             String response = sendgrid.send();
             Log.d(TAG, "Sendgrid response: " + response);
         }

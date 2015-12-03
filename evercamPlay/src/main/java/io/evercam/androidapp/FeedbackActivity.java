@@ -84,7 +84,7 @@ public class FeedbackActivity extends ParentAppCompatActivity
                     public void run()
                     {
                         FeedbackSender feedbackSender = new FeedbackSender(FeedbackActivity.this);
-                        feedbackSender.send(feedbackString, cameraId, null);
+                        feedbackSender.send(feedbackString, cameraId);
                     }
                 }).start();
                 finish();

@@ -32,6 +32,7 @@ import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.feedback.FeedbackSender;
+import io.evercam.androidapp.feedback.IntercomSendMessageTask;
 import io.evercam.androidapp.sharing.RightsStatus;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.sharing.SharingListFragment;
@@ -502,14 +503,15 @@ public class CustomedDialog
                     @Override
                     public void onInput(MaterialDialog dialog, final CharSequence input)
                     {
-                        CustomToast.showInCenterLong(context, R.string.msg_feedback_sent);
+
                         new Thread(new Runnable()
                         {
                             @Override
                             public void run()
                             {
-                                FeedbackSender feedbackSender = new FeedbackSender(context);
-                                feedbackSender.send(String.valueOf(input), null, device);
+                                String modelName = String.valueOf(input);
+                                String message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
+                                IntercomSendMessageTask.launch(context, AppData.defaultUser.getUsername(), message);
                             }
                         }).start();
                     }
