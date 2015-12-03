@@ -15,7 +15,6 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
 import io.intercom.android.sdk.Intercom;
-import io.intercom.android.sdk.identity.Registration;
 
 public class EvercamAccount
 {

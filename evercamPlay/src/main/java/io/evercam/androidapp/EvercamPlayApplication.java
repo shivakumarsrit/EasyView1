@@ -2,7 +2,6 @@ package io.evercam.androidapp;
 
 import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;

@@ -7,14 +7,10 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.TextView;
 
-import com.mashape.unirest.http.Unirest;
-
 import java.util.ArrayList;
 
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
-import io.evercam.androidapp.dto.AppData;
-import io.evercam.androidapp.feedback.IntercomSendMessageTask;
 import io.evercam.network.discovery.Device;
 import io.evercam.network.discovery.DeviceInterface;
 

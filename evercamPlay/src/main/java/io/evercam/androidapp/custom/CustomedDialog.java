@@ -31,7 +31,6 @@ import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
-import io.evercam.androidapp.feedback.FeedbackSender;
 import io.evercam.androidapp.feedback.IntercomSendMessageTask;
 import io.evercam.androidapp.sharing.RightsStatus;
 import io.evercam.androidapp.sharing.SharingActivity;

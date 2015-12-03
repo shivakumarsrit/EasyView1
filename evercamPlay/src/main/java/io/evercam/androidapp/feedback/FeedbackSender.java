@@ -10,7 +10,6 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PropertyReader;
-import io.evercam.network.discovery.Device;
 
 public class FeedbackSender
 {
