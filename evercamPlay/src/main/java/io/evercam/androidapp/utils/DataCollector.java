@@ -22,7 +22,7 @@ public class DataCollector
     /**
      * Return app version name, could be an empty string
      */
-    public String getAppVersion()
+    public String getAppVersionName()
     {
         String version = "";
         if(mContext != null)
@@ -40,6 +40,29 @@ public class DataCollector
             }
         }
         return version;
+    }
+
+    /**
+     * Return app version code, return 0 when exception happens
+     */
+    public int getAppVersionCode()
+    {
+        int versionCode = 0;
+        if(mContext != null)
+        {
+            PackageInfo packageInfo;
+            try
+            {
+                packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+
+                versionCode = packageInfo.versionCode;
+            }
+            catch(NameNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return versionCode;
     }
 
     /**

@@ -385,7 +385,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavAboutItemLayout.setOnClickListener(this);
         mNavScanLayout.setOnClickListener(this);
         mNavLogoutLayout.setOnClickListener(this);
-        mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersion());
+        mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
     }
 
     @Override
