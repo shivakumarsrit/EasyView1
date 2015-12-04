@@ -1,5 +1,12 @@
 <h4>Evercam IP Camera Viewer</h4>
 
+<h5>1.6.9</h5>
+<ul>
+	<li>- Fixed the bug that unable to sign in with Email address<br/></li>
+	<li>- Fixed text overlap in login page<br/></li>
+</ul>
+<br/>
+
 <h5>1.6.8</h5>
 <ul>
 	<li>- Now you can easily send us a feedback if we couldn't recognise your camera after scanning<br/></li>
