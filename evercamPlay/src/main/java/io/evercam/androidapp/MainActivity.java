@@ -26,7 +26,6 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.CheckKeyExpirationTask;
-import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
@@ -41,7 +40,7 @@ public class MainActivity extends ParentAppCompatActivity
 {
     private static final String TAG = "MainActivity";
 
-    private final String SENDER_ID = "761768764442";
+    private final String GCM_SENDER_ID = "761768764442";
 
     private GoogleCloudMessaging gcm;
     private String registrationId;
@@ -58,14 +57,14 @@ public class MainActivity extends ParentAppCompatActivity
         if (isPlayServicesAvailable())
         {
             gcm = GoogleCloudMessaging.getInstance(this);
-            registrationId = getRegistrationId(this);
+            registrationId = PrefsManager.getGcmRegistrationId(this);
             if (registrationId.isEmpty())
             {
                 registerInBackground();
             }
             else
             {
-                sendRegistrationIdToBackend(registrationId);
+                sendRegistrationIdToIntercomBackend(registrationId);
             }
         } else
         {
@@ -88,7 +87,7 @@ public class MainActivity extends ParentAppCompatActivity
 
     private void launch()
     {
-        int versionCode = Commons.getAppVersionCode(this);
+        int versionCode = new DataCollector(this).getAppVersionCode();
         boolean isReleaseNotesShown = PrefsManager.isReleaseNotesShown(this, versionCode);
 
         if(versionCode > 0)
@@ -222,36 +221,6 @@ public class MainActivity extends ParentAppCompatActivity
         }
     }
 
-    public boolean isPlayServicesAvailable()
-    {
-        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS;
-    }
-
-    private String getRegistrationId(Context context)
-    {
-        SharedPreferences prefs = getSharedPreferences("my_gcm_details", MODE_PRIVATE);
-        String registrationId = prefs.getString("my_gcm_registration_id", "");
-        if (registrationId.isEmpty())
-        {
-            Log.d(TAG, "Registration ID not found.");
-            return "";
-        }
-        int registeredVersion = prefs.getInt("my_app_version", Integer.MIN_VALUE);
-        int currentVersion = new DataCollector(context).getAppVersionCode();
-        if (registeredVersion != 0 && registeredVersion != currentVersion)
-        {
-            Log.d(TAG, "App version changed.");
-            return "";
-        }
-
-        return registrationId;
-    }
-
-    private void sendRegistrationIdToBackend(String regId)
-    {
-        Intercom.client().setupGCM(regId, R.drawable.icon_evercam_trans);
-    }
-
     private void registerInBackground()
     {
         new AsyncTask<Void, Void, Void>()
@@ -266,10 +235,10 @@ public class MainActivity extends ParentAppCompatActivity
                     {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
-                    registrationId = gcm.register(SENDER_ID);
-                    Log.d(TAG, "Registration new ID: " + registrationId);
-                    sendRegistrationIdToBackend(registrationId);
-                    storeRegistrationId(getApplicationContext(), registrationId);
+                    registrationId = gcm.register(GCM_SENDER_ID);
+
+                    sendRegistrationIdToIntercomBackend(registrationId);
+                    PrefsManager.storeGcmRegistrationId(getApplicationContext(), registrationId);
                     Log.d("GCM_SUCCESS", "Current Device's Registration ID is: " + msg);
                 }
                 catch (IOException ex)
@@ -292,16 +261,5 @@ public class MainActivity extends ParentAppCompatActivity
                 return null;
             }
         }.execute(null, null, null);
-    }
-
-    private void storeRegistrationId(Context context, String regId)
-    {
-        SharedPreferences prefs = getSharedPreferences("my_gcm_details", MODE_PRIVATE);
-        int appVersion = new DataCollector(context).getAppVersionCode();
-        Log.i("GCM_SUCCESS", "Saving regId on app version " + appVersion);
-        SharedPreferences.Editor editor = prefs.edit();
-        editor.putString("my_gcm_registration_id", regId);
-        editor.putInt("my_app_version", appVersion);
-        editor.commit();
     }
 }

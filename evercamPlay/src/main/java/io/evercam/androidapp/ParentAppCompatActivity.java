@@ -7,6 +7,8 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.logentries.android.AndroidLogger;
 import com.nineoldandroids.view.ViewHelper;
 import com.splunk.mint.Mint;
@@ -240,5 +242,15 @@ public class ParentAppCompatActivity extends AppCompatActivity
     {
         View view = this.getWindow().getDecorView();
         view.setBackgroundColor(color);
+    }
+
+    protected boolean isPlayServicesAvailable()
+    {
+        return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS;
+    }
+
+    protected void sendRegistrationIdToIntercomBackend(String regId)
+    {
+        Intercom.client().setupGCM(regId, R.drawable.icon_evercam_trans);
     }
 }
