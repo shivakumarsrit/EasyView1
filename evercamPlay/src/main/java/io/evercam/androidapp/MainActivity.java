@@ -41,7 +41,7 @@ public class MainActivity extends ParentAppCompatActivity
 {
     private static final String TAG = "MainActivity";
 
-    private final String SENDER_ID = "40329583114";
+    private final String SENDER_ID = "761768764442";
 
     private GoogleCloudMessaging gcm;
     private String registrationId;
@@ -243,13 +243,13 @@ public class MainActivity extends ParentAppCompatActivity
             Log.d(TAG, "App version changed.");
             return "";
         }
-        Log.d(TAG, "Registration ID = " + registrationId);
+
         return registrationId;
     }
 
     private void sendRegistrationIdToBackend(String regId)
     {
-        Intercom.client().setupGCM(regId, R.drawable.icon_evercam);
+        Intercom.client().setupGCM(regId, R.drawable.icon_evercam_trans);
     }
 
     private void registerInBackground()

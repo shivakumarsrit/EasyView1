@@ -123,6 +123,7 @@ public class ParentAppCompatActivity extends AppCompatActivity
         {
             Intercom.client().registerIdentifiedUser(new Registration().withUserId(user.getUsername()));
         }
+
     }
 
     protected boolean toolbarIsShown()
