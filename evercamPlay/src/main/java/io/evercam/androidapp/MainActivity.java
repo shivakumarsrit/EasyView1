@@ -215,6 +215,7 @@ public class MainActivity extends ParentAppCompatActivity
             }
             else
             {
+                registerUserWithIntercom(AppData.defaultUser);
                 finish();
                 startCamerasActivity();
             }

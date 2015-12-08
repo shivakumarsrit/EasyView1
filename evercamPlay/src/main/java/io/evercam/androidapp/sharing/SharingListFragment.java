@@ -83,7 +83,10 @@ public class SharingListFragment extends ListFragment
 
         retrieveSharingStatusFromCamera();
 
-        FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), getActivity());
+        if(SharingActivity.evercamCamera != null)
+        {
+            FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), getActivity());
+        }
     }
 
     public void updateShareListOnUi(ArrayList<CameraShareInterface> shareList)

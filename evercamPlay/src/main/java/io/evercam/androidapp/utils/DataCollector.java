@@ -112,15 +112,22 @@ public class DataCollector
      */
     public String getNetworkString()
     {
-        if(isConnectedWifi())
+        if(mContext != null)
         {
-            return mContext.getString(R.string.wifi);
+            if(isConnectedWifi())
+            {
+                return mContext.getString(R.string.wifi);
+            }
+            else if(isConnectedMobile())
+            {
+                return mContext.getString(R.string.three_g);
+            }
+            return mContext.getString(R.string.unknown);
         }
-        else if(isConnectedMobile())
+        else
         {
-            return mContext.getString(R.string.three_g);
+            return "";
         }
-        return mContext.getString(R.string.unknown);
     }
 
     /**
