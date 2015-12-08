@@ -3,9 +3,7 @@ package io.evercam.androidapp.feedback;
 import android.content.Context;
 import android.os.AsyncTask;
 
-import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomSnackbar;
-import io.evercam.androidapp.custom.CustomToast;
 
 public class IntercomSendMessageTask extends AsyncTask<Void, Void, Boolean>
 {

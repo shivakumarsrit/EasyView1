@@ -61,7 +61,6 @@ import io.evercam.PTZRelativeBuilder;
 import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
-import io.evercam.androidapp.FeedbackActivity;
 import io.evercam.androidapp.MainActivity;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;

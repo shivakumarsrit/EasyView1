@@ -1,15 +1,22 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.6.9</h5>
+<h5>1.7.0</h5>
 <ul>
-	<li>- Fixed the bug that unable to sign in with Email address<br/></li>
+	<li>- Added live support<br/></li>
+	<li>- Fixed the crash with demo camera live view<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.9</b>
+<ul>
+	<li><br/>- Fixed the bug of unable to sign in with Email address<br/></li>
 	<li>- Fixed text overlap in login page<br/></li>
 </ul>
 <br/>
 
-<h5>1.6.8</h5>
+<b>Version 1.6.8</b>
 <ul>
-	<li>- Now you can easily send us a feedback if we couldn't recognise your camera after scanning<br/></li>
+	<li><br/>- Now you can easily send us a feedback if we couldn't recognise your camera after scanning<br/></li>
 </ul>
 <br/>
 
