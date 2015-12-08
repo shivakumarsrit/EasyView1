@@ -125,6 +125,8 @@ public class ScanForCameraTask extends AsyncTask<Void, DiscoveredCamera, ArrayLi
                             @Override
                             public void onNonCameraDeviceFound(Device device)
                             {
+                                device.setExternalIp(externalIp);
+
                                 if(getScanActivity() != null)
                                 {
                                     getScanActivity().addNonCameraDevice(device);
