@@ -26,9 +26,8 @@
     void onSampleRequestFailed();
 }
 
-# Fix the MenuBuilder NoClassDefFoundError
--keep class !android.support.v7.internal.view.menu.*MenuBuilder*, android.support.v7.** { *; }
--keep interface android.support.v7.** { *; }
+# Fix the MenuBuilder NoClassDefFoundError https://code.google.com/p/android/issues/detail?id=78377
+-keep class !android.support.v7.view.menu.**,!android.support.design.internal.NavigationMenu,!android.support.design.internal.NavigationMenuPresenter,!android.support.design.internal.NavigationSubMenu,** {*;}
 
 # Keep line numbers for Crashlytics bug reports
 # Now it's included in the Splunk settings
