@@ -130,9 +130,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private boolean isProgressShowing = true;
     static boolean enableLogs = true;
 
-    private final int MIN_SLEEP_INTERVAL = 200; // interval between two requests of
+    private final int MIN_SLEEP_INTERVAL = 800; // interval between two requests of
     // images
-    private final int ADJUSTMENT_INTERVAL = 10; // how much milli seconds to increment
+    private final int ADJUSTMENT_INTERVAL = 100; // how much milli seconds to increment
     // or decrement on image failure or
     // success
     private int sleepInterval = MIN_SLEEP_INTERVAL + 290; // starting image
