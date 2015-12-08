@@ -1,15 +1,25 @@
 package io.evercam.androidapp;
 
 import android.app.Activity;
+import android.content.Context;
+import android.content.SharedPreferences;
+import android.os.AsyncTask;
+import android.os.Handler;
 import android.support.multidex.MultiDexApplication;
+import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesUtil;
+import com.google.android.gms.gcm.GoogleCloudMessaging;
 
+import java.io.IOException;
 import java.util.HashMap;
 
 import io.evercam.androidapp.feedback.IntercomApi;
+import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 
@@ -25,7 +35,7 @@ public class EvercamPlayApplication extends MultiDexApplication
         GLOBAL_TRACKER, // Tracker used by all the apps from a company.
     }
 
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+    HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
 
     public EvercamPlayApplication()
     {
@@ -43,9 +53,6 @@ public class EvercamPlayApplication extends MultiDexApplication
         IntercomApi.APP_ID = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
         IntercomApi.WEB_API_KEY = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_KEY);
         Intercom.initialize(this, IntercomApi.ANDROID_API_KEY, IntercomApi.APP_ID);
-
-        //Don't show any in-app messages
-        Intercom.client().setVisibility(Intercom.GONE);
 
 //            // Redirect URL, just for temporary testing
 //            API.URL = "http://proxy.evr.cm:9292/v1/";

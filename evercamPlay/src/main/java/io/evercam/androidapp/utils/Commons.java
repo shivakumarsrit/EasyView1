@@ -14,7 +14,7 @@ import java.util.Date;
 
 public class Commons
 {
-    static String TAG = "evercamplay-Commons";
+    static String TAG = "Commons";
     static boolean enableLogs = false;
 
     public static boolean isOnline(Context ctx)
@@ -32,21 +32,6 @@ public class Commons
             if(enableLogs) Log.e(TAG, ex.toString());
         }
         return false;
-    }
-
-    public static int getAppVersionCode(Context context)
-    {
-        try
-        {
-            PackageInfo packageInfo = context.getPackageManager().getPackageInfo(context
-                    .getPackageName(), 0);
-            return packageInfo.versionCode;
-        }
-        catch(NameNotFoundException e)
-        {
-            Log.e(TAG, e.toString());
-        }
-        return 0;
     }
 
     public static String readRawTextFile(int id, Context ctx)
