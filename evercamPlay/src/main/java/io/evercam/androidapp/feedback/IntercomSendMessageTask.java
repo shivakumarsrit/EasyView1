@@ -4,6 +4,7 @@ import android.content.Context;
 import android.os.AsyncTask;
 
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 
 public class IntercomSendMessageTask extends AsyncTask<Void, Void, Boolean>
@@ -40,8 +41,8 @@ public class IntercomSendMessageTask extends AsyncTask<Void, Void, Boolean>
     {
         if(success)
         {
-            CustomToast.showInCenterLong(context, R.string.msg_feedback_sent);
-            //Intercom.client().displayConversationsList();
+            //CustomToast.showInCenterLong(context, R.string.msg_feedback_sent);
+            CustomSnackbar.showFeedbackSent(context);
         }
     }
 
