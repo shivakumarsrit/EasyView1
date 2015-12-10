@@ -7,7 +7,6 @@
     <string name="hint_camera_model">Hikvision DS-2CD2332-I</string>
     <string name="btn_text_add_manually">Add camera manually</string>
     <string name="report_camera">This is a Camera</string>
-    <string name="show_all_devices">Show all devices</string>
 
     <!-- Scan result labels-->
     <string name="label_ip">IP</string>
