@@ -38,7 +38,7 @@ public class SharingListFragment extends ListFragment
     public void onListItemClick(ListView listView, View view, int position, long id)
     {
         //If list header is clicked
-        if(position == 0)
+        if(position == 0 && SharingActivity.evercamCamera != null)
         {
             SharingStatus status = new SharingStatus(SharingActivity.evercamCamera.isDiscoverable(),
                     SharingActivity.evercamCamera.isPublic());

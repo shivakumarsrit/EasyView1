@@ -226,7 +226,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
             launchSleepTimer();
 
-            setDisplayOriention();
+            setDisplayOrientation();
 
             /**
              * Init Gstreamer
@@ -1069,7 +1069,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         showImagesVideo = false;
     }
 
-    private void setDisplayOriention()
+    private void setDisplayOrientation()
     {
         /** Force landscape if it's enabled in settings */
         boolean forceLandscape = PrefsManager.isForceLandscape(this);
@@ -1586,7 +1586,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                         final DownloadImageTask downloadImageTask = new DownloadImageTask(evercamCamera
                                 .getCameraId());
 
-                        if(downloadStartCount - downloadEndCount < 9)
+                        if(downloadStartCount - downloadEndCount < 5)
                         {
                             VideoActivity.this.runOnUiThread(new Runnable()
                             {
@@ -1599,7 +1599,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                             });
                         }
 
-                        if(downloadStartCount - downloadEndCount > 9 && sleepInterval < 2000)
+                        if(downloadStartCount - downloadEndCount > 5 && sleepInterval < 2000)
                         {
                             sleepInterval += ADJUSTMENT_INTERVAL;
                             Log.d(TAG, "Sleep interval adjusted to: " + sleepInterval);
