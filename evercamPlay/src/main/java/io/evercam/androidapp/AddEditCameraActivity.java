@@ -52,6 +52,9 @@ import io.evercam.network.discovery.DiscoveredCamera;
 public class AddEditCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddEditCameraActivity";
+    private final String VENDOR_SPINNER_KEY = "vendorSpinnerSelectedItem";
+    private final String MODEL_SPINNER_KEY = "modelSpinnerSelectedItem";
+
     private LinearLayout cameraIdLayout;
     private TextView cameraIdTextView;
     private EditText cameraNameEdit;
@@ -72,6 +75,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private TreeMap<String, String> vendorMap;
     private TreeMap<String, String> vendorMapIdAsKey;
     private TreeMap<String, String> modelMap;
+    private int vendorSavedSelectedPosition = 0;
+    private int modelSavedSelectedPosition = 0;
 
     private DiscoveredCamera discoveredCamera;
     private EvercamCamera cameraEdit;
@@ -117,6 +122,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
 
         fillEditCameraDetails(cameraEdit);
+
+        if(savedInstanceState != null)
+        {
+            vendorSavedSelectedPosition = savedInstanceState.getInt(VENDOR_SPINNER_KEY);
+            modelSavedSelectedPosition = savedInstanceState.getInt(MODEL_SPINNER_KEY);
+        }
     }
 
     @Override
@@ -135,6 +146,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                 return true;
         }
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        /* Save selected vendor & model before screen rotating */
+        outState.putInt(VENDOR_SPINNER_KEY, vendorSpinner.getSelectedItemPosition());
+        outState.putInt(MODEL_SPINNER_KEY, modelSpinner.getSelectedItemPosition());
     }
 
     private void showConfirmQuitIfAddingCamera()
@@ -958,6 +979,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         {
             vendorSpinner.setSelection(selectedPosition);
         }
+        /* If vendor state are saved but haven't been selected */
+        else if (vendorSavedSelectedPosition != 0)
+        {
+            vendorSpinner.setSelection(vendorSavedSelectedPosition);
+            vendorSavedSelectedPosition = 0; //Then reset it
+        }
     }
 
     private void buildModelSpinner(ArrayList<Model> modelList, String selectedModel)
@@ -1020,6 +1047,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         if(selectedPosition != 0)
         {
             modelSpinner.setSelection(selectedPosition);
+        }
+        /* If vendor state are saved but haven't been selected */
+        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1)
+        {
+            modelSpinner.setSelection(modelSavedSelectedPosition);
+            modelSavedSelectedPosition = 0; // Then reset it
         }
         else
         {
