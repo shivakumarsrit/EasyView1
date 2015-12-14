@@ -242,18 +242,24 @@ public class MainActivity extends ParentAppCompatActivity
                 {
                     Log.d("GCM_ISSUE", "Error :" + ex.getMessage());
                     //retry the registration after delay
-                    new Handler().postDelayed(new Runnable()
-                    {
-                        @Override public void run()
+                    runOnUiThread(new Runnable() {
+                        @Override
+                        public void run()
                         {
-                            registerInBackground();
+                            new Handler().postDelayed(new Runnable()
+                            {
+                                @Override public void run()
+                                {
+                                    registerInBackground();
+                                }
+                            }, retryTime);
+                            //increase the time of wait period
+                            if (retryTime < MAX_RETRY)
+                            {
+                                retryTime *=2;
+                            }
                         }
-                    }, retryTime);
-                    //increase the time of wait period
-                    if (retryTime < MAX_RETRY)
-                    {
-                        retryTime *=2;
-                    }
+                    });
                 }
                 return null;
             }
