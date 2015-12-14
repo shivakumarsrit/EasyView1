@@ -30,6 +30,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
+import java.util.concurrent.RunnableFuture;
 
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
@@ -58,7 +59,6 @@ public class ScanActivity extends ParentAppCompatActivity
     private ListView cameraListView;
     private MenuItem cancelMenuItem;
     private MenuItem showAllDeviceMenu;
-    private Button showAllDeviceButton;
 
     private ScanResultAdapter deviceAdapter;
     public ArrayList<DiscoveredCamera> discoveredCameras = new ArrayList<>();
@@ -89,7 +89,7 @@ public class ScanActivity extends ParentAppCompatActivity
         Button showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
 
         View footerView = getLayoutInflater().inflate(R.layout.scan_list_footer, cameraListView, false);
-        showAllDeviceButton = (Button) footerView.findViewById(R.id.button_all_devices_in_list);
+        Button showAllDeviceFooterButton = (Button) footerView.findViewById(R.id.button_all_devices_in_list);
         cameraListView.addFooterView(footerView);
 
         deviceAdapter = new ScanResultAdapter(this, R.layout.scan_list_layout, discoveredCameras,
@@ -128,7 +128,7 @@ public class ScanActivity extends ParentAppCompatActivity
             }
         });
 
-        showAllDeviceButton.setOnClickListener(new OnClickListener() {
+        showAllDeviceFooterButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v)
             {
@@ -372,9 +372,15 @@ public class ScanActivity extends ParentAppCompatActivity
         }
     }
 
-    public void addNonCameraDevice(Device device)
+    public void addNonCameraDevice(final Device device)
     {
-        nonCameraDevices.add(device);
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                nonCameraDevices.add(device);
+            }
+        });
     }
 
     public void addNewCameraToResultList(DiscoveredCamera discoveredCamera)

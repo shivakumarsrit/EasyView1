@@ -980,7 +980,9 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             vendorSpinner.setSelection(selectedPosition);
         }
         /* If vendor state are saved but haven't been selected */
-        else if (vendorSavedSelectedPosition != 0)
+        else if (vendorSavedSelectedPosition != 0
+                && vendorSpinner.getCount() > 1
+                && vendorSavedSelectedPosition < vendorSpinner.getCount())
         {
             vendorSpinner.setSelection(vendorSavedSelectedPosition);
             vendorSavedSelectedPosition = 0; //Then reset it
@@ -1049,7 +1051,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             modelSpinner.setSelection(selectedPosition);
         }
         /* If vendor state are saved but haven't been selected */
-        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1)
+        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
+                && modelSavedSelectedPosition < modelSpinner.getCount())
         {
             modelSpinner.setSelection(modelSavedSelectedPosition);
             modelSavedSelectedPosition = 0; // Then reset it

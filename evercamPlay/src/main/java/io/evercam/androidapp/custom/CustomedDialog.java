@@ -508,9 +508,14 @@ public class CustomedDialog
                             @Override
                             public void run()
                             {
-                                String modelName = String.valueOf(input);
-                                String message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
-                                IntercomSendMessageTask.launch(context, AppData.defaultUser.getUsername(), message);
+                                if(AppData.defaultUser != null)
+                                {
+                                    String modelName = String.valueOf(input);
+                                    String message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
+
+                                    IntercomSendMessageTask.launch(context, AppData.defaultUser
+                                            .getUsername(), message);
+                                }
                             }
                         }).start();
                     }
