@@ -2,8 +2,6 @@ package io.evercam.androidapp.utils;
 
 public final class Constants
 {
-    public static final boolean isAppTrackingEnabled = true;
-
     public static final String KEEN_COLLECTION_LIST_LOADING_TIME = "Camera List Loading Time";
     public static final String KEEN_COLLECTION_STREAM_LOADING_TIME = "Camera Live view Loading "
             + "Time";
@@ -13,9 +11,6 @@ public final class Constants
     public static final String KEEN_COLLECTION_TEST_SNAPSHOT = "Test Snapshot";
     public static final String KEEN_COLLECTION_SCANNING_METRIC = "Scanning Metrics";
     public static final String KEEN_COLLECTION_DISCOVERED_CAMERAS = "Discovered Cameras";
-
-    public static final String ErrorMessageNoConnectivity = "Connectivity lost. Please check " +
-            "network connectivity.";
 
     /**
      * Values of start activity for result

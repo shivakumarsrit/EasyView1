@@ -11,11 +11,9 @@ import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
 import com.logentries.android.AndroidLogger;
 import com.nineoldandroids.view.ViewHelper;
-import com.splunk.mint.Mint;
 
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
-import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.android.sdk.identity.Registration;
@@ -35,8 +33,6 @@ public class ParentAppCompatActivity extends AppCompatActivity
 
         propertyReader = new PropertyReader(this);
 
-        initBugSense();
-
         mixpanelHelper = new MixpanelHelper(this, propertyReader);
     }
 
@@ -44,28 +40,12 @@ public class ParentAppCompatActivity extends AppCompatActivity
     protected void onStart()
     {
         super.onStart();
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.startSession(this);
-            }
-        }
     }
 
     @Override
     protected void onStop()
     {
         super.onStop();
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.closeSession(this);
-            }
-        }
 
         getMixpanel().flush();
     }
@@ -85,38 +65,12 @@ public class ParentAppCompatActivity extends AppCompatActivity
         return mixpanelHelper;
     }
 
-    private void initBugSense()
-    {
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                String bugSenseCode = propertyReader.getPropertyStr(PropertyReader
-                        .KEY_SPLUNK_MINT);
-                Mint.initAndStartSession(this,bugSenseCode);
-            }
-        }
-    }
-
-    public static void sendToMint(Exception e)
-    {
-        if(Constants.isAppTrackingEnabled)
-        {
-            Mint.logException(e);
-        }
-    }
-
     public void sendToLogentries(AndroidLogger logger, String message)
     {
         if(logger != null)
         {
             logger.info(message);
         }
-    }
-
-    public static void sendWithMsgToMint(String messageName, String message, Exception e)
-    {
-        Mint.logExceptionMessage(messageName, message, e);
     }
 
     public static void registerUserWithIntercom(AppUser user)

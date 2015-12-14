@@ -113,12 +113,6 @@ public class CameraLayout extends LinearLayout
         {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            ParentAppCompatActivity.sendToMint(e);
-        }
     }
 
     public Rect getOfflineIconBounds()

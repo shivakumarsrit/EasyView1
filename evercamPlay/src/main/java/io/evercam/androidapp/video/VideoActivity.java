@@ -396,12 +396,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString());
-
-            sendToMint(e);
-        }
     }
 
     // When activity gets focused again
@@ -733,8 +727,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         catch(Exception e)
         {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            sendToMint(e);
         }
         return true;
     }
@@ -809,48 +801,38 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private void setCameraForPlaying(EvercamCamera evercamCamera)
     {
-        try
+        VideoActivity.evercamCamera = evercamCamera;
+
+        showImagesVideo = false;
+
+        downloadStartCount = 0;
+        downloadEndCount = 0;
+        isProgressShowing = false;
+
+        startDownloading = false;
+        latestStartImageTime = 0;
+        successiveFailureCount = 0;
+        isShowingFailureMessage = false;
+
+        optionsActivityStarted = false;
+
+        showAllControlMenus(false);
+
+        paused = false;
+        end = false;
+
+        surfaceView.setVisibility(View.GONE);
+        imageView.setVisibility(View.VISIBLE);
+        showProgressView();
+
+        loadImageFromCache(VideoActivity.evercamCamera);
+
+        if(!evercamCamera.isOffline())
         {
-            VideoActivity.evercamCamera = evercamCamera;
-
-            showImagesVideo = false;
-
-            downloadStartCount = 0;
-            downloadEndCount = 0;
-            isProgressShowing = false;
-
-            startDownloading = false;
-            latestStartImageTime = 0;
-            successiveFailureCount = 0;
-            isShowingFailureMessage = false;
-
-            optionsActivityStarted = false;
-
-            showAllControlMenus(false);
-
-            paused = false;
-            end = false;
-
-            surfaceView.setVisibility(View.GONE);
-            imageView.setVisibility(View.VISIBLE);
-            showProgressView();
-
-            loadImageFromCache(VideoActivity.evercamCamera);
-
-            if(!evercamCamera.isOffline())
-            {
-                startDownloading = true;
-            }
-
-            showProgressView();
+            startDownloading = true;
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-            sendToMint(e);
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(VideoActivity.this);
-        }
+
+        showProgressView();
     }
 
     // Loads image from cache. First image gets loaded correctly and hence we
@@ -1015,37 +997,29 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     @Override
     public void onConfigurationChanged(Configuration newConfig)
     {
-        try
+        super.onConfigurationChanged(newConfig);
+
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+        getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+        int orientation = newConfig.orientation;
+        if(orientation == Configuration.ORIENTATION_PORTRAIT)
         {
-            super.onConfigurationChanged(newConfig);
-
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
-            int orientation = newConfig.orientation;
-            if(orientation == Configuration.ORIENTATION_PORTRAIT)
-            {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
-                        WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-                showToolbar();
-                setOpaqueTitleBackground();
-            }
-            else
-            {
-                getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
-                        .LayoutParams.FLAG_FULLSCREEN);
-
-                setGradientTitleBackground();
-                if(!paused && !end && !isProgressShowing) hideToolbar();
-                else showToolbar();
-            }
-
-            this.invalidateOptionsMenu();
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
+                    WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
+            showToolbar();
+            setOpaqueTitleBackground();
         }
-        catch(Exception e)
+        else
         {
-            EvercamPlayApplication.sendCaughtException(this, e);
-            sendToMint(e);
+            getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
+                    .LayoutParams.FLAG_FULLSCREEN);
+
+            setGradientTitleBackground();
+            if(!paused && !end && !isProgressShowing) hideToolbar();
+            else showToolbar();
         }
+
+        this.invalidateOptionsMenu();
     }
 
     private void showMediaFailureDialog()
@@ -1624,7 +1598,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 {
                     downloadStartCount--;
                     Log.e(TAG, ex.toString() + "-::::-" + Log.getStackTraceString(ex));
-                    sendToMint(ex);
                 }
                 try
                 {
@@ -1807,7 +1780,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             catch(Exception e)
             {
                 if(enableLogs) Log.e(TAG, e.toString());
-                sendToMint(e);
             }
 
             startDownloading = true;

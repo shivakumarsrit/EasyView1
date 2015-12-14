@@ -542,8 +542,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
 
-            sendToMint(e);
-
             EvercamPlayApplication.sendCaughtException(this, e);
             CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
         }
@@ -588,8 +586,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         catch(Exception e)
         {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            sendToMint(e);
 
             EvercamPlayApplication.sendCaughtException(this, e);
             CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
@@ -688,8 +684,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         catch(Exception e)
         {
             Log.e(TAG, e.toString(), e);
-
-            sendToMint(e);
 
             EvercamPlayApplication.sendCaughtException(this, e);
             CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
