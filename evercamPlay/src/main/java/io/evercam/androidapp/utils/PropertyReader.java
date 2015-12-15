@@ -49,7 +49,7 @@ public class PropertyReader
         }
         catch(Exception e)
         {
-            Log.e(TAG, e.getMessage());
+            e.printStackTrace();
         }
         return properties;
     }
