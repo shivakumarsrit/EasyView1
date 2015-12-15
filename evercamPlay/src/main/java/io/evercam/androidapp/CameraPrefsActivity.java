@@ -1,27 +1,21 @@
 package io.evercam.androidapp;
 
-import android.content.Intent;
 import android.os.Bundle;
+import android.preference.ListPreference;
 import android.preference.Preference;
 import android.preference.Preference.OnPreferenceChangeListener;
-import android.preference.PreferenceActivity;
 import android.preference.PreferenceFragment;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
-
-import com.splunk.mint.Mint;
 
 import java.util.ArrayList;
 
-import io.evercam.androidapp.custom.ThemedListPreference;
-import io.evercam.androidapp.utils.Constants;
-import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
-import io.evercam.androidapp.utils.PropertyReader;
 
-public class CameraPrefsActivity extends PreferenceActivity
+public class CameraPrefsActivity extends AppCompatActivity
 {
     private static int screenWidth = 0;
-    private PropertyReader propertyReader;
     private static final String TAG = "CameraPrefsActivity";
 
     @Override
@@ -29,57 +23,18 @@ public class CameraPrefsActivity extends PreferenceActivity
     {
         super.onCreate(savedInstanceState);
 
-        propertyReader = new PropertyReader(this);
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader
-                    .KEY_SPLUNK_MINT))
-            {
-                String bugSenseCode = propertyReader.getPropertyStr(PropertyReader
-                        .KEY_SPLUNK_MINT);
-                Mint.initAndStartSession(this, bugSenseCode);
-            }
-        }
+        setContentView(R.layout.activity_settings_layout);
 
-        if(this.getActionBar() != null)
-        {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        Toolbar toolbar = (Toolbar) findViewById(R.id.tool_bar);
+        toolbar.setBackgroundColor(getResources().getColor(R.color.dark_gray_background));
+        setSupportActionBar(toolbar);
+        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
         screenWidth = CamerasActivity.readScreenWidth(this);
 
-        getFragmentManager().beginTransaction().replace(android.R.id.content,
+        getFragmentManager().beginTransaction().replace(R.id.content_frame,
                 new MyPreferenceFragment()).commit();
         this.setDefaultKeyMode(DEFAULT_KEYS_DISABLE);
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.startSession(this);
-            }
-        }
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.closeSession(this);
-            }
-        }
     }
 
     @Override
@@ -118,7 +73,6 @@ public class CameraPrefsActivity extends PreferenceActivity
             addPreferencesFromResource(R.xml.main_preference);
             setCameraNumbersForScreen(screenWidth);
             setUpSleepTime();
-            fillAbout();
         }
 
         private void setCameraNumbersForScreen(int screenWidth)
@@ -139,7 +93,7 @@ public class CameraPrefsActivity extends PreferenceActivity
             }
             CharSequence[] charNumberValues = cameraNumberArrayList.toArray(new
                     CharSequence[cameraNumberArrayList.size()]);
-            final ThemedListPreference interfaceList = (ThemedListPreference)
+            final ListPreference interfaceList = (ListPreference)
                     getPreferenceManager().findPreference(PrefsManager.KEY_CAMERA_PER_ROW);
             interfaceList.setEntries(charNumberValues);
             interfaceList.setEntryValues(charNumberValues);
@@ -157,7 +111,7 @@ public class CameraPrefsActivity extends PreferenceActivity
 
         private void setUpSleepTime()
         {
-            final ThemedListPreference sleepListPrefs = (ThemedListPreference)
+            final ListPreference sleepListPrefs = (ListPreference)
                     getPreferenceManager().findPreference(PrefsManager.KEY_AWAKE_TIME);
             sleepListPrefs.setSummary(getSummary(sleepListPrefs.getEntry() + ""));
             sleepListPrefs.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
@@ -169,26 +123,6 @@ public class CameraPrefsActivity extends PreferenceActivity
                     String entry = sleepListPrefs.getEntries()[index].toString();
                     sleepListPrefs.setSummary(getSummary(entry));
                     return true;
-                }
-            });
-        }
-
-        private void fillAbout()
-        {
-            final Preference versionPrefs = getPreferenceManager().findPreference(PrefsManager
-                    .KEY_VERSION);
-            final Preference aboutPrefs = getPreferenceManager().findPreference(PrefsManager
-                    .KEY_ABOUT);
-            versionPrefs.setSummary(new DataCollector(this.getActivity()).getAppVersion());
-            aboutPrefs.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener()
-            {
-                @Override
-                public boolean onPreferenceClick(Preference preference)
-                {
-                    Intent aboutIntent = new Intent(getActivity(), AboutWebActivity.class);
-                    aboutIntent.putExtra(Constants.BUNDLE_KEY_URL, getString(R.string.evercam_url));
-                    startActivity(aboutIntent);
-                    return false;
                 }
             });
         }

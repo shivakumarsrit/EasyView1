@@ -8,7 +8,7 @@ import android.webkit.WebViewClient;
 
 import io.evercam.androidapp.custom.CustomProgressDialog;
 
-public abstract class WebActivity  extends ParentActivity
+public abstract class WebActivity  extends ParentAppCompatActivity
 {
     private final String TAG = "WebActivity";
 
@@ -19,11 +19,6 @@ public abstract class WebActivity  extends ParentActivity
     protected void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-
-        if(this.getActionBar() != null)
-        {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
 
         progressDialog = new CustomProgressDialog(this);
 

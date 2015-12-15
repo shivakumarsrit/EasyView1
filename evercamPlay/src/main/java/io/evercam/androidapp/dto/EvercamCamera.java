@@ -22,10 +22,11 @@ public class EvercamCamera
 
     private String cameraId = "";
     private String name = "";
-    private String owner = ""; // The user's user name
+    private String user = ""; // The user's user name
     private String realOwner = "";// The owner of camera
     private boolean canEdit = false;
     private boolean canDelete = false;
+    private String rights = "";
     private String username = "";
     private String password = "";
     private String timezone = "";
@@ -48,6 +49,9 @@ public class EvercamCamera
     private int externalHttp = 0;
     private int externalRtsp = 0;
 
+    private boolean isPublic;
+    private boolean isDiscoverable;
+
     public EvercamCamera()
     {
 
@@ -62,9 +66,10 @@ public class EvercamCamera
             name = camera.getName();
             if(AppData.defaultUser != null)
             {
-                owner = AppData.defaultUser.getUsername();
+                username = AppData.defaultUser.getUsername();
             }
             realOwner = camera.getOwner();
+            rights = camera.getRights().toString();
             canEdit = camera.getRights().canEdit();
             canDelete = camera.getRights().canDelete();
             if(camera.hasCredentials())
@@ -96,6 +101,9 @@ public class EvercamCamera
             externalHttp = camera.getExternalHttpPort();
             externalRtsp = camera.getExternalRtspPort();
             thumbnailUrl = camera.getThumbnailUrl();
+
+            isDiscoverable = camera.isDiscoverable();
+            isPublic = camera.isPublic();
         }
         catch(EvercamException e)
         {
@@ -182,9 +190,9 @@ public class EvercamCamera
         return vendor;
     }
 
-    public String getOwner()
+    public String getUser()
     {
-        return owner;
+        return user;
     }
 
     public String getRealOwner()
@@ -267,9 +275,9 @@ public class EvercamCamera
         this.vendor = vendor;
     }
 
-    public void setOwner(String owner)
+    public void setUser(String user)
     {
-        this.owner = owner;
+        this.user = user;
     }
 
     public void setRealOwner(String realOwner)
@@ -370,6 +378,16 @@ public class EvercamCamera
     public int getExternalRtsp()
     {
         return externalRtsp;
+    }
+
+    public String getRights()
+    {
+        return rights;
+    }
+
+    public void setRights(String rights)
+    {
+        this.rights = rights;
     }
 
     public String getJpgPath()
@@ -477,6 +495,37 @@ public class EvercamCamera
         return !getModel().isEmpty();
     }
 
+
+    public boolean isDiscoverable()
+    {
+        return isDiscoverable;
+    }
+
+    public void setIsDiscoverable(boolean isDiscoverable)
+    {
+        this.isDiscoverable = isDiscoverable;
+    }
+
+    public int getDiscoverableInt()
+    {
+        return isDiscoverable() ? 1 : 0;
+    }
+
+    public boolean isPublic()
+    {
+        return isPublic;
+    }
+
+    public void setIsPublic(boolean isPublic)
+    {
+        this.isPublic = isPublic;
+    }
+
+    public  int getPublicInt()
+    {
+        return isPublic ? 1 : 0;
+    }
+
     @Override
     public boolean equals(Object obj)
     {
@@ -488,13 +537,14 @@ public class EvercamCamera
                 internalRtspUrl.equals(other.internalRtspUrl) && externalSnapshotUrl.equals(other
                 .externalSnapshotUrl) && internalSnapshotUrl.equals(other.internalSnapshotUrl) &&
                 mac.equals(other.mac) && model.equals(other.model) && name.equals(other.name) &&
-                owner.equals(other.owner) && password.equals(other.password) && timezone.equals
+                user.equals(other.user) && password.equals(other.password) && timezone.equals
                 (other.timezone) && username.equals(other.username) && vendor.equals(other
                 .vendor) && internalHost.equals(other.internalHost) && externalHost.equals(other
                 .externalHost) && internalHttp == other.internalHttp && externalHttp == other
                 .externalHttp && internalRtsp == other.internalRtsp && externalRtsp == other
                 .externalRtsp && realOwner.equals(other.realOwner) && canEdit == other.canEdit &&
-                canDelete == other.canDelete)
+                canDelete == other.canDelete && status == other.status && rights == other.rights &&
+                isPublic == other.isPublic && isDiscoverable == other.isDiscoverable)
         {
             return true;
         }
@@ -505,9 +555,9 @@ public class EvercamCamera
     public String toString()
     {
         return "EvercamCamera [loadingStatus=" + loadingStatus + ", id=" + id + ", " +
-                "cameraId=" + cameraId + ", name=" + name + ", owner=" + owner + ", " +
+                "cameraId=" + cameraId + ", name=" + name + ", user=" + user + ", " +
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +
-                "canDelete=" + canDelete + ", username=" + username + ", " +
+                "canDelete=" + canDelete + ", rights=" + rights + ", username=" + username + ", " +
                 "password=" + password + ", timezone=" + timezone + ", vendor=" + vendor + ", " +
                 "model=" + model + ", mac=" + mac + ", externalSnapshotUrl=" +
                 externalSnapshotUrl + ", internalSnapshotUrl=" + internalSnapshotUrl + ", " +

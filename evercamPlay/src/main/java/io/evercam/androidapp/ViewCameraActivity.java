@@ -19,7 +19,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class ViewCameraActivity extends ParentActivity
+public class ViewCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "ViewCameraActivity";
     private LinearLayout canEditDetailLayout;
@@ -52,15 +52,11 @@ public class ViewCameraActivity extends ParentActivity
 
         setContentView(R.layout.activity_view_camera);
 
-        if(this.getActionBar() != null)
-        {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
+        setUpDefaultToolbar();
 
         // Initial UI elements
         initialScreen();
         fillCameraDetails(evercamCamera);
-
     }
 
     @Override
@@ -91,7 +87,7 @@ public class ViewCameraActivity extends ParentActivity
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item)
+    public boolean onOptionsItemSelected(MenuItem item)
     {
         int itemId = item.getItemId();
 
@@ -110,17 +106,17 @@ public class ViewCameraActivity extends ParentActivity
                 @Override
                 public void onClick(DialogInterface warningDialog, int which)
                 {
-                    if(evercamCamera.canDelete())
+                    if(evercamCamera != null)
                     {
-                        new DeleteCameraTask(evercamCamera.getCameraId(),
-                                ViewCameraActivity.this, EnumConstants.DeleteType
-                                .DELETE_OWNED).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR);
-                    }
-                    else
-                    {
-                        new DeleteCameraTask(evercamCamera.getCameraId(),
-                                ViewCameraActivity.this, EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        if(evercamCamera.canDelete())
+                        {
+                            new DeleteCameraTask(evercamCamera.getCameraId(), ViewCameraActivity.this, EnumConstants.DeleteType.DELETE_OWNED).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+                        }
+                        else
+                        {
+                            new DeleteCameraTask(evercamCamera.getCameraId(), ViewCameraActivity.this, EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
                     }
                 }
             }, R.string.msg_confirm_remove_camera).show();

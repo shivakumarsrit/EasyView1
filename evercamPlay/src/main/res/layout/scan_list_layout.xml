@@ -3,9 +3,10 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_marginLeft="2sp"
-                android:layout_marginTop="2sp"
+                android:layout_marginTop="5sp"
                 android:layout_marginRight="2sp"
-                android:paddingBottom="2sp">
+                android:paddingBottom="10sp"
+                style="@style/SelectableItemBackgroundOnLightTheme">
 
     <RelativeLayout
         android:id="@+id/img_layout"
@@ -19,15 +20,7 @@
             android:layout_height="75dip"
             android:layout_alignParentLeft="true"
             android:background="@android:color/white"
-            android:visibility="gone"/>
-
-        <ProgressBar
-            android:id="@+id/progress"
-            style="?android:attr/progressBarStyle"
-            android:layout_width="85dip"
-            android:layout_height="75dip"
-            android:layout_gravity="center"
-            android:visibility="visible"/>
+            android:visibility="invisible"/>
     </RelativeLayout>
 
     <LinearLayout

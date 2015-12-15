@@ -22,7 +22,7 @@ public class DataCollector
     /**
      * Return app version name, could be an empty string
      */
-    public String getAppVersion()
+    public String getAppVersionName()
     {
         String version = "";
         if(mContext != null)
@@ -40,6 +40,29 @@ public class DataCollector
             }
         }
         return version;
+    }
+
+    /**
+     * Return app version code, return 0 when exception happens
+     */
+    public int getAppVersionCode()
+    {
+        int versionCode = 0;
+        if(mContext != null)
+        {
+            PackageInfo packageInfo;
+            try
+            {
+                packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
+
+                versionCode = packageInfo.versionCode;
+            }
+            catch(NameNotFoundException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return versionCode;
     }
 
     /**
@@ -89,15 +112,22 @@ public class DataCollector
      */
     public String getNetworkString()
     {
-        if(isConnectedWifi())
+        if(mContext != null)
         {
-            return mContext.getString(R.string.wifi);
+            if(isConnectedWifi())
+            {
+                return mContext.getString(R.string.wifi);
+            }
+            else if(isConnectedMobile())
+            {
+                return mContext.getString(R.string.three_g);
+            }
+            return mContext.getString(R.string.unknown);
         }
-        else if(isConnectedMobile())
+        else
         {
-            return mContext.getString(R.string.three_g);
+            return "";
         }
-        return mContext.getString(R.string.unknown);
     }
 
     /**
@@ -105,9 +135,13 @@ public class DataCollector
      */
     private NetworkInfo getNetworkInfo()
     {
-        ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService
-                (Context.CONNECTIVITY_SERVICE);
-        return connectivityManager.getActiveNetworkInfo();
+        if(mContext != null)
+        {
+            ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
+
+            return connectivityManager.getActiveNetworkInfo();
+        }
+        return null;
     }
 
     private static String capitalize(String s)

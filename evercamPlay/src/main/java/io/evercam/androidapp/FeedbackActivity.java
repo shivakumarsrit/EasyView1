@@ -15,7 +15,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.FeedbackSender;
 import io.evercam.androidapp.utils.Constants;
 
-public class FeedbackActivity extends ParentActivity
+public class FeedbackActivity extends ParentAppCompatActivity
 {
     private final String TAG = "FeedbackActivity";
     private EditText feedbackEditText;
@@ -26,12 +26,9 @@ public class FeedbackActivity extends ParentActivity
     {
         super.onCreate(savedInstanceState);
 
-        if(this.getActionBar() != null)
-        {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
-        }
-
         setContentView(R.layout.activity_feedback);
+
+        setUpDefaultToolbar();
 
         Bundle bundle = getIntent().getExtras();
         if(bundle != null)

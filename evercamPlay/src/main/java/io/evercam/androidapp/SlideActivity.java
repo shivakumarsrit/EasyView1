@@ -17,7 +17,7 @@ import java.util.List;
 
 import io.evercam.androidapp.utils.Constants;
 
-public class SlideActivity extends ParentActivity implements OnPageChangeListener
+public class SlideActivity extends ParentAppCompatActivity implements OnPageChangeListener
 {
     private final String TAG = "SlideActivity";
 

@@ -1,10 +1,14 @@
 package io.evercam.androidapp.recordings;
 
 import android.content.Context;
+import android.os.Build;
 import android.util.AttributeSet;
+import android.webkit.WebView;
 
 import io.evercam.API;
+
 import io.evercam.androidapp.BaseWebView;
+import io.evercam.androidapp.R;
 import io.evercam.androidapp.WebActivity;
 
 public class RecordingWebView extends BaseWebView
@@ -27,7 +31,22 @@ public class RecordingWebView extends BaseWebView
         enableJavascript(true);
         enableChromeDebugging();
 
+        //Enable zooming in web view
+        getSettings().setBuiltInZoomControls(true);
+        getSettings().setDisplayZoomControls(false);
+
+        //Append custom user agent
+        String userAgent = getSettings().getUserAgentString() + " "
+                + webActivity.getString(R.string.user_agent_suffix);
+        getSettings().setUserAgentString(userAgent);
+
         setWebViewClient(webActivity.getWebViewClient());
+
+        //Enable DevTool debugging
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
+        {
+            WebView.setWebContentsDebuggingEnabled(true);
+        }
 
         //TODO remove <body style='margin:0;padding:0;'>, it's here only to overwrite the widget
         // margin

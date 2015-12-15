@@ -35,7 +35,7 @@ public abstract class FeedbackItem
     private void setDeviceData()
     {
         DataCollector dataCollector = new DataCollector(context);
-        this.app_version = dataCollector.getAppVersion();
+        this.app_version = dataCollector.getAppVersionName();
         this.network = dataCollector.getNetworkString();
         this.device = DataCollector.getDeviceName();
         this.android_version = DataCollector.getAndroidVersion();

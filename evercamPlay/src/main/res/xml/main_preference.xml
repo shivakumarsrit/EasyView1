@@ -1,13 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
-
-    <PreferenceCategory android:title="@string/category_general">
-        <io.evercam.androidapp.custom.ThemedListPreference
+        <ListPreference
             android:defaultValue="2"
             android:key="lstgridcamerasperrow"
             android:title="@string/title_camera_per_row"/>
 
-        <io.evercam.androidapp.custom.ThemedListPreference
+        <ListPreference
             android:defaultValue="0"
             android:key="prefsAwakeTime"
             android:entries="@array/prefs_sleep_entries"
@@ -22,15 +20,5 @@
         <CheckBoxPreference
             android:key="prefsShowOfflineCameras"
             android:title="@string/show_offline_camera"
-            android:defaultValue="false"/>
-    </PreferenceCategory>
-
-    <PreferenceCategory android:title="@string/category_about">
-        <Preference
-            android:key="version_preference"
-            android:title="@string/prefs_title_version"/>
-        <Preference
-            android:key="about_preference"
-            android:title="@string/prefs_title_about"/>
-    </PreferenceCategory>
+            android:defaultValue="true"/>
 </PreferenceScreen>

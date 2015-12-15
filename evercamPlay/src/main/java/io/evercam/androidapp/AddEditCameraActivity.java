@@ -3,6 +3,8 @@ package io.evercam.androidapp;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.text.Editable;
+import android.text.TextWatcher;
 import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
@@ -16,6 +18,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.Spinner;
 import android.widget.TextView;
+
+import com.squareup.picasso.Picasso;
 
 import java.util.ArrayList;
 import java.util.Collection;
@@ -37,6 +41,7 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PatchCameraTask;
+import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
@@ -44,9 +49,12 @@ import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.video.VideoActivity;
 import io.evercam.network.discovery.DiscoveredCamera;
 
-public class AddEditCameraActivity extends ParentActivity
+public class AddEditCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddEditCameraActivity";
+    private final String VENDOR_SPINNER_KEY = "vendorSpinnerSelectedItem";
+    private final String MODEL_SPINNER_KEY = "modelSpinnerSelectedItem";
+
     private LinearLayout cameraIdLayout;
     private TextView cameraIdTextView;
     private EditText cameraNameEdit;
@@ -59,12 +67,16 @@ public class AddEditCameraActivity extends ParentActivity
     private EditText externalRtspEdit;
     private EditText jpgUrlEdit;
     private EditText rtspUrlEdit;
+    private TextView mHttpStatusTextView;
+    private TextView mRtspStatusTextView;
     private LinearLayout jpgUrlLayout;
     private LinearLayout rtspUrlLayout;
     private Button addEditButton;
     private TreeMap<String, String> vendorMap;
     private TreeMap<String, String> vendorMapIdAsKey;
     private TreeMap<String, String> modelMap;
+    private int vendorSavedSelectedPosition = 0;
+    private int modelSavedSelectedPosition = 0;
 
     private DiscoveredCamera discoveredCamera;
     private EvercamCamera cameraEdit;
@@ -74,6 +86,10 @@ public class AddEditCameraActivity extends ParentActivity
     {
         super.onCreate(savedInstanceState);
 
+        setContentView(R.layout.activity_add_camera);
+
+        setUpDefaultToolbar();
+
         Bundle bundle = getIntent().getExtras();
         // Edit Camera
         if(bundle != null && bundle.containsKey(Constants.KEY_IS_EDIT))
@@ -82,7 +98,7 @@ public class AddEditCameraActivity extends ParentActivity
                     getString(R.string.screen_edit_camera));
             cameraEdit = VideoActivity.evercamCamera;
 
-            getActionBar().setTitle(R.string.title_edit_camera);
+            updateTitleText(R.string.title_edit_camera);
         }
         else
         // Add Camera
@@ -91,13 +107,6 @@ public class AddEditCameraActivity extends ParentActivity
 
             // Get camera object from video activity before initial screen
             discoveredCamera = (DiscoveredCamera) getIntent().getSerializableExtra("camera");
-        }
-
-        setContentView(R.layout.activity_add_camera);
-
-        if(this.getActionBar() != null)
-        {
-            this.getActionBar().setDisplayHomeAsUpEnabled(true);
         }
 
         // Initial UI elements
@@ -113,6 +122,12 @@ public class AddEditCameraActivity extends ParentActivity
         }
 
         fillEditCameraDetails(cameraEdit);
+
+        if(savedInstanceState != null)
+        {
+            vendorSavedSelectedPosition = savedInstanceState.getInt(VENDOR_SPINNER_KEY);
+            modelSavedSelectedPosition = savedInstanceState.getInt(MODEL_SPINNER_KEY);
+        }
     }
 
     @Override
@@ -122,7 +137,7 @@ public class AddEditCameraActivity extends ParentActivity
     }
 
     @Override
-    public boolean onMenuItemSelected(int featureId, MenuItem item)
+    public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
         {
@@ -131,6 +146,16 @@ public class AddEditCameraActivity extends ParentActivity
                 return true;
         }
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        /* Save selected vendor & model before screen rotating */
+        outState.putInt(VENDOR_SPINNER_KEY, vendorSpinner.getSelectedItemPosition());
+        outState.putInt(MODEL_SPINNER_KEY, modelSpinner.getSelectedItemPosition());
     }
 
     private void showConfirmQuitIfAddingCamera()
@@ -173,6 +198,8 @@ public class AddEditCameraActivity extends ParentActivity
         cameraNameEdit = (EditText) findViewById(R.id.add_name_edit);
         vendorSpinner = (Spinner) findViewById(R.id.vendor_spinner);
         modelSpinner = (Spinner) findViewById(R.id.model_spinner);
+        final ImageView vendorLogoImageView = (ImageView) findViewById(R.id.vendor_logo_image_view);
+        final ImageView modelThumbnailImageView = (ImageView) findViewById(R.id.model_thumbnail_image_view);
         ImageView modelExplanationImageButton = (ImageView) findViewById(R.id.model_explanation_btn);
         usernameEdit = (EditText) findViewById(R.id.add_username_edit);
         passwordEdit = (EditText) findViewById(R.id.add_password_edit);
@@ -181,6 +208,8 @@ public class AddEditCameraActivity extends ParentActivity
         externalRtspEdit = (EditText) findViewById(R.id.add_external_rtsp_edit);
         jpgUrlEdit = (EditText) findViewById(R.id.add_jpg_edit);
         rtspUrlEdit = (EditText) findViewById(R.id.add_rtsp_edit);
+        mHttpStatusTextView = (TextView) findViewById(R.id.port_status_text_http);
+        mRtspStatusTextView = (TextView) findViewById(R.id.port_status_text_rtsp);
         jpgUrlLayout = (LinearLayout) findViewById(R.id.add_jpg_url_layout);
         rtspUrlLayout = (LinearLayout) findViewById(R.id.add_rtsp_url_layout);
         addEditButton = (Button) findViewById(R.id.button_add_edit_camera);
@@ -209,6 +238,7 @@ public class AddEditCameraActivity extends ParentActivity
             {
                 if(position == 0)
                 {
+                    vendorLogoImageView.setImageResource(android.R.color.transparent);
                     buildModelSpinner(new ArrayList<Model>(), null);
                 }
                 else
@@ -218,6 +248,10 @@ public class AddEditCameraActivity extends ParentActivity
 
                     if(!vendorName.equals(getString(R.string.vendor_other)))
                     {
+                        //Update vendor logo when vendor is selected
+                        Picasso.with(AddEditCameraActivity.this).load(Vendor.getLogoUrl(vendorId)
+                        ).placeholder(android.R.color.transparent).into(vendorLogoImageView);
+
                         new RequestModelListTask(vendorId).executeOnExecutor(AsyncTask
                                 .THREAD_POOL_EXECUTOR);
                     }
@@ -240,6 +274,10 @@ public class AddEditCameraActivity extends ParentActivity
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
                                        int position, long id)
             {
+                String vendorId = getVendorIdFromSpinner();
+                String modelName = getModelNameFromSpinner();
+                String modelId = getModelIdFromSpinner();
+
                 // Do not update camera defaults in edit screen.
                 if(cameraEdit == null)
                 {
@@ -249,13 +287,25 @@ public class AddEditCameraActivity extends ParentActivity
                     }
                     else
                     {
-                        String vendorId = getVendorIdFromSpinner();
-                        String modelName = getModelNameFromSpinner();
-
                         new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
                                 .THREAD_POOL_EXECUTOR);
                     }
                 }
+
+                //For all situations, the logo & thumbnail should update when selected
+                if(position == 0)
+                {
+                    modelThumbnailImageView.setImageResource(R.drawable.thumbnail_placeholder);
+                }
+                else
+                {
+                    //Update model logo when model is selected
+                    Picasso.with(AddEditCameraActivity.this)
+                            .load(Model.getThumbnailUrl(vendorId, modelId))
+                            .placeholder(R.drawable.thumbnail_placeholder)
+                            .into(modelThumbnailImageView);
+                }
+
                 showUrlEndings(position == 0);
             }
 
@@ -272,6 +322,55 @@ public class AddEditCameraActivity extends ParentActivity
             {
                 CustomedDialog.getMessageDialog(AddEditCameraActivity.this, R.string
                         .msg_model_explanation).show();
+            }
+        });
+
+        externalHttpEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View view, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    setUpRtspTextChangeListener(externalHttpEdit, mHttpStatusTextView);
+                }
+                else
+                {
+                    checkPort(PortCheckTask.PortType.HTTP);
+                }
+            }
+        });
+
+        externalRtspEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    setUpRtspTextChangeListener(externalRtspEdit, mRtspStatusTextView);
+                }
+                else
+                {
+                    checkPort(PortCheckTask.PortType.RTSP);
+                }
+            }
+        });
+
+        externalHostEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
+        {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    setUpRtspTextChangeListener(externalHostEdit,
+                            mRtspStatusTextView, mHttpStatusTextView);
+                }
+                else
+                {
+                    checkPort(PortCheckTask.PortType.HTTP);
+                    checkPort(PortCheckTask.PortType.RTSP);
+                }
             }
         });
 
@@ -334,6 +433,94 @@ public class AddEditCameraActivity extends ParentActivity
                 }
             }
         });
+    }
+
+    private void checkPort(PortCheckTask.PortType type)
+    {
+        String ipText = externalHostEdit.getText().toString();
+
+        if(!ipText.isEmpty())
+        {
+            if(type == PortCheckTask.PortType.HTTP)
+            {
+                String httpText = externalHttpEdit.getText().toString();
+                if(!httpText.isEmpty())
+                {
+                    launchPortCheckTask(ipText, httpText, type);
+                }
+            }
+            else if(type == PortCheckTask.PortType.RTSP)
+            {
+                String rtspText = externalRtspEdit.getText().toString();
+                if(!rtspText.isEmpty())
+                {
+                    launchPortCheckTask(ipText, rtspText, type);
+                }
+            }
+        }
+    }
+
+    private void launchPortCheckTask(String ip, String port, PortCheckTask.PortType type)
+    {
+        new PortCheckTask(ip, port, this, type)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    /**
+     * Clear the status text view when the text in EditText gets changed for the first time
+     *
+     * @param editText The EditText view to add text change listener
+     * @param textViews The status text view(s) list to clear after text changes
+     */
+    private void setUpRtspTextChangeListener(EditText editText, final TextView... textViews)
+    {
+        editText.addTextChangedListener(new TextWatcher()
+        {
+
+            boolean isFirstTimeChange = true;
+
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+
+            @Override
+            public void afterTextChanged(Editable editable)
+            {
+                if(isFirstTimeChange)
+                {
+                    for(TextView textView : textViews)
+                    {
+                        clearPortStatusView(textView);
+                        isFirstTimeChange = false;
+                    }
+                }
+            }
+        });
+    }
+
+    private void clearPortStatusView(TextView textView)
+    {
+        textView.setVisibility(View.GONE);
+    }
+
+    private void updatePortStatusView(TextView textView, boolean isPortOpen)
+    {
+        textView.setVisibility(View.VISIBLE);
+        textView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
+        textView.setTextColor(isPortOpen ? getResources().getColor(R.color.mint_green) :
+                getResources().getColor(R.color.orange_red));
+    }
+
+    public void updateHttpPortStatus(boolean isOpen)
+    {
+        updatePortStatusView(mHttpStatusTextView, isOpen);
+    }
+
+    public void updateRtspPortStatus(boolean isOpen)
+    {
+        updatePortStatusView(mRtspStatusTextView, isOpen);
     }
 
     private void performAddEdit()
@@ -507,8 +694,6 @@ public class AddEditCameraActivity extends ParentActivity
      */
     private CameraBuilder buildCameraWithLocalCheck()
     {
-        CameraBuilder cameraBuilder = null;
-
         String cameraName = cameraNameEdit.getText().toString();
 
         if(cameraName.isEmpty())
@@ -516,14 +701,8 @@ public class AddEditCameraActivity extends ParentActivity
             CustomToast.showInCenter(this, getString(R.string.name_required));
             return null;
         }
-        try
-        {
-            cameraBuilder = new CameraBuilder(cameraName, false);
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+
+        CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
         String vendorId = getVendorIdFromSpinner();
         if(!vendorId.isEmpty())
@@ -664,16 +843,7 @@ public class AddEditCameraActivity extends ParentActivity
      */
     private PatchCameraBuilder buildPatchCameraWithLocalCheck()
     {
-        PatchCameraBuilder patchCameraBuilder = null;
-
-        try
-        {
-            patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+        PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
         String cameraName = cameraNameEdit.getText().toString();
         if(cameraName.isEmpty())
@@ -809,6 +979,14 @@ public class AddEditCameraActivity extends ParentActivity
         {
             vendorSpinner.setSelection(selectedPosition);
         }
+        /* If vendor state are saved but haven't been selected */
+        else if (vendorSavedSelectedPosition != 0
+                && vendorSpinner.getCount() > 1
+                && vendorSavedSelectedPosition < vendorSpinner.getCount())
+        {
+            vendorSpinner.setSelection(vendorSavedSelectedPosition);
+            vendorSavedSelectedPosition = 0; //Then reset it
+        }
     }
 
     private void buildModelSpinner(ArrayList<Model> modelList, String selectedModel)
@@ -871,6 +1049,13 @@ public class AddEditCameraActivity extends ParentActivity
         if(selectedPosition != 0)
         {
             modelSpinner.setSelection(selectedPosition);
+        }
+        /* If vendor state are saved but haven't been selected */
+        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
+                && modelSavedSelectedPosition < modelSpinner.getCount())
+        {
+            modelSpinner.setSelection(modelSavedSelectedPosition);
+            modelSavedSelectedPosition = 0; // Then reset it
         }
         else
         {

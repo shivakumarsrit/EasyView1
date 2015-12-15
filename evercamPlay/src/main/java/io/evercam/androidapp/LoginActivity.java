@@ -10,7 +10,6 @@ import android.util.Log;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.ViewTreeObserver.OnGlobalLayoutListener;
-import android.view.Window;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
@@ -30,14 +29,14 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 
-public class LoginActivity extends ParentActivity
+public class LoginActivity extends ParentAppCompatActivity
 {
     private EditText usernameEdit;
     private EditText passwordEdit;
     private String username;
     private String password;
     private LoginTask loginTask;
-    private String TAG = "evercamplay-LoginActivity";
+    private String TAG = "LoginActivity";
     private CustomProgressDialog customProgressDialog;
 
     private enum InternetCheckType
@@ -52,12 +51,12 @@ public class LoginActivity extends ParentActivity
 
         customProgressDialog = new CustomProgressDialog(this);
 
-        getWindow().requestFeature(Window.FEATURE_NO_TITLE);
         setContentView(R.layout.login);
 
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
 
         TextView signUpLink = (TextView) findViewById(R.id.signupLink);
+        TextView forgotPasswordLink = (TextView) findViewById(R.id.forgetPasswordLink);
         usernameEdit = (EditText) findViewById(R.id.editUsername);
         passwordEdit = (EditText) findViewById(R.id.editPassword);
 
@@ -79,6 +78,17 @@ public class LoginActivity extends ParentActivity
             {
                 new LoginCheckInternetTask(LoginActivity.this,
                         InternetCheckType.SIGNUP).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        forgotPasswordLink.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Intent aboutIntent = new Intent(LoginActivity.this, SimpleWebActivity.class);
+                aboutIntent.putExtra(Constants.BUNDLE_KEY_URL,
+                        getString(R.string.forget_password_url));
+                startActivity(aboutIntent);
             }
         });
         hideLogoIfNecessary();
@@ -139,7 +149,7 @@ public class LoginActivity extends ParentActivity
         usernameEdit.setError(null);
         passwordEdit.setError(null);
 
-        username = usernameEdit.getText().toString();
+        username = usernameEdit.getText().toString().replace(" ", "");
         password = passwordEdit.getText().toString();
 
         boolean cancel = false;
@@ -151,7 +161,7 @@ public class LoginActivity extends ParentActivity
             focusView = usernameEdit;
             cancel = true;
         }
-        else if(!username.matches(Constants.REGULAR_EXPRESSION_USERNAME))
+        else if((!username.contains("@") && !username.matches(Constants.REGULAR_EXPRESSION_USERNAME)))
         {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_invalid_username);
             focusView = usernameEdit;
@@ -195,6 +205,7 @@ public class LoginActivity extends ParentActivity
     {
         private String errorMessage = null;
         private AppUser newUser = null;
+        private String unExpectedMessage = "";
 
         @Override
         protected Boolean doInBackground(Void... params)
@@ -221,7 +232,7 @@ public class LoginActivity extends ParentActivity
                 }
                 else
                 {
-
+                    unExpectedMessage = e.getMessage();
                 }
             }
             return false;
@@ -243,6 +254,8 @@ public class LoginActivity extends ParentActivity
 
                 getMixpanel().identifyUser(newUser.getUsername());
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
+
+                registerUserWithIntercom(newUser);
             }
             else
             {
@@ -253,8 +266,11 @@ public class LoginActivity extends ParentActivity
                 else
                 {
                     EvercamPlayApplication.sendCaughtException(LoginActivity.this,
-                            getString(R.string.exception_error_login));
-                    CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                            getString(R.string.exception_error_login) + " " + unExpectedMessage);
+                    if(!LoginActivity.this.isFinishing())
+                    {
+                        CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                    }
                 }
 
                 passwordEdit.setText(null);

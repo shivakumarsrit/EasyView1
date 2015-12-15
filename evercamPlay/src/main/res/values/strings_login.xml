@@ -6,7 +6,7 @@
     <!-- Login Strings -->
     <string name="hint_email">Email/Username</string>
     <string name="hint_password">Password</string>
-    <string name="action_sign_in_with_evercam"><b>Sign in</b> with Evercam</string>
+    <string name="action_sign_in_with_evercam">Sign in</string>
     <string name="action_sign_in_short">Sign in&#8230;</string>
     <string name="login_progress_signing_in">Signing in</string>
     <string name="error_invalid_email">Please enter a valid email address</string>
@@ -23,6 +23,7 @@
     <string name="username_too_short">The username you specified is too short</string>
     <string name="prefix_invalid">Invalid</string>
     <string name="prefix_no_user">No user</string>
+    <string name="forgot_password">Forgot Password?</string>
 
     <!-- Sign Up Strings -->
     <string name="login_progress_signing_up">Creating account&#8230;</string>

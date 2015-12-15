@@ -1,13 +1,11 @@
 package io.evercam.androidapp.feedback;
 
-import android.app.Activity;
 import android.content.Context;
 import android.util.Log;
 
 import com.github.sendgrid.SendGrid;
 
 import io.evercam.User;
-import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.utils.DataCollector;
@@ -17,16 +15,14 @@ public class FeedbackSender
 {
     private final String TAG = "evercam-FeedbackSender";
     private final String TO_EMAIL = "play@evercam.io";
-    private final String TITLE_FEEDBACK = "Evercam Play Feedback";
+    private final String TITLE_FEEDBACK = "Evercam Android Feedback";
     private Context context;
-    private Activity activity;
     private SendGrid sendgrid;
 
-    public FeedbackSender(Activity activity)
+    public FeedbackSender(Context context)
     {
-        this.activity = activity;
-        this.context = activity.getApplicationContext();
-        ;
+        this.context = context;
+
         PropertyReader propertyReader = new PropertyReader(context);
         String sandGridUsername = propertyReader.getPropertyStr(PropertyReader
                 .KEY_SENDGRID_USERNAME);
@@ -53,7 +49,6 @@ public class FeedbackSender
             }
             catch(Exception e)
             {
-                EvercamPlayApplication.sendCaughtException(activity, e);
                 Log.e(TAG, e.toString());
             }
 
@@ -64,15 +59,17 @@ public class FeedbackSender
                 sendgrid.setFrom(userEmail);
             }
             sendgrid.setSubject(TITLE_FEEDBACK);
-            String contentString = fullName + " says: \n\n" + feedbackString + "\n\nVersion: " +
-                    dataCollector.getAppVersion() + "\nDevice: " + DataCollector.getDeviceName() +
-                    "\nAndroid " + DataCollector.getAndroidVersion() + "\nNetwork: " + dataCollector.getNetworkString();
+
+            String contentString = fullName + " says: \n\n" + feedbackString + "\n\n\n\nApp version: " +
+                    dataCollector.getAppVersionName() + "\n\nDevice: " + DataCollector.getDeviceName() +
+                    "\n\nAndroid version: " + DataCollector.getAndroidVersion() + "\n\nNetwork: " + dataCollector.getNetworkString();
 
             if(cameraId != null)
             {
-                contentString += "\nCamera ID: " + cameraId;
+                contentString += "\n\nCamera ID: " + cameraId;
             }
             sendgrid.setText(contentString);
+
             String response = sendgrid.send();
             Log.d(TAG, "Sendgrid response: " + response);
         }

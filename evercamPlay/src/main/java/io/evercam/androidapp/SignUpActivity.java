@@ -1,6 +1,8 @@
 package io.evercam.androidapp;
 
 import android.content.Context;
+import android.content.DialogInterface;
+import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.TextUtils;
@@ -24,13 +26,14 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.NewUserFeedbackItem;
+import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 
-public class SignUpActivity extends ParentActivity
+public class SignUpActivity extends ParentAppCompatActivity
 {
-    private final String TAG = "evercam-SignUpActivity";
+    private final String TAG = "SignUpActivity";
     // Auto filled profiles
     private String filledFirstname = "";
     private String filledLastname = "";
@@ -53,12 +56,51 @@ public class SignUpActivity extends ParentActivity
     {
         super.onCreate(savedInstanceState);
 
-        getActionBar().setDisplayHomeAsUpEnabled(true);
-
         setContentView(R.layout.activity_sign_up);
 
-        readFromAccount();
+        setUpDefaultToolbar();
+
         initialPage();
+
+        checkContactPermission();
+    }
+
+    @Override
+    public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
+            grantResults)
+    {
+        switch(requestCode)
+        {
+            case Permission.REQUEST_CODE_CONTACTS:
+
+                boolean contactsAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
+
+                if(contactsAccepted)
+                {
+                   checkContactPermission();
+                }
+                break;
+        }
+    }
+
+    private void checkContactPermission()
+    {
+        if(Permission.isGranted(this, Permission.CONTACTS))
+        {
+            readFromAccount();
+        }
+        else
+        {
+            CustomedDialog.getSingleButtonDialog(this, new DialogInterface.OnClickListener()
+            {
+                @Override
+                public void onClick(DialogInterface dialog, int which)
+                {
+                    Permission.request(SignUpActivity.this, new String[]{Permission.CONTACTS},
+                            Permission.REQUEST_CODE_CONTACTS);
+                }
+            }, R.string.msg_allow_contacts_permission, R.string.ok).show();
+        }
     }
 
     private void initialPage()
@@ -222,6 +264,8 @@ public class SignUpActivity extends ParentActivity
             // Just catch it to avoid crashing.
             e.printStackTrace();
         }
+
+        fillDefaultProfile();
     }
 
     private void fillDefaultProfile()
@@ -281,7 +325,10 @@ public class SignUpActivity extends ParentActivity
                         newUser.getEmail()).sendToKeenIo(KeenHelper.getClient(SignUpActivity.this));
 
                 getMixpanel().identifyNewUser(newUser);
+                getMixpanel().identifyUser(newUser.getUsername());
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_up, null);
+
+                registerUserWithIntercom(newUser);
 
                 new EvercamAccount(SignUpActivity.this).add(newUser);
                 AppData.defaultUser = newUser;
