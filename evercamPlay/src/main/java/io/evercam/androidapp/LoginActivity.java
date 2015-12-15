@@ -205,6 +205,7 @@ public class LoginActivity extends ParentAppCompatActivity
     {
         private String errorMessage = null;
         private AppUser newUser = null;
+        private String unExpectedMessage = "";
 
         @Override
         protected Boolean doInBackground(Void... params)
@@ -231,7 +232,7 @@ public class LoginActivity extends ParentAppCompatActivity
                 }
                 else
                 {
-
+                    unExpectedMessage = e.getMessage();
                 }
             }
             return false;
@@ -265,8 +266,11 @@ public class LoginActivity extends ParentAppCompatActivity
                 else
                 {
                     EvercamPlayApplication.sendCaughtException(LoginActivity.this,
-                            getString(R.string.exception_error_login));
-                    CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                            getString(R.string.exception_error_login) + " " + unExpectedMessage);
+                    if(!LoginActivity.this.isFinishing())
+                    {
+                        CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                    }
                 }
 
                 passwordEdit.setText(null);

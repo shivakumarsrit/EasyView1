@@ -354,6 +354,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         AppUser newUser;
         String errorMessage = null;
         ProgressBar progressBar;
+        String unExpectedErrorMessage = "";
 
         public AddAccountTask(String username, String password, AlertDialog alertDialog)
         {
@@ -390,7 +391,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 }
                 else
                 {
-                    // Do nothing, show alert dialog in onPostExecute
+                    unExpectedErrorMessage = errorMessage;
                 }
             }
             return false;
@@ -409,8 +410,11 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 else
                 {
                     EvercamPlayApplication.sendCaughtException(ManageAccountsActivity.this,
-                            getString(R.string.exception_error_login));
-                    CustomedDialog.showUnexpectedErrorDialog(ManageAccountsActivity.this);
+                            getString(R.string.exception_error_login) + " Manage Account: " + unExpectedErrorMessage);
+                    if(!ManageAccountsActivity.this.isFinishing())
+                    {
+                        CustomedDialog.showUnexpectedErrorDialog(ManageAccountsActivity.this);
+                    }
                 }
 
                 return;

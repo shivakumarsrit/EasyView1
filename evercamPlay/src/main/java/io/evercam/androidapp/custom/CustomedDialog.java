@@ -44,6 +44,7 @@ import io.evercam.network.discovery.Device;
 public class CustomedDialog
 {
     public final static String TAG = "CustomedDialog";
+
     /**
      * Helper method to show unexpected error dialog.
      */

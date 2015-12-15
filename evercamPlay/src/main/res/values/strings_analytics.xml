@@ -49,8 +49,6 @@
     <string name="screen_edit_camera">Edit Camera</string>
 
     <!-- Exception Descriptions -->
-    <string name="exception_user_not_saved">User saved locally is null.</string>
-    <string name="exception_failed_load_cameras">Failed to load camera list in LoadCameraListTask</string>
     <string name="exception_error_login">Show error dialog because unknown error when logging in.</string>
     <string name="exception_error_empty_user">Show error dialog because user detail is empty.</string>
 

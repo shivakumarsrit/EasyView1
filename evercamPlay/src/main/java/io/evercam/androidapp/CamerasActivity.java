@@ -511,41 +511,29 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         colorAnimation.start();
     }
 
-    boolean resizeCameras()
+    private void resizeCameras()
     {
-        try
+        int screen_width = readScreenWidth(this);
+        camerasPerRow = recalculateCameraPerRow();
+
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+        for(int i = 0; i < camsLineView.getChildCount(); i++)
         {
-            int screen_width = readScreenWidth(this);
-            camerasPerRow = recalculateCameraPerRow();
+            LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
+            CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
 
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-            for(int i = 0; i < camsLineView.getChildCount(); i++)
-            {
-                LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
-                CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
-                        .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
-                        .WRAP_CONTENT);
-                params.width = ((i + 1 % camerasPerRow == 0) ? (screen_width - (i %
-                        camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
-                        camerasPerRow);
-                params.width = params.width - 1; //1 pixels spacing between cameras
-                params.height = (int) (params.width / (1.25));
-                params.setMargins(1, 1, 0, 0); //1 pixels spacing between cameras
-                cameraLayout.setLayoutParams(params);
-            }
-            return true;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
+                    .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
+                    .WRAP_CONTENT);
+            params.width = ((i + 1 % camerasPerRow == 0) ? (screen_width - (i %
+                    camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
+                    camerasPerRow);
+            params.width = params.width - 1; //1 pixels spacing between cameras
+            params.height = (int) (params.width / (1.25));
+            params.setMargins(1, 1, 0, 0); //1 pixels spacing between cameras
+            cameraLayout.setLayoutParams(params);
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
-        }
-        return false;
     }
 
     private void updateCameraNames()
@@ -569,28 +557,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
     }
 
-    // Remove all the cameras so that all activities being performed can be
-    // stopped
-    public boolean removeAllCameraViews()
+    /**
+     * Remove all the cameras so that all activities being performed can be stopped
+     */
+    public void removeAllCameraViews()
     {
-        try
-        {
-            stopAllCameraViews();
+        stopAllCameraViews();
 
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-            camsLineView.removeAllViews();
-
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
-        }
-        return false;
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+        camsLineView.removeAllViews();
     }
 
     /**
@@ -602,93 +578,80 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      *                       instead. If false,
      *                       it will request neither thumbnail nor latest snapshot.
      */
-    public boolean addAllCameraViews(final boolean reloadImages, final boolean showThumbnails)
+    public void addAllCameraViews(final boolean reloadImages, final boolean showThumbnails)
     {
-        try
+        // Recalculate camera per row
+        camerasPerRow = recalculateCameraPerRow();
+
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+
+        int screen_width = readScreenWidth(this);
+
+        int index = 0;
+
+        for(final EvercamCamera evercamCamera : AppData.evercamCameraList)
         {
-            // Recalculate camera per row
-            camerasPerRow = recalculateCameraPerRow();
-
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-
-            int screen_width = readScreenWidth(this);
-
-            int index = 0;
-
-            for(final EvercamCamera evercamCamera : AppData.evercamCameraList)
+            //Don't show offline camera
+            if(!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive())
             {
-                //Don't show offline camera
-                if(!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive())
-                {
-                    continue;
-                }
-
-                final LinearLayout cameraListLayout = new LinearLayout(this);
-
-                int indexPlus = index + 1;
-
-                if(reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
-
-                final CameraLayout cameraLayout = new CameraLayout(this, evercamCamera,
-                        showThumbnails);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
-                        .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
-                        .WRAP_CONTENT);
-                params.width = ((indexPlus % camerasPerRow == 0) ? (screen_width - (index %
-                        camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
-                        camerasPerRow);
-                params.width = params.width - 1; //1 pixels spacing between cameras
-                params.height = (int) (params.width / (1.25));
-                params.setMargins(0, 0, 0, 0); //No spacing between cameras
-                cameraLayout.setLayoutParams(params);
-
-                cameraListLayout.addView(cameraLayout);
-
-                camsLineView.addView(cameraListLayout, new io.evercam.androidapp.custom
-                        .FlowLayout.LayoutParams(0, 0));
-
-                index++;
-
-                new Handler().postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-
-                        Rect cameraBounds = new Rect();
-                        cameraListLayout.getHitRect(cameraBounds);
-
-                        Rect offlineIconBounds = cameraLayout.getOfflineIconBounds();
-                        int layoutWidth = cameraBounds.right - cameraBounds.left;
-                        int offlineStartsAt = offlineIconBounds.left;
-                        int offlineIconWidth = offlineIconBounds.right - offlineIconBounds.left;
-
-                        if(layoutWidth > offlineStartsAt + offlineIconWidth*2)
-                        {
-                            cameraLayout.showOfflineIconAsFloat = false;
-                        }
-                        else
-                        {
-                            cameraLayout.showOfflineIconAsFloat = true;
-                        }
-                    }
-                }, 200);
+                continue;
             }
 
-            if(refresh != null) refresh.setActionView(null);
+            final LinearLayout cameraListLayout = new LinearLayout(this);
 
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString(), e);
+            int indexPlus = index + 1;
 
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
+            if(reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
+
+            final CameraLayout cameraLayout = new CameraLayout(this, evercamCamera,
+                    showThumbnails);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
+                    .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
+                    .WRAP_CONTENT);
+            params.width = ((indexPlus % camerasPerRow == 0) ? (screen_width - (index %
+                    camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
+                    camerasPerRow);
+            params.width = params.width - 1; //1 pixels spacing between cameras
+            params.height = (int) (params.width / (1.25));
+            params.setMargins(0, 0, 0, 0); //No spacing between cameras
+            cameraLayout.setLayoutParams(params);
+
+            cameraListLayout.addView(cameraLayout);
+
+            camsLineView.addView(cameraListLayout, new io.evercam.androidapp.custom
+                    .FlowLayout.LayoutParams(0, 0));
+
+            index++;
+
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+
+                    Rect cameraBounds = new Rect();
+                    cameraListLayout.getHitRect(cameraBounds);
+
+                    Rect offlineIconBounds = cameraLayout.getOfflineIconBounds();
+                    int layoutWidth = cameraBounds.right - cameraBounds.left;
+                    int offlineStartsAt = offlineIconBounds.left;
+                    int offlineIconWidth = offlineIconBounds.right - offlineIconBounds.left;
+
+                    if(layoutWidth > offlineStartsAt + offlineIconWidth*2)
+                    {
+                        cameraLayout.showOfflineIconAsFloat = false;
+                    }
+                    else
+                    {
+                        cameraLayout.showOfflineIconAsFloat = true;
+                    }
+                }
+            }, 200);
         }
-        return false;
+
+        if(refresh != null) refresh.setActionView(null);
     }
 
     @Override
