@@ -89,6 +89,7 @@ repositories {
     maven { url 'https://maven.fabric.io/public' }
     maven { url "https://jitpack.io" }
     maven { url 'https://dl.bintray.com/intercom/intercom-maven' }
+    maven { url 'https://oss.sonatype.org/content/repositories/releases/' }
 }
 
 dependencies {
@@ -120,6 +121,7 @@ dependencies {
         exclude module: 'stax-api'
         exclude module: 'xpp3'
     }
+    compile 'com.badoo.mobile:android-weak-handler:1.1'
 
     //Test dependencies
     testCompile 'junit:junit:4.12'
