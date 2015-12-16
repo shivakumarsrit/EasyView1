@@ -13,7 +13,7 @@ public abstract class WebActivity  extends ParentAppCompatActivity
 {
     private final String TAG = "WebActivity";
 
-    public static CustomProgressDialog progressDialog;
+    public CustomProgressDialog progressDialog;
     protected Bundle bundle;
 
     @Override

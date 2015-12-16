@@ -5,4 +5,5 @@
     <string name="mixpanel_event_create_camera">Create a camera</string>
     <string name="mixpanel_event_create_shortcut">Create a shortcut</string>
     <string name="mixpanel_event_use_shortcut">Use shortcut</string>
+    <string name="mixpanel_property_camera_id">Camera ID</string>
 </resources>

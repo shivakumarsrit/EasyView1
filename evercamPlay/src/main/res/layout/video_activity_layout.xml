@@ -36,16 +36,16 @@
 
             <ImageView
                 android:id="@+id/play_pause_image_view"
-                android:background="@drawable/play_button_background_selector"
                 android:visibility="gone"
                 style="@style/PlayControlImageButtonStyle"
+                android:padding="14dp"
                 />
 
             <ImageView
                 android:id="@+id/player_savesnapshot"
-                android:background="@drawable/play_button_background_selector"
                 android:layout_toRightOf="@+id/play_pause_image_view"
-                android:src="@drawable/ic_action_save"
+                android:src="@drawable/ic_save"
+                android:padding="15dp"
                 style="@style/PlayControlImageButtonStyle"
                 android:visibility="gone"/>
 
@@ -53,6 +53,7 @@
                 android:id="@+id/live_progress_view"
                 android:layout_width="60dp"
                 android:layout_height="60dp"
+                android:padding="12dp"
                 android:layout_alignLeft="@+id/play_pause_image_view"
                 android:layout_alignRight="@+id/play_pause_image_view"
                 android:layout_alignTop="@+id/play_pause_image_view"

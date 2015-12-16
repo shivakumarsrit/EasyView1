@@ -6,7 +6,9 @@
 
     <include
         android:id="@+id/tool_bar"
-        layout="@layout/tool_bar" />
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
 
     <!-- Sign Up progress -->
     <LinearLayout
@@ -18,18 +20,15 @@
         android:visibility="gone">
 
         <ProgressBar
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="8dp"/>
+            android:layout_width="35dp"
+            android:layout_height="35dp"/>
 
         <TextView
             android:id="@+id/signup_status_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/login_progress_signing_up"
-            android:textAppearance="?android:attr/textAppearanceMedium"/>
+            android:text="@string/login_progress_signing_up"/>
     </LinearLayout>
 
     <!-- Sign up form -->

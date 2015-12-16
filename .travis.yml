@@ -7,8 +7,9 @@ env:
 
 android:
   components:
-    - android-22
-    - build-tools-22.0.1
+    - tools
+    - android-23
+    - build-tools-23.0.2
     - extra-google-google_play_services
     - extra-android-support
     - extra-android-m2repository
@@ -16,6 +17,7 @@ android:
     - sys-img-armeabi-v7a-android-21
 before_install:
     - chmod +x gradlew
+    - mv release.properties.sample release.properties
 before_script:
 - echo no | android create avd --force -n test -t android-19 --abi armeabi-v7a
 - emulator -avd test -no-skin -no-audio -no-window &
@@ -25,7 +27,7 @@ before_script:
 - adb shell input keyevent 82 &
 
 script:
-  - ./gradlew clean build
+  - ./gradlew assembleDebug
   
 notifications:
   email: false

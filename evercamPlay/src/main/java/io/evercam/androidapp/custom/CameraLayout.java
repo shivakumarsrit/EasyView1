@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 
-import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.CameraStatus;
@@ -112,12 +111,6 @@ public class CameraLayout extends LinearLayout
         catch(OutOfMemoryError e)
         {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-        }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            ParentAppCompatActivity.sendToMint(e);
         }
     }
 

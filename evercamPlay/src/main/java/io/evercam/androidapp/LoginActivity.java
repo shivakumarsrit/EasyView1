@@ -149,7 +149,7 @@ public class LoginActivity extends ParentAppCompatActivity
         usernameEdit.setError(null);
         passwordEdit.setError(null);
 
-        username = usernameEdit.getText().toString();
+        username = usernameEdit.getText().toString().replace(" ", "");
         password = passwordEdit.getText().toString();
 
         boolean cancel = false;
@@ -161,7 +161,7 @@ public class LoginActivity extends ParentAppCompatActivity
             focusView = usernameEdit;
             cancel = true;
         }
-        else if(!username.matches(Constants.REGULAR_EXPRESSION_USERNAME))
+        else if((!username.contains("@") && !username.matches(Constants.REGULAR_EXPRESSION_USERNAME)))
         {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_invalid_username);
             focusView = usernameEdit;
@@ -205,6 +205,7 @@ public class LoginActivity extends ParentAppCompatActivity
     {
         private String errorMessage = null;
         private AppUser newUser = null;
+        private String unExpectedMessage = "";
 
         @Override
         protected Boolean doInBackground(Void... params)
@@ -231,7 +232,7 @@ public class LoginActivity extends ParentAppCompatActivity
                 }
                 else
                 {
-
+                    unExpectedMessage = e.getMessage();
                 }
             }
             return false;
@@ -253,6 +254,8 @@ public class LoginActivity extends ParentAppCompatActivity
 
                 getMixpanel().identifyUser(newUser.getUsername());
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
+
+                registerUserWithIntercom(newUser);
             }
             else
             {
@@ -263,8 +266,11 @@ public class LoginActivity extends ParentAppCompatActivity
                 else
                 {
                     EvercamPlayApplication.sendCaughtException(LoginActivity.this,
-                            getString(R.string.exception_error_login));
-                    CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                            getString(R.string.exception_error_login) + " " + unExpectedMessage);
+                    if(!LoginActivity.this.isFinishing())
+                    {
+                        CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
+                    }
                 }
 
                 passwordEdit.setText(null);

@@ -2,13 +2,16 @@ package io.evercam.androidapp;
 
 import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
-import android.util.Log;
 
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
 
 import java.util.HashMap;
+
+import io.evercam.androidapp.feedback.IntercomApi;
+import io.evercam.androidapp.utils.PropertyReader;
+import io.intercom.android.sdk.Intercom;
 
 public class EvercamPlayApplication extends MultiDexApplication
 {
@@ -22,21 +25,28 @@ public class EvercamPlayApplication extends MultiDexApplication
         GLOBAL_TRACKER, // Tracker used by all the apps from a company.
     }
 
-    HashMap<TrackerName, Tracker> mTrackers = new HashMap<TrackerName, Tracker>();
+    HashMap<TrackerName, Tracker> mTrackers = new HashMap<>();
 
     public EvercamPlayApplication()
     {
         super();
-        Log.d(TAG, "E-Play launched");
     }
 
-    //    @Override
-    //    public void onCreate()
-    //    {
-    //        super.onCreate();
-    //        // Redirect URL, just for temporary testing
-    //        API.URL = "http://proxy.evr.cm:9292/v1/";
-    //    }
+    @Override
+    public void onCreate()
+    {
+        super.onCreate();
+
+        PropertyReader propertyReader = new PropertyReader(this);
+
+        IntercomApi.ANDROID_API_KEY = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_ANDROID_KEY);
+        IntercomApi.APP_ID = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_APP_ID);
+        IntercomApi.WEB_API_KEY = propertyReader.getPropertyStr(PropertyReader.KEY_INTERCOM_KEY);
+        Intercom.initialize(this, IntercomApi.ANDROID_API_KEY, IntercomApi.APP_ID);
+
+//            // Redirect URL, just for temporary testing
+//            API.URL = "http://proxy.evr.cm:9292/v1/";
+    }
 
     synchronized Tracker getTracker(TrackerName trackerId)
     {

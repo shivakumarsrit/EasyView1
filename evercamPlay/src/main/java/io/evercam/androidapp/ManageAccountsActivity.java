@@ -39,6 +39,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.CheckKeyExpirationTask;
 import io.evercam.androidapp.utils.Constants;
+import io.intercom.android.sdk.Intercom;
 
 public class ManageAccountsActivity extends ParentAppCompatActivity
 {
@@ -312,6 +313,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         AppData.appUsers = evercamAccount.retrieveUserList();
 
         getMixpanel().identifyUser(AppData.defaultUser.getUsername());
+        registerUserWithIntercom(AppData.defaultUser);
 
         if(closeActivity)
         {
@@ -352,6 +354,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         AppUser newUser;
         String errorMessage = null;
         ProgressBar progressBar;
+        String unExpectedErrorMessage = "";
 
         public AddAccountTask(String username, String password, AlertDialog alertDialog)
         {
@@ -388,7 +391,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 }
                 else
                 {
-                    // Do nothing, show alert dialog in onPostExecute
+                    unExpectedErrorMessage = errorMessage;
                 }
             }
             return false;
@@ -407,8 +410,11 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 else
                 {
                     EvercamPlayApplication.sendCaughtException(ManageAccountsActivity.this,
-                            getString(R.string.exception_error_login));
-                    CustomedDialog.showUnexpectedErrorDialog(ManageAccountsActivity.this);
+                            getString(R.string.exception_error_login) + " Manage Account: " + unExpectedErrorMessage);
+                    if(!ManageAccountsActivity.this.isFinishing())
+                    {
+                        CustomedDialog.showUnexpectedErrorDialog(ManageAccountsActivity.this);
+                    }
                 }
 
                 return;
@@ -419,6 +425,10 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 alertDialog.dismiss();
 
                 getMixpanel().identifyUser(newUser.getUsername());
+                getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
+
+                Intercom.client().reset();
+                registerUserWithIntercom(newUser);
             }
         }
     }
@@ -481,6 +491,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 updateDefaultUser(appUser.getEmail(), true, dialogToDismiss);
 
                 getMixpanel().identifyUser(appUser.getUsername());
+                registerUserWithIntercom(appUser);
 
                 viewToDismiss.setEnabled(false);
                 viewToDismiss.setClickable(false);

@@ -2,8 +2,6 @@ package io.evercam.androidapp.utils;
 
 public final class Constants
 {
-    public static final boolean isAppTrackingEnabled = true;
-
     public static final String KEEN_COLLECTION_LIST_LOADING_TIME = "Camera List Loading Time";
     public static final String KEEN_COLLECTION_STREAM_LOADING_TIME = "Camera Live view Loading "
             + "Time";
@@ -13,9 +11,6 @@ public final class Constants
     public static final String KEEN_COLLECTION_TEST_SNAPSHOT = "Test Snapshot";
     public static final String KEEN_COLLECTION_SCANNING_METRIC = "Scanning Metrics";
     public static final String KEEN_COLLECTION_DISCOVERED_CAMERAS = "Discovered Cameras";
-
-    public static final String ErrorMessageNoConnectivity = "Connectivity lost. Please check " +
-            "network connectivity.";
 
     /**
      * Values of start activity for result
@@ -29,10 +24,18 @@ public final class Constants
     public static final int REQUEST_CODE_SIGN_IN = 7;
     public static final int REQUEST_CODE_SIGN_UP = 8;
     public static final int REQUEST_CODE_RECORDING = 9;
+    public static final int REQUEST_CODE_CREATE_SHARE = 10;
+    public static final int REQUEST_CODE_SHARE = 11;
+    public static final int REQUEST_CODE_SNAPSHOT = 12;
     public static final int RESULT_TRUE = 1;
     public static final int RESULT_FALSE = 0;
     public static final int RESULT_DELETED = 2;
     public static final int RESULT_ACCOUNT_CHANGED = 1;
+    public static final int RESULT_SHARE_REQUEST_CREATED = 3;
+    public static final int RESULT_SHARE_CREATED = 4;
+    public static final int RESULT_TRANSFERRED = 5;
+    public static final int RESULT_ACCESS_REMOVED = 6;
+    public static final int RESULT_NO_ACCESS = 7;
 
     /**
      * Bundle keys

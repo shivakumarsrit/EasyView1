@@ -27,7 +27,11 @@ public class LoadPresetsTask extends AsyncTask<Void, Void, Void>
         try
         {
             ArrayList<PTZPreset> allPresets = PTZPreset.getAllPresets(cameraId);
-            getVideoActivity().presetList = allPresets;
+
+            if(getVideoActivity() != null)
+            {
+                getVideoActivity().presetList = allPresets;
+            }
 
             ArrayList<PTZPreset> customPresets = removeSystemPresetsFrom(allPresets);
 

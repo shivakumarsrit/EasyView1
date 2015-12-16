@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -25,10 +24,9 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
-
-import org.w3c.dom.Text;
 
 import java.io.InputStream;
 import java.util.ArrayList;
@@ -36,12 +34,15 @@ import java.util.ArrayList;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
+import io.evercam.androidapp.scan.AllDevicesActivity;
 import io.evercam.androidapp.scan.ScanResultAdapter;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.ScanForCameraTask;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.network.EvercamDiscover;
+import io.evercam.network.discovery.Device;
+import io.evercam.network.discovery.DeviceInterface;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.query.EvercamQuery;
 
@@ -56,11 +57,15 @@ public class ScanActivity extends ParentAppCompatActivity
 
     private ListView cameraListView;
     private MenuItem cancelMenuItem;
+    private MenuItem showAllDeviceMenu;
 
     private ScanResultAdapter deviceAdapter;
     public ArrayList<DiscoveredCamera> discoveredCameras = new ArrayList<>();
+    private ArrayList<DeviceInterface> nonCameraDevices = new ArrayList<>();
     private SparseArray<Drawable> drawableArray = new SparseArray<>();
     private ScanForCameraTask scanTask;
+
+    private WeakHandler mHandler;
 
     @Override
     public void onCreate(Bundle savedInstanceState)
@@ -68,6 +73,8 @@ public class ScanActivity extends ParentAppCompatActivity
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_scan);
+
+        mHandler = new WeakHandler();
 
         setUpDefaultToolbar();
 
@@ -82,6 +89,11 @@ public class ScanActivity extends ParentAppCompatActivity
 
         cameraListView = (ListView) findViewById(R.id.scan_result_list);
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);
+        Button showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
+
+        View footerView = getLayoutInflater().inflate(R.layout.scan_list_footer, cameraListView, false);
+        Button showAllDeviceFooterButton = (Button) footerView.findViewById(R.id.button_all_devices_in_list);
+        cameraListView.addFooterView(footerView);
 
         deviceAdapter = new ScanResultAdapter(this, R.layout.scan_list_layout, discoveredCameras,
                 drawableArray);
@@ -119,6 +131,14 @@ public class ScanActivity extends ParentAppCompatActivity
             }
         });
 
+        showAllDeviceFooterButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                AllDevicesActivity.showAllDevices(ScanActivity.this, nonCameraDevices);
+            }
+        });
+
         addManuallyButton.setOnClickListener(new OnClickListener()
         {
             @Override
@@ -126,6 +146,14 @@ public class ScanActivity extends ParentAppCompatActivity
             {
                 startActivityForResult(new Intent(ScanActivity.this, AddEditCameraActivity.class)
                         , Constants.REQUEST_CODE_ADD_CAMERA);
+            }
+        });
+
+        showAllDeviceButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                AllDevicesActivity.showAllDevices(ScanActivity.this, nonCameraDevices);
             }
         });
 
@@ -139,6 +167,7 @@ public class ScanActivity extends ParentAppCompatActivity
         inflater.inflate(R.menu.menu_scan, menu);
 
         cancelMenuItem = menu.findItem(R.id.action_cancel_scan);
+        showAllDeviceMenu = menu.findItem(R.id.action_show_all_devices);
 
         return true;
     }
@@ -164,6 +193,12 @@ public class ScanActivity extends ParentAppCompatActivity
             case R.id.action_cancel_scan:
 
                 showConfirmCancelScanDialog();
+
+                return true;
+
+            case R.id.action_show_all_devices:
+
+                AllDevicesActivity.showAllDevices(this, nonCameraDevices);
 
                 return true;
 
@@ -270,7 +305,7 @@ public class ScanActivity extends ParentAppCompatActivity
     {
         if(cancelMenuItem == null)
         {
-            new Handler().postDelayed(new Runnable()
+            mHandler.postDelayed(new Runnable()
             {
                 @Override
                 public void run()
@@ -282,6 +317,25 @@ public class ScanActivity extends ParentAppCompatActivity
         else
         {
             cancelMenuItem.setVisible(show);
+        }
+    }
+
+    public void showAllDeviceMenu(final boolean show)
+    {
+        if(showAllDeviceMenu == null)
+        {
+            mHandler.postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+                    if(showAllDeviceMenu != null) showAllDeviceMenu.setVisible(show);
+                }
+            }, 1000);
+        }
+        else
+        {
+            showAllDeviceMenu.setVisible(show);
         }
     }
 
@@ -301,11 +355,7 @@ public class ScanActivity extends ParentAppCompatActivity
 
     public boolean isScanning()
     {
-        if(cancelMenuItem.isVisible())
-        {
-            return true;
-        }
-        return false;
+        return cancelMenuItem != null && cancelMenuItem.isVisible();
     }
 
     public void showScanResults(ArrayList<DiscoveredCamera> discoveredCameras)
@@ -323,6 +373,17 @@ public class ScanActivity extends ParentAppCompatActivity
             showCameraListView(false);
             showNoCameraView(true);
         }
+    }
+
+    public void addNonCameraDevice(final Device device)
+    {
+        runOnUiThread(new Runnable() {
+            @Override
+            public void run()
+            {
+                nonCameraDevices.add(device);
+            }
+        });
     }
 
     public void addNewCameraToResultList(DiscoveredCamera discoveredCamera)
@@ -447,6 +508,7 @@ public class ScanActivity extends ParentAppCompatActivity
         showHorizontalProgress(true);
         showTextProgress(true);
         showCancelMenuItem(true);
+        showAllDeviceMenu(false);
     }
 
     public void onScanningFinished(ArrayList<DiscoveredCamera> cameraList)
@@ -459,6 +521,11 @@ public class ScanActivity extends ParentAppCompatActivity
         showHorizontalProgress(false);
         //Hide the cancel button
         showCancelMenuItem(false);
+        //Show all device menu item
+        if(nonCameraDevices.size() > 0)
+        {
+            showAllDeviceMenu(true);
+        }
 
         updateTitleText("Finished. " + cameraList.size() + " Camera(s) Found.");
     }
@@ -486,12 +553,6 @@ public class ScanActivity extends ParentAppCompatActivity
                 }
             }
         });
-    }
-
-    public void setActivityBackgroundColor(int color)
-    {
-        View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(color);
     }
 
     class ScanCheckInternetTask extends CheckInternetTask

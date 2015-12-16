@@ -6,6 +6,7 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import io.evercam.API;
+import io.evercam.androidapp.R;
 import io.evercam.androidapp.WebActivity;
 
 public class RecordingWebView extends WebView
@@ -35,6 +36,11 @@ public class RecordingWebView extends WebView
         //TODO: Remove this - it shouldn't require this after removing 'download' attribute
         getSettings().setDomStorageEnabled(true);
         getSettings().setBlockNetworkImage(false);
+
+        //Append custom user agent
+        String userAgent = getSettings().getUserAgentString() + " "
+                + webActivity.getString(R.string.user_agent_suffix);
+        getSettings().setUserAgentString(userAgent);
 
         setWebViewClient(webActivity.getWebViewClient());
 

@@ -1,7 +1,6 @@
 package io.evercam.androidapp;
 
 import android.content.DialogInterface;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.text.Editable;
@@ -40,7 +39,6 @@ import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
-import io.evercam.androidapp.feedback.StreamFeedbackItem;
 import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PatchCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
@@ -54,6 +52,9 @@ import io.evercam.network.discovery.DiscoveredCamera;
 public class AddEditCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddEditCameraActivity";
+    private final String VENDOR_SPINNER_KEY = "vendorSpinnerSelectedItem";
+    private final String MODEL_SPINNER_KEY = "modelSpinnerSelectedItem";
+
     private LinearLayout cameraIdLayout;
     private TextView cameraIdTextView;
     private EditText cameraNameEdit;
@@ -74,6 +75,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private TreeMap<String, String> vendorMap;
     private TreeMap<String, String> vendorMapIdAsKey;
     private TreeMap<String, String> modelMap;
+    private int vendorSavedSelectedPosition = 0;
+    private int modelSavedSelectedPosition = 0;
 
     private DiscoveredCamera discoveredCamera;
     private EvercamCamera cameraEdit;
@@ -119,6 +122,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
 
         fillEditCameraDetails(cameraEdit);
+
+        if(savedInstanceState != null)
+        {
+            vendorSavedSelectedPosition = savedInstanceState.getInt(VENDOR_SPINNER_KEY);
+            modelSavedSelectedPosition = savedInstanceState.getInt(MODEL_SPINNER_KEY);
+        }
     }
 
     @Override
@@ -137,6 +146,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                 return true;
         }
         return true;
+    }
+
+    @Override
+    protected void onSaveInstanceState(Bundle outState)
+    {
+        super.onSaveInstanceState(outState);
+
+        /* Save selected vendor & model before screen rotating */
+        outState.putInt(VENDOR_SPINNER_KEY, vendorSpinner.getSelectedItemPosition());
+        outState.putInt(MODEL_SPINNER_KEY, modelSpinner.getSelectedItemPosition());
     }
 
     private void showConfirmQuitIfAddingCamera()
@@ -490,9 +509,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     {
         textView.setVisibility(View.VISIBLE);
         textView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
-        textView.setTextColor(isPortOpen
-                ? getResources().getColor(R.color.mint_green)
-                : getResources().getColor(R.color.orange_red));
+        textView.setTextColor(isPortOpen ? getResources().getColor(R.color.mint_green) :
+                getResources().getColor(R.color.orange_red));
     }
 
     public void updateHttpPortStatus(boolean isOpen)
@@ -676,8 +694,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      */
     private CameraBuilder buildCameraWithLocalCheck()
     {
-        CameraBuilder cameraBuilder = null;
-
         String cameraName = cameraNameEdit.getText().toString();
 
         if(cameraName.isEmpty())
@@ -685,14 +701,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             CustomToast.showInCenter(this, getString(R.string.name_required));
             return null;
         }
-        try
-        {
-            cameraBuilder = new CameraBuilder(cameraName, false);
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+
+        CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
         String vendorId = getVendorIdFromSpinner();
         if(!vendorId.isEmpty())
@@ -833,16 +843,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      */
     private PatchCameraBuilder buildPatchCameraWithLocalCheck()
     {
-        PatchCameraBuilder patchCameraBuilder = null;
-
-        try
-        {
-            patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
-        }
-        catch(EvercamException e)
-        {
-            Log.e(TAG, e.toString());
-        }
+        PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
         String cameraName = cameraNameEdit.getText().toString();
         if(cameraName.isEmpty())
@@ -978,6 +979,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         {
             vendorSpinner.setSelection(selectedPosition);
         }
+        /* If vendor state are saved but haven't been selected */
+        else if (vendorSavedSelectedPosition != 0
+                && vendorSpinner.getCount() > 1
+                && vendorSavedSelectedPosition < vendorSpinner.getCount())
+        {
+            vendorSpinner.setSelection(vendorSavedSelectedPosition);
+            vendorSavedSelectedPosition = 0; //Then reset it
+        }
     }
 
     private void buildModelSpinner(ArrayList<Model> modelList, String selectedModel)
@@ -1040,6 +1049,13 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         if(selectedPosition != 0)
         {
             modelSpinner.setSelection(selectedPosition);
+        }
+        /* If vendor state are saved but haven't been selected */
+        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
+                && modelSavedSelectedPosition < modelSpinner.getCount())
+        {
+            modelSpinner.setSelection(modelSavedSelectedPosition);
+            modelSavedSelectedPosition = 0; // Then reset it
         }
         else
         {

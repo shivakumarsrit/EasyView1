@@ -1,10 +1,50 @@
-<h4>Evercam Play - IP Camera Viewer</h4>
+<h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.5.8 - 1.5.9</h5>
+<h5>1.7.2</h5>
 <ul>
-	<li>- Check port is open/closed when add/edit camera<br/></li>
+	<li>- Added live support<br/></li>
+	<li>- Fixed the crash with demo camera live view<br/></li>
+	<li>- Bug fixes<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.9</b>
+<ul>
+	<li><br/>- Fixed the bug of unable to sign in with Email address<br/></li>
+	<li>- Fixed text overlap in login page<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.8</b>
+<ul>
+	<li><br/>- Now you can easily send us a feedback if we couldn't recognise your camera after scanning<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.5 - 1.6.7</b>
+<ul>
+	<li><br/>- Fixed the black screen issue when playing camera live view<br/></li>
+	<li>- Bug fix for saving camera snapshot on Android 6.0<br/></li>
+	<li>- Fixed a crash with QMobile devices<br/></li>
+	<li>- Option to show all network devices after scanning<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.6.2 - 1.6.4</b>
+<ul>
+	<li><br/>- Browsing saved snapshots within the app<br/></li>
+	<li>- Options to share and delete saved snapshots<br/></li>
+	<li>- Sharing<br/></li>
+	<li>- Transfer camera ownership<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.5.8 - 1.6.1</b>
+<ul>
+	<li><br/>- Check port is open/closed when add/edit camera<br/></li>
     <li>- Forgot password<br/></li>
     <li>- Fixed the bug of invisible PTZ control buttons<br/></li>
+    <li>- Renamed to 'Evercam'<br/></li>
 </ul>
 <br/>
 

@@ -15,7 +15,6 @@ import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -43,6 +42,7 @@ import java.util.concurrent.RejectedExecutionException;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CameraLayout;
 import io.evercam.androidapp.custom.CustomProgressDialog;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
@@ -57,6 +57,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.evercam.androidapp.utils.PropertyReader;
+import io.intercom.android.sdk.Intercom;
 import io.keen.client.java.KeenClient;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
@@ -79,6 +80,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavSettingsItemLayout;
     private FrameLayout mNavFeedbackItemLayout;
     private FrameLayout mNavAboutItemLayout;
+    private FrameLayout mNavScanLayout;
+    private FrameLayout mNavLogoutLayout;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
     private TextView mAppVersionTextView;
@@ -108,6 +111,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         checkUser();
 
+        setUpGradientToolbarWithHomeButton();
         initNavigationDrawer();
 
         ObservableScrollView observableScrollView = (ObservableScrollView) findViewById(R.id.cameras_scroll_view);
@@ -193,10 +197,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             startCameraLoadingTask();
 
         }
-        else if(itemId == R.id.menu_logout)
-        {
-            showSignOutDialog();
-        }
         else
         {
             return super.onOptionsItemSelected(item);
@@ -261,12 +261,29 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             // return from shortcut live view
             if(resultCode == Constants.RESULT_TRUE)
             {
-               reloadCameraList = true;
+                reloadCameraList = true;
+                CustomSnackbar.showLong(activity, R.string.msg_delete_success);
             }
         }
         else if(requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT)
         {
             reloadCameraList = (resultCode == Constants.RESULT_ACCOUNT_CHANGED);
+        }
+
+        if(resultCode == Constants.RESULT_TRANSFERRED)
+        {
+            reloadCameraList = true;
+            CustomSnackbar.showLong(this, R.string.msg_transfer_success);
+        }
+        else if(resultCode == Constants.RESULT_ACCESS_REMOVED)
+        {
+            reloadCameraList = true;
+            CustomSnackbar.showShort(this, R.string.msg_share_updated);
+        }
+        else if(resultCode == Constants.RESULT_NO_ACCESS)
+        {
+            reloadCameraList = true;
+            CustomSnackbar.showLong(this, R.string.msg_no_access);
         }
     }
 
@@ -331,15 +348,12 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private void initNavigationDrawer()
     {
-        mToolbar = (Toolbar) findViewById(R.id.tool_bar);
-        setGradientTitleBackground();
-        setSupportActionBar(mToolbar);
-        getSupportActionBar().setDisplayHomeAsUpEnabled(true);
-
         mNavAccountItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_account_layout);
         mNavSettingsItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_settings_layout);
         mNavFeedbackItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_feedback_layout);
         mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
+        mNavScanLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_scan_layout);
+        mNavLogoutLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_logout_layout);
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
@@ -370,7 +384,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavSettingsItemLayout.setOnClickListener(this);
         mNavFeedbackItemLayout.setOnClickListener(this);
         mNavAboutItemLayout.setOnClickListener(this);
-        mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersion());
+        mNavScanLayout.setOnClickListener(this);
+        mNavLogoutLayout.setOnClickListener(this);
+        mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
     }
 
     @Override
@@ -393,13 +409,23 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
         else if(view == mNavFeedbackItemLayout)
         {
-            startActivity(new Intent(CamerasActivity.this, FeedbackActivity.class));
+            //startActivity(new Intent(CamerasActivity.this, FeedbackActivity.class));
+            Intercom.client().displayConversationsList();
         }
         else if(view == mNavAboutItemLayout)
         {
             Intent aboutIntent = new Intent(CamerasActivity.this, SimpleWebActivity.class);
             aboutIntent.putExtra(Constants.BUNDLE_KEY_URL, getString(R.string.evercam_url));
             startActivity(aboutIntent);
+        }
+        else if(view == mNavScanLayout)
+        {
+            startActivityForResult(new Intent(CamerasActivity.this, ScanActivity.class),
+                    Constants.REQUEST_CODE_ADD_CAMERA);
+        }
+        else if(view == mNavLogoutLayout)
+        {
+            showSignOutDialog();
         }
     }
 
@@ -436,9 +462,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }
         });
 
-        manuallyAddButton.setOnClickListener(new OnClickListener() {
+        manuallyAddButton.setOnClickListener(new OnClickListener()
+        {
             @Override
-            public void onClick(View view) {
+            public void onClick(View view)
+            {
 
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string
@@ -450,7 +478,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 actionMenu.collapse();
             }
         });
-        scanButton.setOnClickListener(new OnClickListener() {
+        scanButton.setOnClickListener(new OnClickListener()
+        {
             @Override
             public void onClick(View v)
             {
@@ -482,43 +511,29 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         colorAnimation.start();
     }
 
-    boolean resizeCameras()
+    private void resizeCameras()
     {
-        try
+        int screen_width = readScreenWidth(this);
+        camerasPerRow = recalculateCameraPerRow();
+
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+        for(int i = 0; i < camsLineView.getChildCount(); i++)
         {
-            int screen_width = readScreenWidth(this);
-            camerasPerRow = recalculateCameraPerRow();
+            LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
+            CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
 
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-            for(int i = 0; i < camsLineView.getChildCount(); i++)
-            {
-                LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
-                CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
-                        .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
-                        .WRAP_CONTENT);
-                params.width = ((i + 1 % camerasPerRow == 0) ? (screen_width - (i %
-                        camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
-                        camerasPerRow);
-                params.width = params.width - 1; //1 pixels spacing between cameras
-                params.height = (int) (params.width / (1.25));
-                params.setMargins(1, 1, 0, 0); //1 pixels spacing between cameras
-                cameraLayout.setLayoutParams(params);
-            }
-            return true;
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
+                    .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
+                    .WRAP_CONTENT);
+            params.width = ((i + 1 % camerasPerRow == 0) ? (screen_width - (i %
+                    camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
+                    camerasPerRow);
+            params.width = params.width - 1; //1 pixels spacing between cameras
+            params.height = (int) (params.width / (1.25));
+            params.setMargins(1, 1, 0, 0); //1 pixels spacing between cameras
+            cameraLayout.setLayoutParams(params);
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            sendToMint(e);
-
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
-        }
-        return false;
     }
 
     private void updateCameraNames()
@@ -542,30 +557,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
     }
 
-    // Remove all the cameras so that all activities being performed can be
-    // stopped
-    public boolean removeAllCameraViews()
+    /**
+     * Remove all the cameras so that all activities being performed can be stopped
+     */
+    public void removeAllCameraViews()
     {
-        try
-        {
-            stopAllCameraViews();
+        stopAllCameraViews();
 
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-            camsLineView.removeAllViews();
-
-            return true;
-        }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-
-            sendToMint(e);
-
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
-        }
-        return false;
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+        camsLineView.removeAllViews();
     }
 
     /**
@@ -577,95 +578,80 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      *                       instead. If false,
      *                       it will request neither thumbnail nor latest snapshot.
      */
-    public boolean addAllCameraViews(final boolean reloadImages, final boolean showThumbnails)
+    public void addAllCameraViews(final boolean reloadImages, final boolean showThumbnails)
     {
-        try
+        // Recalculate camera per row
+        camerasPerRow = recalculateCameraPerRow();
+
+        io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
+                .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
+
+        int screen_width = readScreenWidth(this);
+
+        int index = 0;
+
+        for(final EvercamCamera evercamCamera : AppData.evercamCameraList)
         {
-            // Recalculate camera per row
-            camerasPerRow = recalculateCameraPerRow();
-
-            io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
-                    .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-
-            int screen_width = readScreenWidth(this);
-
-            int index = 0;
-
-            for(final EvercamCamera evercamCamera : AppData.evercamCameraList)
+            //Don't show offline camera
+            if(!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive())
             {
-                //Don't show offline camera
-                if(!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive())
-                {
-                    continue;
-                }
-
-                final LinearLayout cameraListLayout = new LinearLayout(this);
-
-                int indexPlus = index + 1;
-
-                if(reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
-
-                final CameraLayout cameraLayout = new CameraLayout(this, evercamCamera,
-                        showThumbnails);
-
-                LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
-                        .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
-                        .WRAP_CONTENT);
-                params.width = ((indexPlus % camerasPerRow == 0) ? (screen_width - (index %
-                        camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
-                        camerasPerRow);
-                params.width = params.width - 1; //1 pixels spacing between cameras
-                params.height = (int) (params.width / (1.25));
-                params.setMargins(0, 0, 0, 0); //No spacing between cameras
-                cameraLayout.setLayoutParams(params);
-
-                cameraListLayout.addView(cameraLayout);
-
-                camsLineView.addView(cameraListLayout, new io.evercam.androidapp.custom
-                        .FlowLayout.LayoutParams(0, 0));
-
-                index++;
-
-                new Handler().postDelayed(new Runnable()
-                {
-                    @Override
-                    public void run()
-                    {
-
-                        Rect cameraBounds = new Rect();
-                        cameraListLayout.getHitRect(cameraBounds);
-
-                        Rect offlineIconBounds = cameraLayout.getOfflineIconBounds();
-                        int layoutWidth = cameraBounds.right - cameraBounds.left;
-                        int offlineStartsAt = offlineIconBounds.left;
-                        int offlineIconWidth = offlineIconBounds.right - offlineIconBounds.left;
-
-                        if(layoutWidth > offlineStartsAt + offlineIconWidth*2)
-                        {
-                            cameraLayout.showOfflineIconAsFloat = false;
-                        }
-                        else
-                        {
-                            cameraLayout.showOfflineIconAsFloat = true;
-                        }
-                    }
-                }, 200);
+                continue;
             }
 
-            if(refresh != null) refresh.setActionView(null);
+            final LinearLayout cameraListLayout = new LinearLayout(this);
 
-            return true;
+            int indexPlus = index + 1;
+
+            if(reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
+
+            final CameraLayout cameraLayout = new CameraLayout(this, evercamCamera,
+                    showThumbnails);
+
+            LinearLayout.LayoutParams params = new LinearLayout.LayoutParams(android.view
+                    .ViewGroup.LayoutParams.WRAP_CONTENT, android.view.ViewGroup.LayoutParams
+                    .WRAP_CONTENT);
+            params.width = ((indexPlus % camerasPerRow == 0) ? (screen_width - (index %
+                    camerasPerRow) * (screen_width / camerasPerRow)) : screen_width /
+                    camerasPerRow);
+            params.width = params.width - 1; //1 pixels spacing between cameras
+            params.height = (int) (params.width / (1.25));
+            params.setMargins(0, 0, 0, 0); //No spacing between cameras
+            cameraLayout.setLayoutParams(params);
+
+            cameraListLayout.addView(cameraLayout);
+
+            camsLineView.addView(cameraListLayout, new io.evercam.androidapp.custom
+                    .FlowLayout.LayoutParams(0, 0));
+
+            index++;
+
+            new Handler().postDelayed(new Runnable()
+            {
+                @Override
+                public void run()
+                {
+
+                    Rect cameraBounds = new Rect();
+                    cameraListLayout.getHitRect(cameraBounds);
+
+                    Rect offlineIconBounds = cameraLayout.getOfflineIconBounds();
+                    int layoutWidth = cameraBounds.right - cameraBounds.left;
+                    int offlineStartsAt = offlineIconBounds.left;
+                    int offlineIconWidth = offlineIconBounds.right - offlineIconBounds.left;
+
+                    if(layoutWidth > offlineStartsAt + offlineIconWidth*2)
+                    {
+                        cameraLayout.showOfflineIconAsFloat = false;
+                    }
+                    else
+                    {
+                        cameraLayout.showOfflineIconAsFloat = true;
+                    }
+                }
+            }, 200);
         }
-        catch(Exception e)
-        {
-            Log.e(TAG, e.toString(), e);
 
-            sendToMint(e);
-
-            EvercamPlayApplication.sendCaughtException(this, e);
-            CustomedDialog.showUnexpectedErrorDialog(CamerasActivity.this);
-        }
-        return false;
+        if(refresh != null) refresh.setActionView(null);
     }
 
     @Override
@@ -700,7 +686,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     public static void logOutDefaultUser(Activity activity)
     {
         getMixpanel().identifyUser(UUID.randomUUID().toString());
-        new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);
+
+        if(AppData.defaultUser != null)
+        {
+            new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);
+        }
 
         // clear real-time default app data
         AppData.reset();

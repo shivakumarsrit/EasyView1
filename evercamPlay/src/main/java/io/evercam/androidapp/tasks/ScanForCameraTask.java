@@ -20,6 +20,7 @@ import io.evercam.network.IdentifyCameraRunnable;
 import io.evercam.network.NatRunnable;
 import io.evercam.network.OnvifRunnable;
 import io.evercam.network.UpnpRunnable;
+import io.evercam.network.discovery.Device;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.discovery.IpScan;
 import io.evercam.network.discovery.NatMapEntry;
@@ -119,6 +120,17 @@ public class ScanForCameraTask extends AsyncTask<Void, DiscoveredCamera, ArrayLi
                                 EvercamDiscover.mergeUpnpDevicesToCamera(camera, upnpDeviceList);
 
                                 publishProgress(camera);
+                            }
+
+                            @Override
+                            public void onNonCameraDeviceFound(Device device)
+                            {
+                                device.setExternalIp(externalIp);
+
+                                if(getScanActivity() != null)
+                                {
+                                    getScanActivity().addNonCameraDevice(device);
+                                }
                             }
 
                             @Override

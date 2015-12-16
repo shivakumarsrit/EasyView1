@@ -9,18 +9,13 @@ import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
 
-import com.splunk.mint.Mint;
-
 import java.util.ArrayList;
 
-import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
-import io.evercam.androidapp.utils.PropertyReader;
 
 public class CameraPrefsActivity extends AppCompatActivity
 {
     private static int screenWidth = 0;
-    private PropertyReader propertyReader;
     private static final String TAG = "CameraPrefsActivity";
 
     @Override
@@ -35,52 +30,11 @@ public class CameraPrefsActivity extends AppCompatActivity
         setSupportActionBar(toolbar);
         getSupportActionBar().setDisplayHomeAsUpEnabled(true);
 
-        propertyReader = new PropertyReader(this);
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader
-                    .KEY_SPLUNK_MINT))
-            {
-                String bugSenseCode = propertyReader.getPropertyStr(PropertyReader
-                        .KEY_SPLUNK_MINT);
-                Mint.initAndStartSession(this, bugSenseCode);
-            }
-        }
-
         screenWidth = CamerasActivity.readScreenWidth(this);
 
         getFragmentManager().beginTransaction().replace(R.id.content_frame,
                 new MyPreferenceFragment()).commit();
         this.setDefaultKeyMode(DEFAULT_KEYS_DISABLE);
-    }
-
-    @Override
-    public void onStart()
-    {
-        super.onStart();
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.startSession(this);
-            }
-        }
-    }
-
-    @Override
-    public void onStop()
-    {
-        super.onStop();
-
-
-        if(Constants.isAppTrackingEnabled)
-        {
-            if(propertyReader.isPropertyExist(PropertyReader.KEY_SPLUNK_MINT))
-            {
-                Mint.closeSession(this);
-            }
-        }
     }
 
     @Override

@@ -2,12 +2,7 @@ package io.evercam.androidapp;
 
 import android.os.Build;
 import android.os.Bundle;
-import android.webkit.WebResourceResponse;
 import android.webkit.WebView;
-
-import java.io.InputStream;
-import java.util.HashMap;
-import java.util.Map;
 
 import io.evercam.androidapp.utils.Constants;
 

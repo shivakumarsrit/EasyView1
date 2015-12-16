@@ -1,21 +1,16 @@
 package io.evercam.androidapp.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
 import java.io.IOException;
-import java.io.InputStream;
 import java.lang.ref.WeakReference;
-import java.net.InetSocketAddress;
-import java.net.Socket;
 
 import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
-import io.evercam.network.discovery.Port;
 
 public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
 {

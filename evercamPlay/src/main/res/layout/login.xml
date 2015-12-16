@@ -1,6 +1,7 @@
 <merge xmlns:android="http://schemas.android.com/apk/res/android"
        xmlns:tools="http://schemas.android.com/tools"
-       tools:context=".LoginActivity">
+       tools:context=".LoginActivity"
+       android:layout_height="match_parent">
 
     <!-- Login form -->
 
@@ -17,26 +18,23 @@
 
             <ImageView
                 android:id="@+id/icon_imgview"
-                android:layout_width="180sp"
-                android:layout_height="180sp"
+                android:layout_width="160sp"
+                android:layout_height="160sp"
                 android:layout_gravity="center"
-                android:src="@+drawable/icon_evercam"/>
+                android:layout_marginTop="10dp"
+                android:layout_marginBottom="20dp"
+                android:src="@drawable/icon_evercam"/>
 
             <EditText
                 android:id="@+id/editUsername"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="5dp"
-                android:layout_marginTop="40dp"
+                style="@style/EditTextWithPadding"
                 android:hint="@string/hint_email"
                 android:inputType="text"
                 android:singleLine="true"/>
 
             <EditText
                 android:id="@+id/editPassword"
-                android:layout_width="fill_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="5dip"
+                style="@style/EditTextWithPadding"
                 android:fontFamily="sans-serif"
                 android:hint="@string/hint_password"
                 android:inputType="textPassword"
@@ -47,8 +45,8 @@
                 android:layout_width="fill_parent"
                 android:layout_height="40dp"
                 android:layout_gravity="center"
-                android:layout_marginLeft="5sp"
-                android:layout_marginRight="5sp"
+                android:layout_marginLeft="10sp"
+                android:layout_marginRight="10sp"
                 android:layout_marginTop="35dp"
                 android:background="@drawable/btn_selector"
                 android:text="@string/action_sign_in_with_evercam"
@@ -64,6 +62,7 @@
         <TextView
             android:id="@+id/forgetPasswordLink"
             android:layout_below="@+id/login_form_layout"
+            android:layout_above="@+id/signupLink"
             style="@style/LoginLinkText"
             android:text="@string/forgot_password"/>
     </RelativeLayout>

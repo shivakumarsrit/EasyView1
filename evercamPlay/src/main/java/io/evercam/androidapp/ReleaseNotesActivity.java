@@ -10,6 +10,7 @@ import android.widget.ScrollView;
 import android.widget.TextView;
 
 import io.evercam.androidapp.utils.Commons;
+import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 
 // 	This activity verifies the login and requests the cams data from the api 
@@ -49,7 +50,7 @@ public class ReleaseNotesActivity extends ParentAppCompatActivity
 
     private void onNotesRead()
     {
-        int versionCode = Commons.getAppVersionCode(this);
+        int versionCode = new DataCollector(this).getAppVersionCode();
         PrefsManager.setReleaseNotesShown(this, versionCode);
 
         Intent act = new Intent(ReleaseNotesActivity.this, MainActivity.class);

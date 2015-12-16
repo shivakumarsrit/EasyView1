@@ -7,6 +7,9 @@ import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import io.evercam.Camera;
 import io.evercam.CameraDetail;
 import io.evercam.EvercamException;
@@ -58,7 +61,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
         if(evercamCamera != null)
         {
             NewCameraFeedbackItem newCameraItem = new NewCameraFeedbackItem(activity,
-                    AppData.defaultUser.getUsername(), cameraDetail.getId());
+                    AppData.defaultUser.getUsername(), evercamCamera.getCameraId());
             if(isFromScan)
             {
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
@@ -73,11 +76,19 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
                         R.string.action_addcamera_success_manual, R.string.label_addcamera_successful_manual);
             }
 
-            activity.getMixpanel().sendEvent(R.string.mixpanel_event_create_camera, null);
+            try
+            {
+                activity.getMixpanel().sendEvent(R.string.mixpanel_event_create_camera, new JSONObject()
+                        .put(activity.getString(R.string.mixpanel_property_camera_id),
+                                evercamCamera.getCameraId()));
+            }
+            catch(JSONException e)
+            {
+                e.printStackTrace();
+                EvercamPlayApplication.sendCaughtException(activity, e);
+            }
 
             newCameraItem.sendToKeenIo(KeenHelper.getClient(activity));
-
-            CustomToast.showInBottom(activity, R.string.create_success);
 
             /**
              * Successfully added a camera, so refresh camera list.
@@ -90,6 +101,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
              * Successfully added camera, show camera live view and finish add
              * camera activity
              */
+            VideoActivity.showCameraCreated = true;
             VideoActivity.startPlayingVideoForCamera(activity, evercamCamera.getCameraId());
             activity.finish();
         }
@@ -198,20 +210,21 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
             try
             {
                 Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password);
-                byte[] snapshotData = snapshot.getData();
-                Bitmap bitmap = BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length);
 
-                if(bitmap != null)
+                if(snapshot != null)
                 {
-                    // Save this image.
-                    new Thread(new SaveImageRunnable(activity, bitmap,
-                            cameraDetail.getId())).start();
-                    return true;
+                    byte[] snapshotData = snapshot.getData();
+                    Bitmap bitmap = BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length);
+
+                    if(bitmap != null)
+                    {
+                        return true;
+                    }
                 }
             }
             catch(Exception e)
             {
-                Log.e(TAG, e.toString());
+                Log.e(TAG, "test snapshot: " + e.toString());
             }
         }
         return false;
@@ -246,6 +259,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
         {
             errorMessage = e.getMessage();
             Log.e(TAG, "add camera to evercam: " + e.getMessage());
+            EvercamPlayApplication.sendCaughtException(activity, e);
             return null;
         }
     }

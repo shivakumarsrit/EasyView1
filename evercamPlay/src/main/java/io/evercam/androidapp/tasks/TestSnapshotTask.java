@@ -18,7 +18,6 @@ import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.TestSnapshotFeedbackItem;
-import io.evercam.network.discovery.Port;
 import io.keen.client.java.KeenClient;
 
 public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
@@ -71,8 +70,11 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
         try
         {
             Snapshot snapshot = Camera.testSnapshot(url, ending, username, password);
-            byte[] snapshotData = snapshot.getData();
-            return new BitmapDrawable(BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length));
+            if(snapshot != null)
+            {
+                byte[] snapshotData = snapshot.getData();
+                return new BitmapDrawable(BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length));
+            }
         }
         catch(Exception e)
         {
@@ -90,7 +92,6 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
 
         if(drawable != null)
         {
-            CustomToast.showSnapshotTestResult(activity, R.string.snapshot_test_success);
             CustomedDialog.getSnapshotDialog(activity, drawable).show();
 
             new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)

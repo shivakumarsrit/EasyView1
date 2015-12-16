@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <string name="app_name">Evercam Play</string>
+    <string name="app_name">Evercam</string>
     <string name="empty"/>
     <string name="current_video_path"/>
     <string name="local_service_started">local_service_started</string>
@@ -24,6 +24,7 @@
     <string name="options_clear">Clear</string>
     <string name="accounts">Accounts</string>
     <string name="live">Live</string>
+    <string name="user_agent_suffix">io.evercam.androidapp/1.0</string>
 
     <!-- Text on camera -->
     <string name="connecting">Connecting&#8230;</string>
@@ -35,6 +36,7 @@
     <string name="no">No</string>
     <string name="save">Save</string>
     <string name="add">Add</string>
+    <string name="report">Report</string>
     <string name="ok">OK</string>
     <string name="notNow">NOT NOW</string>
     <string name="settings_capital">SETTINGS</string>
@@ -43,7 +45,7 @@
     <string name="remove">Remove</string>
     <string name="prefix_http">http://</string>
     <string name="dialog_title_warning">Warning</string>
-    <string name="view_in_gallery">VIEW</string>
+    <string name="view_capital">VIEW</string>
 
     <!-- Preferences -->
     <string name="title_camera_per_row">Cameras per row</string>
@@ -56,15 +58,16 @@
     <string name="show_offline_camera">Show offline cameras</string>
     <string name="evercam_url">http://www.evercam.io</string>
     <string name="forget_password_url">https://dash.evercam.io/v1/users/password-reset</string>
-    <string name="title_activity_recording_web">Recordings</string>
+    <string name="title_activity_recording_web">Cloud Recordings</string>
     <string name="title_activity_about_web">About Evercam</string>
+    <string name="title_sharing">Who has access</string>
+    <string name="title_create_sharing">Share camera with</string>
 
     <!-- Menu -->
     <string name="menu_settings">Settings</string>
     <string name="menu_manage_accounts">Manage Accounts</string>
     <string name="menu_about">About</string>
-    <string name="menu_logout">Sign Out</string>
-    <string name="menu_feedback">Send Feedback</string>
+    <string name="menu_feedback">Help</string>
     <string name="menu_refresh">Refresh All</string>
     <string name="menu_add_camera">Add Camera</string>
     <string name="menu_send">Send</string>
@@ -74,23 +77,32 @@
     <string name="title_activity_scan">Network Scan</string>
     <string name="title_release_notes">Release Notes</string>
     <string name="title_settings">Settings</string>
+    <string name="title_all_devices">All Devices</string>
+    <string name="title_saved_images">Saved Images</string>
     <string name="menu_delete_camera">Delete Camera</string>
     <string name="menu_edit_camera">Edit Camera</string>
     <string name="menu_local_storage">Local Storage</string>
     <string name="menu_camera_settings">Camera Settings</string>
+    <string name="menu_share">Sharing</string>
     <string name="menu_view_snapshot">Saved Images</string>
     <string name="menu_create_shortcut">Add to homescreen</string>
-    <string name="menu_view_recordings">View Recordings</string>
+    <string name="menu_view_recordings">Cloud Recordings</string>
     <string name="menu_cancel_scan">Cancel</string>
+    <string name="menu_show_all_device">Show other devices</string>
+    <string name="menu_create_share">Share with</string>
+    <string name="menu_transfer">Transfer</string>
+    <string name="menu_action_share">Share</string>
 
     <!-- Feedback -->
     <string name="feedback_title">E-Play Feedback</string>
-    <string name="title_activity_feedback">Feedback</string>
+    <string name="title_activity_feedback">How can we help?</string>
     <string name="wifi">WiFi</string>
     <string name="three_g">3G</string>
     <string name="unknown">Unknown</string>
-    <string name="feedback_from">From:</string>
+    <string name="feedback_name">Your Name</string>
+    <string name="feedback_email">Your Email</string>
     <string name="hint_full_name">Name</string>
+    <string name="feedback_hint">Your feedback</string>
 
     <!-- Intent action data-->
     <string name="data_scheme">evercam</string>
@@ -104,9 +116,11 @@
     <!-- Navigation Drawer -->
     <string name="nav_drawer_item_account">Accounts</string>
     <string name="nav_drawer_item_explore">Public Cameras</string>
-    <string name="nav_drawer_feedback">Feedback</string>
+    <string name="nav_drawer_feedback">Help</string>
     <string name="nav_drawer_settings">Settings</string>
-    <string name="nav_drawer_about">About Evercam</string>
+    <string name="nav_drawer_about">About</string>
+    <string name="nav_drawer_scan">Scan for cameras</string>
+    <string name="nav_drawer_logout">Sign out</string>
     <string name="navigation_drawer_opened">The navigation drawer is opened</string>
     <string name="navigation_drawer_closed">The navigation drawer is closed</string>
 </resources>
