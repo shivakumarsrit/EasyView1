@@ -545,6 +545,9 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             if(cameraBuilder != null)
             {
                 boolean isFromScan = discoveredCamera != null;
+
+                //Set camera status to be online as a temporary fix for #133
+                cameraBuilder.setOnline(true);
                 new AddCameraTask(cameraBuilder.build(), AddEditCameraActivity.this,
                         isFromScan).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
