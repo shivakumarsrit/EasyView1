@@ -1,8 +1,15 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.7.2</h5>
+<h5>1.7.4</h5>
 <ul>
-	<li>- Added live support<br/></li>
+	<li>- Added public cameras<br/></li>
+	<li>- Now you can save image to your device from cloud recording<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.7.3</b>
+<ul>
+	<li><br/>- Added live support<br/></li>
 	<li>- Fixed the crash with demo camera live view<br/></li>
 	<li>- Bug fixes<br/></li>
 </ul>

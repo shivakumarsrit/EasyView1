@@ -6,7 +6,6 @@ import android.util.AttributeSet;
 import android.webkit.WebView;
 
 import io.evercam.API;
-
 import io.evercam.androidapp.BaseWebView;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.WebActivity;
