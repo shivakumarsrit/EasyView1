@@ -41,6 +41,5 @@ public class PublicCamerasWebView  extends BaseWebView
 
         loadUrl("http://www.evercam.io/public/cameras?api_id=" + API.getUserKeyPair()[1] + "&api_key=" +
                 API.getUserKeyPair()[0] + "&user_id=" + AppData.defaultUser.getUsername());
-        //loadUrl("http://whatsmyuseragent.com/");
     }
 }

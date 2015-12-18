@@ -82,6 +82,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavFeedbackItemLayout;
     private FrameLayout mNavAboutItemLayout;
     private FrameLayout mNavScanLayout;
+    private FrameLayout mNavExploreLayout;
     private FrameLayout mNavLogoutLayout;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
@@ -197,10 +198,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
             startCameraLoadingTask();
 
-        }
-        else if(itemId == R.id.menu_test) //Test public cameras web view
-        {
-            startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
         }
         else
         {
@@ -358,6 +355,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavFeedbackItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_feedback_layout);
         mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
         mNavScanLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_scan_layout);
+        mNavExploreLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_explore_layout);
         mNavLogoutLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_logout_layout);
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
@@ -390,6 +388,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavFeedbackItemLayout.setOnClickListener(this);
         mNavAboutItemLayout.setOnClickListener(this);
         mNavScanLayout.setOnClickListener(this);
+        mNavExploreLayout.setOnClickListener(this);
         mNavLogoutLayout.setOnClickListener(this);
         mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
     }
@@ -427,6 +426,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         {
             startActivityForResult(new Intent(CamerasActivity.this, ScanActivity.class),
                     Constants.REQUEST_CODE_ADD_CAMERA);
+        }
+        else if(view == mNavExploreLayout)
+        {
+            startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
         }
         else if(view == mNavLogoutLayout)
         {

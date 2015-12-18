@@ -9,9 +9,4 @@
         app:showAsAction="always"
         android:title="@string/menu_refresh"/>
 
-    <item
-        android:id="@+id/menu_test"
-        android:orderInCategory="9"
-        android:title="Test Public Cameras"/>
-
 </menu>

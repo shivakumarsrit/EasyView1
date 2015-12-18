@@ -138,23 +138,23 @@
                 </FrameLayout>
 
 
-                <!--<FrameLayout-->
-                    <!--android:id="@+id/navigation_drawer_items_explore_layout"-->
-                    <!--style="@style/NavDrawerRowLayout">-->
+                <FrameLayout
+                    android:id="@+id/navigation_drawer_items_explore_layout"
+                    style="@style/NavDrawerRowLayout">
 
-                    <!--<ImageView-->
-                        <!--android:id="@+id/navigation_drawer_items_list_icon_explore"-->
-                        <!--style="@style/NavDrawerRowItemIcon"-->
-                        <!--android:src="@drawable/ic_scan"-->
-                        <!--tools:ignore="ContentDescription"-->
-                        <!--android:tint="@color/nav_drawer_item_icon_normal"/>-->
+                    <ImageView
+                        android:id="@+id/navigation_drawer_items_list_icon_explore"
+                        style="@style/NavDrawerRowItemIcon"
+                        android:src="@drawable/ic_compass"
+                        tools:ignore="ContentDescription"
+                        android:tint="@color/nav_drawer_item_icon_normal"/>
 
-                    <!--<TextView-->
-                        <!--android:id="@+id/navigation_drawer_items_textView_explore"-->
-                        <!--style="@style/NavDrawerRowItemText"-->
-                        <!--android:text="@string/nav_drawer_item_explore"/>-->
+                    <TextView
+                        android:id="@+id/navigation_drawer_items_textView_explore"
+                        style="@style/NavDrawerRowItemText"
+                        android:text="@string/nav_drawer_item_explore"/>
 
-                <!--</FrameLayout>-->
+                </FrameLayout>
 
                 <include layout="@layout/navigation_drawer_divider"/>
 
