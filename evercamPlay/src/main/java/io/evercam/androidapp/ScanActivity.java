@@ -10,7 +10,6 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.os.Handler;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -25,12 +24,12 @@ import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.badoo.mobile.util.WeakHandler;
 import com.mashape.unirest.http.Unirest;
 import com.mashape.unirest.http.exceptions.UnirestException;
 
 import java.io.InputStream;
 import java.util.ArrayList;
-import java.util.concurrent.RunnableFuture;
 
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
@@ -66,12 +65,16 @@ public class ScanActivity extends ParentAppCompatActivity
     private SparseArray<Drawable> drawableArray = new SparseArray<>();
     private ScanForCameraTask scanTask;
 
+    private WeakHandler mHandler;
+
     @Override
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_scan);
+
+        mHandler = new WeakHandler();
 
         setUpDefaultToolbar();
 
@@ -302,7 +305,7 @@ public class ScanActivity extends ParentAppCompatActivity
     {
         if(cancelMenuItem == null)
         {
-            new Handler().postDelayed(new Runnable()
+            mHandler.postDelayed(new Runnable()
             {
                 @Override
                 public void run()
@@ -321,7 +324,7 @@ public class ScanActivity extends ParentAppCompatActivity
     {
         if(showAllDeviceMenu == null)
         {
-            new Handler().postDelayed(new Runnable()
+            mHandler.postDelayed(new Runnable()
             {
                 @Override
                 public void run()

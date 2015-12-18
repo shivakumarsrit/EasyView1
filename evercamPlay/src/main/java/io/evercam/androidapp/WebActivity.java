@@ -8,11 +8,14 @@ import android.webkit.WebViewClient;
 
 import io.evercam.androidapp.custom.CustomProgressDialog;
 
+/**
+ * The base web activity with basic loading animation
+ */
 public abstract class WebActivity  extends ParentAppCompatActivity
 {
     private final String TAG = "WebActivity";
 
-    public static CustomProgressDialog progressDialog;
+    public CustomProgressDialog progressDialog;
     protected Bundle bundle;
 
     @Override
@@ -43,20 +46,21 @@ public abstract class WebActivity  extends ParentAppCompatActivity
 
     public WebViewClient getWebViewClient()
     {
-        WebViewClient client = new WebViewClient()
-        {
-            public void onPageStarted(WebView view, String url, Bitmap favicon)
-            {
-                progressDialog.show(WebActivity.this.getString(R.string.msg_loading));
-            }
-
-            public void onPageFinished(WebView view, String url)
-            {
-                progressDialog.dismiss();
-            }
-        };
-        return client;
+        return new BaseWebViewClient();
     }
 
     protected abstract void loadPage();
+
+    protected class BaseWebViewClient extends WebViewClient
+    {
+        public void onPageStarted(WebView view, String url, Bitmap favicon)
+        {
+            progressDialog.show(WebActivity.this.getString(R.string.msg_loading));
+        }
+
+        public void onPageFinished(WebView view, String url)
+        {
+            progressDialog.dismiss();
+        }
+    }
 }

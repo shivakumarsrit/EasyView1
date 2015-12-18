@@ -31,9 +31,9 @@ public class ParentAppCompatActivity extends AppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        propertyReader = new PropertyReader(this);
+        propertyReader = new PropertyReader(getApplicationContext());
 
-        mixpanelHelper = new MixpanelHelper(this, propertyReader);
+        mixpanelHelper = new MixpanelHelper(getApplicationContext(), propertyReader);
     }
 
     @Override

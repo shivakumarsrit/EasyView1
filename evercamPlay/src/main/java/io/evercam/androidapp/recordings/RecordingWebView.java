@@ -48,9 +48,11 @@ public class RecordingWebView extends BaseWebView
             WebView.setWebContentsDebuggingEnabled(true);
         }
 
-        //TODO remove <body style='margin:0;padding:0;'>, it's here only to overwrite the widget
-        // margin
-        //private=false is ignored because it's pre-authenticated
+        /**
+         * TODO: remove <body style='margin:0;padding:0;'>, it's here only to overwrite the widget
+         * margin
+         */
+        /* private=false is ignored because it's pre-authenticated */
         String customHtml = "<html><body style='margin:0;padding:0;'><div " +
                 "evercam=\"snapshot-navigator" +
                 "\"></div><script type=\"text/javascript\" src=\"https://dashboard" +
@@ -61,5 +63,4 @@ public class RecordingWebView extends BaseWebView
 
         loadData(customHtml, "text/html", "UTF-8");
     }
-
 }

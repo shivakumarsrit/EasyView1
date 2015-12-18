@@ -98,7 +98,7 @@ public class AccountUtils
 
         UserProfile userProfile = getUserProfileOnGingerbreadDevice(context);
         String mime_type;
-        while(cursor.moveToNext())
+        while(cursor != null && cursor.moveToNext())
         {
             mime_type = cursor.getString(ProfileQuery.MIME_TYPE);
             if(mime_type.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE))
@@ -115,7 +115,10 @@ public class AccountUtils
                 userProfile.addPossiblePhoto(Uri.parse(cursor.getString(ProfileQuery.PHOTO)));
         }
 
-        cursor.close();
+        if(cursor != null)
+        {
+            cursor.close();
+        }
 
         return userProfile;
     }

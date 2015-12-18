@@ -15,7 +15,6 @@ import android.widget.RelativeLayout;
 
 import com.squareup.picasso.Picasso;
 
-import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.CameraStatus;

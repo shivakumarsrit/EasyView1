@@ -2,11 +2,12 @@ package io.evercam.androidapp.sharing;
 
 import android.content.Intent;
 import android.os.Bundle;
-import android.os.Handler;
 import android.support.v4.app.FragmentManager;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
+
+import com.badoo.mobile.util.WeakHandler;
 
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
@@ -26,6 +27,7 @@ public class SharingActivity extends ParentAppCompatActivity
     public SharingListFragment sharingListFragment;
 
     private MenuItem transferMenu;
+    private WeakHandler mWeakHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -33,6 +35,8 @@ public class SharingActivity extends ParentAppCompatActivity
         super.onCreate(savedInstanceState);
 
         evercamCamera = VideoActivity.evercamCamera;
+
+        mWeakHandler = new WeakHandler();
 
         //Validate if the user still has access to the camera
         if(evercamCamera != null)
@@ -94,7 +98,7 @@ public class SharingActivity extends ParentAppCompatActivity
 
             if(resultCode == Constants.RESULT_SHARE_CREATED)
             {
-                new Handler().postDelayed(new Runnable()
+                mWeakHandler.postDelayed(new Runnable()
                 {
                     @Override
                     public void run()
@@ -105,7 +109,7 @@ public class SharingActivity extends ParentAppCompatActivity
             }
             else if(resultCode == Constants.RESULT_SHARE_REQUEST_CREATED)
             {
-                new Handler().postDelayed(new Runnable()
+                mWeakHandler.postDelayed(new Runnable()
                 {
                     @Override
                     public void run()
