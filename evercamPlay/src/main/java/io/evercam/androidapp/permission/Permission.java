@@ -8,8 +8,10 @@ public class Permission
 {
     public final static String STORAGE = "android.permission.WRITE_EXTERNAL_STORAGE";
     public final static String CONTACTS = "android.permission.GET_ACCOUNTS";
+    public final static String LOCATION = "android.permission.ACCESS_FINE_LOCATION";
     public final static int REQUEST_CODE_STORAGE = 200;
     public final static int REQUEST_CODE_CONTACTS = 300;
+    public final static int REQUEST_CODE_LOCATION = 400;
 
 
     /**
