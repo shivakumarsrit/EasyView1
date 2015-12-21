@@ -6,6 +6,8 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.Menu;
+import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -48,6 +50,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.video.VideoActivity;
 import io.evercam.network.discovery.DiscoveredCamera;
+import io.intercom.android.sdk.Intercom;
 
 public class AddEditCameraActivity extends ParentAppCompatActivity
 {
@@ -137,12 +140,22 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
+    public boolean onCreateOptionsMenu(Menu menu)
+    {
+        MenuInflater inflater = getMenuInflater();
+        inflater.inflate(R.menu.menu_add_camera, menu);
+        return true;
+    }
+    @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
         switch(item.getItemId())
         {
             case android.R.id.home:
                 showConfirmQuitIfAddingCamera();
+                return true;
+            case R.id.menu_action_support:
+                Intercom.client().displayConversationsList();
                 return true;
         }
         return true;

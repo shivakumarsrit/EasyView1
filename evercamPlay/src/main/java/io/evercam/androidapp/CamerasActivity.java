@@ -413,7 +413,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
         else if(view == mNavFeedbackItemLayout)
         {
-            //startActivity(new Intent(CamerasActivity.this, FeedbackActivity.class));
             Intercom.client().displayConversationsList();
         }
         else if(view == mNavAboutItemLayout)
