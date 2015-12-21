@@ -201,6 +201,11 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         final ImageView vendorLogoImageView = (ImageView) findViewById(R.id.vendor_logo_image_view);
         final ImageView modelThumbnailImageView = (ImageView) findViewById(R.id.model_thumbnail_image_view);
         ImageView modelExplanationImageButton = (ImageView) findViewById(R.id.model_explanation_btn);
+        ImageView externalIpExplainationImageButton = (ImageView) findViewById(R.id.ip_explanation_btn);
+        ImageView httpExplainationImageButton = (ImageView) findViewById(R.id.http_explanation_btn);
+        ImageView jpgExplainationImageButton = (ImageView) findViewById(R.id.jpg_explanation_btn);
+        ImageView rtspPortExplainationImageButton = (ImageView) findViewById(R.id.rtsp_port_explanation_btn);
+        ImageView rtspUrlExplainationImageButton = (ImageView) findViewById(R.id.rtsp_url_explanation_btn);
         usernameEdit = (EditText) findViewById(R.id.add_username_edit);
         passwordEdit = (EditText) findViewById(R.id.add_password_edit);
         externalHostEdit = (EditText) findViewById(R.id.add_external_host_edit);
@@ -320,8 +325,54 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             @Override
             public void onClick(View v)
             {
-                CustomedDialog.getMessageDialog(AddEditCameraActivity.this, R.string
-                        .msg_model_explanation).show();
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_model_explanation_title, R.string
+                        .msg_model_explanation);
+            }
+        });
+        externalIpExplainationImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_ip_explanation_title, R.string
+                        .msg_ip_explanation);
+            }
+        });
+        jpgExplainationImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_jpg_explanation_title, R.string
+                        .msg_jpg_explanation);
+            }
+        });
+        httpExplainationImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_http_explanation_title, R.string
+                        .msg_http_explanation);
+            }
+        });
+        rtspPortExplainationImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_rtsp_port_explanation_title, R.string
+                        .msg_rtsp_port_explanation);
+            }
+        });
+        rtspUrlExplainationImageButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
+                        .msg_rtsp_url_explanation_title, R.string
+                        .msg_rtsp_url_explanation);
             }
         });
 

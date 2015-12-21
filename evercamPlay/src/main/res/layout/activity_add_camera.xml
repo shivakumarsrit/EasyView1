@@ -71,8 +71,8 @@
                         <LinearLayout
                             android:layout_width="fill_parent"
                             android:layout_height="wrap_content"
-                            android:layout_marginBottom="5sp"
-                            android:layout_marginTop="5sp"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginTop="3dp"
                             android:orientation="vertical">
 
                             <LinearLayout
@@ -85,16 +85,13 @@
                                     android:layout_width="wrap_content"
                                     android:layout_height="20sp"
                                     android:layout_marginLeft="7sp"
+                                    android:layout_marginTop="2dp"
                                     android:text="@string/model"
                                     android:textSize="15sp"/>
 
                                 <ImageView
                                     android:id="@+id/model_explanation_btn"
-                                    android:layout_width="18sp"
-                                    android:layout_height="18sp"
-                                    android:layout_gravity="center"
-                                    android:layout_marginLeft="3sp"
-                                    android:src="@drawable/ic_question"/>
+                                    style="@style/QuestionMarkImage"/>
                             </LinearLayout>
 
                             <Spinner
@@ -158,10 +155,28 @@
                     style="@style/AddEditCameraItemRowItemText"
                     android:text="@string/external_host"/>
 
-                <EditText
-                    android:id="@+id/add_external_host_edit"
-                    style="@style/AddEditCameraItemRowItemEditText.Text"
-                    android:hint="@string/hint_external_host"/>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/add_external_host_edit"
+                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        android:layout_marginRight="25dp"
+                        android:hint="@string/hint_external_host"/>
+
+                    <LinearLayout
+                        style="@style/AddEditCameraStatus"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/ip_explanation_btn"
+                            style="@style/QuestionMarkImage"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
+
             </LinearLayout>
 
             <LinearLayout
@@ -179,12 +194,25 @@
                     <EditText
                         android:id="@+id/add_external_http_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Number"
+                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_external_http"/>
 
-                    <TextView
-                        android:id="@+id/port_status_text_http"
-                        style="@style/AddEditCameraPortStatusText"
-                        android:visibility="gone"/>
+                    <LinearLayout
+                        style="@style/AddEditCameraStatus"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/port_status_text_http"
+                            android:layout_height="wrap_content"
+                            android:layout_width="wrap_content"
+                            android:visibility="gone"/>
+
+                        <ImageView
+                            android:id="@+id/http_explanation_btn"
+                            style="@style/QuestionMarkImage"/>
+
+                    </LinearLayout>
+
                 </RelativeLayout>
 
             </LinearLayout>
@@ -198,10 +226,27 @@
                     style="@style/AddEditCameraItemRowItemText"
                     android:text="@string/jpg_url"/>
 
-                <EditText
-                    android:id="@+id/add_jpg_edit"
-                    style="@style/AddEditCameraItemRowItemEditText.Text"
-                    android:hint="@string/hint_jpg_path"/>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/add_jpg_edit"
+                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        android:layout_marginRight="25dp"
+                        android:hint="@string/hint_jpg_path"/>
+
+                    <LinearLayout
+                        style="@style/AddEditCameraStatus"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/jpg_explanation_btn"
+                            style="@style/QuestionMarkImage"/>
+
+                    </LinearLayout>
+
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout
@@ -219,12 +264,23 @@
                     <EditText
                         android:id="@+id/add_external_rtsp_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Number"
+                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_external_rtsp"/>
 
-                    <TextView
-                        android:id="@+id/port_status_text_rtsp"
-                        style="@style/AddEditCameraPortStatusText"
-                        android:visibility="gone"/>
+                    <LinearLayout
+                        style="@style/AddEditCameraStatus"
+                        android:orientation="horizontal">
+
+                        <TextView
+                            android:id="@+id/port_status_text_rtsp"
+                            style="@style/AddEditCameraStatus"
+                            android:visibility="gone"/>
+
+                        <ImageView
+                            android:id="@+id/rtsp_port_explanation_btn"
+                            style="@style/QuestionMarkImage"/>
+
+                    </LinearLayout>
                 </RelativeLayout>
 
             </LinearLayout>
@@ -238,10 +294,25 @@
                     style="@style/AddEditCameraItemRowItemText"
                     android:text="@string/rtsp_url"/>
 
-                <EditText
-                    android:id="@+id/add_rtsp_edit"
-                    style="@style/AddEditCameraItemRowItemEditText.Text"
-                    android:hint="@string/hint_rtsp_path"/>
+                <RelativeLayout
+                    android:layout_width="fill_parent"
+                    android:layout_height="wrap_content">
+
+                    <EditText
+                        android:id="@+id/add_rtsp_edit"
+                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        android:hint="@string/hint_rtsp_path"/>
+
+                    <LinearLayout
+                        style="@style/AddEditCameraStatus"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:id="@+id/rtsp_url_explanation_btn"
+                            style="@style/QuestionMarkImage"/>
+
+                    </LinearLayout>
+                </RelativeLayout>
             </LinearLayout>
 
             <LinearLayout

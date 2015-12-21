@@ -522,4 +522,13 @@ public class CustomedDialog
                     }
                 }).show();
     }
+
+    public static void showMessageDialogWithTitle(Context context, int title, int message)
+    {
+        new MaterialDialog.Builder(context)
+                .title(title)
+                .content(message)
+                .negativeText(R.string.ok)
+                .show();
+    }
 }

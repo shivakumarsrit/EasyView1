@@ -172,6 +172,7 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">17sp</item>
         <item name="android:singleLine">true</item>
+        <item name="android:layout_marginRight">25dp</item>
     </style>
 
     <style name="AddEditCameraItemRowItemEditText.Text">
@@ -182,12 +183,20 @@
         <item name="android:inputType">number</item>
     </style>
 
-    <style name="AddEditCameraPortStatusText">
+    <style name="AddEditCameraStatus">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentRight">true</item>
-        <item name="android:layout_marginRight">3dp</item>
+    </style>
+
+    <style name="QuestionMarkImage">
+        <item name="android:layout_width">25dp</item>
+        <item name="android:layout_height">25dp</item>
+        <item name="android:padding">3dp</item>
+        <item name="android:src">@drawable/ic_question</item>
+        <item name="android:layout_marginLeft">3dp</item>
+        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
     <!-- Login-->
