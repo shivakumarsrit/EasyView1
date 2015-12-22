@@ -1,8 +1,14 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.7.4</h5>
+<h5>1.7.5 Alpha 22/12</h5>
 <ul>
-	<li>- Added public cameras<br/></li>
+	<li>- Improvements for adding camera<br/></li>
+</ul>
+<br/>
+
+<b>1.7.4</b>
+<ul>
+	<li><br/>- Added public cameras<br/></li>
 	<li>- Now you can save image to your device from cloud recording<br/></li>
 </ul>
 <br/>

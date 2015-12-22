@@ -25,10 +25,10 @@
                 style="@style/EditTextWithPadding"
                 android:singleLine="true"
                 android:hint="@string/create_sharing_hint_username"
-                android:paddingRight="120dp"/>
+                android:paddingRight="140dp"/>
             <Spinner
                 android:id="@+id/access_permission_spinner"
-                android:layout_width="115dp"
+                android:layout_width="140dp"
                 android:layout_alignParentRight="true"
                 android:layout_centerVertical="true"
                 android:layout_height="wrap_content"/>
