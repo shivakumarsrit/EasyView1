@@ -14,7 +14,7 @@ import io.evercam.androidapp.EvercamPlayApplication;
 
 public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
 {
-    public enum PortType{HTTP, RTSP};
+    public enum PortType{HTTP, RTSP}
 
     private final static String TAG = "PortCheckTask";
 
@@ -29,6 +29,24 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
         this.mPort = port;
         this.mPortType = type;
         this.activityWeakReference = new WeakReference<>(activity);
+    }
+
+    @Override
+    protected void onPreExecute()
+    {
+        if(getActivity() != null)
+        {
+            if(mPortType.equals(PortType.HTTP))
+            {
+                getActivity().showHttpProgressView(true);
+                getActivity().clearHttpPortStatus();
+            }
+            else if (mPortType.equals(PortType.RTSP))
+            {
+                getActivity().clearRtspPortStatus();
+                getActivity().showRtspProgressView(true);
+            }
+        }
     }
 
     @Override

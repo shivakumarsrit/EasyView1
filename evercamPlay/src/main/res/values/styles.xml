@@ -199,6 +199,13 @@
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
 
+    <style name="PortCheckProgressBar">
+        <item name="android:layout_width">20dp</item>
+        <item name="android:layout_height">20dp</item>
+        <item name="android:indeterminateOnly">true</item>
+        <item name="android:layout_centerInParent">true</item>
+    </style>
+
     <!-- Login-->
     <style name="LoginLinkText">
         <item name="android:layout_width">wrap_content</item>

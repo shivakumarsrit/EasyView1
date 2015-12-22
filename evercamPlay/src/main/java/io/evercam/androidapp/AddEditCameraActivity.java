@@ -19,6 +19,7 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Spinner;
 import android.widget.TextView;
 
@@ -73,6 +74,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private EditText rtspUrlEdit;
     private TextView mHttpStatusTextView;
     private TextView mRtspStatusTextView;
+    private ProgressBar mHttpProgressBar;
+    private ProgressBar mRtspProgressBar;
     private LinearLayout jpgUrlLayout;
     private LinearLayout rtspUrlLayout;
     private Button addEditButton;
@@ -245,6 +248,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         rtspUrlEdit = (EditText) findViewById(R.id.add_rtsp_edit);
         mHttpStatusTextView = (TextView) findViewById(R.id.port_status_text_http);
         mRtspStatusTextView = (TextView) findViewById(R.id.port_status_text_rtsp);
+        mHttpProgressBar = (ProgressBar) findViewById(R.id.progress_bar_http);
+        mRtspProgressBar = (ProgressBar) findViewById(R.id.progress_bar_rtsp);
         jpgUrlLayout = (LinearLayout) findViewById(R.id.add_jpg_url_layout);
         rtspUrlLayout = (LinearLayout) findViewById(R.id.add_rtsp_url_layout);
         addEditButton = (Button) findViewById(R.id.button_add_edit_camera);
@@ -586,6 +591,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         textView.setVisibility(View.GONE);
     }
 
+    public void clearHttpPortStatus()
+    {
+        clearPortStatusView(mHttpStatusTextView);
+    }
+
+    public void clearRtspPortStatus()
+    {
+        clearPortStatusView(mRtspStatusTextView);
+    }
+
     private void updatePortStatusView(TextView textView, boolean isPortOpen)
     {
         textView.setVisibility(View.VISIBLE);
@@ -597,11 +612,28 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     public void updateHttpPortStatus(boolean isOpen)
     {
         updatePortStatusView(mHttpStatusTextView, isOpen);
+        showHttpProgressView(false);
     }
 
     public void updateRtspPortStatus(boolean isOpen)
     {
         updatePortStatusView(mRtspStatusTextView, isOpen);
+        showRtspProgressView(false);
+    }
+
+    private void showProgressView(ProgressBar progressBar, boolean show)
+    {
+        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void showHttpProgressView(boolean show)
+    {
+        showProgressView(mHttpProgressBar, show);
+    }
+
+    public void showRtspProgressView(boolean show)
+    {
+        showProgressView(mRtspProgressBar, show);
     }
 
     private void performAddEdit()
@@ -734,9 +766,28 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                     protected void onPostExecute(String externalIp)
                     {
                         externalHostEdit.setText(externalIp);
+                        autoPopulateDefaultPorts();
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
+        }
+    }
+
+    /**
+     * Auto populate default port 80 and 554 and launch port check
+     * Only when the port text field is empty
+     */
+    private void autoPopulateDefaultPorts()
+    {
+        if(externalHttpEdit.getText().toString().isEmpty())
+        {
+            externalHttpEdit.setText("80");
+            checkPort(PortCheckTask.PortType.HTTP);
+        }
+        if(externalRtspEdit.getText().toString().isEmpty())
+        {
+            externalRtspEdit.setText("554");
+            checkPort(PortCheckTask.PortType.RTSP);
         }
     }
 

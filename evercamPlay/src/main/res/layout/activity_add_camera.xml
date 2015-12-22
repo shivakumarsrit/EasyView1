@@ -162,7 +162,6 @@
                     <EditText
                         android:id="@+id/add_external_host_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Text"
-                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_external_host"/>
 
                     <LinearLayout
@@ -194,18 +193,28 @@
                     <EditText
                         android:id="@+id/add_external_http_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Number"
-                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_external_http"/>
 
                     <LinearLayout
                         style="@style/AddEditCameraStatus"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/port_status_text_http"
-                            android:layout_height="wrap_content"
+                        <RelativeLayout
                             android:layout_width="wrap_content"
-                            android:visibility="gone"/>
+                            android:layout_height="wrap_content">
+
+                            <ProgressBar
+                                android:id="@+id/progress_bar_http"
+                                style="@style/PortCheckProgressBar"
+                                android:visibility="gone"/>
+
+                            <TextView
+                                android:id="@+id/port_status_text_http"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:visibility="gone"/>
+
+                        </RelativeLayout>
 
                         <ImageView
                             android:id="@+id/http_explanation_btn"
@@ -233,7 +242,6 @@
                     <EditText
                         android:id="@+id/add_jpg_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Text"
-                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_jpg_path"/>
 
                     <LinearLayout
@@ -264,17 +272,28 @@
                     <EditText
                         android:id="@+id/add_external_rtsp_edit"
                         style="@style/AddEditCameraItemRowItemEditText.Number"
-                        android:layout_marginRight="25dp"
                         android:hint="@string/hint_external_rtsp"/>
 
                     <LinearLayout
                         style="@style/AddEditCameraStatus"
                         android:orientation="horizontal">
 
-                        <TextView
-                            android:id="@+id/port_status_text_rtsp"
-                            style="@style/AddEditCameraStatus"
-                            android:visibility="gone"/>
+                        <RelativeLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content">
+
+                            <ProgressBar
+                                android:id="@+id/progress_bar_rtsp"
+                                style="@style/PortCheckProgressBar"
+                                android:visibility="gone"/>
+
+                            <TextView
+                                android:id="@+id/port_status_text_rtsp"
+                                android:layout_height="wrap_content"
+                                android:layout_width="wrap_content"
+                                android:visibility="gone"/>
+
+                        </RelativeLayout>
 
                         <ImageView
                             android:id="@+id/rtsp_port_explanation_btn"
