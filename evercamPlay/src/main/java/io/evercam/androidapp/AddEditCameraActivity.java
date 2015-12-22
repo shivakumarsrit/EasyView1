@@ -6,6 +6,7 @@ import android.os.Bundle;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
@@ -144,8 +145,27 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.menu_add_camera, menu);
+
+        MenuItem supportMenuItem = menu.findItem(R.id.menu_action_support);
+        if(supportMenuItem != null)
+        {
+            LinearLayout menuLayout = (LinearLayout) LayoutInflater.from(this)
+                    .inflate(R.layout.support_menu_lowercase, null);
+            supportMenuItem.setActionView(menuLayout);
+            supportMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
+
+            menuLayout.setOnClickListener(new OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    Intercom.client().displayConversationsList();
+                }
+            });
+        }
+
         return true;
     }
+
     @Override
     public boolean onOptionsItemSelected(MenuItem item)
     {
@@ -153,9 +173,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         {
             case android.R.id.home:
                 showConfirmQuitIfAddingCamera();
-                return true;
-            case R.id.menu_action_support:
-                Intercom.client().displayConversationsList();
                 return true;
         }
         return true;
