@@ -41,7 +41,6 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.logentries.android.AndroidLogger;
 import com.squareup.picasso.Picasso;
 
 import org.freedesktop.gstreamer.GStreamer;
@@ -175,7 +174,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private TimeCounter timeCounter;
 
     private Date startTime;
-    private AndroidLogger logger;
     private KeenClient client;
     private String username = "";
 
@@ -595,13 +593,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private void initAnalyticsObjects()
     {
-        String logentriesToken = getPropertyReader()
-                .getPropertyStr(PropertyReader.KEY_LOGENTRIES_TOKEN);
-        if(!logentriesToken.isEmpty())
-        {
-            logger = AndroidLogger.getLogger(getApplicationContext(), logentriesToken, false);
-        }
-
         client = KeenHelper.getClient(this);
     }
 
@@ -779,8 +770,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private void startPlay()
     {
-        sendToLogentries(logger, "User: " + username + " is viewing camera: " + startingCameraID);
-
         paused = false;
         end = false;
 
@@ -1480,8 +1469,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     startTime = null;
                 }
 
-                sendToLogentries(logger, successItem.toJson());
-
                 successItem.sendToKeenIo(client);
             }
         });
@@ -1504,8 +1491,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 failedItem.setUrl(createUri(evercamCamera));
                 failedItem.setType(StreamFeedbackItem.TYPE_RTSP);
 
-
-                sendToLogentries(logger, failedItem.toJson());
                 failedItem.sendToKeenIo(client);
 
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
@@ -1723,7 +1708,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                                     successItem.setCameraId(evercamCamera.getCameraId());
                                     successItem.setUrl(successUrl);
                                     successItem.setType(StreamFeedbackItem.TYPE_JPG);
-                                    sendToLogentries(logger, successItem.toJson());
                                     successItem.sendToKeenIo(client);
                                 }
                                 else
@@ -1762,7 +1746,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                                 failedItem.setCameraId(evercamCamera.getCameraId());
                                 failedItem.setUrl(evercamCamera.getExternalSnapshotUrl());
                                 failedItem.setType(StreamFeedbackItem.TYPE_JPG);
-                                sendToLogentries(logger, failedItem.toJson());
                                 failedItem.sendToKeenIo(client);
                             }
                         }

@@ -32,7 +32,6 @@ import com.getbase.floatingactionbutton.FloatingActionsMenu;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
-import com.logentries.android.AndroidLogger;
 
 import java.util.ArrayList;
 import java.util.Date;
@@ -93,7 +92,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      */
     private Date startTime;
     private float databaseLoadTime = 0;
-    private AndroidLogger logger;
     private KeenClient client;
 
     private enum InternetCheckType
@@ -796,12 +794,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private void initDataCollectionObjects()
     {
         startTime = new Date();
-        String logentriesToken = getPropertyReader()
-                .getPropertyStr(PropertyReader.KEY_LOGENTRIES_TOKEN);
-        if(!logentriesToken.isEmpty())
-        {
-            logger = AndroidLogger.getLogger(getApplicationContext(), logentriesToken, false);
-        }
 
         client = KeenHelper.getClient(this);
     }
@@ -826,7 +818,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             LoadTimeFeedbackItem feedbackItem = new LoadTimeFeedbackItem(this,
                     username, databaseLoadTime, timeDifferenceFloat);
             databaseLoadTime = 0;
-            sendToLogentries(logger, feedbackItem.toJson());
 
             feedbackItem.sendToKeenIo(client);
         }

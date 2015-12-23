@@ -9,7 +9,6 @@ import android.view.View;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
-import com.logentries.android.AndroidLogger;
 import com.nineoldandroids.view.ViewHelper;
 
 import io.evercam.androidapp.dto.AppUser;
@@ -63,14 +62,6 @@ public class ParentAppCompatActivity extends AppCompatActivity
         mixpanelHelper.registerSuperProperty("Client-Type", "Play-Android");
 
         return mixpanelHelper;
-    }
-
-    public void sendToLogentries(AndroidLogger logger, String message)
-    {
-        if(logger != null)
-        {
-            logger.info(message);
-        }
     }
 
     public static void registerUserWithIntercom(AppUser user)
