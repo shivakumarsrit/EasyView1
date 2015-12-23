@@ -89,7 +89,6 @@ import io.evercam.androidapp.tasks.PTZMoveTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
-import io.evercam.androidapp.utils.PropertyReader;
 import io.keen.client.java.KeenClient;
 
 public class VideoActivity extends ParentAppCompatActivity implements SurfaceHolder.Callback

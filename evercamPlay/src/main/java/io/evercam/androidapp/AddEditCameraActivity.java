@@ -1041,14 +1041,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
 
         String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
-        Log.d(TAG, "jpg URL is : " + jpgUrl);
         if(!jpgUrl.equals(cameraEdit.getJpgPath()))
         {
             patchCameraBuilder.setJpgUrl(jpgUrl);
         }
 
         String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
-        Log.d(TAG, "rtsp URL is : " + rtspUrl);
         if(!rtspUrl.equals(cameraEdit.getH264Path()))
         {
             patchCameraBuilder.setH264Url(rtspUrl);

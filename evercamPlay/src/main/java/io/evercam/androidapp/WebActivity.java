@@ -11,7 +11,7 @@ import io.evercam.androidapp.custom.CustomProgressDialog;
 /**
  * The base web activity with basic loading animation
  */
-public abstract class WebActivity  extends ParentAppCompatActivity
+public abstract class WebActivity extends ParentAppCompatActivity
 {
     private final String TAG = "WebActivity";
 
@@ -42,7 +42,6 @@ public abstract class WebActivity  extends ParentAppCompatActivity
         }
         return super.onOptionsItemSelected(item);
     }
-
 
     public WebViewClient getWebViewClient()
     {
