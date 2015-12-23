@@ -51,7 +51,7 @@
                     android:id="@+id/forename_txt"
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
-                    android:text="@string/firstname:"
+                    android:text="@string/firstname_colon"
                     android:textSize="17sp"/>
 
                 <EditText
@@ -72,7 +72,7 @@
                     android:id="@+id/lastname_txt"
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
-                    android:text="@string/lastname:"
+                    android:text="@string/lastname_colon"
                     android:textSize="17sp"/>
 
                 <EditText
@@ -93,7 +93,7 @@
                     android:id="@+id/username_txt"
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
-                    android:text="@string/username:"
+                    android:text="@string/username_colon"
                     android:textSize="17sp"/>
 
                 <EditText
@@ -114,7 +114,7 @@
                     android:id="@+id/email_txt"
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
-                    android:text="@string/email:"
+                    android:text="@string/email_colon"
                     android:textSize="17sp"/>
 
                 <EditText
@@ -135,7 +135,7 @@
                     android:id="@+id/password_txt"
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
-                    android:text="@string/password:"
+                    android:text="@string/password_colon"
                     android:textSize="17sp"/>
 
                 <EditText
@@ -155,8 +155,8 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="90sp"
                 android:fontFamily="sans-serif"
-                android:hint="@string/re_password"
                 android:inputType="textPassword"
+                android:hint="@string/re_password"
                 android:singleLine="true"
                 android:textSize="17sp"/>
 
@@ -167,9 +167,9 @@
                 android:layout_gravity="center"
                 android:layout_marginTop="55dp"
                 android:layout_marginBottom="20sp"
-                android:background="@+drawable/signup_btn_selector"
+                android:background="@drawable/signup_btn_selector"
                 android:text="@string/create_account"
-                android:textColor="@+drawable/signup_btn_txt_selector"/>
+                android:textColor="@drawable/signup_btn_txt_selector"/>
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

@@ -27,15 +27,15 @@
 
     <!-- Sign Up Strings -->
     <string name="login_progress_signing_up">Creating account&#8230;</string>
-    <string name="firstname:">First name:</string>
+    <string name="firstname_colon">First name:</string>
     <string name="firstName">First name</string>
-    <string name="lastname:">Last name:</string>
+    <string name="lastname_colon">Last name:</string>
     <string name="lastName">Last name</string>
-    <string name="username:">Username:</string>
+    <string name="username_colon">Username:</string>
     <string name="username">Username</string>
-    <string name="email:">Email:</string>
+    <string name="email_colon">Email:</string>
     <string name="email">Email</string>
-    <string name="password:">Password:</string>
+    <string name="password_colon">Password:</string>
     <string name="password">Password</string>
     <string name="re_password">Confirm Password</string>
     <string name="spinnerFistItem">Please select</string>
