@@ -318,18 +318,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                 String modelName = getModelNameFromSpinner();
                 String modelId = getModelIdFromSpinner();
 
-                // Do not update camera defaults in edit screen.
-                if(cameraEdit == null)
+                if(position == 0)
                 {
-                    if(position == 0)
-                    {
-                        clearDefaults();
-                    }
-                    else
-                    {
-                        new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR);
-                    }
+                    clearDefaults();
+                }
+                else
+                {
+                    new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
+                            .THREAD_POOL_EXECUTOR);
                 }
 
                 //For all situations, the logo & thumbnail should update when selected
@@ -1045,12 +1041,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
 
         String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
+        Log.d(TAG, "jpg URL is : " + jpgUrl);
         if(!jpgUrl.equals(cameraEdit.getJpgPath()))
         {
             patchCameraBuilder.setJpgUrl(jpgUrl);
         }
 
         String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
+        Log.d(TAG, "rtsp URL is : " + rtspUrl);
         if(!rtspUrl.equals(cameraEdit.getH264Path()))
         {
             patchCameraBuilder.setH264Url(rtspUrl);
