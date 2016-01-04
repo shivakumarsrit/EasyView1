@@ -3,6 +3,7 @@ package io.evercam.androidapp;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.Log;
@@ -12,25 +13,14 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.widget.AdapterView;
-import android.widget.AdapterView.OnItemSelectedListener;
-import android.widget.ArrayAdapter;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
-import android.widget.Spinner;
 import android.widget.TextView;
 
-import com.squareup.picasso.Picasso;
-
 import java.util.ArrayList;
-import java.util.Collection;
-import java.util.Locale;
-import java.util.Map;
-import java.util.Set;
-import java.util.TreeMap;
 
 import io.evercam.Auth;
 import io.evercam.CameraBuilder;
@@ -39,6 +29,7 @@ import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.Vendor;
+import io.evercam.androidapp.addeditcamera.ModelSelectorFragment;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
@@ -57,14 +48,10 @@ import io.intercom.android.sdk.Intercom;
 public class AddEditCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddEditCameraActivity";
-    private final String VENDOR_SPINNER_KEY = "vendorSpinnerSelectedItem";
-    private final String MODEL_SPINNER_KEY = "modelSpinnerSelectedItem";
 
     private LinearLayout cameraIdLayout;
     private TextView cameraIdTextView;
     private EditText cameraNameEdit;
-    private Spinner vendorSpinner;
-    private Spinner modelSpinner;
     private EditText usernameEdit;
     private EditText passwordEdit;
     private EditText externalHostEdit;
@@ -79,11 +66,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private LinearLayout jpgUrlLayout;
     private LinearLayout rtspUrlLayout;
     private Button addEditButton;
-    private TreeMap<String, String> vendorMap;
-    private TreeMap<String, String> vendorMapIdAsKey;
-    private TreeMap<String, String> modelMap;
-    private int vendorSavedSelectedPosition = 0;
-    private int modelSavedSelectedPosition = 0;
+    private ModelSelectorFragment modelSelectorFragment;
 
     private DiscoveredCamera discoveredCamera;
     private EvercamCamera cameraEdit;
@@ -129,12 +112,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
 
         fillEditCameraDetails(cameraEdit);
-
-        if(savedInstanceState != null)
-        {
-            vendorSavedSelectedPosition = savedInstanceState.getInt(VENDOR_SPINNER_KEY);
-            modelSavedSelectedPosition = savedInstanceState.getInt(MODEL_SPINNER_KEY);
-        }
     }
 
     @Override
@@ -181,16 +158,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         return true;
     }
 
-    @Override
-    protected void onSaveInstanceState(Bundle outState)
-    {
-        super.onSaveInstanceState(outState);
-
-        /* Save selected vendor & model before screen rotating */
-        outState.putInt(VENDOR_SPINNER_KEY, vendorSpinner.getSelectedItemPosition());
-        outState.putInt(MODEL_SPINNER_KEY, modelSpinner.getSelectedItemPosition());
-    }
-
     private void showConfirmQuitIfAddingCamera()
     {
         //If edit camera
@@ -226,14 +193,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
     private void initialScreen()
     {
+        /** Add Model/Vendor selector fragment **/
+        FragmentManager fragmentManager = getSupportFragmentManager();
+        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
+        modelSelectorFragment = new ModelSelectorFragment();
+        fragmentTransaction.replace(R.id.model_selector_fragment_layout, modelSelectorFragment).commit();
+        fragmentManager.executePendingTransactions();
+
         cameraIdLayout = (LinearLayout) findViewById(R.id.add_camera_id_layout);
         cameraIdTextView = (TextView) findViewById(R.id.add_id_txt_view);
         cameraNameEdit = (EditText) findViewById(R.id.add_name_edit);
-        vendorSpinner = (Spinner) findViewById(R.id.vendor_spinner);
-        modelSpinner = (Spinner) findViewById(R.id.model_spinner);
-        final ImageView vendorLogoImageView = (ImageView) findViewById(R.id.vendor_logo_image_view);
-        final ImageView modelThumbnailImageView = (ImageView) findViewById(R.id.model_thumbnail_image_view);
-        ImageView modelExplanationImageButton = (ImageView) findViewById(R.id.model_explanation_btn);
         ImageView externalIpExplainationImageButton = (ImageView) findViewById(R.id.ip_explanation_btn);
         ImageView httpExplainationImageButton = (ImageView) findViewById(R.id.http_explanation_btn);
         ImageView jpgExplainationImageButton = (ImageView) findViewById(R.id.jpg_explanation_btn);
@@ -265,102 +234,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             cameraIdLayout.setVisibility(View.GONE);
             addEditButton.setText(getString(R.string.finish_and_add));
         }
-        buildVendorSpinner(null, null);
-        buildModelSpinner(null, null);
 
-        new RequestVendorListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        vendorSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int
-                    position, long id)
-            {
-                if(position == 0)
-                {
-                    vendorLogoImageView.setImageResource(android.R.color.transparent);
-                    buildModelSpinner(new ArrayList<Model>(), null);
-                }
-                else
-                {
-                    String vendorName = vendorSpinner.getSelectedItem().toString();
-                    String vendorId = vendorMap.get(vendorName).toLowerCase(Locale.UK);
-
-                    if(!vendorName.equals(getString(R.string.vendor_other)))
-                    {
-                        //Update vendor logo when vendor is selected
-                        Picasso.with(AddEditCameraActivity.this).load(Vendor.getLogoUrl(vendorId)
-                        ).placeholder(android.R.color.transparent).into(vendorLogoImageView);
-
-                        new RequestModelListTask(vendorId).executeOnExecutor(AsyncTask
-                                .THREAD_POOL_EXECUTOR);
-                    }
-                    else
-                    {
-                        modelSpinner.setEnabled(false);
-                    }
-                }
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-            }
-        });
-
-        modelSpinner.setOnItemSelectedListener(new OnItemSelectedListener()
-        {
-            @Override
-            public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
-                                       int position, long id)
-            {
-                String vendorId = getVendorIdFromSpinner();
-                String modelName = getModelNameFromSpinner();
-                String modelId = getModelIdFromSpinner();
-
-                if(position == 0)
-                {
-                    clearDefaults();
-                }
-                else
-                {
-                    new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
-                            .THREAD_POOL_EXECUTOR);
-                }
-
-                //For all situations, the logo & thumbnail should update when selected
-                if(position == 0)
-                {
-                    modelThumbnailImageView.setImageResource(R.drawable.thumbnail_placeholder);
-                }
-                else
-                {
-                    //Update model logo when model is selected
-                    Picasso.with(AddEditCameraActivity.this)
-                            .load(Model.getThumbnailUrl(vendorId, modelId))
-                            .placeholder(R.drawable.thumbnail_placeholder)
-                            .into(modelThumbnailImageView);
-                }
-
-                showUrlEndings(position == 0);
-            }
-
-            @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
-            }
-        });
-
-        modelExplanationImageButton.setOnClickListener(new OnClickListener()
-        {
-            @Override
-            public void onClick(View v)
-            {
-                CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
-                        .msg_model_explanation_title, R.string
-                        .msg_model_explanation);
-            }
-        });
         externalIpExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v)
@@ -814,7 +688,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private void showUrlEndings(boolean show)
+    public void showUrlEndings(boolean show)
     {
         jpgUrlLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         rtspUrlLayout.setVisibility(show ? View.VISIBLE : View.GONE);
@@ -835,13 +709,13 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
-        String vendorId = getVendorIdFromSpinner();
+        String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
         if(!vendorId.isEmpty())
         {
             cameraBuilder.setVendor(vendorId);
         }
 
-        String modelId = getModelIdFromSpinner();
+        String modelId = modelSelectorFragment.getModelIdFromSpinner();
         if(!modelId.isEmpty())
         {
             cameraBuilder.setModel(modelId);
@@ -987,10 +861,10 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             patchCameraBuilder.setName(cameraName);
         }
 
-        String vendorId = getVendorIdFromSpinner();
+        String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
         patchCameraBuilder.setVendor(vendorId);
 
-        String modelName = getModelIdFromSpinner();
+        String modelName = modelSelectorFragment.getModelIdFromSpinner();
         patchCameraBuilder.setModel(modelName);
 
         String username = usernameEdit.getText().toString();
@@ -1055,147 +929,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         return patchCameraBuilder;
     }
 
-    private void buildVendorSpinner(ArrayList<Vendor> vendorList, String selectedVendor)
-    {
-        if(vendorMap == null)
-        {
-            vendorMap = new TreeMap<>();
-        }
-
-        if(vendorMapIdAsKey == null)
-        {
-            vendorMapIdAsKey = new TreeMap<>();
-        }
-
-        if(vendorList != null)
-        {
-            for(Vendor vendor : vendorList)
-            {
-                try
-                {
-                    vendorMap.put(vendor.getName(), vendor.getId());
-                    vendorMapIdAsKey.put(vendor.getId(), vendor.getName());
-                }
-                catch(EvercamException e)
-                {
-                    Log.e(TAG, e.toString());
-                }
-            }
-        }
-
-        Set<String> set = vendorMap.keySet();
-        String[] vendorArray = Commons.joinStringArray(new String[]{getResources().getString(R
-                .string.select_vendor)}, set.toArray(new String[0]));
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, vendorArray);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner);
-
-        int selectedPosition = 0;
-        if(discoveredCamera != null)
-        {
-            if(discoveredCamera.hasVendor())
-            {
-                String vendorId = discoveredCamera.getVendor();
-                String vendorName = vendorMapIdAsKey.get(vendorId);
-                selectedPosition = spinnerArrayAdapter.getPosition(vendorName);
-            }
-        }
-        if(selectedVendor != null)
-        {
-            selectedPosition = spinnerArrayAdapter.getPosition(selectedVendor);
-        }
-        vendorSpinner.setAdapter(spinnerArrayAdapter);
-
-        if(selectedPosition != 0)
-        {
-            vendorSpinner.setSelection(selectedPosition);
-        }
-        /* If vendor state are saved but haven't been selected */
-        else if (vendorSavedSelectedPosition != 0
-                && vendorSpinner.getCount() > 1
-                && vendorSavedSelectedPosition < vendorSpinner.getCount())
-        {
-            vendorSpinner.setSelection(vendorSavedSelectedPosition);
-            vendorSavedSelectedPosition = 0; //Then reset it
-        }
-    }
-
-    private void buildModelSpinner(ArrayList<Model> modelList, String selectedModel)
-    {
-        if(selectedModel != null && !selectedModel.isEmpty())
-        {
-            selectedModel = selectedModel.toLowerCase(Locale.UK);
-        }
-        if(modelMap == null)
-        {
-            modelMap = new TreeMap<>();
-        }
-        modelMap.clear();
-
-        if(modelList == null)
-        {
-            modelSpinner.setEnabled(false);
-        }
-        else
-        {
-            if(modelList.size() == 0)
-            {
-                modelSpinner.setEnabled(false);
-            }
-            else
-            {
-                modelSpinner.setEnabled(true);
-
-                for(Model model : modelList)
-                {
-                    try
-                    {
-                        modelMap.put(model.getId(),model.getName());
-                    }
-                    catch(EvercamException e)
-                    {
-                        Log.e(TAG, e.toString());
-                    }
-                }
-            }
-        }
-        Collection<String> modelNameCollection = modelMap.values();
-
-        String[] fullModelArray = Commons.joinStringArray(new String[]{getResources().getString(R
-                .string.select_model)}, modelNameCollection.toArray(new String[0]));
-        ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(this,
-                android.R.layout.simple_spinner_item, fullModelArray);
-        spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner);
-        modelSpinner.setAdapter(spinnerArrayAdapter);
-
-        int selectedPosition = 0;
-        if(selectedModel != null)
-        {
-            if(modelMap.get(selectedModel) != null)
-            {
-                String selectedModelName = modelMap.get(selectedModel);
-                selectedPosition = spinnerArrayAdapter.getPosition(selectedModelName);
-            }
-        }
-        if(selectedPosition != 0)
-        {
-            modelSpinner.setSelection(selectedPosition);
-        }
-        /* If vendor state are saved but haven't been selected */
-        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
-                && modelSavedSelectedPosition < modelSpinner.getCount())
-        {
-            modelSpinner.setSelection(modelSavedSelectedPosition);
-            modelSavedSelectedPosition = 0; // Then reset it
-        }
-        else
-        {
-            modelSpinner.setSelection(spinnerArrayAdapter.getPosition(getString(R.string
-                    .model_default)));
-        }
-    }
-
-    private void fillDefaults(Model model)
+    public void fillDefaults(Model model)
     {
         try
         {
@@ -1232,8 +966,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             Log.e(TAG, "Fill defaults: " + e.toString());
         }
     }
-
-    private void clearDefaults()
+    public void clearDefaults()
     {
         usernameEdit.setText("");
         passwordEdit.setText("");
@@ -1244,53 +977,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         jpgUrlEdit.setFocusable(true);
         jpgUrlEdit.setClickable(true);
         jpgUrlEdit.setFocusableInTouchMode(true);
-    }
-
-    private String getVendorIdFromSpinner()
-    {
-        String vendorName = vendorSpinner.getSelectedItem().toString();
-        if(vendorName.equals(getString(R.string.select_vendor)))
-        {
-            return "";
-        }
-        else
-        {
-            return vendorMap.get(vendorName).toLowerCase(Locale.UK);
-        }
-
-    }
-
-    private String getModelIdFromSpinner()
-    {
-        String modelName = modelSpinner.getSelectedItem().toString();
-        if(modelName.equals(getString(R.string.select_model)))
-        {
-            return "";
-        }
-        else
-        {
-            for (Map.Entry<String, String> entry : modelMap.entrySet())
-            {
-                if(entry.getValue().equals(modelName))
-                {
-                    return entry.getKey();
-                }
-            }
-        }
-        return "";
-    }
-
-    private String getModelNameFromSpinner()
-    {
-        String modelName = modelSpinner.getSelectedItem().toString();
-        if(modelName.equals(getString(R.string.select_model)))
-        {
-            return "";
-        }
-        else
-        {
-            return modelName;
-        }
     }
 
     public static String buildUrlEndingWithSlash(String originalUrl)
@@ -1362,133 +1048,52 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    class RequestVendorListTask extends AsyncTask<Void, Void, ArrayList<Vendor>>
+    public boolean isFromDiscoverAndHasVendor()
     {
+        return discoveredCamera != null && discoveredCamera.hasVendor();
+    }
 
-        @Override
-        protected void onPostExecute(ArrayList<Vendor> vendorList)
+    public DiscoveredCamera getDiscoveredCamera()
+    {
+        return discoveredCamera;
+    }
+
+    public void buildSpinnerOnModelListResult(ArrayList<Model> modelList)
+    {
+        if(modelList != null)
         {
-            if(vendorList != null)
+            if(cameraEdit != null && !cameraEdit.getModel().isEmpty())
             {
-                // If the camera has vendor, show as selected in spinner
-                if(cameraEdit != null && !cameraEdit.getVendor().isEmpty())
-                {
-                    buildVendorSpinner(vendorList, cameraEdit.getVendor());
-                }
-                else
-                {
-                    buildVendorSpinner(vendorList, null);
-                }
+                modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModel());
+            }
+            else if(discoveredCamera != null && discoveredCamera.hasModel())
+            {
+                modelSelectorFragment.buildModelSpinner(modelList, discoveredCamera.getModel());
             }
             else
             {
-                Log.e(TAG, "Vendor list is null");
-            }
-        }
-
-        @Override
-        protected ArrayList<Vendor> doInBackground(Void... params)
-        {
-            try
-            {
-                return Vendor.getAll();
-            }
-            catch(EvercamException e)
-            {
-                Log.e(TAG, e.toString());
-            }
-            return null;
-        }
-    }
-
-    class RequestModelListTask extends AsyncTask<Void, Void, ArrayList<Model>>
-    {
-        private String vendorId;
-
-        public RequestModelListTask(String vendorId)
-        {
-            this.vendorId = vendorId;
-        }
-
-        @Override
-        protected ArrayList<Model> doInBackground(Void... params)
-        {
-            try
-            {
-                return Model.getAllByVendorId(vendorId);
-            }
-            catch(EvercamException e)
-            {
-                EvercamPlayApplication.sendCaughtException(AddEditCameraActivity.this,
-                        e.toString() + " " + "with vendor id: " + vendorId);
-                Log.e(TAG, e.toString());
-            }
-            return null;
-        }
-
-        @Override
-        protected void onPostExecute(ArrayList<Model> modelList)
-        {
-            if(modelList != null)
-            {
-                if(cameraEdit != null && !cameraEdit.getModel().isEmpty())
-                {
-                    buildModelSpinner(modelList, cameraEdit.getModel());
-                }
-                else if(discoveredCamera != null && discoveredCamera.hasModel())
-                {
-                    buildModelSpinner(modelList, discoveredCamera.getModel());
-                }
-                else
-                {
-                    buildModelSpinner(modelList, null);
-                }
+                modelSelectorFragment.buildModelSpinner(modelList, null);
             }
         }
     }
 
-    class RequestDefaultsTask extends AsyncTask<Void, Void, Model>
+    public void buildSpinnerOnVendorListResult(ArrayList<Vendor> vendorList)
     {
-        private String vendorId;
-        private String modelName;
-
-        public RequestDefaultsTask(String vendorId, String modelName)
+        if(vendorList != null)
         {
-            this.vendorId = vendorId;
-            this.modelName = modelName;
-        }
-
-        @Override
-        protected void onPreExecute()
-        {
-            clearDefaults();
-        }
-
-        @Override
-        protected Model doInBackground(Void... params)
-        {
-            try
+            // If the camera has vendor, show as selected in spinner
+            if(cameraEdit != null && !cameraEdit.getVendor().isEmpty())
             {
-                ArrayList<Model> modelList = Model.getAll(modelName, vendorId);
-                if(modelList.size() > 0)
-                {
-                    return modelList.get(0);
-                }
+                modelSelectorFragment.buildVendorSpinner(vendorList, cameraEdit.getVendor());
             }
-            catch(EvercamException e)
+            else
             {
-                Log.e(TAG, e.toString());
+                modelSelectorFragment.buildVendorSpinner(vendorList, null);
             }
-            return null;
         }
-
-        @Override
-        protected void onPostExecute(Model model)
+        else
         {
-            if(model != null)
-            {
-                fillDefaults(model);
-            }
+            Log.e(TAG, "Vendor list is null");
         }
     }
 }
