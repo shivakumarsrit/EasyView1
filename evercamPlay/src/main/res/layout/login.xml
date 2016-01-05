@@ -55,7 +55,7 @@
 
         <TextView
             android:id="@+id/signupLink"
-            style="@style/LoginLinkText"
+            style="@style/LinkText"
             android:layout_alignParentBottom="true"
             android:text="@string/create_account"/>
 
@@ -63,7 +63,7 @@
             android:id="@+id/forgetPasswordLink"
             android:layout_below="@+id/login_form_layout"
             android:layout_above="@+id/signupLink"
-            style="@style/LoginLinkText"
+            style="@style/LinkText"
             android:text="@string/forgot_password"/>
     </RelativeLayout>
 

@@ -76,4 +76,10 @@
     <string name="view_rtsp">RTSP Port:</string>
     <string name="button_text_edit">Edit</string>
 
+    <!-- New add camera designs -->
+    <string name="choose_model_explain_title">Choose your vendor and model</string>
+    <string name="next">Next</string>
+    <string name="report_model">Report New Model</string>
+    <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
+
 </resources>

@@ -3,6 +3,7 @@ package io.evercam.androidapp;
 import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.text.Editable;
 import android.text.TextWatcher;
@@ -76,7 +77,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.activity_add_camera);
+        setContentView(R.layout.activity_add_edit_camera);
 
         setUpDefaultToolbar();
 
@@ -1054,42 +1055,32 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         return discoveredCamera;
     }
 
-    public void buildSpinnerOnModelListResult(ArrayList<Model> modelList)
+    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList)
     {
-        if(modelList != null)
+        if(cameraEdit != null && !cameraEdit.getModel().isEmpty())
         {
-            if(cameraEdit != null && !cameraEdit.getModel().isEmpty())
-            {
-                modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModel());
-            }
-            else if(discoveredCamera != null && discoveredCamera.hasModel())
-            {
-                modelSelectorFragment.buildModelSpinner(modelList, discoveredCamera.getModel());
-            }
-            else
-            {
-                modelSelectorFragment.buildModelSpinner(modelList, null);
-            }
+            modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModel());
         }
-    }
-
-    public void buildSpinnerOnVendorListResult(ArrayList<Vendor> vendorList)
-    {
-        if(vendorList != null)
+        else if(discoveredCamera != null && discoveredCamera.hasModel())
         {
-            // If the camera has vendor, show as selected in spinner
-            if(cameraEdit != null && !cameraEdit.getVendor().isEmpty())
-            {
-                modelSelectorFragment.buildVendorSpinner(vendorList, cameraEdit.getVendor());
-            }
-            else
-            {
-                modelSelectorFragment.buildVendorSpinner(vendorList, null);
-            }
+            modelSelectorFragment.buildModelSpinner(modelList, discoveredCamera.getModel());
         }
         else
         {
-            Log.e(TAG, "Vendor list is null");
+            modelSelectorFragment.buildModelSpinner(modelList, null);
+        }
+    }
+
+    public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList)
+    {
+        // If the camera has vendor, show as selected in spinner
+        if(cameraEdit != null && !cameraEdit.getVendor().isEmpty())
+        {
+            modelSelectorFragment.buildVendorSpinner(vendorList, cameraEdit.getVendor());
+        }
+        else
+        {
+            modelSelectorFragment.buildVendorSpinner(vendorList, null);
         }
     }
 }

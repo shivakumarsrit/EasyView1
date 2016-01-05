@@ -40,6 +40,7 @@ public class ModelSelectorFragment extends Fragment
     private int vendorSavedSelectedPosition = 0;
     private int modelSavedSelectedPosition = 0;
 
+    private ImageView modelExplanationImageButton;
     private Spinner vendorSpinner;
     private Spinner modelSpinner;
     private TreeMap<String, String> vendorMap;
@@ -54,7 +55,7 @@ public class ModelSelectorFragment extends Fragment
         View rootView = inflater.inflate(R.layout.fragment_model_selector, container, false);
         vendorSpinner = (Spinner) rootView.findViewById(R.id.vendor_spinner);
         modelSpinner = (Spinner) rootView.findViewById(R.id.model_spinner);
-        ImageView modelExplanationImageButton = (ImageView) rootView.findViewById(R.id.model_explanation_btn);
+        modelExplanationImageButton = (ImageView) rootView.findViewById(R.id.model_explanation_btn);
 
         final ImageView vendorLogoImageView = (ImageView) rootView.findViewById(R.id.vendor_logo_image_view);
         final ImageView modelThumbnailImageView = (ImageView) rootView.findViewById(R.id.model_thumbnail_image_view);
@@ -374,6 +375,11 @@ public class ModelSelectorFragment extends Fragment
         new RequestVendorListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
+    public void hideModelQuestionMark()
+    {
+        modelExplanationImageButton.setVisibility(View.INVISIBLE);
+    }
+
     private boolean isAddEditActivity()
     {
         return getActivity() instanceof AddEditCameraActivity;
@@ -381,7 +387,17 @@ public class ModelSelectorFragment extends Fragment
 
     private AddEditCameraActivity getAddEditActivity()
     {
-        return ((AddEditCameraActivity)getActivity());
+        return ((AddEditCameraActivity) getActivity());
+    }
+
+    private boolean isAddActivity()
+    {
+        return getActivity() instanceof AddCameraActivity;
+    }
+
+    private AddCameraActivity getAddActivity()
+    {
+        return ((AddCameraActivity) getActivity());
     }
 
     class RequestModelListTask extends AsyncTask<Void, Void, ArrayList<Model>>
@@ -412,9 +428,16 @@ public class ModelSelectorFragment extends Fragment
         @Override
         protected void onPostExecute(ArrayList<Model> modelList)
         {
-            if(isAddEditActivity())
+            if(modelList != null)
             {
-                getAddEditActivity().buildSpinnerOnModelListResult(modelList);
+                if(isAddEditActivity())
+                {
+                    getAddEditActivity().buildSpinnerOnModelListResult(modelList);
+                }
+                else if(isAddActivity())
+                {
+                    getAddActivity().buildSpinnerOnModelListResult(modelList);
+                }
             }
         }
     }
@@ -425,9 +448,20 @@ public class ModelSelectorFragment extends Fragment
         @Override
         protected void onPostExecute(ArrayList<Vendor> vendorList)
         {
-            if(isAddEditActivity())
+            if(vendorList != null)
             {
-                getAddEditActivity().buildSpinnerOnVendorListResult(vendorList);
+                if(isAddEditActivity())
+                {
+                    getAddEditActivity().buildSpinnerOnVendorListResult(vendorList);
+                }
+                else if(isAddActivity())
+                {
+                    getAddActivity().buildSpinnerOnVendorListResult(vendorList);
+                }
+            }
+            else
+            {
+                Log.e(TAG, "Vendor list is null");
             }
         }
 

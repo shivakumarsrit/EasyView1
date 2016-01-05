@@ -143,6 +143,11 @@
             android:windowSoftInputMode="stateHidden">
         </activity>
         <activity
+            android:name=".addeditcamera.AddCameraActivity"
+            android:label="@string/title_choose_model"
+            android:windowSoftInputMode="stateHidden">
+        </activity>
+        <activity
             android:name=".ViewCameraActivity"
             android:label="@string/title_activity_view_camera"
             android:windowSoftInputMode="stateHidden">

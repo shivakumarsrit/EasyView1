@@ -206,14 +206,17 @@
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <!-- Login-->
-    <style name="LoginLinkText">
+    <style name="LinkText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:textColor">@drawable/txt_selector</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="LinkText.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Browse saved images-->
