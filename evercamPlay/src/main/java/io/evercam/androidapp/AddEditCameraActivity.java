@@ -193,12 +193,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
     private void initialScreen()
     {
-        /** Add Model/Vendor selector fragment **/
         FragmentManager fragmentManager = getSupportFragmentManager();
-        android.support.v4.app.FragmentTransaction fragmentTransaction = fragmentManager.beginTransaction();
-        modelSelectorFragment = new ModelSelectorFragment();
-        fragmentTransaction.replace(R.id.model_selector_fragment_layout, modelSelectorFragment).commit();
-        fragmentManager.executePendingTransactions();
+        modelSelectorFragment = (ModelSelectorFragment) fragmentManager.findFragmentById(R.id.model_selector_fragment);
 
         cameraIdLayout = (LinearLayout) findViewById(R.id.add_camera_id_layout);
         cameraIdTextView = (TextView) findViewById(R.id.add_id_txt_view);

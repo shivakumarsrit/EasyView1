@@ -19,11 +19,11 @@
             android:layout_marginRight="10sp"
             android:orientation="vertical">
 
-            <FrameLayout
-                android:id="@+id/model_selector_fragment_layout"
+            <fragment
+                android:name="io.evercam.androidapp.addeditcamera.ModelSelectorFragment"
+                android:id="@+id/model_selector_fragment"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-            </FrameLayout>
+                android:layout_height="wrap_content"/>
 
             <LinearLayout
                 android:id="@+id/add_camera_id_layout"
