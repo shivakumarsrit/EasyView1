@@ -5,12 +5,15 @@
               android:layout_height="match_parent"
               android:orientation="vertical">
 
-    <include layout="@layout/tool_bar"
-             android:layout_width="match_parent"
-             android:layout_height="?attr/actionBarSize"/>
+    <include
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"/>
 
-    <ScrollView android:layout_width="match_parent"
-                android:layout_height="match_parent">
+    <ScrollView
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
         <ViewFlipper
             android:id="@+id/add_camera_view_flipper"
             android:layout_width="match_parent"
@@ -22,36 +25,36 @@
                 style="@style/AddCameraViewFlipTopLayout">
 
                 <include
-                    android:id="@+id/explain_text_layout"
+                    android:id="@+id/model_explain_text_layout"
                     layout="@layout/explain_text_view"/>
 
                 <fragment
-                    android:name="io.evercam.androidapp.addeditcamera.ModelSelectorFragment"
-                    android:layout_below="@id/explain_text_layout"
                     android:id="@+id/add_camera_model_selector_fragment"
-                    android:layout_marginTop="10dp"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginBottom="40dp"
+                    android:name="io.evercam.androidapp.addeditcamera.ModelSelectorFragment"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/explain_text_layout"
+                    android:layout_marginBottom="40dp"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp">
                 </fragment>
 
                 <Button
                     android:id="@+id/model_selector_view_next_button"
+                    android:layout_width="match_parent"
+                    android:layout_height="40dp"
                     android:layout_below="@id/add_camera_model_selector_fragment"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    android:text="@string/next"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
-                    android:background="@drawable/btn_selector"/>
+                    android:background="@drawable/btn_selector"
+                    android:text="@string/next"/>
 
                 <TextView
                     android:id="@+id/report_model_text_link"
                     style="@style/LinkText.Bold"
-                    android:layout_marginTop="100dp"
-                    android:layout_marginBottom="10dp"
                     android:layout_below="@id/model_selector_view_next_button"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="100dp"
                     android:text="@string/report_model"/>
 
             </RelativeLayout>
@@ -61,26 +64,26 @@
                 style="@style/AddCameraViewFlipTopLayout">
 
                 <include
-                    android:id="@+id/explain_text_layout"
+                    android:id="@+id/connect_explain_text_layout"
                     layout="@layout/explain_text_view"/>
 
                 <LinearLayout
                     android:id="@+id/connect_form_layout"
-                    android:layout_below="@id/explain_text_layout"
-                    android:orientation="vertical"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_below="@id/connect_explain_text_layout"
                     android:layout_marginLeft="60dp"
                     android:layout_marginRight="60sp"
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                    android:orientation="vertical">
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_ip"
                         style="@style/TextInputLayoutDark">
 
-                        <EditText
+                        <io.evercam.androidapp.custom.PortCheckEditText
                             android:id="@+id/external_ip_float_edit_text"
                             style="@style/SingleLineEditText"
-                            android:hint="@string/public_ip" />
+                            android:hint="@string/public_ip"/>
                     </android.support.design.widget.TextInputLayout>
 
                     <RelativeLayout
@@ -91,10 +94,10 @@
                             android:id="@+id/input_layout_http"
                             style="@style/TextInputLayoutDark">
 
-                            <EditText
+                            <io.evercam.androidapp.custom.PortCheckEditText
                                 android:id="@+id/http_float_edit_text"
                                 style="@style/SingleLineEditText"
-                                android:hint="@string/add_camera_http_port" />
+                                android:hint="@string/add_camera_http_port"/>
                         </android.support.design.widget.TextInputLayout>
 
                         <RelativeLayout
@@ -103,26 +106,47 @@
                             <ProgressBar
                                 android:id="@+id/progress_bar_http"
                                 style="@style/PortCheckProgressBar"
-                                android:visibility="visible"/>
+                                android:visibility="gone"/>
 
                             <TextView
                                 android:id="@+id/port_status_text_http"
-                                android:layout_height="wrap_content"
                                 android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
                                 android:visibility="gone"/>
 
                         </RelativeLayout>
                     </RelativeLayout>
 
-                    <android.support.design.widget.TextInputLayout
-                        android:id="@+id/input_layout_rtsp"
-                        style="@style/TextInputLayoutDark">
+                    <RelativeLayout
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content">
 
-                        <EditText
-                            android:id="@+id/rtsp_float_edit_text"
-                            style="@style/SingleLineEditText"
-                            android:hint="@string/add_camera_rtsp_port" />
-                    </android.support.design.widget.TextInputLayout>
+                        <android.support.design.widget.TextInputLayout
+                            android:id="@+id/input_layout_rtsp"
+                            style="@style/TextInputLayoutDark">
+
+                            <io.evercam.androidapp.custom.PortCheckEditText
+                                android:id="@+id/rtsp_float_edit_text"
+                                style="@style/SingleLineEditText"
+                                android:hint="@string/add_camera_rtsp_port"/>
+                        </android.support.design.widget.TextInputLayout>
+
+                        <RelativeLayout
+                            style="@style/AddEditCameraStatus">
+
+                            <ProgressBar
+                                android:id="@+id/progress_bar_rtsp"
+                                style="@style/PortCheckProgressBar"
+                                android:visibility="gone"/>
+
+                            <TextView
+                                android:id="@+id/port_status_text_rtsp"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:visibility="gone"/>
+
+                        </RelativeLayout>
+                    </RelativeLayout>
 
                 </LinearLayout>
 

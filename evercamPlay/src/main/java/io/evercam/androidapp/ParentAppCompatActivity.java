@@ -1,11 +1,15 @@
 package io.evercam.androidapp;
 
 import android.animation.ValueAnimator;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
+import android.widget.EditText;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -13,6 +17,7 @@ import com.nineoldandroids.view.ViewHelper;
 
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
+import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.android.sdk.identity.Registration;
@@ -197,5 +202,25 @@ public class ParentAppCompatActivity extends AppCompatActivity
     protected void sendRegistrationIdToIntercomBackend(String regId)
     {
         Intercom.client().setupGCM(regId, R.drawable.icon_evercam_trans);
+    }
+
+    protected void checkPort(EditText ipEditText, EditText portEditText, TextView statusView, ProgressBar progressBar)
+    {
+        String ipText = ipEditText.getText().toString();
+
+        if(!ipText.isEmpty())
+        {
+            String httpText = portEditText.getText().toString();
+            if(!httpText.isEmpty())
+            {
+                launchPortCheckTask(ipText, httpText, statusView, progressBar);
+            }
+        }
+    }
+
+    protected void launchPortCheckTask(String ip, String port, TextView statusView, ProgressBar progressBar)
+    {
+        new PortCheckTask(ip, port, getApplicationContext()).bindStatusView(statusView).bindProgressView(progressBar)
+                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 }
