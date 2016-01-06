@@ -55,7 +55,7 @@
 
                 <EditText
                     android:id="@+id/add_name_edit"
-                    style="@style/AddEditCameraItemRowItemEditText.Text"
+                    style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Text"
                     android:hint="@string/hint_name"/>
             </LinearLayout>
 
@@ -71,9 +71,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
+                    <io.evercam.androidapp.custom.PortCheckEditText
                         android:id="@+id/add_external_host_edit"
-                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Text"
                         android:hint="@string/hint_external_host"/>
 
                     <LinearLayout
@@ -102,9 +102,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
+                    <io.evercam.androidapp.custom.PortCheckEditText
                         android:id="@+id/add_external_http_edit"
-                        style="@style/AddEditCameraItemRowItemEditText.Number"
+                        style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Number"
                         android:hint="@string/hint_external_http"/>
 
                     <LinearLayout
@@ -153,7 +153,7 @@
 
                     <EditText
                         android:id="@+id/add_jpg_edit"
-                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Text"
                         android:hint="@string/hint_jpg_path"/>
 
                     <LinearLayout
@@ -181,9 +181,9 @@
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content">
 
-                    <EditText
+                    <io.evercam.androidapp.custom.PortCheckEditText
                         android:id="@+id/add_external_rtsp_edit"
-                        style="@style/AddEditCameraItemRowItemEditText.Number"
+                        style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Number"
                         android:hint="@string/hint_external_rtsp"/>
 
                     <LinearLayout
@@ -231,7 +231,7 @@
 
                     <EditText
                         android:id="@+id/add_rtsp_edit"
-                        style="@style/AddEditCameraItemRowItemEditText.Text"
+                        style="@style/SingleLineEditText.AddEditCameraItemRowItemEditText.Text"
                         android:hint="@string/hint_rtsp_path"/>
 
                     <LinearLayout

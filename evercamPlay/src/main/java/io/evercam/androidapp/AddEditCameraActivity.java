@@ -33,6 +33,7 @@ import io.evercam.Vendor;
 import io.evercam.androidapp.addeditcamera.ModelSelectorFragment;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
+import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.tasks.AddCameraTask;
@@ -55,9 +56,9 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private EditText cameraNameEdit;
     private EditText usernameEdit;
     private EditText passwordEdit;
-    private EditText externalHostEdit;
-    private EditText externalHttpEdit;
-    private EditText externalRtspEdit;
+    private PortCheckEditText externalHostEdit;
+    private PortCheckEditText externalHttpEdit;
+    private PortCheckEditText externalRtspEdit;
     private EditText jpgUrlEdit;
     private EditText rtspUrlEdit;
     private TextView mHttpStatusTextView;
@@ -207,9 +208,9 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         ImageView rtspUrlExplainationImageButton = (ImageView) findViewById(R.id.rtsp_url_explanation_btn);
         usernameEdit = (EditText) findViewById(R.id.add_username_edit);
         passwordEdit = (EditText) findViewById(R.id.add_password_edit);
-        externalHostEdit = (EditText) findViewById(R.id.add_external_host_edit);
-        externalHttpEdit = (EditText) findViewById(R.id.add_external_http_edit);
-        externalRtspEdit = (EditText) findViewById(R.id.add_external_rtsp_edit);
+        externalHostEdit = (PortCheckEditText) findViewById(R.id.add_external_host_edit);
+        externalHttpEdit = (PortCheckEditText) findViewById(R.id.add_external_http_edit);
+        externalRtspEdit = (PortCheckEditText) findViewById(R.id.add_external_rtsp_edit);
         jpgUrlEdit = (EditText) findViewById(R.id.add_jpg_edit);
         rtspUrlEdit = (EditText) findViewById(R.id.add_rtsp_edit);
         mHttpStatusTextView = (TextView) findViewById(R.id.port_status_text_http);
@@ -285,7 +286,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             {
                 if(hasFocus)
                 {
-                    setUpRtspTextChangeListener(externalHttpEdit, mHttpStatusTextView);
+                    externalHttpEdit.hideStatusViewsOnTextChange(mHttpStatusTextView);
                 }
                 else
                 {
@@ -300,7 +301,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             {
                 if(hasFocus)
                 {
-                    setUpRtspTextChangeListener(externalRtspEdit, mRtspStatusTextView);
+                    externalRtspEdit.hideStatusViewsOnTextChange(mRtspStatusTextView);
                 }
                 else
                 {
@@ -316,7 +317,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             {
                 if(hasFocus)
                 {
-                    setUpRtspTextChangeListener(externalHostEdit,
+                    externalHostEdit.hideStatusViewsOnTextChange(
                             mRtspStatusTextView, mHttpStatusTextView);
                 }
                 else
@@ -390,117 +391,34 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
     private void checkPort(PortCheckTask.PortType type)
     {
-        String ipText = externalHostEdit.getText().toString();
+        if(type == PortCheckTask.PortType.HTTP)
+        {
+            checkPort(externalHostEdit,externalHttpEdit, mHttpStatusTextView, mHttpProgressBar);
+        }
+        else if(type == PortCheckTask.PortType.RTSP)
+        {
+            checkPort(externalHostEdit, externalRtspEdit, mRtspStatusTextView, mRtspProgressBar);
+        }
+    }
+
+    private void checkPort(EditText ipEditText, EditText portEditText, TextView statusView, ProgressBar progressBar)
+    {
+        String ipText = ipEditText.getText().toString();
 
         if(!ipText.isEmpty())
         {
-            if(type == PortCheckTask.PortType.HTTP)
+            String httpText = portEditText.getText().toString();
+            if(!httpText.isEmpty())
             {
-                String httpText = externalHttpEdit.getText().toString();
-                if(!httpText.isEmpty())
-                {
-                    launchPortCheckTask(ipText, httpText, type);
-                }
-            }
-            else if(type == PortCheckTask.PortType.RTSP)
-            {
-                String rtspText = externalRtspEdit.getText().toString();
-                if(!rtspText.isEmpty())
-                {
-                    launchPortCheckTask(ipText, rtspText, type);
-                }
+                launchPortCheckTask(ipText, httpText, statusView, progressBar);
             }
         }
     }
 
-    private void launchPortCheckTask(String ip, String port, PortCheckTask.PortType type)
+    private void launchPortCheckTask(String ip, String port, TextView statusView, ProgressBar progressBar)
     {
-        new PortCheckTask(ip, port, this, type)
+        new PortCheckTask(ip, port, this).bindStatusView(statusView).bindProgressView(progressBar)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
-    /**
-     * Clear the status text view when the text in EditText gets changed for the first time
-     *
-     * @param editText The EditText view to add text change listener
-     * @param textViews The status text view(s) list to clear after text changes
-     */
-    private void setUpRtspTextChangeListener(EditText editText, final TextView... textViews)
-    {
-        editText.addTextChangedListener(new TextWatcher()
-        {
-
-            boolean isFirstTimeChange = true;
-
-            @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
-
-            @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
-
-            @Override
-            public void afterTextChanged(Editable editable)
-            {
-                if(isFirstTimeChange)
-                {
-                    for(TextView textView : textViews)
-                    {
-                        clearPortStatusView(textView);
-                        isFirstTimeChange = false;
-                    }
-                }
-            }
-        });
-    }
-
-    private void clearPortStatusView(TextView textView)
-    {
-        textView.setVisibility(View.GONE);
-    }
-
-    public void clearHttpPortStatus()
-    {
-        clearPortStatusView(mHttpStatusTextView);
-    }
-
-    public void clearRtspPortStatus()
-    {
-        clearPortStatusView(mRtspStatusTextView);
-    }
-
-    private void updatePortStatusView(TextView textView, boolean isPortOpen)
-    {
-        textView.setVisibility(View.VISIBLE);
-        textView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
-        textView.setTextColor(isPortOpen ? getResources().getColor(R.color.mint_green) :
-                getResources().getColor(R.color.orange_red));
-    }
-
-    public void updateHttpPortStatus(boolean isOpen)
-    {
-        updatePortStatusView(mHttpStatusTextView, isOpen);
-        showHttpProgressView(false);
-    }
-
-    public void updateRtspPortStatus(boolean isOpen)
-    {
-        updatePortStatusView(mRtspStatusTextView, isOpen);
-        showRtspProgressView(false);
-    }
-
-    private void showProgressView(ProgressBar progressBar, boolean show)
-    {
-        progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
-    }
-
-    public void showHttpProgressView(boolean show)
-    {
-        showProgressView(mHttpProgressBar, show);
-    }
-
-    public void showRtspProgressView(boolean show)
-    {
-        showProgressView(mRtspProgressBar, show);
     }
 
     private void performAddEdit()

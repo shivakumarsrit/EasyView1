@@ -80,6 +80,9 @@
     <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="next">Next</string>
     <string name="report_model">Report New Model</string>
+    <string name="public_ip">External IP (or URL)*</string>
+    <string name="add_camera_http_port">HTTP Port*</string>
+    <string name="add_camera_rtsp_port">RTSP Port</string>
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
 
 </resources>

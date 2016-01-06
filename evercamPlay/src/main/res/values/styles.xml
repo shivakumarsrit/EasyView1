@@ -1,4 +1,4 @@
-<resources> xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
         <!--<item name="colorAccent">@color/orange_red</item>-->
@@ -153,6 +153,31 @@
         <item name="android:layout_gravity">left</item>
     </style>
 
+    <!-- Add camera view flip styles-->
+    <style name="AddCameraViewFlipTopLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.LightGray">
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+    
+    <style name="SingleLineEditText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+    
+    <style name="TextInputLayoutDark">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="hintTextAppearance">@style/TextAppearance.AppCompat.LightGray</item>
+    </style>
+
     <!-- Add/Edit camera details styles-->
     <style name="AddEditCameraItemRowLayout">
         <item name="android:layout_width">fill_parent</item>
@@ -167,19 +192,16 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:singleLine">true</item>
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText">
+        
         <item name="android:layout_marginRight">25dp</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText.Text">
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText.Text">
         <item name="android:inputType">text</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText.Number">
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText.Number">
         <item name="android:inputType">number</item>
     </style>
 
