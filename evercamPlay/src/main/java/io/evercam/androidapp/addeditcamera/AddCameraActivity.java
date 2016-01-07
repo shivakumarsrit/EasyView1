@@ -6,6 +6,9 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.CheckBox;
+import android.widget.CompoundButton;
+import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -39,6 +42,9 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private ProgressBar mHttpProgressBar;
     private ProgressBar mRtspProgressBar;
     private ExplanationView mConnectExplainView;
+    private LinearLayout mAuthLayout;
+    private CheckBox mAuthCheckBox;
+    private EditText mCamUsernameEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -83,6 +89,38 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mHttpProgressBar = (ProgressBar) findViewById(R.id.progress_bar_http);
         mRtspProgressBar = (ProgressBar) findViewById(R.id.progress_bar_rtsp);
         mConnectExplainView = (ExplanationView) findViewById(R.id.explanation_view_layout);
+        mAuthCheckBox = (CheckBox) findViewById(R.id.auth_check_box);
+        mAuthLayout = (LinearLayout) findViewById(R.id.auth_layout);
+        TextView requiredAuthText = (TextView) findViewById(R.id.required_auth_text);
+        mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
+        EditText camPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
+
+        View.OnFocusChangeListener showAuthTextListener = new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                showAuthExplanation();
+            }
+        };
+        mCamUsernameEditText.setOnFocusChangeListener(showAuthTextListener);
+        camPasswordEditText.setOnFocusChangeListener(showAuthTextListener);
+
+        mAuthCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
+            {
+                onAuthCheckedChange(isChecked);
+            }
+        });
+
+        requiredAuthText.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                mAuthCheckBox.setChecked(!mAuthCheckBox.isChecked());
+                onAuthCheckedChange(mAuthCheckBox.isChecked());
+            }
+        });
 
         mHttpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
@@ -147,6 +185,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mModelSelectorFragment.buildModelSpinner(modelList, null);
     }
 
+    private void onAuthCheckedChange(boolean isChecked)
+    {
+        mAuthLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
+
+        if(isChecked)
+        {
+            mCamUsernameEditText.requestFocus();
+            showAuthExplanation();
+        }
+    }
+
     private void showModelSelectorView()
     {
         mViewFlipper.setDisplayedChild(0);
@@ -157,12 +206,18 @@ public class AddCameraActivity extends ParentAppCompatActivity
     {
         mViewFlipper.setDisplayedChild(1);
         setTitle(R.string.title_connect_camera);
+        updateMessage(0, R.string.connect_camera_explain_message);
     }
 
     private void updateMessage(int titleId, int messageId)
     {
         mConnectExplainView.updateTitle(titleId);
         mConnectExplainView.updateMessage(messageId);
+    }
+
+    private void showAuthExplanation()
+    {
+        updateMessage(R.string.connect_camera_auth_title, R.string.connect_camera_auth_message);
     }
 
     private void checkPort(PortCheckTask.PortType type)

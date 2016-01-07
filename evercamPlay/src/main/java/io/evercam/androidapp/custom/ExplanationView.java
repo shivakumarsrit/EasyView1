@@ -2,6 +2,7 @@ package io.evercam.androidapp.custom;
 
 import android.content.Context;
 import android.util.AttributeSet;
+import android.view.View;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
@@ -35,7 +36,15 @@ public class ExplanationView extends LinearLayout
         TextView titleTextView = (TextView) findViewById(R.id.explain_text_title);
         if(titleTextView != null)
         {
-            titleTextView.setText(titleId);
+            if(titleId == 0)
+            {
+                titleTextView.setVisibility(View.GONE);
+            }
+            else
+            {
+                titleTextView.setText(titleId);
+                titleTextView.setVisibility(View.VISIBLE);
+            }
         }
     }
 
