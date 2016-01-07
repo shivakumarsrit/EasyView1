@@ -77,12 +77,19 @@
     <string name="button_text_edit">Edit</string>
 
     <!-- New add camera designs -->
-    <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="next">Next</string>
     <string name="report_model">Report New Model</string>
     <string name="public_ip">External IP (or URL)*</string>
     <string name="add_camera_http_port">HTTP Port*</string>
     <string name="add_camera_rtsp_port">RTSP Port</string>
+    <string name="live_support">Live Support</string>
+    <string name="check_for_snapshot">Check For Snapshot</string>
+    <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
-
+    <string name="connect_camera_ip_title">External IP / URL</string>
+    <string name="connect_camera_ip_message">Put the public URL or IP address of your camera. You will need to have setup port forwarding for your camera.</string>
+    <string name="connect_camera_http_title">HTTP Port</string>
+    <string name="connect_camera_http_message">The port should be a 2&#8211;5 digit number. The default HTTP port is 80.</string>
+    <string name="connect_camera_rtsp_title">RTSP Port</string>
+    <string name="connect_camera_rtsp_message">The port should be a 2&#8211;5 digit number. The default RTSP port is 554.</string>
 </resources>

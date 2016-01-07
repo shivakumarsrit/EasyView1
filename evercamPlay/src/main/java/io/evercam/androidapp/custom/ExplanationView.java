@@ -13,40 +13,38 @@ import io.evercam.androidapp.R;
  */
 public class ExplanationView extends LinearLayout
 {
-    private TextView mTitleTextView;
-    private TextView mMessageTextView;
+    private final String TAG = "ExplanationView";
 
     public ExplanationView(Context context)
     {
         super(context);
-        initSubviews();
     }
 
     public ExplanationView(Context context, AttributeSet attrs)
     {
         super(context, attrs);
-        initSubviews();
     }
 
     public ExplanationView(Context context, AttributeSet attrs, int defStyleAttr)
     {
         super(context, attrs, defStyleAttr);
-        initSubviews();
-    }
-
-    private void initSubviews()
-    {
-        mTitleTextView = (TextView) findViewById(R.id.explain_text_title);
-        mMessageTextView = (TextView) findViewById(R.id.explain_text_detail);
     }
 
     public void updateTitle(int titleId)
     {
-        mTitleTextView.setText(titleId);
+        TextView titleTextView = (TextView) findViewById(R.id.explain_text_title);
+        if(titleTextView != null)
+        {
+            titleTextView.setText(titleId);
+        }
     }
 
     public void updateMessage(int messageId)
     {
-        mMessageTextView.setText(messageId);
+        TextView messageTextView = (TextView) findViewById(R.id.explain_text_detail);
+        if(messageTextView != null)
+        {
+            messageTextView.setText(messageId);
+        }
     }
 }

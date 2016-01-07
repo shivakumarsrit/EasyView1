@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.View;
 import android.widget.Button;
+import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
@@ -81,7 +82,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mRtspStatusText = (TextView) findViewById(R.id.port_status_text_rtsp);
         mHttpProgressBar = (ProgressBar) findViewById(R.id.progress_bar_http);
         mRtspProgressBar = (ProgressBar) findViewById(R.id.progress_bar_rtsp);
-        mConnectExplainView = (ExplanationView) findViewById(R.id.explain_text_layout);
+        mConnectExplainView = (ExplanationView) findViewById(R.id.explanation_view_layout);
 
         mHttpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
         {
@@ -91,6 +92,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mHttpEditText.hideStatusViewsOnTextChange(mHttpStatusText);
+                    updateMessage(R.string.connect_camera_http_title, R.string.connect_camera_http_message);
                 }
                 else
                 {
@@ -106,6 +108,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mRtspEditText.hideStatusViewsOnTextChange(mRtspStatusText);
+                    updateMessage(R.string.connect_camera_rtsp_title, R.string.connect_camera_rtsp_message);
                 }
                 else
                 {
@@ -123,6 +126,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 {
                     mPublicIpEditText.hideStatusViewsOnTextChange(
                             mHttpStatusText, mRtspStatusText);
+                    updateMessage(R.string.connect_camera_ip_title, R.string.connect_camera_ip_message);
                 }
                 else
                 {
@@ -153,6 +157,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
     {
         mViewFlipper.setDisplayedChild(1);
         setTitle(R.string.title_connect_camera);
+    }
+
+    private void updateMessage(int titleId, int messageId)
+    {
+        mConnectExplainView.updateTitle(titleId);
+        mConnectExplainView.updateMessage(messageId);
     }
 
     private void checkPort(PortCheckTask.PortType type)

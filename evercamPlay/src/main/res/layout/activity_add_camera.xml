@@ -22,6 +22,7 @@
             <!-- First view - choose vendor and model -->
             <RelativeLayout
                 android:id="@+id/add_camera_model_selector_view"
+                android:layout_marginTop="15dp"
                 style="@style/AddCameraViewFlipTopLayout">
 
                 <include
@@ -33,10 +34,10 @@
                     android:name="io.evercam.androidapp.addeditcamera.ModelSelectorFragment"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/explain_text_layout"
+                    android:layout_below="@id/model_explain_text_layout"
                     android:layout_marginBottom="40dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="10dp">
+                    android:layout_marginTop="20dp">
                 </fragment>
 
                 <Button
@@ -64,14 +65,15 @@
                 style="@style/AddCameraViewFlipTopLayout">
 
                 <include
-                    android:id="@+id/connect_explain_text_layout"
+                    android:id="@+id/explanation_view_layout"
                     layout="@layout/explain_text_view"/>
 
                 <LinearLayout
                     android:id="@+id/connect_form_layout"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_below="@id/connect_explain_text_layout"
+                    android:layout_marginTop="5dp"
+                    android:layout_below="@id/explanation_view_layout"
                     android:layout_marginLeft="60dp"
                     android:layout_marginRight="60sp"
                     android:orientation="vertical">
@@ -82,7 +84,7 @@
 
                         <io.evercam.androidapp.custom.PortCheckEditText
                             android:id="@+id/external_ip_float_edit_text"
-                            style="@style/SingleLineEditText"
+                            style="@style/SingleLineEditText.Text"
                             android:hint="@string/public_ip"/>
                     </android.support.design.widget.TextInputLayout>
 
@@ -96,7 +98,7 @@
 
                             <io.evercam.androidapp.custom.PortCheckEditText
                                 android:id="@+id/http_float_edit_text"
-                                style="@style/SingleLineEditText"
+                                style="@style/SingleLineEditText.Number"
                                 android:hint="@string/add_camera_http_port"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -127,7 +129,7 @@
 
                             <io.evercam.androidapp.custom.PortCheckEditText
                                 android:id="@+id/rtsp_float_edit_text"
-                                style="@style/SingleLineEditText"
+                                style="@style/SingleLineEditText.Number"
                                 android:hint="@string/add_camera_rtsp_port"/>
                         </android.support.design.widget.TextInputLayout>
 
@@ -144,11 +146,39 @@
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:visibility="gone"/>
-
                         </RelativeLayout>
                     </RelativeLayout>
 
+                    <LinearLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:orientation="horizontal">
+                        <CheckBox
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"/>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="Requires Authentication"/>
+                    </LinearLayout>
+
+                    <Button
+                        android:id="@+id/check_snapshot_button"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:textColor="@drawable/signup_btn_txt_selector"
+                        android:background="@drawable/signup_btn_selector"
+                        android:text="@string/check_for_snapshot"/>
                 </LinearLayout>
+
+                <TextView
+                    android:id="@+id/live_support_text_link"
+                    style="@style/LinkText.Bold"
+                    android:layout_below="@id/connect_form_layout"
+                    android:layout_marginBottom="10dp"
+                    android:layout_marginTop="90dp"
+                    android:text="@string/live_support"/>
 
             </RelativeLayout>
         </ViewFlipper>
