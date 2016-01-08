@@ -43,8 +43,8 @@
     <string name="create_success">Camera created</string>
     <string name="patch_success">Camera settings updated</string>
     <string name="unknown_error">Unknown error, please contact support.</string>
-    <string name="host_required">Please specify IP address</string>
-    <string name="external_http_required">Please specify external HTTP port</string>
+    <string name="host_required">Please specify IP address or URL</string>
+    <string name="external_http_required">Please specify HTTP port</string>
     <string name="msg_port_range_error">Port range must between 1 and 65535</string>
     <string name="snapshot_test_port_closed">The IP address provided is not reachable at the port provided.</string>
     <string name="snapshot_test_failed">The port and URL are open but we can\'t seem to connect.  Check that the username and password are correct and the snapshot ending</string>
@@ -85,6 +85,8 @@
     <string name="live_support">Live Support</string>
     <string name="check_for_snapshot">Check For Snapshot</string>
     <string name="requires_auth">Requires Authentication</string>
+    <string name="hint_cam_username">Username</string>
+    <string name="hint_cam_password">Password</string>
     <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
     <string name="connect_camera_explain_title">Connect to your camera</string>

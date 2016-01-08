@@ -31,6 +31,7 @@ import io.evercam.Model;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.Vendor;
 import io.evercam.androidapp.addeditcamera.ModelSelectorFragment;
+import io.evercam.androidapp.addeditcamera.ValidateHostInput;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.custom.PortCheckEditText;
@@ -69,6 +70,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private LinearLayout rtspUrlLayout;
     private Button addEditButton;
     private ModelSelectorFragment modelSelectorFragment;
+    private ValidateHostInput mValidateHostInput;
 
     private DiscoveredCamera discoveredCamera;
     private EvercamCamera cameraEdit;
@@ -221,6 +223,33 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         rtspUrlLayout = (LinearLayout) findViewById(R.id.add_rtsp_url_layout);
         addEditButton = (Button) findViewById(R.id.button_add_edit_camera);
         Button testButton = (Button) findViewById(R.id.button_test_snapshot);
+
+        mValidateHostInput = new ValidateHostInput(externalHostEdit,
+            externalHttpEdit, externalRtspEdit) {
+        @Override
+        public void onHostEmpty()
+        {
+            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.host_required));
+        }
+
+        @Override
+        public void onHttpEmpty()
+        {
+            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.external_http_required));
+        }
+
+        @Override
+        public void onInvalidHttpPort()
+        {
+            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
+        }
+
+        @Override
+        public void onInvalidRtspPort()
+        {
+            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
+        }
+    };
 
         if(cameraEdit != null)
         {
@@ -604,138 +633,79 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
-        String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
-        if(!vendorId.isEmpty())
+        if(mValidateHostInput.passed())
         {
-            cameraBuilder.setVendor(vendorId);
-        }
+            cameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
+            cameraBuilder.setExternalHost(externalHostEdit.getText().toString());
+            int externalRtspInt = externalRtspEdit.getPort();
+            if(externalRtspInt != 0)
+            {
+                cameraBuilder.setExternalRtspPort(externalRtspInt);
+            }
 
-        String modelId = modelSelectorFragment.getModelIdFromSpinner();
-        if(!modelId.isEmpty())
-        {
-            cameraBuilder.setModel(modelId);
-        }
+            String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
+            if(!vendorId.isEmpty())
+            {
+                cameraBuilder.setVendor(vendorId);
+            }
 
-        String username = usernameEdit.getText().toString();
-        if(!username.isEmpty())
-        {
-            cameraBuilder.setCameraUsername(username);
-        }
+            String modelId = modelSelectorFragment.getModelIdFromSpinner();
+            if(!modelId.isEmpty())
+            {
+                cameraBuilder.setModel(modelId);
+            }
 
-        String password = passwordEdit.getText().toString();
-        if(!password.isEmpty())
-        {
-            cameraBuilder.setCameraPassword(password);
-        }
+            String username = usernameEdit.getText().toString();
+            if(!username.isEmpty())
+            {
+                cameraBuilder.setCameraUsername(username);
+            }
 
-        String externalHost = externalHostEdit.getText().toString();
-        if(externalHost.isEmpty())
-        {
-            CustomToast.showInCenter(this, getString(R.string.host_required));
-            return null;
+            String password = passwordEdit.getText().toString();
+            if(!password.isEmpty())
+            {
+                cameraBuilder.setCameraPassword(password);
+            }
+
+            String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
+            if(!jpgUrl.isEmpty())
+            {
+                cameraBuilder.setJpgUrl(jpgUrl);
+            }
+
+            String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
+            if(!rtspUrl.isEmpty())
+            {
+                cameraBuilder.setH264Url(rtspUrl);
+            }
+
+            //Attach additional info for discovered camera as well
+            if(discoveredCamera != null)
+            {
+                cameraBuilder.setInternalHost(discoveredCamera.getIP());
+
+                if(discoveredCamera.hasMac())
+                {
+                    cameraBuilder.setMacAddress(discoveredCamera.getMAC());
+                }
+
+                if(discoveredCamera.hasHTTP())
+                {
+                    cameraBuilder.setInternalHttpPort(discoveredCamera.getHttp());
+                }
+
+                if(discoveredCamera.hasRTSP())
+                {
+                    cameraBuilder.setInternalRtspPort(discoveredCamera.getRtsp());
+                }
+            }
         }
         else
         {
-            cameraBuilder.setExternalHost(externalHost);
-
-            String externalHttp = externalHttpEdit.getText().toString();
-            if(!externalHttp.isEmpty())
-            {
-                int externalHttpInt = getPortIntByString(externalHttp);
-                if(externalHttpInt != 0)
-                {
-                    cameraBuilder.setExternalHttpPort(externalHttpInt);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-
-            String externalRtsp = externalRtspEdit.getText().toString();
-            if(!externalRtsp.isEmpty())
-            {
-                int externalRtspInt = getPortIntByString(externalRtsp);
-                if(externalRtspInt != 0)
-                {
-                    cameraBuilder.setExternalRtspPort(externalRtspInt);
-                }
-                else
-                {
-                    return null;
-                }
-            }
-        }
-
-        String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
-        if(!jpgUrl.isEmpty())
-        {
-            cameraBuilder.setJpgUrl(jpgUrl);
-        }
-
-        String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
-        if(!rtspUrl.isEmpty())
-        {
-            cameraBuilder.setH264Url(rtspUrl);
-        }
-
-        //Attach additional info for discovered camera as well
-        if(discoveredCamera != null)
-        {
-            cameraBuilder.setInternalHost(discoveredCamera.getIP());
-
-            if(discoveredCamera.hasMac())
-            {
-                cameraBuilder.setMacAddress(discoveredCamera.getMAC());
-            }
-
-            if(discoveredCamera.hasHTTP())
-            {
-                cameraBuilder.setInternalHttpPort(discoveredCamera.getHttp());
-            }
-
-            if(discoveredCamera.hasRTSP())
-            {
-                cameraBuilder.setInternalRtspPort(discoveredCamera.getRtsp());
-            }
+            return null;
         }
 
         return cameraBuilder;
-    }
-
-    /**
-     * Convert port string to port int, show error toast if port number is not valid,
-     *
-     * @return int port number, if port is not valid, return 0.
-     */
-    private int getPortIntByString(String portString)
-    {
-        try
-        {
-            int portInt = Integer.valueOf(portString);
-            if(portInt > 0)
-            {
-                if(portInt <= 65535)
-                {
-                    return portInt;
-                }
-                else
-                {
-                    CustomToast.showInCenter(this, getString(R.string.msg_port_range_error));
-                    return 0;
-                }
-            }
-            else
-            {
-                CustomToast.showInCenter(this, getString(R.string.msg_port_range_error));
-                return 0;
-            }
-        }
-        catch(NumberFormatException e)
-        {
-            CustomToast.showInCenter(this, getString(R.string.msg_port_range_error));
-            return 0;
-        }
     }
 
     /**
@@ -745,80 +715,52 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     {
         PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
-        String cameraName = cameraNameEdit.getText().toString();
-        if(cameraName.isEmpty())
+        if(mValidateHostInput.passed())
         {
-            CustomToast.showInCenter(this, getString(R.string.name_required));
-            return null;
-        }
-        else if(!cameraName.equals(cameraEdit.getName()))
-        {
-            patchCameraBuilder.setName(cameraName);
-        }
-
-        String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
-        patchCameraBuilder.setVendor(vendorId);
-
-        String modelName = modelSelectorFragment.getModelIdFromSpinner();
-        patchCameraBuilder.setModel(modelName);
-
-        String username = usernameEdit.getText().toString();
-        String password = passwordEdit.getText().toString();
-        if(!username.equals(cameraEdit.getUsername()) || !password.equals(cameraEdit.getPassword()))
-        {
-            patchCameraBuilder.setCameraUsername(username);
-            patchCameraBuilder.setCameraPassword(password);
-        }
-
-        String externalHost = externalHostEdit.getText().toString();
-        if(externalHost.isEmpty())
-        {
-            CustomToast.showInCenter(this, getString(R.string.host_required));
-            return null;
-        }
-        else
-        {
-            patchCameraBuilder.setExternalHost(externalHost);
-
-            String externalHttp = externalHttpEdit.getText().toString();
-            if(!externalHttp.isEmpty())
+            patchCameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
+            patchCameraBuilder.setExternalHost(externalHostEdit.getText().toString());
+            int externalRtspInt = externalRtspEdit.getPort();
+            if(externalRtspInt != 0)
             {
-                int externalHttpInt = getPortIntByString(externalHttp);
-                if(externalHttpInt != 0)
-                {
-                    patchCameraBuilder.setExternalHttpPort(externalHttpInt);
-                }
-                else
-                {
-                    return null;
-                }
+                patchCameraBuilder.setExternalRtspPort(externalRtspInt);
             }
 
-            String externalRtsp = externalRtspEdit.getText().toString();
-            if(!externalRtsp.isEmpty())
+            String cameraName = cameraNameEdit.getText().toString();
+            if(cameraName.isEmpty())
             {
-                int externalRtspInt = getPortIntByString(externalRtsp);
-                if(externalRtspInt != 0)
-                {
-                    patchCameraBuilder.setExternalRtspPort(externalRtspInt);
-                }
-                else
-                {
-                    return null;
-                }
+                CustomToast.showInCenter(this, getString(R.string.name_required));
+                return null;
             }
-        }
+            else if(!cameraName.equals(cameraEdit.getName()))
+            {
+                patchCameraBuilder.setName(cameraName);
+            }
 
-        String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
-        if(!jpgUrl.equals(cameraEdit.getJpgPath()))
-        {
-            patchCameraBuilder.setJpgUrl(jpgUrl);
-        }
+            String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
+            patchCameraBuilder.setVendor(vendorId);
 
-        String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
-        if(!rtspUrl.equals(cameraEdit.getH264Path()))
-        {
-            patchCameraBuilder.setH264Url(rtspUrl);
+            String modelName = modelSelectorFragment.getModelIdFromSpinner();
+            patchCameraBuilder.setModel(modelName);
+
+            String username = usernameEdit.getText().toString();
+            String password = passwordEdit.getText().toString();
+            if(!username.equals(cameraEdit.getUsername()) || !password.equals(cameraEdit.getPassword()))
+            {
+                patchCameraBuilder.setCameraUsername(username);
+                patchCameraBuilder.setCameraPassword(password);
+            }
+
+            String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
+            if(!jpgUrl.equals(cameraEdit.getJpgPath()))
+            {
+                patchCameraBuilder.setJpgUrl(jpgUrl);
+            }
+
+            String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
+            if(!rtspUrl.equals(cameraEdit.getH264Path()))
+            {
+                patchCameraBuilder.setH264Url(rtspUrl);
+            }
         }
 
         return patchCameraBuilder;
@@ -893,13 +835,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
     private void launchTestSnapshot()
     {
-        String externalHost = externalHostEdit.getText().toString();
-
-        if(externalHost.isEmpty())
-        {
-            CustomToast.showInCenter(this, getString(R.string.host_required));
-        }
-        else
+        if(mValidateHostInput.passed())
         {
             final String username = usernameEdit.getText().toString();
             final String password = passwordEdit.getText().toString();
@@ -931,13 +867,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
         else
         {
-            int externalHttpInt = getPortIntByString(externalHttp);
+            int externalHttpInt = externalHttpEdit.getPort();
             if(externalHttpInt != 0)
             {
                 return getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
             }
             else
             {
+                CustomToast.showInCenter(this, getString(R.string.msg_port_range_error));
                 return null;
             }
         }

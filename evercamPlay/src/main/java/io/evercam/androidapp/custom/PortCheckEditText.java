@@ -62,4 +62,32 @@ public class PortCheckEditText extends EditText
     {
         textView.setVisibility(View.GONE);
     }
+
+    /**
+     * Return the port number if it's valid. Otherwise return 0.
+     *
+     * @return a number between 0 and 65535
+     */
+    public int getPort()
+    {
+        return isPortStringValid() ? Integer.valueOf(getText().toString()) : 0;
+    }
+
+    public boolean isPortStringValid()
+    {
+        String portString = getText().toString();
+        try
+        {
+            int portInt = Integer.valueOf(portString);
+            if(portInt > 0 && portInt <= 65535)
+            {
+                return true;
+            }
+        }
+        catch(NumberFormatException e)
+        {
+            //The exception is handled outside the catch
+        }
+        return false;
+    }
 }

@@ -179,7 +179,7 @@
                             <EditText
                                 android:id="@+id/cam_username_float_edit_text"
                                 style="@style/SingleLineEditText.Text"
-                                android:hint="Username"/>
+                                android:hint="@string/hint_cam_username"/>
                         </android.support.design.widget.TextInputLayout>
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="0dp"
@@ -190,7 +190,7 @@
                             <EditText
                                 android:id="@+id/cam_password_float_edit_text"
                                 style="@style/SingleLineEditText.Text"
-                                android:hint="Password"/>
+                                android:hint="@string/hint_cam_password"/>
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 

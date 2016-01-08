@@ -20,6 +20,7 @@ import io.evercam.Model;
 import io.evercam.Vendor;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.ExplanationView;
 import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.PortCheckTask;
@@ -45,6 +46,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private LinearLayout mAuthLayout;
     private CheckBox mAuthCheckBox;
     private EditText mCamUsernameEditText;
+    private Button mCheckSnapshotButton;
+    private ValidateHostInput mValidateHostInput;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -55,9 +58,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setUpDefaultToolbar();
 
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
-        FragmentManager fragmentManager = getSupportFragmentManager();
 
         /** Init UI for model selector screen */
+        initModelSelectorUI();
+
+        /** Init UI for connect camera screen */
+        initConnectCameraUI();
+    }
+
+    private void initModelSelectorUI()
+    {
+        FragmentManager fragmentManager = getSupportFragmentManager();
         mModelSelectorFragment = (ModelSelectorFragment)
                 fragmentManager.findFragmentById(R.id.add_camera_model_selector_fragment);
         mModelSelectorFragment.hideModelQuestionMark();
@@ -79,8 +90,10 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 showConnectCameraView();
             }
         });
+    }
 
-        /** Init UI for connect camera screen */
+    private void initConnectCameraUI()
+    {
         mPublicIpEditText = (PortCheckEditText) findViewById(R.id.external_ip_float_edit_text);
         mHttpEditText = (PortCheckEditText) findViewById(R.id.http_float_edit_text);
         mRtspEditText = (PortCheckEditText) findViewById(R.id.rtsp_float_edit_text);
@@ -94,6 +107,18 @@ public class AddCameraActivity extends ParentAppCompatActivity
         TextView requiredAuthText = (TextView) findViewById(R.id.required_auth_text);
         mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
         EditText camPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
+        mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
+
+        mCheckSnapshotButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(mValidateHostInput.passed())
+                {
+
+                }
+            }
+        });
 
         View.OnFocusChangeListener showAuthTextListener = new View.OnFocusChangeListener() {
             @Override
@@ -173,6 +198,37 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 }
             }
         });
+
+        mValidateHostInput = new ValidateHostInput(mPublicIpEditText,
+                mHttpEditText, mRtspEditText) {
+            @Override
+            public void onHostEmpty()
+            {
+                mPublicIpEditText.requestFocus();
+                CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.host_required));
+            }
+
+            @Override
+            public void onHttpEmpty()
+            {
+                mHttpEditText.requestFocus();
+                CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.external_http_required));
+            }
+
+            @Override
+            public void onInvalidHttpPort()
+            {
+                mHttpEditText.requestFocus();
+                CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.msg_port_range_error));
+            }
+
+            @Override
+            public void onInvalidRtspPort()
+            {
+                mRtspEditText.requestFocus();
+                CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.msg_port_range_error));
+            }
+        };
     }
 
     public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList)
