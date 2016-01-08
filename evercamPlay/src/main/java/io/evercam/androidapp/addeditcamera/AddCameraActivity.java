@@ -1,5 +1,6 @@
 package io.evercam.androidapp.addeditcamera;
 
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
@@ -16,14 +17,18 @@ import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
+import io.evercam.Defaults;
+import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.Vendor;
+import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.ExplanationView;
 import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.PortCheckTask;
+import io.evercam.androidapp.tasks.TestSnapshotTask;
 
 public class AddCameraActivity extends ParentAppCompatActivity
 {
@@ -31,10 +36,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     private ViewFlipper mViewFlipper;
 
-    /** Model selector UI elements*/
+    /** Model selector */
     private ModelSelectorFragment mModelSelectorFragment;
+    private Defaults mSelectedModelDefaults;
 
-    /** Connect camera UI elements */
+    /** Connect camera */
     private PortCheckEditText mPublicIpEditText;
     private PortCheckEditText mHttpEditText;
     private PortCheckEditText mRtspEditText;
@@ -46,6 +52,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private LinearLayout mAuthLayout;
     private CheckBox mAuthCheckBox;
     private EditText mCamUsernameEditText;
+    private EditText mCamPasswordEditText;
     private Button mCheckSnapshotButton;
     private ValidateHostInput mValidateHostInput;
 
@@ -106,8 +113,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mAuthLayout = (LinearLayout) findViewById(R.id.auth_layout);
         TextView requiredAuthText = (TextView) findViewById(R.id.required_auth_text);
         mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
-        EditText camPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
+        mCamPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
         mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
+        TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
+
+        liveSupportLink.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                Log.d(TAG, "Live support link clicked");
+            }
+        });
 
         mCheckSnapshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -115,7 +131,27 @@ public class AddCameraActivity extends ParentAppCompatActivity
             {
                 if(mValidateHostInput.passed())
                 {
+                    final String username = mCamUsernameEditText.getText().toString();
+                    final String password = mCamPasswordEditText.getText().toString();
+                    final String externalHost = mPublicIpEditText.getText().toString();
+                    final String externalHttp = mHttpEditText.getText().toString();
+                    String jpgUrlString = "";
+                    try
+                    {
+                        jpgUrlString = mSelectedModelDefaults.getJpgURL();
+                        Log.d(TAG, "Snapshot ending: " + jpgUrlString);
+                    }
+                    catch(EvercamException e)
+                    {
+                        e.printStackTrace();
+                    }
+                    final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
 
+                    String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
+
+                    new TestSnapshotTask(externalUrl, jpgUrl, username, password,
+                            AddCameraActivity.this).executeOnExecutor(AsyncTask
+                            .THREAD_POOL_EXECUTOR);
                 }
             }
         });
@@ -128,7 +164,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
             }
         };
         mCamUsernameEditText.setOnFocusChangeListener(showAuthTextListener);
-        camPasswordEditText.setOnFocusChangeListener(showAuthTextListener);
+        mCamPasswordEditText.setOnFocusChangeListener(showAuthTextListener);
 
         mAuthCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -231,6 +267,18 @@ public class AddCameraActivity extends ParentAppCompatActivity
         };
     }
 
+    public void onDefaultsLoaded(Model model)
+    {
+        try
+        {
+            mSelectedModelDefaults = model.getDefaults();
+        }
+        catch(EvercamException e)
+        {
+            e.printStackTrace();
+        }
+    }
+
     public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList)
     {
         mModelSelectorFragment.buildVendorSpinner(vendorList, null);
@@ -249,6 +297,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
         {
             mCamUsernameEditText.requestFocus();
             showAuthExplanation();
+        }
+        else
+        {
+            mCamUsernameEditText.setText("");
+            mCamUsernameEditText.setText("");
         }
     }
 

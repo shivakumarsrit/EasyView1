@@ -5,8 +5,6 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
-import android.text.Editable;
-import android.text.TextWatcher;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -839,44 +837,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         {
             final String username = usernameEdit.getText().toString();
             final String password = passwordEdit.getText().toString();
-            String jpgUrlString = jpgUrlEdit.getText().toString();
+            final String externalHost = externalHostEdit.getText().toString();
+            final String externalHttp = externalHttpEdit.getText().toString();
+            final String jpgUrlString = jpgUrlEdit.getText().toString();
             final String jpgUrl = buildUrlEndingWithSlash(jpgUrlString);
 
-            String externalUrl = getExternalUrl();
-            if(externalUrl != null)
-            {
-                new TestSnapshotTask(externalUrl, jpgUrl, username, password,
+            String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
+
+            new TestSnapshotTask(externalUrl, jpgUrl, username, password,
                         AddEditCameraActivity.this).executeOnExecutor(AsyncTask
                         .THREAD_POOL_EXECUTOR);
-            }
-        }
-    }
-
-    /**
-     * Check external HTTP port is filled or not and return external URL with
-     * snapshot ending.
-     */
-    private String getExternalUrl()
-    {
-        String externalHost = externalHostEdit.getText().toString();
-        String externalHttp = externalHttpEdit.getText().toString();
-        if(externalHttp.isEmpty())
-        {
-            CustomToast.showInCenter(this, getString(R.string.external_http_required));
-            return null;
-        }
-        else
-        {
-            int externalHttpInt = externalHttpEdit.getPort();
-            if(externalHttpInt != 0)
-            {
-                return getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
-            }
-            else
-            {
-                CustomToast.showInCenter(this, getString(R.string.msg_port_range_error));
-                return null;
-            }
         }
     }
 
