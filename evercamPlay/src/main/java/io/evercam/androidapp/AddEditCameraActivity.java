@@ -456,10 +456,6 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                 new AddCameraTask(cameraBuilder.build(), AddEditCameraActivity.this,
                         isFromScan).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
-            else
-            {
-                Log.e(TAG, "Camera to add is null");
-            }
         }
     }
 
@@ -636,10 +632,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             cameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
             cameraBuilder.setExternalHost(externalHostEdit.getText().toString());
             int externalRtspInt = externalRtspEdit.getPort();
-            if(externalRtspInt != 0)
-            {
-                cameraBuilder.setExternalRtspPort(externalRtspInt);
-            }
+
+            cameraBuilder.setExternalRtspPort(externalRtspInt);
 
             String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
             if(!vendorId.isEmpty())

@@ -17,6 +17,7 @@ import android.widget.ViewFlipper;
 
 import java.util.ArrayList;
 
+import io.evercam.CameraBuilder;
 import io.evercam.Defaults;
 import io.evercam.EvercamException;
 import io.evercam.Model;
@@ -27,6 +28,7 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.ExplanationView;
 import io.evercam.androidapp.custom.PortCheckEditText;
+import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
 import io.intercom.android.sdk.Intercom;
@@ -287,9 +289,13 @@ public class AddCameraActivity extends ParentAppCompatActivity
             @Override
             public void onClick(View v)
             {
-                if(!mCameraNameEditText.getText().toString().isEmpty())
+                CameraBuilder cameraBuilder = buildCamera();
+                if(cameraBuilder != null)
                 {
-
+                    //Set camera status to be online as a temporary fix for #133
+                    cameraBuilder.setOnline(true);
+                    new AddCameraTask(cameraBuilder.build(), AddCameraActivity.this,
+                            false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         });
@@ -396,5 +402,77 @@ public class AddCameraActivity extends ParentAppCompatActivity
             }
         }
         return jpgUrlString;
+    }
+
+    private String getRtspEndingFromDefaults()
+    {
+        String rtspUrlString = "";
+        if(mSelectedModelDefaults != null)
+        {
+            try
+            {
+                rtspUrlString = mSelectedModelDefaults.getH264URL();
+            }
+            catch(EvercamException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return rtspUrlString;
+    }
+
+    private CameraBuilder buildCamera()
+    {
+        String cameraName = mCameraNameEditText.getText().toString();
+
+        if(!cameraName.isEmpty())
+        {
+            CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
+            cameraBuilder.setExternalHttpPort(mHttpEditText.getPort());
+            cameraBuilder.setExternalHost(mPublicIpEditText.getText().toString());
+            int externalRtspInt = mRtspEditText.getPort();
+
+            cameraBuilder.setExternalRtspPort(externalRtspInt);
+
+            String vendorId = mModelSelectorFragment.getVendorIdFromSpinner();
+            if(!vendorId.isEmpty())
+            {
+                cameraBuilder.setVendor(vendorId);
+            }
+
+            String modelId = mModelSelectorFragment.getModelIdFromSpinner();
+            if(!modelId.isEmpty())
+            {
+                cameraBuilder.setModel(modelId);
+            }
+
+            String username = mCamUsernameEditText.getText().toString();
+            if(!username.isEmpty())
+            {
+                cameraBuilder.setCameraUsername(username);
+            }
+
+            String password = mCamPasswordEditText.getText().toString();
+            if(!password.isEmpty())
+            {
+                cameraBuilder.setCameraPassword(password);
+            }
+
+            String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getJpgEndingFromDefaults());
+            if(!jpgUrl.isEmpty())
+            {
+                cameraBuilder.setJpgUrl(jpgUrl);
+            }
+
+            String rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getRtspEndingFromDefaults());
+            if(!rtspUrl.isEmpty())
+            {
+                cameraBuilder.setH264Url(rtspUrl);
+            }
+
+            return cameraBuilder;
+        }
+
+        return null;
     }
 }
