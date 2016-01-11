@@ -202,6 +202,15 @@
                         android:textColor="@drawable/signup_btn_txt_selector"
                         android:background="@drawable/signup_btn_selector"
                         android:text="@string/check_for_snapshot"/>
+
+                    <Button
+                        android:id="@+id/connect_camera_next_button"
+                        android:layout_marginTop="20dp"
+                        android:layout_width="match_parent"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_selector"
+                        android:text="@string/next"
+                        android:visibility="gone"/>
                 </LinearLayout>
 
                 <TextView
@@ -211,6 +220,46 @@
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="50dp"
                     android:text="@string/live_support"/>
+
+            </RelativeLayout>
+
+            <!-- Third view - name the camera -->
+            <RelativeLayout
+                style="@style/AddCameraViewFlipTopLayout"
+                android:layout_marginTop="25dp">
+
+                <include
+                    android:id="@+id/name_explanation_layout"
+                    layout="@layout/explain_text_view"/>
+
+                <LinearLayout
+                    android:layout_below="@+id/name_explanation_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="25dp"
+                    android:layout_marginLeft="50dp"
+                    android:layout_marginRight="50sp"
+                    android:orientation="vertical">
+
+                    <android.support.design.widget.TextInputLayout
+                        android:id="@+id/input_layout_camera_name"
+                        style="@style/TextInputLayoutDark">
+
+                        <EditText
+                            android:id="@+id/cam_name_float_edit_text"
+                            style="@style/SingleLineEditText.Text"
+                            android:hint="@string/hint_name_your_camera"/>
+                    </android.support.design.widget.TextInputLayout>
+
+                    <Button
+                        android:id="@+id/create_camera_button"
+                        android:layout_width="match_parent"
+                        android:layout_marginTop="30dp"
+                        android:layout_height="40dp"
+                        android:background="@drawable/btn_selector"
+                        android:text="@string/create_camera"/>
+
+                </LinearLayout>
 
             </RelativeLayout>
         </ViewFlipper>

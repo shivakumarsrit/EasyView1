@@ -77,6 +77,7 @@
     <string name="title_activity_add_camera">Add Camera</string>
     <string name="title_choose_model">Vendor &amp; Model</string>
     <string name="title_connect_camera">Connect Camera</string>
+    <string name="title_name_camera">Camera Name</string>
     <string name="title_activity_view_camera">Camera Details</string>
     <string name="title_activity_scan">Network Scan</string>
     <string name="title_release_notes">Release Notes</string>

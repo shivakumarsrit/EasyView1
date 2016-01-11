@@ -29,6 +29,7 @@ import io.evercam.androidapp.custom.ExplanationView;
 import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
+import io.intercom.android.sdk.Intercom;
 
 public class AddCameraActivity extends ParentAppCompatActivity
 {
@@ -54,7 +55,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private EditText mCamUsernameEditText;
     private EditText mCamPasswordEditText;
     private Button mCheckSnapshotButton;
+    private Button mConnectCameraNextButton;
     private ValidateHostInput mValidateHostInput;
+
+    /** Camera name view */
+    private EditText mCameraNameEditText;
 
     @Override
     protected void onCreate(Bundle savedInstanceState)
@@ -71,6 +76,9 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         /** Init UI for connect camera screen */
         initConnectCameraUI();
+
+        /** Init UI for camera name view */
+        initCameraNameView();
     }
 
     private void initModelSelectorUI()
@@ -115,13 +123,22 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
         mCamPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
         mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
+        mConnectCameraNextButton = (Button) findViewById(R.id.connect_camera_next_button);
         TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
 
         liveSupportLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
-                Log.d(TAG, "Live support link clicked");
+                Intercom.client().displayConversationsList();
+            }
+        });
+
+        mConnectCameraNextButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                showCameraNameView();
             }
         });
 
@@ -135,17 +152,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
                     final String password = mCamPasswordEditText.getText().toString();
                     final String externalHost = mPublicIpEditText.getText().toString();
                     final String externalHttp = mHttpEditText.getText().toString();
-                    String jpgUrlString = "";
-                    try
-                    {
-                        jpgUrlString = mSelectedModelDefaults.getJpgURL();
-                        Log.d(TAG, "Snapshot ending: " + jpgUrlString);
-                    }
-                    catch(EvercamException e)
-                    {
-                        e.printStackTrace();
-                    }
-                    final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
+
+                    final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getJpgEndingFromDefaults());
 
                     String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
@@ -191,7 +199,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mHttpEditText.hideStatusViewsOnTextChange(mHttpStatusText);
-                    updateMessage(R.string.connect_camera_http_title, R.string.connect_camera_http_message);
+                    updateMessage(mConnectExplainView, R.string.connect_camera_http_title, R.string.connect_camera_http_message);
                 }
                 else
                 {
@@ -207,7 +215,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mRtspEditText.hideStatusViewsOnTextChange(mRtspStatusText);
-                    updateMessage(R.string.connect_camera_rtsp_title, R.string.connect_camera_rtsp_message);
+                    updateMessage(mConnectExplainView, R.string.connect_camera_rtsp_title, R.string.connect_camera_rtsp_message);
                 }
                 else
                 {
@@ -225,7 +233,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 {
                     mPublicIpEditText.hideStatusViewsOnTextChange(
                             mHttpStatusText, mRtspStatusText);
-                    updateMessage(R.string.connect_camera_ip_title, R.string.connect_camera_ip_message);
+                    updateMessage(mConnectExplainView, R.string.connect_camera_ip_title, R.string.connect_camera_ip_message);
                 }
                 else
                 {
@@ -267,6 +275,26 @@ public class AddCameraActivity extends ParentAppCompatActivity
         };
     }
 
+    public void initCameraNameView()
+    {
+        ExplanationView nameExplainView = (ExplanationView) findViewById(R.id.name_explanation_layout);
+        mCameraNameEditText = (EditText) findViewById(R.id.cam_name_float_edit_text);
+        Button createCameraButton = (Button) findViewById(R.id.create_camera_button);
+
+        updateMessage(nameExplainView, R.string.name_camera_title, R.string.name_camera_message);
+
+        createCameraButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                if(!mCameraNameEditText.getText().toString().isEmpty())
+                {
+
+                }
+            }
+        });
+    }
+
     public void onDefaultsLoaded(Model model)
     {
         try
@@ -305,6 +333,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
         }
     }
 
+    public void showConnectCameraNextButton(boolean show)
+    {
+        mConnectCameraNextButton.setVisibility(show ? View.VISIBLE : View.GONE);
+        mCheckSnapshotButton.setVisibility(show ? View.GONE : View.VISIBLE);
+    }
+
     private void showModelSelectorView()
     {
         mViewFlipper.setDisplayedChild(0);
@@ -315,18 +349,24 @@ public class AddCameraActivity extends ParentAppCompatActivity
     {
         mViewFlipper.setDisplayedChild(1);
         setTitle(R.string.title_connect_camera);
-        updateMessage(0, R.string.connect_camera_explain_message);
+        updateMessage(mConnectExplainView, 0, R.string.connect_camera_explain_message);
     }
 
-    private void updateMessage(int titleId, int messageId)
+    private void showCameraNameView()
     {
-        mConnectExplainView.updateTitle(titleId);
-        mConnectExplainView.updateMessage(messageId);
+        mViewFlipper.setDisplayedChild(2);
+        setTitle(R.string.title_name_camera);
+    }
+
+    private void updateMessage(ExplanationView explanationView, int titleId, int messageId)
+    {
+        explanationView.updateTitle(titleId);
+        explanationView.updateMessage(messageId);
     }
 
     private void showAuthExplanation()
     {
-        updateMessage(R.string.connect_camera_auth_title, R.string.connect_camera_auth_message);
+        updateMessage(mConnectExplainView, R.string.connect_camera_auth_title, R.string.connect_camera_auth_message);
     }
 
     private void checkPort(PortCheckTask.PortType type)
@@ -339,5 +379,22 @@ public class AddCameraActivity extends ParentAppCompatActivity
         {
             checkPort(mPublicIpEditText, mRtspEditText, mRtspStatusText, mRtspProgressBar);
         }
+    }
+
+    private String getJpgEndingFromDefaults()
+    {
+        String jpgUrlString = "";
+        if(mSelectedModelDefaults != null)
+        {
+            try
+            {
+                jpgUrlString = mSelectedModelDefaults.getJpgURL();
+            }
+            catch(EvercamException e)
+            {
+                e.printStackTrace();
+            }
+        }
+        return jpgUrlString;
     }
 }

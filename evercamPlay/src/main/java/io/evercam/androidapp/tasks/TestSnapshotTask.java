@@ -12,6 +12,7 @@ import java.net.URL;
 import io.evercam.Camera;
 import io.evercam.Snapshot;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -92,6 +93,11 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
 
         if(drawable != null)
         {
+            if(activity instanceof AddCameraActivity)
+            {
+                ((AddCameraActivity) activity).showConnectCameraNextButton(true);
+            }
+
             CustomedDialog.getSnapshotDialog(activity, drawable).show();
 
             new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)
