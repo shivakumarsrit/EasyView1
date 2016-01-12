@@ -1,12 +1,15 @@
 package io.evercam.androidapp;
 
 import android.animation.ValueAnimator;
+import android.content.Context;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
+import android.util.Log;
 import android.view.View;
+import android.view.inputmethod.InputMethodManager;
 import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -24,6 +27,8 @@ import io.intercom.android.sdk.identity.Registration;
 
 public class ParentAppCompatActivity extends AppCompatActivity
 {
+    private final String TAG = "ParentAppCompatActivity";
+
     private PropertyReader propertyReader;
 
     private static MixpanelHelper mixpanelHelper;
@@ -222,5 +227,17 @@ public class ParentAppCompatActivity extends AppCompatActivity
     {
         new PortCheckTask(ip, port, getApplicationContext()).bindStatusView(statusView).bindProgressView(progressBar)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+    }
+
+    protected void hideSoftKeyboard()
+    {
+        InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context
+                .INPUT_METHOD_SERVICE);
+
+        if(getCurrentFocus() != null)
+        {
+            inputMethodManager.hideSoftInputFromWindow(getCurrentFocus()
+                    .getWindowToken(), 0);
+        }
     }
 }

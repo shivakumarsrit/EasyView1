@@ -11,6 +11,7 @@ import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.EditText;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
@@ -38,11 +39,13 @@ public class AddCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddCameraActivity";
     private final String KEY_FLIPPER_POSITION = "flipperPosition";
+    private final String KEY_SELECTED_MODEL = "selectedModel";
 
     private ViewFlipper mViewFlipper;
 
     /** Model selector */
     private ModelSelectorFragment mModelSelectorFragment;
+    private SelectedModel mSelectedModel;
     private Defaults mSelectedModelDefaults;
 
     /** Connect camera */
@@ -61,6 +64,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private Button mCheckSnapshotButton;
     private Button mConnectCameraNextButton;
     private ValidateHostInput mValidateHostInput;
+    private TextView mSelectedModelTextView;
 
     /** Camera name view */
     private EditText mCameraNameEditText;
@@ -74,6 +78,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setUpDefaultToolbar();
 
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
+
+        if (savedInstanceState != null)
+        {
+            mSelectedModel = (SelectedModel) savedInstanceState.get(KEY_SELECTED_MODEL);
+        }
 
         /** Init UI for model selector screen */
         initModelSelectorUI();
@@ -109,6 +118,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         int position = mViewFlipper.getDisplayedChild();
         savedInstanceState.putInt(KEY_FLIPPER_POSITION, position);
+        savedInstanceState.putSerializable(KEY_SELECTED_MODEL, mSelectedModel);
     }
 
     @Override
@@ -149,6 +159,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
             @Override
             public void onClick(View view)
             {
+                String modelId = mModelSelectorFragment.getModelIdFromSpinner();
+                String modelName = mModelSelectorFragment.getModelNameFromSpinner();
+                String vendorId = mModelSelectorFragment.getVendorIdFromSpinner();
+                String vendorName = mModelSelectorFragment.getVendorNameFromSpinner();
+                mSelectedModel = new SelectedModel(modelId, modelName, vendorId, vendorName, mSelectedModelDefaults);
+
                 showConnectCameraView();
             }
         });
@@ -172,6 +188,16 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
         mConnectCameraNextButton = (Button) findViewById(R.id.connect_camera_next_button);
         TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
+        ImageView editModelImageButton = (ImageView) findViewById(R.id.edit_model_image_view);
+        mSelectedModelTextView = (TextView) findViewById(R.id.selected_model_text);
+
+        editModelImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                showModelSelectorView();
+            }
+        });
 
         liveSupportLink.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -200,7 +226,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
                     final String externalHost = mPublicIpEditText.getText().toString();
                     final String externalHttp = mHttpEditText.getText().toString();
 
-                    final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getJpgEndingFromDefaults());
+                    String jpgUrl = "";
+
+                    if(mSelectedModel != null)
+                    {
+                        jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
+                    }
 
                     String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
@@ -246,7 +277,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mHttpEditText.hideStatusViewsOnTextChange(mHttpStatusText);
-                    updateMessage(mConnectExplainView, R.string.connect_camera_http_title, R.string.connect_camera_http_message);
+                    updateMessage(mConnectExplainView, 0 , R.string.connect_camera_http_message);
                 }
                 else
                 {
@@ -262,7 +293,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 if(hasFocus)
                 {
                     mRtspEditText.hideStatusViewsOnTextChange(mRtspStatusText);
-                    updateMessage(mConnectExplainView, R.string.connect_camera_rtsp_title, R.string.connect_camera_rtsp_message);
+                    updateMessage(mConnectExplainView, 0, R.string.connect_camera_rtsp_message);
                 }
                 else
                 {
@@ -280,7 +311,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 {
                     mPublicIpEditText.hideStatusViewsOnTextChange(
                             mHttpStatusText, mRtspStatusText);
-                    updateMessage(mConnectExplainView, R.string.connect_camera_ip_title, R.string.connect_camera_ip_message);
+                    updateMessage(mConnectExplainView, 0, R.string.connect_camera_ip_message);
                 }
                 else
                 {
@@ -334,7 +365,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
             @Override
             public void onClick(View v)
             {
-                CameraBuilder cameraBuilder = buildCamera();
+                CameraBuilder cameraBuilder = buildCamera(mSelectedModel);
                 if(cameraBuilder != null)
                 {
                     //Set camera status to be online as a temporary fix for #133
@@ -401,6 +432,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mViewFlipper.setDisplayedChild(1);
         setTitle(R.string.title_connect_camera);
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_explain_message);
+        populateSelectedModel(mSelectedModelTextView, mSelectedModel);
     }
 
     private void showCameraNameView()
@@ -417,7 +449,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     private void showAuthExplanation()
     {
-        updateMessage(mConnectExplainView, R.string.connect_camera_auth_title, R.string.connect_camera_auth_message);
+        updateMessage(mConnectExplainView, 0, R.string.connect_camera_auth_message);
     }
 
     private void checkPort(PortCheckTask.PortType type)
@@ -432,41 +464,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private String getJpgEndingFromDefaults()
-    {
-        String jpgUrlString = "";
-        if(mSelectedModelDefaults != null)
-        {
-            try
-            {
-                jpgUrlString = mSelectedModelDefaults.getJpgURL();
-            }
-            catch(EvercamException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return jpgUrlString;
-    }
-
-    private String getRtspEndingFromDefaults()
-    {
-        String rtspUrlString = "";
-        if(mSelectedModelDefaults != null)
-        {
-            try
-            {
-                rtspUrlString = mSelectedModelDefaults.getH264URL();
-            }
-            catch(EvercamException e)
-            {
-                e.printStackTrace();
-            }
-        }
-        return rtspUrlString;
-    }
-
-    private CameraBuilder buildCamera()
+    private CameraBuilder buildCamera(SelectedModel selectedModel)
     {
         String cameraName = mCameraNameEditText.getText().toString();
 
@@ -479,16 +477,31 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
             cameraBuilder.setExternalRtspPort(externalRtspInt);
 
-            String vendorId = mModelSelectorFragment.getVendorIdFromSpinner();
-            if(!vendorId.isEmpty())
+            if(selectedModel != null)
             {
-                cameraBuilder.setVendor(vendorId);
-            }
+                String vendorId = selectedModel.getVendorId();
+                if(!vendorId.isEmpty())
+                {
+                    cameraBuilder.setVendor(vendorId);
+                }
 
-            String modelId = mModelSelectorFragment.getModelIdFromSpinner();
-            if(!modelId.isEmpty())
-            {
-                cameraBuilder.setModel(modelId);
+                String modelId = selectedModel.getModelId();
+                if(!modelId.isEmpty())
+                {
+                    cameraBuilder.setModel(modelId);
+                }
+
+                String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
+                if(!jpgUrl.isEmpty())
+                {
+                    cameraBuilder.setJpgUrl(jpgUrl);
+                }
+
+                String rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
+                if(!rtspUrl.isEmpty())
+                {
+                    cameraBuilder.setH264Url(rtspUrl);
+                }
             }
 
             String username = mCamUsernameEditText.getText().toString();
@@ -501,18 +514,6 @@ public class AddCameraActivity extends ParentAppCompatActivity
             if(!password.isEmpty())
             {
                 cameraBuilder.setCameraPassword(password);
-            }
-
-            String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getJpgEndingFromDefaults());
-            if(!jpgUrl.isEmpty())
-            {
-                cameraBuilder.setJpgUrl(jpgUrl);
-            }
-
-            String rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(getRtspEndingFromDefaults());
-            if(!rtspUrl.isEmpty())
-            {
-                cameraBuilder.setH264Url(rtspUrl);
             }
 
             return cameraBuilder;
@@ -538,5 +539,16 @@ public class AddCameraActivity extends ParentAppCompatActivity
         {
             showConnectCameraView();
         }
+    }
+
+    private void populateSelectedModel(TextView textView, SelectedModel selectedModel)
+    {
+        String modelName = selectedModel.getModelName();
+        String vendorName = selectedModel.getVendorName();
+
+        if(modelName.isEmpty()) modelName = getString(R.string.unknown);
+        if(vendorName.isEmpty()) vendorName = getString(R.string.unknown);
+
+        textView.setText(vendorName + " - " + modelName);
     }
 }

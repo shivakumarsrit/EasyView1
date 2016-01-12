@@ -337,6 +337,19 @@ public class ModelSelectorFragment extends Fragment
 
     }
 
+    public String getVendorNameFromSpinner()
+    {
+        String vendorName = vendorSpinner.getSelectedItem().toString();
+        if(vendorName.equals(getString(R.string.select_vendor)))
+        {
+            return "";
+        }
+        else
+        {
+            return vendorName;
+        }
+    }
+
     public String getModelIdFromSpinner()
     {
         String modelName = modelSpinner.getSelectedItem().toString();

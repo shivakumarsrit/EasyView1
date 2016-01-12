@@ -102,6 +102,7 @@
     <string name="connect_camera_rtsp_message">The port should be a 2&#8211;5 digit number. The default RTSP port is 554.</string>
     <string name="connect_camera_auth_title">Camera credentials</string>
     <string name="connect_camera_auth_message">Put your camera\'s username and password. It\'s NOT the credentials for your Evercam account.</string>
+
     <string name="name_camera_title">Name your camera</string>
     <string name="name_camera_message">Enter a friendly name to identify your camera. It should only contain letters, spaces and hyphens. It\'s not the unique identifier and you can change it later.</string>
 </resources>

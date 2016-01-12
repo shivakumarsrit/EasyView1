@@ -64,8 +64,37 @@
             <RelativeLayout
                 style="@style/AddCameraViewFlipTopLayout">
 
+                <LinearLayout
+                    android:id="@+id/selected_model_layout"
+                    android:layout_centerHorizontal="true"
+                    android:orientation="horizontal"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content">
+                    <TextView
+                        android:id="@+id/selected_model_text"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:text="@string/unknown"
+                        android:maxWidth="250dp"
+                        android:textColor="@android:color/white"
+                        android:textSize="17sp"
+                        android:textStyle="bold"/>
+                    <ImageView
+                        android:id="@+id/edit_model_image_view"
+                        android:layout_width="35dp"
+                        android:layout_height="35dp"
+                        android:layout_marginLeft="5dp"
+                        android:background="?attr/selectableItemBackgroundBorderless"
+                        android:padding="7dp"
+                        android:src="@drawable/ic_edit"/>
+                </LinearLayout>
+
                 <include
                     android:id="@+id/explanation_view_layout"
+                    android:layout_below="@+id/selected_model_layout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
                     layout="@layout/explain_text_view"/>
 
                 <LinearLayout
