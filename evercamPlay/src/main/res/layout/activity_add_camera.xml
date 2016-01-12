@@ -48,7 +48,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/btn_selector"
-                    android:text="@string/next"/>
+                    android:text="@string/next_connect_camera"/>
 
                 <TextView
                     android:id="@+id/report_model_text_link"
@@ -209,7 +209,7 @@
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
                         android:background="@drawable/btn_selector"
-                        android:text="@string/next"
+                        android:text="@string/next_name_camera"
                         android:visibility="gone"/>
                 </LinearLayout>
 
@@ -257,7 +257,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_height="40dp"
                         android:background="@drawable/btn_selector"
-                        android:text="@string/create_camera"/>
+                        android:text="@string/done"/>
 
                 </LinearLayout>
 

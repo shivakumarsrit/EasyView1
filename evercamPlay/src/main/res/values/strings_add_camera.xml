@@ -77,18 +77,19 @@
     <string name="button_text_edit">Edit</string>
 
     <!-- New add camera designs -->
-    <string name="next">Next</string>
+    <string name="next_connect_camera">Next Step: Connect Camera</string>
+    <string name="next_name_camera">Next Step: Name Your Camera</string>
     <string name="report_model">Report New Model</string>
-    <string name="public_ip">External IP (or URL)*</string>
-    <string name="add_camera_http_port">HTTP Port*</string>
-    <string name="add_camera_rtsp_port">RTSP Port</string>
+    <string name="public_ip">External IP (or URL)</string>
+    <string name="add_camera_http_port">HTTP Port</string>
+    <string name="add_camera_rtsp_port">RTSP Port (Optional)</string>
     <string name="live_support">Live Support</string>
     <string name="check_for_snapshot">Check For Snapshot</string>
     <string name="requires_auth">Requires Authentication</string>
     <string name="hint_cam_username">Username</string>
     <string name="hint_cam_password">Password</string>
     <string name="hint_name_your_camera">Camera Friendly Name</string>
-    <string name="create_camera">Create Camera</string>
+    <string name="done">Done</string>
     <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
     <string name="connect_camera_explain_title">Connect to your camera</string>

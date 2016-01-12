@@ -5,6 +5,7 @@ import android.os.Bundle;
 import android.support.annotation.NonNull;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
+import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
 import android.widget.CheckBox;
@@ -36,6 +37,7 @@ import io.intercom.android.sdk.Intercom;
 public class AddCameraActivity extends ParentAppCompatActivity
 {
     private final String TAG = "AddCameraActivity";
+    private final String KEY_FLIPPER_POSITION = "flipperPosition";
 
     private ViewFlipper mViewFlipper;
 
@@ -81,6 +83,49 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         /** Init UI for camera name view */
         initCameraNameView();
+
+        if (savedInstanceState != null)
+        {
+            int flipperPosition = savedInstanceState.getInt(KEY_FLIPPER_POSITION);
+            if(flipperPosition == 0)
+            {
+                showModelSelectorView();
+            }
+            else if(flipperPosition == 1)
+            {
+                showConnectCameraView();
+            }
+            else if(flipperPosition == 2)
+            {
+                showCameraNameView();
+            }
+        }
+    }
+
+    @Override
+    public void onSaveInstanceState(Bundle savedInstanceState)
+    {
+        super.onSaveInstanceState(savedInstanceState);
+
+        int position = mViewFlipper.getDisplayedChild();
+        savedInstanceState.putInt(KEY_FLIPPER_POSITION, position);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item)
+    {
+        switch(item.getItemId())
+        {
+            case android.R.id.home:
+                navigateToPreviousScreen();
+        }
+        return true;
+    }
+
+    @Override
+    public void onBackPressed()
+    {
+        navigateToPreviousScreen();
     }
 
     private void initModelSelectorUI()
@@ -474,5 +519,24 @@ public class AddCameraActivity extends ParentAppCompatActivity
         }
 
         return null;
+    }
+
+    private void navigateToPreviousScreen()
+    {
+        int currentPosition = mViewFlipper.getDisplayedChild();
+
+        if(currentPosition == 0)
+        {
+            finish();
+            //TODO: Show the confirm dialog
+        }
+        else if(currentPosition == 1)
+        {
+            showModelSelectorView();
+        }
+        else if(currentPosition == 2)
+        {
+            showConnectCameraView();
+        }
     }
 }
