@@ -75,9 +75,9 @@
     <string name="menu_send">Send</string>
     <string name="menu_edit">Edit</string>
     <string name="title_activity_add_camera">Add Camera</string>
-    <string name="title_choose_model">Vendor &amp; Model</string>
-    <string name="title_connect_camera">Connect Camera</string>
-    <string name="title_name_camera">Camera Name</string>
+    <string name="title_choose_model">Step 1 - Vendor &amp; Model</string>
+    <string name="title_connect_camera">Step 2 - Connect Camera</string>
+    <string name="title_name_camera">Step 3 - Name Your Camera</string>
     <string name="title_activity_view_camera">Camera Details</string>
     <string name="title_activity_scan">Network Scan</string>
     <string name="title_release_notes">Release Notes</string>

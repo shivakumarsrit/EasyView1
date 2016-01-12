@@ -1,5 +1,6 @@
 package io.evercam.androidapp.addeditcamera;
 
+import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -42,6 +43,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private final String KEY_SELECTED_MODEL = "selectedModel";
 
     private ViewFlipper mViewFlipper;
+    private ProgressBar mProgressBar;
 
     /** Model selector */
     private ModelSelectorFragment mModelSelectorFragment;
@@ -78,6 +80,10 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setUpDefaultToolbar();
 
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
+        mProgressBar = (ProgressBar) findViewById(R.id.add_camera_progress_bar);
+        mProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color
+                .orange_red), PorterDuff.Mode.SRC_IN);
+        mProgressBar.setProgress(33);
 
         if (savedInstanceState != null)
         {
@@ -355,11 +361,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     public void initCameraNameView()
     {
-        ExplanationView nameExplainView = (ExplanationView) findViewById(R.id.name_explanation_layout);
         mCameraNameEditText = (EditText) findViewById(R.id.cam_name_float_edit_text);
         Button createCameraButton = (Button) findViewById(R.id.create_camera_button);
-
-        updateMessage(nameExplainView, R.string.name_camera_title, R.string.name_camera_message);
 
         createCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -424,12 +427,14 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private void showModelSelectorView()
     {
         mViewFlipper.setDisplayedChild(0);
+        mProgressBar.setProgress(33);
         setTitle(R.string.title_choose_model);
     }
 
     private void showConnectCameraView()
     {
         mViewFlipper.setDisplayedChild(1);
+        mProgressBar.setProgress(67);
         setTitle(R.string.title_connect_camera);
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_explain_message);
         populateSelectedModel(mSelectedModelTextView, mSelectedModel);
@@ -438,6 +443,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private void showCameraNameView()
     {
         mViewFlipper.setDisplayedChild(2);
+        mProgressBar.setProgress(100);
         setTitle(R.string.title_name_camera);
     }
 

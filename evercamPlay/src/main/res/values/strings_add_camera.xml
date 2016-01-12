@@ -88,7 +88,7 @@
     <string name="requires_auth">Requires Authentication</string>
     <string name="hint_cam_username">Username</string>
     <string name="hint_cam_password">Password</string>
-    <string name="hint_name_your_camera">Camera Friendly Name</string>
+    <string name="hint_name_your_camera">Camera Name (eg. Back Garden)</string>
     <string name="done">Done</string>
     <string name="choose_model_explain_title">Choose your vendor and model</string>
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
