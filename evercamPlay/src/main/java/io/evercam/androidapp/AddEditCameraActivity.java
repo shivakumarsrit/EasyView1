@@ -110,7 +110,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         {
             //Populate name and IP only when adding camera
             autoPopulateCameraName();
-            autoPopulateExternalIP();
+            autoPopulateExternalIP(externalHostEdit);
         }
 
         fillEditCameraDetails(cameraEdit);
@@ -532,14 +532,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private void autoPopulateExternalIP()
+    private void autoPopulateExternalIP(final EditText editText)
     {
         /**
          * Auto populate IP as external IP address if on WiFi
          */
         if(new DataCollector(this).isConnectedWifi())
         {
-            if(externalHostEdit.getText().toString().isEmpty())
+            if(editText.getText().toString().isEmpty())
             {
 
                 new AsyncTask<Void, Void, String>()
@@ -553,8 +553,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
                     @Override
                     protected void onPostExecute(String externalIp)
                     {
-                        externalHostEdit.setText(externalIp);
-                        autoPopulateDefaultPorts();
+                        editText.setText(externalIp);
+                        autoPopulateDefaultPorts(externalHttpEdit, externalRtspEdit);
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
@@ -565,16 +565,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      * Auto populate default port 80 and 554 and launch port check
      * Only when the port text field is empty
      */
-    private void autoPopulateDefaultPorts()
+    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText)
     {
-        if(externalHttpEdit.getText().toString().isEmpty())
+        if(httpEditText.getText().toString().isEmpty())
         {
-            externalHttpEdit.setText("80");
+            httpEditText.setText("80");
             checkPort(PortCheckTask.PortType.HTTP);
         }
-        if(externalRtspEdit.getText().toString().isEmpty())
+        if(rtspEditText.getText().toString().isEmpty())
         {
-            externalRtspEdit.setText("554");
+            rtspEditText.setText("554");
             checkPort(PortCheckTask.PortType.RTSP);
         }
     }

@@ -1,7 +1,7 @@
 <resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!--<item name="colorAccent">@color/orange_red</item>-->
+        <item name="colorAccent">@color/white</item>
     </style>
 
     <style name="ToolbarTheme" parent="AppTheme">
@@ -184,6 +184,10 @@
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="hintTextAppearance">@style/TextAppearance.AppCompat.LightGray</item>
+    </style>
+
+    <style name="EditTextError" parent="@style/TextAppearance.AppCompat.LightGray">
+        <item name="android:textSize">12sp</item>
     </style>
 
     <!-- Add/Edit camera details styles-->

@@ -4,6 +4,7 @@ import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
+import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.util.Log;
 import android.view.MenuItem;
@@ -29,11 +30,13 @@ import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
+import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.custom.ExplanationView;
 import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
+import io.evercam.androidapp.utils.DataCollector;
 import io.intercom.android.sdk.Intercom;
 
 public class AddCameraActivity extends ParentAppCompatActivity
@@ -78,6 +81,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setContentView(R.layout.activity_add_camera);
 
         setUpDefaultToolbar();
+        setHomeIconAsCancel();
 
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
         mProgressBar = (ProgressBar) findViewById(R.id.add_camera_progress_bar);
@@ -133,7 +137,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         switch(item.getItemId())
         {
             case android.R.id.home:
-                navigateToPreviousScreen();
+                quitAddCamera();
         }
         return true;
     }
@@ -141,7 +145,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
     @Override
     public void onBackPressed()
     {
-        navigateToPreviousScreen();
+        quitAddCamera();
     }
 
     private void initModelSelectorUI()
@@ -196,6 +200,15 @@ public class AddCameraActivity extends ParentAppCompatActivity
         TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
         ImageView editModelImageButton = (ImageView) findViewById(R.id.edit_model_image_view);
         mSelectedModelTextView = (TextView) findViewById(R.id.selected_model_text);
+        ImageView clearHostImageButton = (ImageView) findViewById(R.id.clear_host_image_button);
+
+        clearHostImageButton.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v)
+            {
+                mPublicIpEditText.setText("");
+            }
+        });
 
         editModelImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -410,11 +423,35 @@ public class AddCameraActivity extends ParentAppCompatActivity
         {
             mCamUsernameEditText.requestFocus();
             showAuthExplanation();
+            populateDefaultAuth();
         }
         else
         {
             mCamUsernameEditText.setText("");
             mCamUsernameEditText.setText("");
+        }
+    }
+
+    private void populateDefaultAuth()
+    {
+        if(mSelectedModel != null)
+        {
+            String defaultUsername = mSelectedModel.getDefaultUsername();
+            String defaultPassword = mSelectedModel.getDefaultPassword();
+
+            TextInputLayout usernameInputLayout = (TextInputLayout) findViewById(R.id.input_layout_cam_username);
+            TextInputLayout passwordInputLayout = (TextInputLayout) findViewById(R.id.input_layout_cam_password);
+            usernameInputLayout.setErrorEnabled(true);
+            passwordInputLayout.setErrorEnabled(true);
+
+            if(!defaultUsername.isEmpty())
+            {
+                usernameInputLayout.setError(getString(R.string.default_colon) + defaultUsername);
+            }
+            if(!defaultPassword.isEmpty())
+            {
+                passwordInputLayout.setError(getString(R.string.default_colon) + defaultPassword);
+            }
         }
     }
 
@@ -438,6 +475,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setTitle(R.string.title_connect_camera);
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_explain_message);
         populateSelectedModel(mSelectedModelTextView, mSelectedModel);
+        autoPopulateExternalIP(mPublicIpEditText);
     }
 
     private void showCameraNameView()
@@ -528,22 +566,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
         return null;
     }
 
-    private void navigateToPreviousScreen()
+    private void quitAddCamera()
     {
         int currentPosition = mViewFlipper.getDisplayedChild();
 
         if(currentPosition == 0)
         {
             finish();
-            //TODO: Show the confirm dialog
         }
-        else if(currentPosition == 1)
+        else
         {
-            showModelSelectorView();
-        }
-        else if(currentPosition == 2)
-        {
-            showConnectCameraView();
+            CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
         }
     }
 
@@ -556,5 +589,52 @@ public class AddCameraActivity extends ParentAppCompatActivity
         if(vendorName.isEmpty()) vendorName = getString(R.string.unknown);
 
         textView.setText(vendorName + " - " + modelName);
+    }
+
+    private void autoPopulateExternalIP(final EditText editText)
+    {
+        /**
+         * Auto populate IP as external IP address if on WiFi
+         */
+        if(new DataCollector(this).isConnectedWifi())
+        {
+            if(editText.getText().toString().isEmpty())
+            {
+
+                new AsyncTask<Void, Void, String>()
+                {
+                    @Override
+                    protected String doInBackground(Void... params)
+                    {
+                        return io.evercam.network.discovery.NetworkInfo.getExternalIP();
+                    }
+
+                    @Override
+                    protected void onPostExecute(String externalIp)
+                    {
+                        editText.setText(externalIp);
+                        autoPopulateDefaultPorts(mHttpEditText, mRtspEditText);
+                    }
+                }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        }
+    }
+
+    /**
+     * Auto populate default port 80 and 554 and launch port check
+     * Only when the port text field is empty
+     */
+    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText)
+    {
+        if(httpEditText.getText().toString().isEmpty())
+        {
+            httpEditText.setText("80");
+            checkPort(PortCheckTask.PortType.HTTP);
+        }
+        if(rtspEditText.getText().toString().isEmpty())
+        {
+            rtspEditText.setText("554");
+            checkPort(PortCheckTask.PortType.RTSP);
+        }
     }
 }

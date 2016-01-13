@@ -21,6 +21,7 @@ import com.nineoldandroids.view.ViewHelper;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
 import io.evercam.androidapp.tasks.PortCheckTask;
+import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.android.sdk.identity.Registration;

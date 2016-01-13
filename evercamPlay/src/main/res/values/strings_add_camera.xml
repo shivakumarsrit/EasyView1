@@ -88,6 +88,7 @@
     <string name="requires_auth">Requires Authentication</string>
     <string name="hint_cam_username">Username</string>
     <string name="hint_cam_password">Password</string>
+    <string name="default_colon">Default:\u0020</string>
     <string name="hint_name_your_camera">Camera Name (eg. Back Garden)</string>
     <string name="done">Done</string>
     <string name="choose_model_explain_title">Choose your vendor and model</string>
