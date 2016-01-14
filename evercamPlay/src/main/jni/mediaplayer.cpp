@@ -197,6 +197,7 @@ void MediaPlayer::setSurface(ANativeWindow *window)
     LOGD("MediaPlayer: setSurface: %p\n", window);
     if (m_window != 0) {
         ANativeWindow_release (m_window);
+        m_window = nullptr;
         m_initialized = false;
     }
     if (m_window != window) {
