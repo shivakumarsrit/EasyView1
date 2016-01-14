@@ -3,6 +3,7 @@ package io.evercam.androidapp.addeditcamera;
 import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
@@ -16,8 +17,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+
+import com.mixpanel.android.java_websocket.handshake.HandshakeBuilder;
 
 import java.util.ArrayList;
 
@@ -47,6 +51,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     private ViewFlipper mViewFlipper;
     private ProgressBar mProgressBar;
+    private Handler mHandler;
 
     /** Model selector */
     private ModelSelectorFragment mModelSelectorFragment;
@@ -67,9 +72,9 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private EditText mCamUsernameEditText;
     private EditText mCamPasswordEditText;
     private Button mCheckSnapshotButton;
-    private Button mConnectCameraNextButton;
     private ValidateHostInput mValidateHostInput;
     private TextView mSelectedModelTextView;
+    private RelativeLayout mButtonIndicatorLayout;
 
     /** Camera name view */
     private EditText mCameraNameEditText;
@@ -93,6 +98,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
         {
             mSelectedModel = (SelectedModel) savedInstanceState.get(KEY_SELECTED_MODEL);
         }
+
+        mHandler = new Handler();
 
         /** Init UI for model selector screen */
         initModelSelectorUI();
@@ -196,16 +203,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
         mCamPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
         mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
-        mConnectCameraNextButton = (Button) findViewById(R.id.connect_camera_next_button);
         TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
         ImageView editModelImageButton = (ImageView) findViewById(R.id.edit_model_image_view);
         mSelectedModelTextView = (TextView) findViewById(R.id.selected_model_text);
         ImageView clearHostImageButton = (ImageView) findViewById(R.id.clear_host_image_button);
+        mButtonIndicatorLayout = (RelativeLayout) findViewById(R.id.snapshot_button_indicator_layout);
 
         clearHostImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v)
             {
+                mPublicIpEditText.requestFocus();
                 mPublicIpEditText.setText("");
             }
         });
@@ -223,14 +231,6 @@ public class AddCameraActivity extends ParentAppCompatActivity
             public void onClick(View v)
             {
                 Intercom.client().displayConversationsList();
-            }
-        });
-
-        mConnectCameraNextButton.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v)
-            {
-                showCameraNameView();
             }
         });
 
@@ -393,6 +393,27 @@ public class AddCameraActivity extends ParentAppCompatActivity
         });
     }
 
+    public void showTestSnapshotProgress(final boolean show)
+    {
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run()
+            {
+                if(show)
+                {
+                    mButtonIndicatorLayout.setVisibility(View.VISIBLE);
+                    mCheckSnapshotButton.setVisibility(View.GONE);
+                }
+                else
+                {
+                    mButtonIndicatorLayout.setVisibility(View.GONE);
+                    mCheckSnapshotButton.setVisibility(View.VISIBLE);
+                }
+            }
+        }, 100);
+
+    }
+
     public void onDefaultsLoaded(Model model)
     {
         try
@@ -455,12 +476,6 @@ public class AddCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    public void showConnectCameraNextButton(boolean show)
-    {
-        mConnectCameraNextButton.setVisibility(show ? View.VISIBLE : View.GONE);
-        mCheckSnapshotButton.setVisibility(show ? View.GONE : View.VISIBLE);
-    }
-
     private void showModelSelectorView()
     {
         mViewFlipper.setDisplayedChild(0);
@@ -475,10 +490,21 @@ public class AddCameraActivity extends ParentAppCompatActivity
         setTitle(R.string.title_connect_camera);
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_explain_message);
         populateSelectedModel(mSelectedModelTextView, mSelectedModel);
-        autoPopulateExternalIP(mPublicIpEditText);
+
+        /**
+         * Apply a minor delay for populating external IP
+         *  In case there are data restored in public IP EditText
+         */
+        mHandler.postDelayed(new Runnable() {
+            @Override
+            public void run()
+            {
+                autoPopulateExternalIP(mPublicIpEditText);
+            }
+        }, 100);
     }
 
-    private void showCameraNameView()
+    public void showCameraNameView()
     {
         mViewFlipper.setDisplayedChild(2);
         mProgressBar.setProgress(100);
@@ -568,16 +594,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     private void quitAddCamera()
     {
-        int currentPosition = mViewFlipper.getDisplayedChild();
-
-        if(currentPosition == 0)
-        {
-            finish();
-        }
-        else
-        {
-            CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
-        }
+        CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
     }
 
     private void populateSelectedModel(TextView textView, SelectedModel selectedModel)

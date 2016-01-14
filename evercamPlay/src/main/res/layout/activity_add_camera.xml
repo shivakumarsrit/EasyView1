@@ -256,21 +256,39 @@
 
                     <Button
                         android:id="@+id/check_snapshot_button"
-                        android:layout_marginTop="20dp"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
+                        android:layout_marginTop="20dp"
                         android:textColor="@drawable/signup_btn_txt_selector"
                         android:background="@drawable/signup_btn_selector"
                         android:text="@string/check_for_snapshot"/>
 
-                    <Button
-                        android:id="@+id/connect_camera_next_button"
-                        android:layout_marginTop="20dp"
+                    <RelativeLayout
+                        android:id="@+id/snapshot_button_indicator_layout"
                         android:layout_width="match_parent"
                         android:layout_height="40dp"
-                        android:background="@drawable/btn_selector"
-                        android:text="@string/next_name_camera"
-                        android:visibility="gone"/>
+                        android:background="@drawable/btn_on"
+                        android:layout_marginTop="20dp"
+                        android:visibility="gone">
+
+                        <LinearLayout
+                            android:orientation="horizontal"
+                            android:gravity="center_vertical"
+                            android:layout_centerHorizontal="true"
+                            android:layout_width="wrap_content"
+                            android:layout_height="match_parent">
+                            <ProgressBar
+                                android:layout_width="20dp"
+                                android:layout_height="20dp"
+                                android:indeterminateOnly="true"/>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:textColor="@android:color/white"
+                                android:text="@string/checking_snapshot"/>
+                        </LinearLayout>
+                    </RelativeLayout>
                 </LinearLayout>
 
                 <TextView

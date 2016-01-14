@@ -11,6 +11,7 @@ import java.net.URL;
 
 import io.evercam.Camera;
 import io.evercam.Snapshot;
+import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
@@ -44,8 +45,15 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
     @Override
     protected void onPreExecute()
     {
-        customProgressDialog = new CustomProgressDialog(activity);
-        customProgressDialog.show(activity.getString(R.string.retrieving_snapshot));
+        if(activity instanceof AddEditCameraActivity)
+        {
+            customProgressDialog = new CustomProgressDialog(activity);
+            customProgressDialog.show(activity.getString(R.string.retrieving_snapshot));
+        }
+        else if(activity instanceof AddCameraActivity)
+        {
+            ((AddCameraActivity) activity).showTestSnapshotProgress(true);
+        }
     }
 
     @Override
@@ -87,17 +95,19 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
     @Override
     protected void onPostExecute(Drawable drawable)
     {
-        customProgressDialog.dismiss();
+        if(activity instanceof AddEditCameraActivity)
+        {
+            customProgressDialog.dismiss();
+        }
+        else if(activity instanceof AddCameraActivity)
+        {
+            ((AddCameraActivity) activity).showTestSnapshotProgress(false);
+        }
 
         KeenClient client = KeenHelper.getClient(activity);
 
         if(drawable != null)
         {
-            if(activity instanceof AddCameraActivity)
-            {
-                ((AddCameraActivity) activity).showConnectCameraNextButton(true);
-            }
-
             CustomedDialog.getSnapshotDialog(activity, drawable).show();
 
             new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)

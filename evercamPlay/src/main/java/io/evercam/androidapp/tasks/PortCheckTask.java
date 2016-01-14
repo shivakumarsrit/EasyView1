@@ -109,6 +109,9 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://tuq.in/tools/port.txt?ip=" + ip + "&port=" + port).build();
+
+        //FIXME: Always return true just for testing
+        //return true;
         try
         {
             Response response = client.newCall(request).execute();
