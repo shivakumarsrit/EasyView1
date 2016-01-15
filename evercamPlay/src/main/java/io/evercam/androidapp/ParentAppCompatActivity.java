@@ -241,4 +241,10 @@ public class ParentAppCompatActivity extends AppCompatActivity
                     .getWindowToken(), 0);
         }
     }
+
+    protected int dpInPixels(int dpInt)
+    {
+        float density = getResources().getDisplayMetrics().density;
+        return (int)(dpInt * density);
+    }
 }

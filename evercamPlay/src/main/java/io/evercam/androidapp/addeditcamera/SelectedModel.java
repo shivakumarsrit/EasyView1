@@ -45,6 +45,11 @@ public class SelectedModel implements Serializable
         }
     }
 
+    public boolean isUnknown()
+    {
+        return getVendorId().isEmpty() || getModelId().isEmpty();
+    }
+
     public String getModelId()
     {
         return modelId;

@@ -21,8 +21,6 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
 
-import com.mixpanel.android.java_websocket.handshake.HandshakeBuilder;
-
 import java.util.ArrayList;
 
 import io.evercam.CameraBuilder;
@@ -75,6 +73,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private ValidateHostInput mValidateHostInput;
     private TextView mSelectedModelTextView;
     private RelativeLayout mButtonIndicatorLayout;
+    private LinearLayout mConnectFormLayout;
+    private LinearLayout mSnapshotPathLayout;
+    private LinearLayout mRtspPathLayout;
+    private EditText mSnapshotPathEditText;
+    private EditText mRtspPathEditText;
 
     /** Camera name view */
     private EditText mCameraNameEditText;
@@ -208,6 +211,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mSelectedModelTextView = (TextView) findViewById(R.id.selected_model_text);
         ImageView clearHostImageButton = (ImageView) findViewById(R.id.clear_host_image_button);
         mButtonIndicatorLayout = (RelativeLayout) findViewById(R.id.snapshot_button_indicator_layout);
+        mConnectFormLayout = (LinearLayout) findViewById(R.id.connect_form_layout);
+        mSnapshotPathLayout = (LinearLayout) findViewById(R.id.snapshot_path_layout);
+        mRtspPathLayout = (LinearLayout) findViewById(R.id.rtsp_path_layout);
+        mSnapshotPathEditText = (EditText) findViewById(R.id.snapshot_path_float_edit_text);
+        mRtspPathEditText = (EditText) findViewById(R.id.rtsp_path_float_edit_text);
 
         clearHostImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -249,7 +257,15 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
                     if(mSelectedModel != null)
                     {
-                        jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
+                        if(!mSelectedModel.isUnknown())
+                        {
+                            jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
+                        }
+                        else
+                        {
+                            final String jpgPath = mSnapshotPathEditText.getText().toString();
+                            jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgPath);
+                        }
                     }
 
                     String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
@@ -340,6 +356,28 @@ public class AddCameraActivity extends ParentAppCompatActivity
             }
         });
 
+        mSnapshotPathEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    updateMessage(mConnectExplainView, 0, R.string.connect_camera_snapshot_path_message);
+                }
+            }
+        });
+
+        mRtspPathEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
+            @Override
+            public void onFocusChange(View v, boolean hasFocus)
+            {
+                if(hasFocus)
+                {
+                    updateMessage(mConnectExplainView, 0, R.string.connect_camera_rtsp_path_message);
+                }
+            }
+        });
+
         mValidateHostInput = new ValidateHostInput(mPublicIpEditText,
                 mHttpEditText, mRtspEditText) {
             @Override
@@ -412,6 +450,25 @@ public class AddCameraActivity extends ParentAppCompatActivity
             }
         }, 100);
 
+    }
+
+    public void showUnknownModelForm(boolean show)
+    {
+        /** Adjust form margin */
+        RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mConnectFormLayout.getLayoutParams();
+        if(show)
+        {
+            layoutParams.setMargins(dpInPixels(10), dpInPixels(5), dpInPixels(10), 0);
+        }
+        else
+        {
+            layoutParams.setMargins(dpInPixels(50), dpInPixels(5), dpInPixels(50), 0);
+        }
+        mConnectFormLayout.setLayoutParams(layoutParams);
+
+        /** Show/hide snapshot & RTSP path */
+        mSnapshotPathLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+        mRtspPathLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public void onDefaultsLoaded(Model model)
@@ -561,13 +618,25 @@ public class AddCameraActivity extends ParentAppCompatActivity
                     cameraBuilder.setModel(modelId);
                 }
 
-                String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
+                String jpgUrl;
+                String rtspUrl;
+
+                if(selectedModel.isUnknown())
+                {
+                    jpgUrl = mSnapshotPathEditText.getText().toString();
+                    rtspUrl = mRtspPathEditText.getText().toString();
+                }
+                else
+                {
+                    jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
+                    rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
+                }
+
                 if(!jpgUrl.isEmpty())
                 {
                     cameraBuilder.setJpgUrl(jpgUrl);
                 }
 
-                String rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
                 if(!rtspUrl.isEmpty())
                 {
                     cameraBuilder.setH264Url(rtspUrl);
@@ -606,6 +675,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
         if(vendorName.isEmpty()) vendorName = getString(R.string.unknown);
 
         textView.setText(vendorName + " - " + modelName);
+
+        showUnknownModelForm(mSelectedModel.isUnknown());
     }
 
     private void autoPopulateExternalIP(final EditText editText)
