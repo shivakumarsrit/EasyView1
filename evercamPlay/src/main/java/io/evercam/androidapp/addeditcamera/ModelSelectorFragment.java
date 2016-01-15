@@ -136,6 +136,10 @@ public class ModelSelectorFragment extends Fragment
                     {
                         getAddEditActivity().clearDefaults();
                     }
+                    else if(isAddActivity())
+                    {
+                        getAddActivity().onDefaultsLoaded(null);
+                    }
                 }
                 else
                 {

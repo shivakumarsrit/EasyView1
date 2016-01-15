@@ -473,13 +473,19 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     public void onDefaultsLoaded(Model model)
     {
-        try
+        if(model != null)
         {
-            mSelectedModelDefaults = model.getDefaults();
+            try
+            {
+                mSelectedModelDefaults = model.getDefaults();
+            }
+            catch(EvercamException e)
+            {
+                e.printStackTrace();
+            }
         }
-        catch(EvercamException e)
-        {
-            e.printStackTrace();
+        else{
+            mSelectedModelDefaults = null;
         }
     }
 
@@ -526,9 +532,17 @@ public class AddCameraActivity extends ParentAppCompatActivity
             {
                 usernameInputLayout.setError(getString(R.string.default_colon) + defaultUsername);
             }
+            else
+            {
+                usernameInputLayout.setErrorEnabled(false);
+            }
             if(!defaultPassword.isEmpty())
             {
                 passwordInputLayout.setError(getString(R.string.default_colon) + defaultPassword);
+            }
+            else
+            {
+                passwordInputLayout.setErrorEnabled(false);
             }
         }
     }
@@ -677,6 +691,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
         textView.setText(vendorName + " - " + modelName);
 
         showUnknownModelForm(mSelectedModel.isUnknown());
+
+        populateDefaultAuth();
     }
 
     private void autoPopulateExternalIP(final EditText editText)
