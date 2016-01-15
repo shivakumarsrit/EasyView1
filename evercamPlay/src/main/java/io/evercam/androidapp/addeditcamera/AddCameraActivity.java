@@ -171,7 +171,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
             @Override
             public void onClick(View v)
             {
-                Log.d(TAG, "Report link clicked");
+                CustomedDialog.showReportCameraModelDialog(AddCameraActivity.this, null);
             }
         });
 

@@ -528,10 +528,16 @@ public class CustomedDialog
                                 if(AppData.defaultUser != null)
                                 {
                                     String modelName = String.valueOf(input);
-                                    String message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
-
-                                    IntercomSendMessageTask.launch(context, AppData.defaultUser
-                                            .getUsername(), message);
+                                    String message = "";
+                                    if(device != null)
+                                    {
+                                        message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
+                                    }
+                                    else{
+                                        message = "I'd like to report a new camera model: " + modelName;
+                                    }
+                                    IntercomSendMessageTask.launch(context, AppData
+                                            .defaultUser.getUsername(), message);
                                 }
                             }
                         }).start();
