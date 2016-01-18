@@ -1857,6 +1857,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
                 evercamCamera = cameraList.get(position);
 
+                startingCameraID = evercamCamera.getCameraId();
+
                 //Hide the PTZ control panel when switch to another camera
                 showPtzControl(false);
 
@@ -1892,6 +1894,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
             }
         });
+
         mCameraListSpinner.setSelection(defaultCameraIndex);
     }
 

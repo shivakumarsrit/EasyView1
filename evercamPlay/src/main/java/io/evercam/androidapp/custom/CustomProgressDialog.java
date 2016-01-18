@@ -23,7 +23,11 @@ public class CustomProgressDialog
     {
         progressDialog.setMessage(message);
         progressDialog.setCanceledOnTouchOutside(false); // can not be canceled
-        progressDialog.show();
+
+        if(!activity.isFinishing())
+        {
+            progressDialog.show();
+        }
     }
 
     public void setMessage(String message)
