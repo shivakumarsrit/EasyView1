@@ -38,6 +38,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
+import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CameraLayout;
 import io.evercam.androidapp.custom.CustomProgressDialog;
@@ -476,8 +477,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                         .category_menu, R.string.action_add_camera, R.string
                         .label_add_camera_manually);
 
-                startActivityForResult(new Intent(CamerasActivity.this, AddEditCameraActivity
-                        .class), Constants.REQUEST_CODE_ADD_CAMERA);
+                startActivityForResult(new Intent(CamerasActivity.this, AddCameraActivity
+                                                .class), Constants.REQUEST_CODE_ADD_CAMERA);
 
                 actionMenu.collapse();
             }

@@ -12,6 +12,7 @@
     <color name="evercam_text_dark">#333333</color>
     <color name="black_semi_transparent">#B2000000</color>
     <color name="mint_green">#80CBC4</color>
+    <!--<color name="evercam_blue">#428bca</color> -->
 
     <!-- Navigation Drawer -->
     <color name="navigation_drawer_background">@color/white</color>

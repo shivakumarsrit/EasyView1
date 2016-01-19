@@ -1,6 +1,10 @@
 package io.evercam.androidapp.tasks;
 
+import android.content.Context;
 import android.os.AsyncTask;
+import android.view.View;
+import android.widget.ProgressBar;
+import android.widget.TextView;
 
 import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
@@ -11,6 +15,7 @@ import java.lang.ref.WeakReference;
 
 import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
+import io.evercam.androidapp.R;
 
 public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
 {
@@ -20,33 +25,62 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
 
     private String mIp;
     private String mPort;
-    private PortType mPortType;
-    private WeakReference<AddEditCameraActivity> activityWeakReference;
+    private Context mContext;
+    private WeakReference<TextView> mStatusViewReference;
+    private WeakReference<ProgressBar> mProgressViewReference;
 
-    public PortCheckTask(String ip, String port, AddEditCameraActivity activity, PortType type)
+    public PortCheckTask(String ip, String port, Context context)
     {
         this.mIp = ip;
         this.mPort = port;
-        this.mPortType = type;
-        this.activityWeakReference = new WeakReference<>(activity);
+        this.mContext = context;
+    }
+
+    public PortCheckTask bindStatusView(TextView textView)
+    {
+        mStatusViewReference = new WeakReference<>(textView);
+        return this;
+    }
+
+    public PortCheckTask bindProgressView(ProgressBar progressBar)
+    {
+        mProgressViewReference = new WeakReference<>(progressBar);
+        return this;
+    }
+
+    public void showProgressBar(boolean show)
+    {
+        if(mProgressViewReference != null)
+        {
+            mProgressViewReference.get().setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    public void showStatusTextView(boolean show)
+    {
+        if(mStatusViewReference != null)
+        {
+            mStatusViewReference.get().setVisibility(show ? View.VISIBLE : View.GONE);
+        }
+    }
+
+    private void updatePortStatus(boolean isPortOpen)
+    {
+        if(mStatusViewReference != null)
+        {
+            TextView statusView = mStatusViewReference.get();
+            statusView.setVisibility(View.VISIBLE);
+            statusView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
+            statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.mint_green) :
+                    mContext.getResources().getColor(R.color.orange_red));
+        }
     }
 
     @Override
     protected void onPreExecute()
     {
-        if(getActivity() != null)
-        {
-            if(mPortType.equals(PortType.HTTP))
-            {
-                getActivity().showHttpProgressView(true);
-                getActivity().clearHttpPortStatus();
-            }
-            else if (mPortType.equals(PortType.RTSP))
-            {
-                getActivity().clearRtspPortStatus();
-                getActivity().showRtspProgressView(true);
-            }
-        }
+        showProgressBar(true);
+        showStatusTextView(false);
     }
 
     @Override
@@ -59,7 +93,6 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
         catch(Exception e)
         {
             e.printStackTrace();
-            EvercamPlayApplication.sendCaughtException(getActivity(), e);
         }
         return false;
     }
@@ -67,22 +100,8 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
     @Override
     protected void onPostExecute(Boolean isOpen)
     {
-        if(getActivity() != null)
-        {
-            if(mPortType.equals(PortType.HTTP))
-            {
-                getActivity().updateHttpPortStatus(isOpen);
-            }
-            else if (mPortType.equals(PortType.RTSP))
-            {
-                getActivity().updateRtspPortStatus(isOpen);
-            }
-        }
-    }
-
-    private AddEditCameraActivity getActivity()
-    {
-        return activityWeakReference.get();
+        showProgressBar(false);
+        updatePortStatus(isOpen);
     }
 
     public static boolean isPortOpen(String ip, String port)
@@ -90,6 +109,7 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean>
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
                 .url("http://tuq.in/tools/port.txt?ip=" + ip + "&port=" + port).build();
+
         try
         {
             Response response = client.newCall(request).execute();

@@ -3,6 +3,8 @@
               android:layout_width="wrap_content"
               android:layout_height="wrap_content"
               android:minHeight="200dp"
+              android:gravity="center_horizontal"
+              android:background="@android:color/transparent"
               android:orientation="vertical">
 
     <ImageView
@@ -13,5 +15,16 @@
         android:scaleType="fitXY"
         android:adjustViewBounds="true"
         android:layout_weight="1"/>
+
+    <Button
+        android:id="@+id/connect_camera_next_button"
+        android:layout_marginTop="20dp"
+        android:paddingLeft="20dp"
+        android:paddingRight="20dp"
+        android:layout_width="wrap_content"
+        android:layout_height="40dp"
+        android:background="@drawable/btn_selector"
+        android:text="@string/next_name_camera"
+        android:visibility="gone"/>
 
 </LinearLayout>

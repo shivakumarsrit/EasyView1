@@ -7,6 +7,7 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.Settings;
@@ -14,6 +15,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.Window;
 import android.view.WindowManager;
+import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.ListView;
@@ -30,6 +32,7 @@ import io.evercam.EvercamObject;
 import io.evercam.Right;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.feedback.IntercomSendMessageTask;
 import io.evercam.androidapp.sharing.RightsStatus;
@@ -250,21 +253,34 @@ public class CustomedDialog
      *
      * @param drawable the image drawable returned to show in pop up dialog
      */
-    public static AlertDialog getSnapshotDialog(Activity activity, Drawable drawable)
+    public static AlertDialog getSnapshotDialog(final Activity activity, Drawable drawable)
     {
-        AlertDialog snapshotDialog = new AlertDialog.Builder(activity).create();
+        Builder builder = new AlertDialog.Builder(activity);
+        final AlertDialog snapshotDialog = builder.create();
+
+        snapshotDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
+
         LayoutInflater mInflater = LayoutInflater.from(activity);
         final View snapshotView = mInflater.inflate(R.layout.test_snapshot_dialog, null);
+        Button nextButton = (Button) snapshotView.findViewById(R.id.connect_camera_next_button);
+
+        if(activity instanceof AddCameraActivity)
+        {
+            nextButton.setVisibility(View.VISIBLE);
+            nextButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v)
+                {
+                    ((AddCameraActivity) activity).showCameraNameView();
+                    snapshotDialog.dismiss();
+                }
+            });
+        }
         ImageView snapshotImageView = (ImageView) snapshotView.findViewById(R.id
                 .test_snapshot_image);
         snapshotImageView.setImageDrawable(drawable);
         snapshotDialog.setView(snapshotView);
 
-        Window window = snapshotDialog.getWindow();
-        WindowManager.LayoutParams layoutParams = window.getAttributes();
-
-        layoutParams.y = -CamerasActivity.readScreenHeight(activity) / 9;
-        window.setAttributes(layoutParams);
         return snapshotDialog;
     }
 
@@ -512,10 +528,16 @@ public class CustomedDialog
                                 if(AppData.defaultUser != null)
                                 {
                                     String modelName = String.valueOf(input);
-                                    String message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
-
-                                    IntercomSendMessageTask.launch(context, AppData.defaultUser
-                                            .getUsername(), message);
+                                    String message = "";
+                                    if(device != null)
+                                    {
+                                        message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
+                                    }
+                                    else{
+                                        message = "I'd like to report a new camera model: " + modelName;
+                                    }
+                                    IntercomSendMessageTask.launch(context, AppData
+                                            .defaultUser.getUsername(), message);
                                 }
                             }
                         }).start();

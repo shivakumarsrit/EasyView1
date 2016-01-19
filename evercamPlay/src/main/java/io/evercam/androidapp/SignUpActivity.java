@@ -348,15 +348,7 @@ public class SignUpActivity extends ParentAppCompatActivity
         @Override
         protected void onPreExecute()
         {
-            //Hide soft keyboard
-            InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context
-                    .INPUT_METHOD_SERVICE);
-
-            if(SignUpActivity.this.getCurrentFocus() != null)
-            {
-                inputMethodManager.hideSoftInputFromWindow(SignUpActivity.this.getCurrentFocus()
-                        .getWindowToken(), 0);
-            }
+            hideSoftKeyboard();
             showProgress(true);
         }
 

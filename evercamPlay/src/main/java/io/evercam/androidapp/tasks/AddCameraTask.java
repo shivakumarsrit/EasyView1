@@ -16,6 +16,7 @@ import io.evercam.EvercamException;
 import io.evercam.Snapshot;
 import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
+import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
@@ -33,14 +34,14 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
 {
     private final String TAG = "AddCameraTask";
     private CameraDetail cameraDetail;
-    private AddEditCameraActivity activity;
+    private ParentAppCompatActivity activity;
     private CustomProgressDialog customProgressDialog;
     private String errorMessage = null;
     private boolean isReachableExternally = false;
     private Boolean readyToCreateCamera = null;
     private boolean isFromScan;
 
-    public AddCameraTask(CameraDetail cameraDetail, AddEditCameraActivity activity, boolean isFromScan)
+    public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan)
     {
         this.cameraDetail = cameraDetail;
         this.activity = activity;
@@ -68,7 +69,6 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
                         R.string.action_addcamera_success_scan,
                         R.string.label_addcamera_successful_scan);
                 newCameraItem.setIsFromDiscovery(true);
-
             }
             else
             {

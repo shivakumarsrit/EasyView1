@@ -1,7 +1,7 @@
-<resources> xmlns:android="http://schemas.android.com/apk/res/android">
+<resources>
 
     <style name="AppTheme" parent="Theme.AppCompat.NoActionBar">
-        <!--<item name="colorAccent">@color/orange_red</item>-->
+        <item name="colorAccent">@color/white</item>
     </style>
 
     <style name="ToolbarTheme" parent="AppTheme">
@@ -153,6 +153,82 @@
         <item name="android:layout_gravity">left</item>
     </style>
 
+    <!-- Add camera view flip styles-->
+    <style name="AddCameraViewFlipTopLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">match_parent</item>
+        <item name="android:layout_marginTop">10dp</item>
+        <item name="android:layout_marginBottom">10dp</item>
+    </style>
+
+    <style name="TextAppearance.AppCompat.LightGray">
+        <item name="android:textColor">@color/light_gray</item>
+    </style>
+    
+    <style name="SingleLineEditText">
+        <item name="android:layout_width">fill_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:singleLine">true</item>
+    </style>
+
+    <style name="SingleLineEditText.Text">
+        <item name="android:inputType">text</item>
+    </style>
+
+    <style name="SingleLineEditText.Number">
+        <item name="android:inputType">number</item>
+    </style>
+
+    <style name="TextInputLayoutDark">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="hintTextAppearance">@style/TextAppearance.AppCompat.LightGray</item>
+    </style>
+
+    <style name="EditTextError" parent="@style/TextAppearance.AppCompat.LightGray">
+        <item name="android:textSize">12sp</item>
+    </style>
+
+    <style name="CheckSnapshotButtonPlaceholder">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">40dp</item>
+        <item name="android:layout_marginTop">20dp</item>
+        <item name="android:layout_marginLeft">5dp</item>
+        <item name="android:layout_marginRight">5dp</item>
+    </style>
+
+    <style name="PortAndPathLineLayout">
+        <item name="android:layout_width">match_parent</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:gravity">bottom</item>
+        <item name="android:orientation">horizontal</item>
+    </style>
+
+    <style name="PortLineLayout">
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.45</item>
+    </style>
+
+    <style name="PathLineLayout">
+        <item name="android:gravity">bottom</item>
+        <item name="android:layout_width">0dp</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_weight">0.65</item>
+    </style>
+
+    <style name="SlashText">
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_marginBottom">6dp</item>
+        <item name="android:layout_marginLeft">2dp</item>
+        <item name="android:layout_marginRight">2dp</item>
+        <item name="android:textColor">@color/white</item>
+        <item name="android:textSize">17sp</item>
+        <item name="android:text">@string/slash</item>
+    </style>
+
     <!-- Add/Edit camera details styles-->
     <style name="AddEditCameraItemRowLayout">
         <item name="android:layout_width">fill_parent</item>
@@ -167,19 +243,16 @@
         <item name="android:layout_gravity">center</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText">
-        <item name="android:layout_width">fill_parent</item>
-        <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
-        <item name="android:singleLine">true</item>
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText">
+        
         <item name="android:layout_marginRight">25dp</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText.Text">
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText.Text">
         <item name="android:inputType">text</item>
     </style>
 
-    <style name="AddEditCameraItemRowItemEditText.Number">
+    <style name="SingleLineEditText.AddEditCameraItemRowItemEditText.Number">
         <item name="android:inputType">number</item>
     </style>
 
@@ -188,6 +261,12 @@
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerVertical">true</item>
         <item name="android:layout_alignParentRight">true</item>
+        <item name="android:layout_marginRight">4dp</item>
+    </style>
+
+    <style name="AddEditCameraStatus.WithinTextInputLayout">
+        <item name="android:layout_centerVertical">false</item>
+        <item name="android:layout_marginTop">24dp</item>
     </style>
 
     <style name="QuestionMarkImage">
@@ -206,14 +285,17 @@
         <item name="android:layout_centerInParent">true</item>
     </style>
 
-    <!-- Login-->
-    <style name="LoginLinkText">
+    <style name="LinkText">
         <item name="android:layout_width">wrap_content</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_centerHorizontal">true</item>
         <item name="android:textColor">@drawable/txt_selector</item>
         <item name="android:textSize">14sp</item>
         <item name="android:padding">5dp</item>
+    </style>
+
+    <style name="LinkText.Bold">
+        <item name="android:textStyle">bold</item>
     </style>
 
     <!-- Browse saved images-->
