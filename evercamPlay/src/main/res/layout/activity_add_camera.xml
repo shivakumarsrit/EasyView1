@@ -1,22 +1,22 @@
 <?xml version="1.0" encoding="utf-8"?>
 
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:app="http://schemas.android.com/apk/res-auto"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent">
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <include
         layout="@layout/tool_bar"
         android:id="@+id/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="?attr/actionBarSize" />
 
     <ProgressBar
         android:id="@+id/add_camera_progress_bar"
         android:layout_below="@+id/tool_bar"
         style="@android:style/Widget.DeviceDefault.ProgressBar.Horizontal"
         android:layout_width="match_parent"
-        android:layout_height="2dp"/>
+        android:layout_height="2dp" />
 
     <ScrollView
         android:layout_below="@id/add_camera_progress_bar"
@@ -36,7 +36,7 @@
 
                 <include
                     android:id="@+id/model_explain_text_layout"
-                    layout="@layout/partial_explain_text_view"/>
+                    layout="@layout/partial_explain_text_view" />
 
                 <fragment
                     android:id="@+id/add_camera_model_selector_fragment"
@@ -46,8 +46,7 @@
                     android:layout_below="@id/model_explain_text_layout"
                     android:layout_marginBottom="40dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp">
-                </fragment>
+                    android:layout_marginTop="20dp"></fragment>
 
                 <Button
                     android:id="@+id/model_selector_view_next_button"
@@ -57,7 +56,7 @@
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
                     android:background="@drawable/btn_selector"
-                    android:text="@string/next_connect_camera"/>
+                    android:text="@string/next_connect_camera" />
 
                 <TextView
                     android:id="@+id/report_model_text_link"
@@ -65,13 +64,12 @@
                     android:layout_below="@id/model_selector_view_next_button"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="100dp"
-                    android:text="@string/report_model"/>
+                    android:text="@string/report_model" />
 
             </RelativeLayout>
 
             <!-- Second view - connect camera -->
-            <RelativeLayout
-                style="@style/AddCameraViewFlipTopLayout">
+            <RelativeLayout style="@style/AddCameraViewFlipTopLayout">
 
                 <LinearLayout
                     android:id="@+id/selected_model_layout"
@@ -79,6 +77,7 @@
                     android:orientation="horizontal"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content">
+
                     <TextView
                         android:id="@+id/selected_model_text"
                         android:layout_width="wrap_content"
@@ -88,7 +87,8 @@
                         android:maxWidth="250dp"
                         android:textColor="@android:color/white"
                         android:textSize="17sp"
-                        android:textStyle="bold"/>
+                        android:textStyle="bold" />
+
                     <ImageView
                         android:id="@+id/edit_model_image_view"
                         android:layout_width="35dp"
@@ -96,7 +96,7 @@
                         android:layout_marginLeft="5dp"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:padding="7dp"
-                        android:src="@drawable/ic_edit"/>
+                        android:src="@drawable/ic_edit" />
                 </LinearLayout>
 
                 <include
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    layout="@layout/partial_explain_text_view"/>
+                    layout="@layout/partial_explain_text_view" />
 
                 <LinearLayout
                     android:id="@+id/connect_form_layout"
@@ -129,7 +129,7 @@
                             <io.evercam.androidapp.custom.PortCheckEditText
                                 android:id="@+id/external_ip_float_edit_text"
                                 style="@style/SingleLineEditText.Text"
-                                android:hint="@string/public_ip"/>
+                                android:hint="@string/public_ip" />
                         </android.support.design.widget.TextInputLayout>
 
                         <ImageView
@@ -143,14 +143,12 @@
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:src="@drawable/ic_cancel"
-                            android:tint="@color/light_gray_400"/>
+                            android:tint="@color/light_gray_400" />
                     </RelativeLayout>
 
-                    <LinearLayout
-                        style="@style/PortAndPathLineLayout">
+                    <LinearLayout style="@style/PortAndPathLineLayout">
 
-                        <RelativeLayout
-                            style="@style/PortLineLayout">
+                        <RelativeLayout style="@style/PortLineLayout">
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_http"
@@ -159,22 +157,21 @@
                                 <io.evercam.androidapp.custom.PortCheckEditText
                                     android:id="@+id/http_float_edit_text"
                                     style="@style/SingleLineEditText.Number"
-                                    android:hint="@string/add_camera_http_port"/>
+                                    android:hint="@string/add_camera_http_port" />
                             </android.support.design.widget.TextInputLayout>
 
-                            <RelativeLayout
-                                style="@style/AddEditCameraStatus.WithinTextInputLayout">
+                            <RelativeLayout style="@style/AddEditCameraStatus.WithinTextInputLayout">
 
                                 <ProgressBar
                                     android:id="@+id/progress_bar_http"
                                     style="@style/PortCheckProgressBar"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
 
                                 <TextView
                                     android:id="@+id/port_status_text_http"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
 
                             </RelativeLayout>
                         </RelativeLayout>
@@ -183,8 +180,7 @@
                             android:id="@+id/snapshot_path_layout"
                             style="@style/PathLineLayout">
 
-                            <TextView
-                                style="@style/SlashText"/>
+                            <TextView style="@style/SlashText" />
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_snapshot_path"
@@ -193,16 +189,14 @@
 
                                 <EditText
                                     android:id="@+id/snapshot_path_float_edit_text"
-                                    style="@style/SingleLineEditText.Text"/>
+                                    style="@style/SingleLineEditText.Text" />
                             </android.support.design.widget.TextInputLayout>
                         </LinearLayout>
                     </LinearLayout>
 
-                    <LinearLayout
-                        style="@style/PortAndPathLineLayout">
+                    <LinearLayout style="@style/PortAndPathLineLayout">
 
-                        <RelativeLayout
-                            style="@style/PortLineLayout">
+                        <RelativeLayout style="@style/PortLineLayout">
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_rtsp"
@@ -211,22 +205,21 @@
                                 <io.evercam.androidapp.custom.PortCheckEditText
                                     android:id="@+id/rtsp_float_edit_text"
                                     style="@style/SingleLineEditText.Number"
-                                    android:hint="@string/add_camera_rtsp_port"/>
+                                    android:hint="@string/add_camera_rtsp_port" />
                             </android.support.design.widget.TextInputLayout>
 
-                            <RelativeLayout
-                                style="@style/AddEditCameraStatus.WithinTextInputLayout">
+                            <RelativeLayout style="@style/AddEditCameraStatus.WithinTextInputLayout">
 
                                 <ProgressBar
                                     android:id="@+id/progress_bar_rtsp"
                                     style="@style/PortCheckProgressBar"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
 
                                 <TextView
                                     android:id="@+id/port_status_text_rtsp"
                                     android:layout_width="wrap_content"
                                     android:layout_height="wrap_content"
-                                    android:visibility="gone"/>
+                                    android:visibility="gone" />
                             </RelativeLayout>
                         </RelativeLayout>
 
@@ -234,8 +227,7 @@
                             style="@style/PathLineLayout"
                             android:id="@+id/rtsp_path_layout">
 
-                            <TextView
-                                style="@style/SlashText"/>
+                            <TextView style="@style/SlashText" />
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_rtsp_path"
@@ -244,7 +236,7 @@
 
                                 <EditText
                                     android:id="@+id/rtsp_path_float_edit_text"
-                                    style="@style/SingleLineEditText.Text"/>
+                                    style="@style/SingleLineEditText.Text" />
                             </android.support.design.widget.TextInputLayout>
                         </LinearLayout>
 
@@ -254,15 +246,17 @@
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:orientation="horizontal">
+
                         <CheckBox
                             android:id="@+id/auth_check_box"
                             android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"/>
+                            android:layout_height="wrap_content" />
+
                         <TextView
                             android:id="@+id/required_auth_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
-                            android:text="@string/requires_auth"/>
+                            android:text="@string/requires_auth" />
                     </LinearLayout>
 
                     <LinearLayout
@@ -271,6 +265,7 @@
                         android:orientation="horizontal"
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content">
+
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_cam_username"
                             android:layout_width="0dp"
@@ -281,8 +276,9 @@
 
                             <EditText
                                 android:id="@+id/cam_username_float_edit_text"
-                                style="@style/SingleLineEditText.Text"/>
+                                style="@style/SingleLineEditText.Text" />
                         </android.support.design.widget.TextInputLayout>
+
                         <android.support.design.widget.TextInputLayout
                             android:layout_width="0dp"
                             android:layout_weight="1"
@@ -293,7 +289,7 @@
 
                             <EditText
                                 android:id="@+id/cam_password_float_edit_text"
-                                style="@style/SingleLineEditText.Text"/>
+                                style="@style/SingleLineEditText.Text" />
                         </android.support.design.widget.TextInputLayout>
                     </LinearLayout>
 
@@ -302,7 +298,7 @@
                         style="@style/CheckSnapshotButtonPlaceholder"
                         android:textColor="@drawable/signup_btn_txt_selector"
                         android:background="@drawable/signup_btn_selector"
-                        android:text="@string/check_for_snapshot"/>
+                        android:text="@string/check_for_snapshot" />
 
                     <RelativeLayout
                         android:id="@+id/snapshot_button_indicator_layout"
@@ -316,16 +312,18 @@
                             android:layout_centerHorizontal="true"
                             android:layout_width="wrap_content"
                             android:layout_height="match_parent">
+
                             <ProgressBar
                                 android:layout_width="20dp"
                                 android:layout_height="20dp"
-                                android:indeterminateOnly="true"/>
+                                android:indeterminateOnly="true" />
+
                             <TextView
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
                                 android:textColor="@color/white"
-                                android:text="@string/checking_snapshot"/>
+                                android:text="@string/checking_snapshot" />
                         </LinearLayout>
                     </RelativeLayout>
                 </LinearLayout>
@@ -336,13 +334,12 @@
                     android:layout_below="@id/connect_form_layout"
                     android:layout_marginBottom="5dp"
                     android:layout_marginTop="50dp"
-                    android:text="@string/live_support"/>
+                    android:text="@string/live_support" />
 
             </RelativeLayout>
 
             <!-- Third view - name the camera -->
-            <RelativeLayout
-                style="@style/AddCameraViewFlipTopLayout">
+            <RelativeLayout style="@style/AddCameraViewFlipTopLayout">
 
                 <LinearLayout
                     android:layout_width="match_parent"
@@ -359,7 +356,7 @@
                         <EditText
                             android:id="@+id/cam_name_float_edit_text"
                             style="@style/SingleLineEditText.Text"
-                            android:hint="@string/hint_name_your_camera"/>
+                            android:hint="@string/hint_name_your_camera" />
                     </android.support.design.widget.TextInputLayout>
 
                     <Button
@@ -368,7 +365,7 @@
                         android:layout_marginTop="30dp"
                         android:layout_height="40dp"
                         android:background="@drawable/btn_selector"
-                        android:text="@string/done"/>
+                        android:text="@string/done" />
 
                 </LinearLayout>
 

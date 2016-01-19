@@ -17,34 +17,29 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.ScanActivity;
 import io.evercam.network.discovery.DiscoveredCamera;
 
-public class ScanResultAdapter extends ArrayAdapter<DiscoveredCamera>
-{
+public class ScanResultAdapter extends ArrayAdapter<DiscoveredCamera> {
     private final String TAG = "ScanResultAdapter";
 
     private ArrayList<DiscoveredCamera> cameras;
     private SparseArray<Drawable> drawableArray;
 
     public ScanResultAdapter(Context context, int resource, ArrayList<DiscoveredCamera> cameras,
-                             SparseArray<Drawable> drawableArray)
-    {
+                             SparseArray<Drawable> drawableArray) {
         super(context, resource, cameras);
         this.cameras = cameras;
         this.drawableArray = drawableArray;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
+        if (view == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.item_scan_list, null);
         }
         DiscoveredCamera camera = cameras.get(position);
-        if (camera != null)
-        {
+        if (camera != null) {
             ImageView thumbnailImageView = (ImageView) view.findViewById(R.id.camera_img);
             TextView ipTextView = (TextView) view.findViewById(R.id.camera_ip);
             TextView modelTextView = (TextView) view.findViewById(R.id.camera_model);
@@ -68,57 +63,42 @@ public class ScanResultAdapter extends ArrayAdapter<DiscoveredCamera>
         return view;
     }
 
-    private void updateThumbnailImage(ImageView imageView, int position)
-    {
-        if(drawableArray.size() > 0)
-        {
+    private void updateThumbnailImage(ImageView imageView, int position) {
+        if (drawableArray.size() > 0) {
             Drawable drawable = drawableArray.get(position);
-            if(drawable != null)
-            {
+            if (drawable != null) {
                 imageView.setVisibility(View.VISIBLE);
                 imageView.setImageDrawable(drawable);
-            }
-            else
-            {
+            } else {
                 imageView.setVisibility(View.INVISIBLE);
             }
         }
     }
 
-    private void updateIpAndPort(TextView textView, DiscoveredCamera camera)
-    {
+    private void updateIpAndPort(TextView textView, DiscoveredCamera camera) {
         String ipTextShowing = camera.getIP();
-        if(camera.hasHTTP())
-        {
+        if (camera.hasHTTP()) {
             ipTextShowing = ipTextShowing + ":" + camera.getHttp();
         }
         textView.setText(ipTextShowing);
     }
 
-    private void updateVendorAndModel(TextView textView, DiscoveredCamera camera)
-    {
+    private void updateVendorAndModel(TextView textView, DiscoveredCamera camera) {
         String vendor = camera.getVendor().toUpperCase(Locale.UK);
 
-        if(camera.hasModel())
-        {
+        if (camera.hasModel()) {
             String model = camera.getModel().toUpperCase(Locale.UK);
-            if(model.startsWith(vendor))
-            {
+            if (model.startsWith(vendor)) {
                 textView.setText(model);
-            }
-            else
-            {
+            } else {
                 textView.setText(vendor + " " + model);
             }
-        }
-        else
-        {
+        } else {
             textView.setText(vendor);
         }
     }
 
-    private void markLabelGreen(TextView textView, boolean isGreen)
-    {
+    private void markLabelGreen(TextView textView, boolean isGreen) {
         int colorCode = isGreen ? android.R.color.holo_green_dark : android.R.color.darker_gray;
         textView.setTextColor(getContext().getResources().getColor(colorCode));
     }

@@ -1,6 +1,6 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="wrap_content">
+    android:layout_width="fill_parent"
+    android:layout_height="wrap_content">
 
     <ImageView
         android:id="@+id/menu_icon"
@@ -11,7 +11,7 @@
         android:layout_marginLeft="10dip"
         android:layout_marginRight="10dip"
         android:layout_marginTop="15dip"
-        android:src="@drawable/ic_add_user"/>
+        android:src="@drawable/ic_add_user" />
 
     <TextView
         android:id="@+id/add_account_text_view"
@@ -24,6 +24,6 @@
         android:fontFamily="sans-serif"
         android:textColor="@android:color/white"
         android:textSize="16sp"
-        android:textStyle="bold"/>
+        android:textStyle="bold" />
 
 </LinearLayout>

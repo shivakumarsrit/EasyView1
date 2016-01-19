@@ -11,8 +11,7 @@ import java.util.HashMap;
 import io.evercam.androidapp.utils.Constants;
 import io.keen.client.java.KeenClient;
 
-public class LoadTimeFeedbackItem extends FeedbackItem
-{
+public class LoadTimeFeedbackItem extends FeedbackItem {
     private final String TAG = "LoadTimeFeedbackItem";
     public final static String TYPE_REMOTE = "loadFromServer";
     public final static String TYPE_LOCAL = "loadFromDatabase";
@@ -22,33 +21,27 @@ public class LoadTimeFeedbackItem extends FeedbackItem
     private Float evercam_load_time;
 
     public LoadTimeFeedbackItem(Context context, String username, Float databaseLoadTime,
-                                Float evercamLoadTime)
-    {
+                                Float evercamLoadTime) {
         super(context, username);
         this.database_load_time = databaseLoadTime;
         this.evercam_load_time = evercamLoadTime;
     }
 
-    public String toJson()
-    {
+    public String toJson() {
         JSONObject jsonObject;
-        try
-        {
+        try {
             jsonObject = getBaseJsonObject();
             jsonObject.put("database_load_time", database_load_time);
             jsonObject.put("evercam_load_time", evercam_load_time);
             return jsonObject.toString();
-        }
-        catch(JSONException e)
-        {
+        } catch (JSONException e) {
             Log.e(TAG, e.toString());
         }
         return "";
     }
 
     @Override
-    public HashMap<String, Object> toHashMap()
-    {
+    public HashMap<String, Object> toHashMap() {
         HashMap<String, Object> event = super.toHashMap();
         event.put("database_load_time", database_load_time);
         event.put("evercam_load_time", evercam_load_time);
@@ -56,17 +49,13 @@ public class LoadTimeFeedbackItem extends FeedbackItem
     }
 
     @Override
-    public void sendToKeenIo(final KeenClient client)
-    {
-        if(client != null)
-        {
+    public void sendToKeenIo(final KeenClient client) {
+        if (client != null) {
             final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable()
-            {
+            new Thread(new Runnable() {
 
                 @Override
-                public void run()
-                {
+                public void run() {
                     client.addEvent(Constants.KEEN_COLLECTION_LIST_LOADING_TIME, feedbackItem.toHashMap());
 
                 }

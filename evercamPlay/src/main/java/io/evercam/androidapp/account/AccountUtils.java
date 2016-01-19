@@ -16,8 +16,7 @@ import com.google.android.gms.auth.GoogleAuthUtil;
 
 import java.util.regex.Matcher;
 
-public class AccountUtils
-{
+public class AccountUtils {
     /**
      * Retrieves the user profile information.
      *
@@ -25,8 +24,7 @@ public class AccountUtils
      * @return the user profile
      * @throws Exception
      */
-    public static UserProfile getUserProfile(Context context) throws Exception
-    {
+    public static UserProfile getUserProfile(Context context) throws Exception {
         return Build.VERSION.SDK_INT >= Build.VERSION_CODES.ICE_CREAM_SANDWICH ?
                 getUserProfileOnIcsDevice(context) : getUserProfileOnGingerbreadDevice(context);
     }
@@ -39,8 +37,7 @@ public class AccountUtils
      *                and name
      * @return a list of the possible user's email address and name
      */
-    private static UserProfile getUserProfileOnGingerbreadDevice(Context context)
-    {
+    private static UserProfile getUserProfileOnGingerbreadDevice(Context context) {
         // Other that using Patterns (API level 8) this works on devices down to
         // API level 5
         final Matcher valid_email_address = Patterns.EMAIL_ADDRESS.matcher("");
@@ -49,14 +46,12 @@ public class AccountUtils
         UserProfile user_profile = new UserProfile();
         // As far as I can tell, there is no way to get the real name or phone
         // number from the Google account
-        for(Account account : accounts)
-        {
-            if(valid_email_address.reset(account.name).matches())
+        for (Account account : accounts) {
+            if (valid_email_address.reset(account.name).matches())
                 user_profile.addPossibleEmail(account.name);
         }
         // Gets the phone number of the device is the device has one
-        if(context.getPackageManager().hasSystemFeature(Context.TELEPHONY_SERVICE))
-        {
+        if (context.getPackageManager().hasSystemFeature(Context.TELEPHONY_SERVICE)) {
             final TelephonyManager telephony = (TelephonyManager) context.getSystemService
                     (Context.TELEPHONY_SERVICE);
             user_profile.addPossiblePhoneNumber(telephony.getLine1Number());
@@ -74,8 +69,7 @@ public class AccountUtils
      * @return a list of the possible user's email address and name
      */
     @TargetApi(Build.VERSION_CODES.ICE_CREAM_SANDWICH)
-    private static UserProfile getUserProfileOnIcsDevice(Context context) throws Exception
-    {
+    private static UserProfile getUserProfileOnIcsDevice(Context context) throws Exception {
         final ContentResolver content = context.getContentResolver();
         final Cursor cursor = content.query(
                 // Retrieves data rows for the device user's 'profile' contact
@@ -98,25 +92,23 @@ public class AccountUtils
 
         UserProfile userProfile = getUserProfileOnGingerbreadDevice(context);
         String mime_type;
-        while(cursor != null && cursor.moveToNext())
-        {
+        while (cursor != null && cursor.moveToNext()) {
             mime_type = cursor.getString(ProfileQuery.MIME_TYPE);
-            if(mime_type.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE))
+            if (mime_type.equals(ContactsContract.CommonDataKinds.Email.CONTENT_ITEM_TYPE))
                 userProfile.addPossibleEmail(cursor.getString(ProfileQuery.EMAIL),
                         cursor.getInt(ProfileQuery.IS_PRIMARY_EMAIL) > 0);
-            else if(mime_type.equals(ContactsContract.CommonDataKinds.StructuredName
+            else if (mime_type.equals(ContactsContract.CommonDataKinds.StructuredName
                     .CONTENT_ITEM_TYPE))
                 userProfile.addPossibleName(cursor.getString(ProfileQuery.GIVEN_NAME) + " " +
                         cursor.getString(ProfileQuery.FAMILY_NAME));
-            else if(mime_type.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE))
+            else if (mime_type.equals(ContactsContract.CommonDataKinds.Phone.CONTENT_ITEM_TYPE))
                 userProfile.addPossiblePhoneNumber(cursor.getString(ProfileQuery.PHONE_NUMBER),
                         cursor.getInt(ProfileQuery.IS_PRIMARY_PHONE_NUMBER) > 0);
-            else if(mime_type.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE))
+            else if (mime_type.equals(ContactsContract.CommonDataKinds.Photo.CONTENT_ITEM_TYPE))
                 userProfile.addPossiblePhoto(Uri.parse(cursor.getString(ProfileQuery.PHOTO)));
         }
 
-        if(cursor != null)
-        {
+        if (cursor != null) {
             cursor.close();
         }
 

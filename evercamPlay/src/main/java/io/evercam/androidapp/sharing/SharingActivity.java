@@ -18,8 +18,7 @@ import io.evercam.androidapp.tasks.ValidateRightsRunnable;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class SharingActivity extends ParentAppCompatActivity
-{
+public class SharingActivity extends ParentAppCompatActivity {
     private static final String TAG = "SharingActivity";
 
     public static EvercamCamera evercamCamera;
@@ -30,8 +29,7 @@ public class SharingActivity extends ParentAppCompatActivity
     private WeakHandler mWeakHandler;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         evercamCamera = VideoActivity.evercamCamera;
@@ -39,8 +37,7 @@ public class SharingActivity extends ParentAppCompatActivity
         mWeakHandler = new WeakHandler();
 
         //Validate if the user still has access to the camera
-        if(evercamCamera != null)
-        {
+        if (evercamCamera != null) {
             new Thread(new ValidateRightsRunnable(this, evercamCamera.getCameraId())).start();
         }
 
@@ -55,8 +52,7 @@ public class SharingActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         super.onPrepareOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_sharing, menu);
@@ -67,10 +63,8 @@ public class SharingActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
@@ -90,30 +84,21 @@ public class SharingActivity extends ParentAppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_CREATE_SHARE)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_CREATE_SHARE) {
             FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), this);
 
-            if(resultCode == Constants.RESULT_SHARE_CREATED)
-            {
-                mWeakHandler.postDelayed(new Runnable()
-                {
+            if (resultCode == Constants.RESULT_SHARE_CREATED) {
+                mWeakHandler.postDelayed(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         CustomSnackbar.showShort(SharingActivity.this, R.string.msg_share_created);
                     }
                 }, 1000);
-            }
-            else if(resultCode == Constants.RESULT_SHARE_REQUEST_CREATED)
-            {
-                mWeakHandler.postDelayed(new Runnable()
-                {
+            } else if (resultCode == Constants.RESULT_SHARE_REQUEST_CREATED) {
+                mWeakHandler.postDelayed(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         CustomSnackbar.showLong(SharingActivity.this, R.string.msg_share_request_created);
                     }
                 }, 1000);
@@ -121,16 +106,13 @@ public class SharingActivity extends ParentAppCompatActivity
         }
     }
 
-    public void showTransferMenu(boolean show)
-    {
-        if(transferMenu != null)
-        {
+    public void showTransferMenu(boolean show) {
+        if (transferMenu != null) {
             transferMenu.setVisible(show);
         }
     }
 
-    private void showTransferDialog()
-    {
+    private void showTransferDialog() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         TransferOwnerDialogFragment dialogFragment = new TransferOwnerDialogFragment()
                 .setCameraId(evercamCamera.getCameraId())

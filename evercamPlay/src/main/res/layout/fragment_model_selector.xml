@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="fill_parent"
     android:layout_height="wrap_content"
     android:layout_marginTop="5sp">
@@ -19,7 +18,7 @@
             android:background="@color/white"
             android:paddingBottom="5sp"
             android:paddingTop="10sp"
-            android:src="@drawable/thumbnail_placeholder"/>
+            android:src="@drawable/thumbnail_placeholder" />
 
         <LinearLayout
             android:layout_width="0sp"
@@ -41,12 +40,12 @@
                     android:layout_height="20sp"
                     android:layout_marginLeft="7sp"
                     android:text="@string/vendor"
-                    android:textSize="15sp"/>
+                    android:textSize="15sp" />
 
                 <Spinner
                     android:id="@+id/vendor_spinner"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
 
             <LinearLayout
@@ -68,17 +67,17 @@
                         android:layout_marginLeft="7sp"
                         android:layout_marginTop="2dp"
                         android:text="@string/model"
-                        android:textSize="15sp"/>
+                        android:textSize="15sp" />
 
                     <ImageView
                         android:id="@+id/model_explanation_btn"
-                        style="@style/QuestionMarkImage"/>
+                        style="@style/QuestionMarkImage" />
                 </LinearLayout>
 
                 <Spinner
                     android:id="@+id/model_spinner"
                     android:layout_width="fill_parent"
-                    android:layout_height="wrap_content"/>
+                    android:layout_height="wrap_content" />
             </LinearLayout>
         </LinearLayout>
     </LinearLayout>
@@ -91,5 +90,5 @@
         android:layout_height="15sp"
         android:adjustViewBounds="true"
         android:paddingLeft="2sp"
-        android:paddingTop="2sp"/>
+        android:paddingTop="2sp" />
 </RelativeLayout>

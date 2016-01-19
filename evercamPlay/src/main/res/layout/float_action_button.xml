@@ -1,8 +1,8 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                xmlns:fab="http://schemas.android.com/apk/res-auto"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:id="@+id/action_button_layout">
+    xmlns:fab="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:id="@+id/action_button_layout">
 
     <com.getbase.floatingactionbutton.FloatingActionsMenu
         android:id="@+id/add_action_menu"
@@ -27,7 +27,7 @@
             fab:fab_title="@string/add_camera_manually"
             fab:fab_icon="@drawable/ic_edit"
             fab:fab_colorPressed="@color/orange_red_pressed"
-            fab:fab_size="mini"/>
+            fab:fab_size="mini" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_action_button_scan"
@@ -37,7 +37,7 @@
             fab:fab_title="@string/scan_for_cameras"
             fab:fab_icon="@drawable/ic_scan"
             fab:fab_colorPressed="@color/orange_red_pressed"
-            fab:fab_size="mini"/>
+            fab:fab_size="mini" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>
 

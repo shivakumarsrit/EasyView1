@@ -16,8 +16,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
 import io.intercom.android.sdk.Intercom;
 
-public class EvercamAccount
-{
+public class EvercamAccount {
     public static final String KEY_USERNAME = "username";
     public static final String KEY_COUNTRY = "country";
     public static final String KEY_API_KEY = "apiKey";
@@ -31,14 +30,12 @@ public class EvercamAccount
     private Context mContext;
     private final AccountManager mAccountManager;
 
-    public EvercamAccount(Context context)
-    {
+    public EvercamAccount(Context context) {
         mContext = context;
         mAccountManager = AccountManager.get(mContext);
     }
 
-    public void add(AppUser newUser)
-    {
+    public void add(AppUser newUser) {
         final Account account = getAccountByEmail(newUser.getEmail());
 
         mAccountManager.addAccountExplicitly(account, null, null);
@@ -55,14 +52,12 @@ public class EvercamAccount
         updateDefaultUser(newUser.getEmail());
     }
 
-    public void remove(final String email, AccountManagerCallback<Boolean> callback)
-    {
+    public void remove(final String email, AccountManagerCallback<Boolean> callback) {
         final Account account = getAccountByEmail(email);
 
         String isDefaultString = mAccountManager.getUserData(account, KEY_IS_DEFAULT);
         //If removing default user, clear the static user object
-        if(isDefaultString.equals(TRUE))
-        {
+        if (isDefaultString.equals(TRUE)) {
             AppData.defaultUser = null;
             AppData.evercamCameraList.clear();
         }
@@ -70,13 +65,11 @@ public class EvercamAccount
         mAccountManager.removeAccount(account, callback, null);
     }
 
-    public Account getAccountByEmail(String email)
-    {
+    public Account getAccountByEmail(String email) {
         return new Account(email, mContext.getString(R.string.account_type));
     }
 
-    public AppUser retrieveUserByEmail(String email)
-    {
+    public AppUser retrieveUserByEmail(String email) {
         Account account = getAccountByEmail(email);
 
         //Start to sync camera list (Disabled because it doesn't need to be synced when the app
@@ -86,29 +79,24 @@ public class EvercamAccount
         return retrieveUserDetailFromAccount(account);
     }
 
-    public ArrayList<AppUser> retrieveUserList()
-    {
+    public ArrayList<AppUser> retrieveUserList() {
         ArrayList<AppUser> userList = new ArrayList<>();
 
         Account[] accounts = mAccountManager.getAccountsByType(mContext.getString(R.string
                 .account_type));
         int defaultCount = 0;
 
-        if(accounts.length > 0)
-        {
-            for(Account account : accounts)
-            {
+        if (accounts.length > 0) {
+            for (Account account : accounts) {
                 AppUser appUser = retrieveUserByEmail(account.name);
-                if(appUser.getIsDefault())
-                {
+                if (appUser.getIsDefault()) {
                     defaultCount++;
                 }
                 userList.add(appUser);
             }
 
             //If default user doesn't exist, or more than 1, reset default user
-            if(defaultCount != 1)
-            {
+            if (defaultCount != 1) {
                 AppUser newDefaultUser = userList.get(0);
                 String defaultUserEmail = newDefaultUser.getEmail();
                 updateDefaultUser(defaultUserEmail);
@@ -121,8 +109,7 @@ public class EvercamAccount
         return userList;
     }
 
-    public AppUser retrieveUserDetailFromAccount(Account account)
-    {
+    public AppUser retrieveUserDetailFromAccount(Account account) {
         String apiKey = mAccountManager.peekAuthToken(account, KEY_API_KEY);
         String apiId = mAccountManager.peekAuthToken(account, KEY_API_ID);
         String username = mAccountManager.getUserData(account, KEY_USERNAME);
@@ -140,8 +127,7 @@ public class EvercamAccount
         appUser.setFirstName(firstName);
         appUser.setLastName(lastName);
 
-        if(isDefaultString != null && isDefaultString.equals(TRUE))
-        {
+        if (isDefaultString != null && isDefaultString.equals(TRUE)) {
             appUser.setIsDefault(true);
             AppData.defaultUser = appUser;
         }
@@ -149,16 +135,12 @@ public class EvercamAccount
         return appUser;
     }
 
-    public AppUser getDefaultUser()
-    {
+    public AppUser getDefaultUser() {
         ArrayList<AppUser> userList = retrieveUserList();
 
-        if(userList.size() > 0)
-        {
-            for(AppUser appUser : userList)
-            {
-                if(appUser.getIsDefault())
-                {
+        if (userList.size() > 0) {
+            for (AppUser appUser : userList) {
+                if (appUser.getIsDefault()) {
                     return appUser;
                 }
             }
@@ -166,18 +148,14 @@ public class EvercamAccount
         return null;
     }
 
-    public void updateDefaultUser(String defaultEmail)
-    {
+    public void updateDefaultUser(String defaultEmail) {
         Account[] accounts = mAccountManager.getAccountsByType(mContext.getString(R.string
                 .account_type));
 
-        if(accounts.length > 0)
-        {
-            for(Account account : accounts)
-            {
+        if (accounts.length > 0) {
+            for (Account account : accounts) {
                 String email = account.name;
-                if(email.equals(defaultEmail))
-                {
+                if (email.equals(defaultEmail)) {
                     mAccountManager.setUserData(account, KEY_IS_DEFAULT, TRUE);
                     AppData.defaultUser = retrieveUserByEmail(email);
 
@@ -186,17 +164,14 @@ public class EvercamAccount
 
                     new MixpanelHelper(mContext).identifyUser(AppData.defaultUser.getUsername());
                     ParentAppCompatActivity.registerUserWithIntercom(AppData.defaultUser);
-                }
-                else
-                {
+                } else {
                     mAccountManager.setUserData(account, KEY_IS_DEFAULT, "");
                 }
             }
         }
     }
 
-    private void startSync(Account account)
-    {
+    private void startSync(Account account) {
         final int SYNC_INTERVAL = 3600 * 6;
         final String AUTHORITY = mContext.getString(R.string.content_provider_authorities);
 

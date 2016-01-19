@@ -12,23 +12,19 @@ import java.util.List;
 import io.evercam.PTZPreset;
 import io.evercam.androidapp.R;
 
-public class PresetsListAdapter extends ArrayAdapter<PTZPreset>
-{
+public class PresetsListAdapter extends ArrayAdapter<PTZPreset> {
     private List<PTZPreset> presetList;
 
-    public PresetsListAdapter(Context context, int resource, List<PTZPreset> presetList)
-    {
+    public PresetsListAdapter(Context context, int resource, List<PTZPreset> presetList) {
         super(context, resource, presetList);
         this.presetList = presetList;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
+        if (view == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.item_preset_list, null);
         }

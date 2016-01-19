@@ -1,12 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-                android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                android:layout_marginLeft="2sp"
-                android:layout_marginTop="5sp"
-                android:layout_marginRight="2sp"
-                android:paddingBottom="10sp"
-                style="@style/SelectableItemBackgroundOnLightTheme">
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:layout_marginLeft="2sp"
+    android:layout_marginTop="5sp"
+    android:layout_marginRight="2sp"
+    android:paddingBottom="10sp"
+    style="@style/SelectableItemBackgroundOnLightTheme">
 
     <RelativeLayout
         android:id="@+id/img_layout"
@@ -20,7 +20,7 @@
             android:layout_height="75dip"
             android:layout_alignParentLeft="true"
             android:background="@android:color/white"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <LinearLayout
@@ -34,15 +34,16 @@
 
         <TextView
             android:id="@+id/camera_model"
-            style="@style/DarkTextSmall"/>
+            style="@style/DarkTextSmall" />
 
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="5dip">
+
             <TextView
                 android:id="@+id/camera_ip"
-                style="@style/DarkTextSmall"/>
+                style="@style/DarkTextSmall" />
         </LinearLayout>
 
     </LinearLayout>
@@ -62,40 +63,40 @@
             style="@style/ScanResultLabel"
             android:text="@string/label_ip"
             android:textColor="@android:color/holo_green_dark"
-            android:layout_weight="3"/>
+            android:layout_weight="3" />
 
         <TextView
             android:id="@+id/label_vendor"
             style="@style/ScanResultLabel"
             android:text="@string/label_vendor"
-            android:layout_weight="6"/>
+            android:layout_weight="6" />
 
         <TextView
             android:id="@+id/label_model"
             style="@style/ScanResultLabel"
             android:text="@string/label_model"
-            android:layout_weight="5"/>
+            android:layout_weight="5" />
 
         <TextView
             android:id="@+id/label_http"
             style="@style/ScanResultLabel"
-            android:text="@string/label_http"/>
+            android:text="@string/label_http" />
 
         <TextView
             android:id="@+id/label_rtsp"
             style="@style/ScanResultLabel"
-            android:text="@string/label_rtsp"/>
+            android:text="@string/label_rtsp" />
 
         <TextView
             android:id="@+id/label_auth"
             style="@style/ScanResultLabel"
-            android:text="@string/label_auth"/>
+            android:text="@string/label_auth" />
 
         <TextView
             android:id="@+id/label_evercam"
             style="@style/ScanResultLabel"
             android:text="@string/label_evercam"
-            android:layout_weight="7"/>
+            android:layout_weight="7" />
     </LinearLayout>
 
 </RelativeLayout>

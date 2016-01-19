@@ -23,8 +23,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.FetchShareListTask;
 import io.evercam.androidapp.tasks.PatchCameraTask;
 
-public class SharingListFragment extends ListFragment
-{
+public class SharingListFragment extends ListFragment {
     private final String TAG = "SharingListFragment";
 
     private ImageView mSharingStatusImageView;
@@ -35,17 +34,14 @@ public class SharingListFragment extends ListFragment
     private List<CameraShareInterface> mShareList = new ArrayList<>();
 
     @Override
-    public void onListItemClick(ListView listView, View view, int position, long id)
-    {
+    public void onListItemClick(ListView listView, View view, int position, long id) {
         //If list header is clicked
-        if(position == 0 && SharingActivity.evercamCamera != null)
-        {
+        if (position == 0 && SharingActivity.evercamCamera != null) {
             SharingStatus status = new SharingStatus(SharingActivity.evercamCamera.isDiscoverable(),
                     SharingActivity.evercamCamera.isPublic());
             String selectedItem = getString(status.getStatusStringId());
             CustomedDialog.getShareStatusDialog(this, selectedItem).show();
-        }
-        else //If share item is clicked
+        } else //If share item is clicked
         {
             CameraShareInterface shareInterface = mShareList.get(position - 1);
 
@@ -55,17 +51,15 @@ public class SharingListFragment extends ListFragment
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
-                             Bundle savedInstanceState)
-    {
+                             Bundle savedInstanceState) {
         return super.onCreateView(inflater, container, savedInstanceState);
     }
 
     @Override
-    public void onActivityCreated(Bundle savedInstanceState)
-    {
+    public void onActivityCreated(Bundle savedInstanceState) {
         super.onActivityCreated(savedInstanceState);
 
-        View headerView = getActivity().getLayoutInflater().inflate(R.layout.header_share_list,getListView(),false);
+        View headerView = getActivity().getLayoutInflater().inflate(R.layout.header_share_list, getListView(), false);
 
         mShareAdapter = new ShareListArrayAdapter(getActivity(),
                 R.layout.item_share_list, mShareList);
@@ -83,14 +77,12 @@ public class SharingListFragment extends ListFragment
 
         retrieveSharingStatusFromCamera();
 
-        if(SharingActivity.evercamCamera != null)
-        {
+        if (SharingActivity.evercamCamera != null) {
             FetchShareListTask.launch(SharingActivity.evercamCamera.getCameraId(), getActivity());
         }
     }
 
-    public void updateShareListOnUi(ArrayList<CameraShareInterface> shareList)
-    {
+    public void updateShareListOnUi(ArrayList<CameraShareInterface> shareList) {
         mShareList.clear();
         mShareList.addAll(shareList);
         mShareAdapter.notifyDataSetChanged();
@@ -98,44 +90,36 @@ public class SharingListFragment extends ListFragment
         updateMenuInSharingActivity();
     }
 
-    public void retrieveSharingStatusFromCamera()
-    {
-        if(SharingActivity.evercamCamera != null)
-        {
+    public void retrieveSharingStatusFromCamera() {
+        if (SharingActivity.evercamCamera != null) {
             SharingStatus status = new SharingStatus(SharingActivity.evercamCamera.isDiscoverable(),
                     SharingActivity.evercamCamera.isPublic());
             updateSharingStatusUi(status);
         }
     }
 
-    public void updateSharingStatusUi(SharingStatus status)
-    {
+    public void updateSharingStatusUi(SharingStatus status) {
         mSharingStatusImageView.setImageResource(status.getImageResourceId());
         mSharingStatusTextView.setText(status.getStatusStringId());
         mSharingStatusDetailTextView.setText(status.getStatusDetailStringId());
     }
 
-    public void patchSharingStatusAndUpdateUi(SharingStatus status)
-    {
+    public void patchSharingStatusAndUpdateUi(SharingStatus status) {
         new PatchCameraTask(buildPatchCamera(status).build(),
                 getActivity()).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private PatchCameraBuilder buildPatchCamera(SharingStatus status)
-    {
+    private PatchCameraBuilder buildPatchCamera(SharingStatus status) {
         PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(SharingActivity.evercamCamera
                 .getCameraId());
         patchCameraBuilder.setPublic(status.isPublic()).setDiscoverable(status.isDiscoverable());
         return patchCameraBuilder;
     }
 
-    private void updateMenuInSharingActivity()
-    {
-        if(getActivity() instanceof SharingActivity)
-        {
+    private void updateMenuInSharingActivity() {
+        if (getActivity() instanceof SharingActivity) {
             AppUser defaultUser = AppData.defaultUser;
-            if(defaultUser != null)
-            {
+            if (defaultUser != null) {
                 String username = defaultUser.getUsername();
                 ((SharingActivity) getActivity()).showTransferMenu(isOwner(username));
             }
@@ -145,35 +129,27 @@ public class SharingListFragment extends ListFragment
     /**
      * TODO: Update the logic after adding owner info in the share list
      */
-    private boolean isOwner(String username)
-    {
+    private boolean isOwner(String username) {
         boolean userExists = false;
-        if(mShareList.size() > 0)
-        {
-            for(CameraShareInterface shareInterface : mShareList)
-            {
+        if (mShareList.size() > 0) {
+            for (CameraShareInterface shareInterface : mShareList) {
                 String userId = "";
-                if(shareInterface instanceof CameraShare)
-                {
+                if (shareInterface instanceof CameraShare) {
                     userId = ((CameraShare) shareInterface).getUserId();
                 }
 
-                if(userId.equals(username)) userExists = true;
+                if (userId.equals(username)) userExists = true;
             }
         }
 
         return !userExists;
     }
 
-    public ArrayList<String> getUsernameList()
-    {
+    public ArrayList<String> getUsernameList() {
         ArrayList<String> usernameList = new ArrayList<>();
-        if(mShareList.size() > 0)
-        {
-            for(CameraShareInterface shareInterface : mShareList)
-            {
-                if(shareInterface instanceof CameraShare)
-                {
+        if (mShareList.size() > 0) {
+            for (CameraShareInterface shareInterface : mShareList) {
+                if (shareInterface instanceof CameraShare) {
                     usernameList.add(((CameraShare) shareInterface).getUserId());
                 }
             }

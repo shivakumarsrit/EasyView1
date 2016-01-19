@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical">
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical">
 
     <RelativeLayout
         android:layout_width="fill_parent"
@@ -16,7 +16,7 @@
             android:layout_height="50dp"
             android:src="@drawable/icon_evercam"
             android:gravity="center_vertical"
-            android:paddingTop="10dp"/>
+            android:paddingTop="10dp" />
 
         <TextView
             android:id="@+id/text_welcome"
@@ -29,13 +29,13 @@
             android:paddingTop="15dp"
             android:text="@string/welcome_to_evercam"
             android:textColor="#ffffff"
-            android:textSize="22sp"/>
+            android:textSize="22sp" />
     </RelativeLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="2dp"
-        android:background="#DC4c3f"/>
+        android:background="#DC4c3f" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -46,8 +46,7 @@
         <android.support.v4.view.ViewPager
             android:id="@+id/page"
             android:layout_width="fill_parent"
-            android:layout_height="fill_parent">
-        </android.support.v4.view.ViewPager>
+            android:layout_height="fill_parent"></android.support.v4.view.ViewPager>
 
         <LinearLayout
             android:id="@+id/dot_layout"
@@ -63,7 +62,7 @@
                 android:layout_height="8sp"
                 android:layout_gravity="center_vertical"
                 android:clickable="true"
-                android:src="@drawable/dot_selector"/>
+                android:src="@drawable/dot_selector" />
 
             <ImageView
                 android:layout_width="8sp"
@@ -71,7 +70,7 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15sp"
                 android:clickable="true"
-                android:src="@drawable/dot_selector"/>
+                android:src="@drawable/dot_selector" />
 
             <ImageView
                 android:layout_width="8sp"
@@ -79,14 +78,14 @@
                 android:layout_gravity="center_vertical"
                 android:layout_marginLeft="15sp"
                 android:clickable="true"
-                android:src="@drawable/dot_selector"/>
+                android:src="@drawable/dot_selector" />
         </LinearLayout>
     </RelativeLayout>
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#DCDCDC"/>
+        android:background="#DCDCDC" />
 
     <TextView
         android:id="@+id/text_login"
@@ -98,12 +97,12 @@
         android:padding="12sp"
         android:text="@string/sign_in_with_evercam"
         android:textColor="@drawable/welcome_txt_selector"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
     <View
         android:layout_width="fill_parent"
         android:layout_height="1dp"
-        android:background="#DCDCDC"/>
+        android:background="#DCDCDC" />
 
     <TextView
         android:id="@+id/text_signup"
@@ -115,6 +114,6 @@
         android:padding="12sp"
         android:text="@string/welcome_create_account"
         android:textColor="@drawable/welcome_txt_selector"
-        android:textSize="20sp"/>
+        android:textSize="20sp" />
 
 </LinearLayout>

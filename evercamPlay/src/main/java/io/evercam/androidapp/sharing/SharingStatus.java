@@ -4,8 +4,7 @@ import android.content.Context;
 
 import io.evercam.androidapp.R;
 
-public class SharingStatus
-{
+public class SharingStatus {
     public enum SharingStatusEnum {PUBLIC, LINK, USER}
 
     private SharingStatusEnum mStatusEnum = SharingStatusEnum.USER;
@@ -15,49 +14,36 @@ public class SharingStatus
     private int mStatusDetailStringId;
     private int mImageResourceId;
 
-    public SharingStatus(boolean isDiscoverable, boolean isPublic)
-    {
-        if(isPublic && isDiscoverable)
-        {
+    public SharingStatus(boolean isDiscoverable, boolean isPublic) {
+        if (isPublic && isDiscoverable) {
             initByEnum(SharingStatusEnum.PUBLIC);
         }
-        if(isPublic && !isDiscoverable)
-        {
+        if (isPublic && !isDiscoverable) {
             initByEnum(SharingStatusEnum.LINK);
         }
-        if(!isPublic && !isDiscoverable)
-        {
+        if (!isPublic && !isDiscoverable) {
             initByEnum(SharingStatusEnum.USER);
         }
     }
 
-    public SharingStatus(SharingStatusEnum statusEnum)
-    {
+    public SharingStatus(SharingStatusEnum statusEnum) {
         initByEnum(statusEnum);
     }
 
-    public SharingStatus(String statusString, Context context)
-    {
-        if(statusString.equals(context.getString(R.string.sharing_status_public)))
-        {
+    public SharingStatus(String statusString, Context context) {
+        if (statusString.equals(context.getString(R.string.sharing_status_public))) {
             initByEnum(SharingStatusEnum.PUBLIC);
-        }
-        else if(statusString.equals(context.getString(R.string.sharing_status_link)))
-        {
+        } else if (statusString.equals(context.getString(R.string.sharing_status_link))) {
             initByEnum(SharingStatusEnum.LINK);
-        }
-        else if(statusString.equals(context.getString(R.string.sharing_status_specific_user)))
-        {
+        } else if (statusString.equals(context.getString(R.string.sharing_status_specific_user))) {
             initByEnum(SharingStatusEnum.USER);
         }
     }
 
-    private void initByEnum(SharingStatusEnum statusEnum)
-    {
+    private void initByEnum(SharingStatusEnum statusEnum) {
         setStatusEnum(statusEnum);
 
-        switch(statusEnum)
-        {
+        switch (statusEnum) {
             case PUBLIC:
                 setIsDiscoverable(true);
                 setIsPublic(true);
@@ -82,63 +68,51 @@ public class SharingStatus
         }
     }
 
-    public SharingStatusEnum getStatusEnum()
-    {
+    public SharingStatusEnum getStatusEnum() {
         return mStatusEnum;
     }
 
-    public void setStatusEnum(SharingStatusEnum mStatusEnum)
-    {
+    public void setStatusEnum(SharingStatusEnum mStatusEnum) {
         this.mStatusEnum = mStatusEnum;
     }
 
-    public boolean isDiscoverable()
-    {
+    public boolean isDiscoverable() {
         return mIsDiscoverable;
     }
 
-    public void setIsDiscoverable(boolean mIsDiscoverable)
-    {
+    public void setIsDiscoverable(boolean mIsDiscoverable) {
         this.mIsDiscoverable = mIsDiscoverable;
     }
 
-    public boolean isPublic()
-    {
+    public boolean isPublic() {
         return mIsPublic;
     }
 
-    public void setIsPublic(boolean mIsPublic)
-    {
+    public void setIsPublic(boolean mIsPublic) {
         this.mIsPublic = mIsPublic;
     }
 
-    public int getStatusStringId()
-    {
+    public int getStatusStringId() {
         return mStatusStringId;
     }
 
-    public void setStatusStringId(int statusStringId)
-    {
+    public void setStatusStringId(int statusStringId) {
         this.mStatusStringId = statusStringId;
     }
 
-    public int getStatusDetailStringId()
-    {
+    public int getStatusDetailStringId() {
         return mStatusDetailStringId;
     }
 
-    public void setStatusDetailStringId(int mStatusDetailStringId)
-    {
+    public void setStatusDetailStringId(int mStatusDetailStringId) {
         this.mStatusDetailStringId = mStatusDetailStringId;
     }
 
-    public int getImageResourceId()
-    {
+    public int getImageResourceId() {
         return mImageResourceId;
     }
 
-    public void setImageResourceId(int mImageResourceId)
-    {
+    public void setImageResourceId(int mImageResourceId) {
         this.mImageResourceId = mImageResourceId;
     }
 }

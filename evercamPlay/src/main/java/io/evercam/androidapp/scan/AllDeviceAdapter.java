@@ -14,31 +14,26 @@ import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.network.discovery.Device;
 import io.evercam.network.discovery.DeviceInterface;
 
-public class AllDeviceAdapter extends ArrayAdapter<DeviceInterface>
-{
+public class AllDeviceAdapter extends ArrayAdapter<DeviceInterface> {
     private final String TAG = "AllDeviceAdapter";
     private ArrayList<DeviceInterface> deviceList;
 
-    public AllDeviceAdapter(Context context, int resource, ArrayList<DeviceInterface> deviceList)
-    {
+    public AllDeviceAdapter(Context context, int resource, ArrayList<DeviceInterface> deviceList) {
         super(context, resource, deviceList);
         this.deviceList = deviceList;
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
+        if (view == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.item_device_list, null);
         }
 
         DeviceInterface deviceInterface = deviceList.get(position);
-        if(deviceInterface != null)
-        {
+        if (deviceInterface != null) {
             final Device device = (Device) deviceInterface;
             TextView ipTextView = (TextView) view.findViewById(R.id.device_ip_text_view);
             TextView macTextView = (TextView) view.findViewById(R.id.device_mac_text_view);
@@ -51,8 +46,7 @@ public class AllDeviceAdapter extends ArrayAdapter<DeviceInterface>
 
             reportTextView.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     CustomedDialog.showReportCameraModelDialog(getContext(), device);
                 }
             });

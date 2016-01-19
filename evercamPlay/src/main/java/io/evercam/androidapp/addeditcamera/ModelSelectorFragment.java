@@ -1,9 +1,9 @@
 package io.evercam.androidapp.addeditcamera;
 
-import android.support.v4.app.Fragment;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.app.Fragment;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -31,8 +31,7 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.utils.Commons;
 
-public class ModelSelectorFragment extends Fragment
-{
+public class ModelSelectorFragment extends Fragment {
     private final String TAG = "ModelSelectorFragment";
 
     private final String VENDOR_SPINNER_KEY = "vendorSpinnerSelectedItem";
@@ -50,8 +49,7 @@ public class ModelSelectorFragment extends Fragment
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container, Bundle
-            savedInstanceState)
-    {
+            savedInstanceState) {
         View rootView = inflater.inflate(R.layout.fragment_model_selector, container, false);
         vendorSpinner = (Spinner) rootView.findViewById(R.id.vendor_spinner);
         modelSpinner = (Spinner) rootView.findViewById(R.id.model_spinner);
@@ -65,95 +63,72 @@ public class ModelSelectorFragment extends Fragment
 
         loadVendors();
 
-        if(savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             vendorSavedSelectedPosition = savedInstanceState.getInt(VENDOR_SPINNER_KEY);
             modelSavedSelectedPosition = savedInstanceState.getInt(MODEL_SPINNER_KEY);
         }
 
-        modelExplanationImageButton.setOnClickListener(new View.OnClickListener()
-        {
+        modelExplanationImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(getActivity(), R.string
                         .msg_model_explanation_title, R.string
                         .msg_model_explanation);
             }
         });
 
-        vendorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        vendorSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int
-                    position, long id)
-            {
-                if(position == 0)
-                {
+                    position, long id) {
+                if (position == 0) {
                     vendorLogoImageView.setImageResource(android.R.color.transparent);
                     buildModelSpinner(new ArrayList<Model>(), null);
-                }
-                else
-                {
+                } else {
                     String vendorName = vendorSpinner.getSelectedItem().toString();
                     String vendorId = vendorMap.get(vendorName).toLowerCase(Locale.UK);
 
-                    if(!vendorName.equals(getString(R.string.vendor_other)))
-                    {
+                    if (!vendorName.equals(getString(R.string.vendor_other))) {
                         //Update vendor logo when vendor is selected
                         Picasso.with(getActivity()).load(Vendor.getLogoUrl(vendorId)
                         ).placeholder(android.R.color.transparent).into(vendorLogoImageView);
 
                         new RequestModelListTask(vendorId).executeOnExecutor(AsyncTask
                                 .THREAD_POOL_EXECUTOR);
-                    }
-                    else
-                    {
+                    } else {
                         modelSpinner.setEnabled(false);
                     }
                 }
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
-        modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener()
-        {
+        modelSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView,
-                                       int position, long id)
-            {
+                                       int position, long id) {
                 String vendorId = getVendorIdFromSpinner();
                 String modelName = getModelNameFromSpinner();
                 String modelId = getModelIdFromSpinner();
 
-                if(position == 0)
-                {
-                    if(isAddEditActivity())
-                    {
+                if (position == 0) {
+                    if (isAddEditActivity()) {
                         getAddEditActivity().clearDefaults();
-                    }
-                    else if(isAddActivity())
-                    {
+                    } else if (isAddActivity()) {
                         getAddActivity().onDefaultsLoaded(null);
                     }
-                }
-                else
-                {
+                } else {
                     new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
                             .THREAD_POOL_EXECUTOR);
                 }
 
                 //For all situations, the logo & thumbnail should update when selected
-                if(position == 0)
-                {
+                if (position == 0) {
                     modelThumbnailImageView.setImageResource(R.drawable.thumbnail_placeholder);
-                }
-                else
-                {
+                } else {
                     //Update model logo when model is selected
                     Picasso.with(getActivity())
                             .load(Model.getThumbnailUrl(vendorId, modelId))
@@ -161,16 +136,14 @@ public class ModelSelectorFragment extends Fragment
                             .into(modelThumbnailImageView);
                 }
 
-                if(isAddEditActivity())
-                {
+                if (isAddEditActivity()) {
                     getAddEditActivity().showUrlEndings(position == 0);
                 }
 
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+            public void onNothingSelected(AdapterView<?> parent) {
             }
         });
 
@@ -178,8 +151,7 @@ public class ModelSelectorFragment extends Fragment
     }
 
     @Override
-    public void onSaveInstanceState(Bundle outState)
-    {
+    public void onSaveInstanceState(Bundle outState) {
         super.onSaveInstanceState(outState);
 
         /* Save selected vendor & model before screen rotating */
@@ -187,29 +159,21 @@ public class ModelSelectorFragment extends Fragment
         outState.putInt(MODEL_SPINNER_KEY, modelSpinner.getSelectedItemPosition());
     }
 
-    public void buildVendorSpinner(ArrayList<Vendor> vendorList, String selectedVendor)
-    {
-        if(vendorMap == null)
-        {
+    public void buildVendorSpinner(ArrayList<Vendor> vendorList, String selectedVendor) {
+        if (vendorMap == null) {
             vendorMap = new TreeMap<>();
         }
 
-        if(vendorMapIdAsKey == null)
-        {
+        if (vendorMapIdAsKey == null) {
             vendorMapIdAsKey = new TreeMap<>();
         }
 
-        if(vendorList != null)
-        {
-            for(Vendor vendor : vendorList)
-            {
-                try
-                {
+        if (vendorList != null) {
+            for (Vendor vendor : vendorList) {
+                try {
                     vendorMap.put(vendor.getName(), vendor.getId());
                     vendorMapIdAsKey.put(vendor.getId(), vendor.getName());
-                }
-                catch(EvercamException e)
-                {
+                } catch (EvercamException e) {
                     Log.e(TAG, e.toString());
                 }
             }
@@ -223,69 +187,51 @@ public class ModelSelectorFragment extends Fragment
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner);
 
         int selectedPosition = 0;
-        if(isAddEditActivity())
-        {
-            if(getAddEditActivity().isFromDiscoverAndHasVendor())
-            {
+        if (isAddEditActivity()) {
+            if (getAddEditActivity().isFromDiscoverAndHasVendor()) {
                 String vendorId = getAddEditActivity().getDiscoveredCamera().getVendor();
                 String vendorName = vendorMapIdAsKey.get(vendorId);
                 selectedPosition = spinnerArrayAdapter.getPosition(vendorName);
             }
         }
-        if(selectedVendor != null)
-        {
+        if (selectedVendor != null) {
             selectedPosition = spinnerArrayAdapter.getPosition(selectedVendor);
         }
         vendorSpinner.setAdapter(spinnerArrayAdapter);
 
-        if(selectedPosition != 0)
-        {
+        if (selectedPosition != 0) {
             vendorSpinner.setSelection(selectedPosition);
         }
         /* If vendor state are saved but haven't been selected */
         else if (vendorSavedSelectedPosition != 0
                 && vendorSpinner.getCount() > 1
-                && vendorSavedSelectedPosition < vendorSpinner.getCount())
-        {
+                && vendorSavedSelectedPosition < vendorSpinner.getCount()) {
             vendorSpinner.setSelection(vendorSavedSelectedPosition);
             vendorSavedSelectedPosition = 0; //Then reset it
         }
     }
 
-    public void buildModelSpinner(ArrayList<Model> modelList, String selectedModel)
-    {
-        if(selectedModel != null && !selectedModel.isEmpty())
-        {
+    public void buildModelSpinner(ArrayList<Model> modelList, String selectedModel) {
+        if (selectedModel != null && !selectedModel.isEmpty()) {
             selectedModel = selectedModel.toLowerCase(Locale.UK);
         }
-        if(modelMap == null)
-        {
+        if (modelMap == null) {
             modelMap = new TreeMap<>();
         }
         modelMap.clear();
 
-        if(modelList == null)
-        {
+        if (modelList == null) {
             modelSpinner.setEnabled(false);
-        }
-        else
-        {
-            if(modelList.size() == 0)
-            {
+        } else {
+            if (modelList.size() == 0) {
                 modelSpinner.setEnabled(false);
-            }
-            else
-            {
+            } else {
                 modelSpinner.setEnabled(true);
 
-                for(Model model : modelList)
-                {
-                    try
-                    {
-                        modelMap.put(model.getId(),model.getName());
-                    }
-                    catch(EvercamException e)
-                    {
+                for (Model model : modelList) {
+                    try {
+                        modelMap.put(model.getId(), model.getName());
+                    } catch (EvercamException e) {
                         Log.e(TAG, e.toString());
                     }
                 }
@@ -301,72 +247,52 @@ public class ModelSelectorFragment extends Fragment
         modelSpinner.setAdapter(spinnerArrayAdapter);
 
         int selectedPosition = 0;
-        if(selectedModel != null)
-        {
-            if(modelMap.get(selectedModel) != null)
-            {
+        if (selectedModel != null) {
+            if (modelMap.get(selectedModel) != null) {
                 String selectedModelName = modelMap.get(selectedModel);
                 selectedPosition = spinnerArrayAdapter.getPosition(selectedModelName);
             }
         }
-        if(selectedPosition != 0)
-        {
+        if (selectedPosition != 0) {
             modelSpinner.setSelection(selectedPosition);
         }
         /* If vendor state are saved but haven't been selected */
-        else if(modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
-                && modelSavedSelectedPosition < modelSpinner.getCount())
-        {
+        else if (modelSavedSelectedPosition != 0 && modelSpinner.getCount() > 1
+                && modelSavedSelectedPosition < modelSpinner.getCount()) {
             modelSpinner.setSelection(modelSavedSelectedPosition);
             modelSavedSelectedPosition = 0; // Then reset it
-        }
-        else
-        {
+        } else {
             modelSpinner.setSelection(spinnerArrayAdapter.getPosition(getString(R.string
                     .model_default)));
         }
     }
 
-    public String getVendorIdFromSpinner()
-    {
+    public String getVendorIdFromSpinner() {
         String vendorName = vendorSpinner.getSelectedItem().toString();
-        if(vendorName.equals(getString(R.string.select_vendor)))
-        {
+        if (vendorName.equals(getString(R.string.select_vendor))) {
             return "";
-        }
-        else
-        {
+        } else {
             return vendorMap.get(vendorName).toLowerCase(Locale.UK);
         }
 
     }
 
-    public String getVendorNameFromSpinner()
-    {
+    public String getVendorNameFromSpinner() {
         String vendorName = vendorSpinner.getSelectedItem().toString();
-        if(vendorName.equals(getString(R.string.select_vendor)))
-        {
+        if (vendorName.equals(getString(R.string.select_vendor))) {
             return "";
-        }
-        else
-        {
+        } else {
             return vendorName;
         }
     }
 
-    public String getModelIdFromSpinner()
-    {
+    public String getModelIdFromSpinner() {
         String modelName = modelSpinner.getSelectedItem().toString();
-        if(modelName.equals(getString(R.string.select_model)))
-        {
+        if (modelName.equals(getString(R.string.select_model))) {
             return "";
-        }
-        else
-        {
-            for (Map.Entry<String, String> entry : modelMap.entrySet())
-            {
-                if(entry.getValue().equals(modelName))
-                {
+        } else {
+            for (Map.Entry<String, String> entry : modelMap.entrySet()) {
+                if (entry.getValue().equals(modelName)) {
                     return entry.getKey();
                 }
             }
@@ -374,67 +300,51 @@ public class ModelSelectorFragment extends Fragment
         return "";
     }
 
-    public String getModelNameFromSpinner()
-    {
+    public String getModelNameFromSpinner() {
         String modelName = modelSpinner.getSelectedItem().toString();
-        if(modelName.equals(getString(R.string.select_model)))
-        {
+        if (modelName.equals(getString(R.string.select_model))) {
             return "";
-        }
-        else
-        {
+        } else {
             return modelName;
         }
     }
 
-    public void loadVendors()
-    {
+    public void loadVendors() {
         new RequestVendorListTask().executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    public void hideModelQuestionMark()
-    {
+    public void hideModelQuestionMark() {
         modelExplanationImageButton.setVisibility(View.INVISIBLE);
     }
 
-    private boolean isAddEditActivity()
-    {
+    private boolean isAddEditActivity() {
         return getActivity() instanceof AddEditCameraActivity;
     }
 
-    private AddEditCameraActivity getAddEditActivity()
-    {
+    private AddEditCameraActivity getAddEditActivity() {
         return ((AddEditCameraActivity) getActivity());
     }
 
-    private boolean isAddActivity()
-    {
+    private boolean isAddActivity() {
         return getActivity() instanceof AddCameraActivity;
     }
 
-    private AddCameraActivity getAddActivity()
-    {
+    private AddCameraActivity getAddActivity() {
         return ((AddCameraActivity) getActivity());
     }
 
-    class RequestModelListTask extends AsyncTask<Void, Void, ArrayList<Model>>
-    {
+    class RequestModelListTask extends AsyncTask<Void, Void, ArrayList<Model>> {
         private String vendorId;
 
-        public RequestModelListTask(String vendorId)
-        {
+        public RequestModelListTask(String vendorId) {
             this.vendorId = vendorId;
         }
 
         @Override
-        protected ArrayList<Model> doInBackground(Void... params)
-        {
-            try
-            {
+        protected ArrayList<Model> doInBackground(Void... params) {
+            try {
                 return Model.getAllByVendorId(vendorId);
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 EvercamPlayApplication.sendCaughtException(getActivity(),
                         e.toString() + " " + "with vendor id: " + vendorId);
                 Log.e(TAG, e.toString());
@@ -443,109 +353,78 @@ public class ModelSelectorFragment extends Fragment
         }
 
         @Override
-        protected void onPostExecute(ArrayList<Model> modelList)
-        {
-            if(modelList != null)
-            {
-                if(isAddEditActivity())
-                {
+        protected void onPostExecute(ArrayList<Model> modelList) {
+            if (modelList != null) {
+                if (isAddEditActivity()) {
                     getAddEditActivity().buildSpinnerOnModelListResult(modelList);
-                }
-                else if(isAddActivity())
-                {
+                } else if (isAddActivity()) {
                     getAddActivity().buildSpinnerOnModelListResult(modelList);
                 }
             }
         }
     }
 
-    class RequestVendorListTask extends AsyncTask<Void, Void, ArrayList<Vendor>>
-    {
+    class RequestVendorListTask extends AsyncTask<Void, Void, ArrayList<Vendor>> {
 
         @Override
-        protected void onPostExecute(ArrayList<Vendor> vendorList)
-        {
-            if(vendorList != null)
-            {
-                if(isAddEditActivity())
-                {
+        protected void onPostExecute(ArrayList<Vendor> vendorList) {
+            if (vendorList != null) {
+                if (isAddEditActivity()) {
                     getAddEditActivity().buildSpinnerOnVendorListResult(vendorList);
-                }
-                else if(isAddActivity())
-                {
+                } else if (isAddActivity()) {
                     getAddActivity().buildSpinnerOnVendorListResult(vendorList);
                 }
-            }
-            else
-            {
+            } else {
                 Log.e(TAG, "Vendor list is null");
             }
         }
 
         @Override
-        protected ArrayList<Vendor> doInBackground(Void... params)
-        {
-            try
-            {
+        protected ArrayList<Vendor> doInBackground(Void... params) {
+            try {
                 return Vendor.getAll();
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 Log.e(TAG, e.toString());
             }
             return null;
         }
     }
 
-    class RequestDefaultsTask extends AsyncTask<Void, Void, Model>
-    {
+    class RequestDefaultsTask extends AsyncTask<Void, Void, Model> {
         private String vendorId;
         private String modelName;
 
-        public RequestDefaultsTask(String vendorId, String modelName)
-        {
+        public RequestDefaultsTask(String vendorId, String modelName) {
             this.vendorId = vendorId;
             this.modelName = modelName;
         }
 
         @Override
-        protected void onPreExecute()
-        {
-            if(isAddEditActivity())
-            {
+        protected void onPreExecute() {
+            if (isAddEditActivity()) {
                 getAddEditActivity().clearDefaults();
             }
         }
 
         @Override
-        protected Model doInBackground(Void... params)
-        {
-            try
-            {
+        protected Model doInBackground(Void... params) {
+            try {
                 ArrayList<Model> modelList = Model.getAll(modelName, vendorId);
-                if(modelList.size() > 0)
-                {
+                if (modelList.size() > 0) {
                     return modelList.get(0);
                 }
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 Log.e(TAG, e.toString());
             }
             return null;
         }
 
         @Override
-        protected void onPostExecute(Model model)
-        {
-            if(model != null)
-            {
-                if(isAddEditActivity())
-                {
+        protected void onPostExecute(Model model) {
+            if (model != null) {
+                if (isAddEditActivity()) {
                     getAddEditActivity().fillDefaults(model);
-                }
-                else if(isAddActivity())
-                {
+                } else if (isAddActivity()) {
                     getAddActivity().onDefaultsLoaded(model);
                 }
             }

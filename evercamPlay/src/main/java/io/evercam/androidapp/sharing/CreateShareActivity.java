@@ -12,14 +12,12 @@ import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.tasks.CreateShareTask;
 
-public class CreateShareActivity extends ParentAppCompatActivity
-{
+public class CreateShareActivity extends ParentAppCompatActivity {
     private static final String TAG = "CreateShareActivity";
     private Spinner mSpinner;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_create_share);
 
@@ -30,8 +28,7 @@ public class CreateShareActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_create_share, menu);
 
@@ -39,10 +36,8 @@ public class CreateShareActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
@@ -56,8 +51,7 @@ public class CreateShareActivity extends ParentAppCompatActivity
         }
     }
 
-    private void setUpRightsSpinner()
-    {
+    private void setUpRightsSpinner() {
         mSpinner = (Spinner) findViewById(R.id.access_permission_spinner);
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<>(this,
                 android.R.layout.simple_spinner_item, RightsStatus.getDefaultItems(this));
@@ -65,14 +59,12 @@ public class CreateShareActivity extends ParentAppCompatActivity
         mSpinner.setAdapter(spinnerArrayAdapter);
     }
 
-    private void onShareMenuClicked()
-    {
+    private void onShareMenuClicked() {
         EditText usernameEditText = (EditText) findViewById(R.id.create_share_user_edit_text);
         EditText messageEditText = (EditText) findViewById(R.id.create_share_message_edit_text);
         String usernameText = usernameEditText.getText().toString();
         String messageText = messageEditText.getText().toString();
-        if(!usernameText.isEmpty())
-        {
+        if (!usernameText.isEmpty()) {
             String selectedRights = mSpinner.getSelectedItem().toString();
             RightsStatus rightsStatus = new RightsStatus(this, selectedRights);
             CreateShareTask.launch(this, usernameText, SharingActivity.evercamCamera.getCameraId(),

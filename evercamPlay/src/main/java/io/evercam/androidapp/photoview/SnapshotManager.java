@@ -12,14 +12,12 @@ import java.util.Collections;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 
-public class SnapshotManager
-{
+public class SnapshotManager {
     private final static String TAG = "SnapshotManager";
     public static final String SNAPSHOT_FOLDER_NAME_EVERCAM = "Evercam";
     public static final String SNAPSHOT_FOLDER_NAME_PLAY = "Evercam Play";
 
-    public enum FileType
-    {
+    public enum FileType {
         PNG, JPG
     }
 
@@ -33,66 +31,53 @@ public class SnapshotManager
      * @param fileType PNG or JPG depend on it's from video or JPG view
      * @return snapshot file path
      */
-    public static String createFilePath(String cameraId, FileType fileType)
-    {
+    public static String createFilePath(String cameraId, FileType fileType) {
         SimpleDateFormat dateFormat = new SimpleDateFormat("yyyyMMdd_HHmmss");
         String timeString = dateFormat.format(Calendar.getInstance().getTime());
         String fileName = cameraId + "_" + timeString + fileType(fileType);
 
         File folder = new File(getPlayFolderPathForCamera(cameraId));
-        if(!folder.exists())
-        {
+        if (!folder.exists()) {
             folder.mkdirs();
         }
 
         return folder.getPath() + File.separator + fileName;
     }
 
-    public static String getPlayFolderPathForCamera(String cameraId)
-    {
+    public static String getPlayFolderPathForCamera(String cameraId) {
         return getPlayFolderPath() + File.separator + cameraId;
     }
 
-    public static String getPlayFolderPath()
-    {
+    public static String getPlayFolderPath() {
         return Environment.getExternalStoragePublicDirectory(Environment.DIRECTORY_PICTURES) +
                 File.separator + SNAPSHOT_FOLDER_NAME_EVERCAM + File.separator +
                 SNAPSHOT_FOLDER_NAME_PLAY;
     }
 
-    public static void showSnapshotsForCamera(Activity activity, String cameraId)
-    {
+    public static void showSnapshotsForCamera(Activity activity, String cameraId) {
         String playFolderPath = SnapshotManager.getPlayFolderPathForCamera(cameraId);
         File folder = new File(playFolderPath);
         String[] allFiles = folder.list();
-        if(allFiles != null && allFiles.length > 0)
-        {
+        if (allFiles != null && allFiles.length > 0) {
             //Sort the snapshots by name (Latest first)
             Arrays.sort(allFiles, Collections.reverseOrder());
 
             //Append full path to all file names
             int arrayLength = allFiles.length;
-            for(int index = 0; index < arrayLength ; index ++)
-            {
+            for (int index = 0; index < arrayLength; index++) {
                 allFiles[index] = playFolderPath + File.separator + allFiles[index];
             }
 
             ViewPagerActivity.showSavedSnapshots(activity, allFiles);
-        }
-        else
-        {
+        } else {
             CustomToast.showInCenter(activity, R.string.msg_no_snapshot_saved_camera);
         }
     }
 
-    private static String fileType(FileType fileType)
-    {
-        if(fileType.equals(FileType.PNG))
-        {
+    private static String fileType(FileType fileType) {
+        if (fileType.equals(FileType.PNG)) {
             return ".png";
-        }
-        else
-        {
+        } else {
             return ".jpg";
         }
     }

@@ -4,8 +4,7 @@ import android.content.Context;
 import android.database.sqlite.SQLiteDatabase;
 import android.database.sqlite.SQLiteOpenHelper;
 
-public class DatabaseMaster extends SQLiteOpenHelper
-{
+public class DatabaseMaster extends SQLiteOpenHelper {
     // Version 3: Added camera field :has credential
     // Version 4: New constraint camera id + owner
     // Version 5: Added camera fields for internal && external host &
@@ -21,21 +20,18 @@ public class DatabaseMaster extends SQLiteOpenHelper
     private static final String DATABASE_NAME = "evercamdata";
     private Context context = null;
 
-    public DatabaseMaster(Context context)
-    {
+    public DatabaseMaster(Context context) {
         super(context, DATABASE_NAME, null, DATABASE_VERSION);
         this.context = context;
     }
 
     @Override
-    public void onCreate(SQLiteDatabase db)
-    {
+    public void onCreate(SQLiteDatabase db) {
         new DbCamera(this.context).onCreateCustom(db);
     }
 
     @Override
-    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    public void onUpgrade(SQLiteDatabase db, int oldVersion, int newVersion) {
         new DbCamera(context).onUpgradeCustom(db, oldVersion, newVersion);
     }
 }

@@ -7,8 +7,7 @@ import java.util.HashMap;
 import io.evercam.androidapp.utils.Constants;
 import io.keen.client.java.KeenClient;
 
-public class TestSnapshotFeedbackItem extends FeedbackItem
-{
+public class TestSnapshotFeedbackItem extends FeedbackItem {
     private String snapshot_url = "";
     private String cam_username = "";
     private String cam_password = "";
@@ -16,34 +15,29 @@ public class TestSnapshotFeedbackItem extends FeedbackItem
     private boolean is_port_opened;
 
     public TestSnapshotFeedbackItem(Context context, String username, boolean isSuccess, boolean
-            isPortOpened)
-    {
+            isPortOpened) {
         super(context, username);
         this.is_success = isSuccess;
         this.is_port_opened = isPortOpened;
     }
 
-    public TestSnapshotFeedbackItem setSnapshot_url(String snapshot_url)
-    {
+    public TestSnapshotFeedbackItem setSnapshot_url(String snapshot_url) {
         this.snapshot_url = snapshot_url;
         return this;
     }
 
-    public TestSnapshotFeedbackItem setCam_username(String cam_username)
-    {
+    public TestSnapshotFeedbackItem setCam_username(String cam_username) {
         this.cam_username = cam_username;
         return this;
     }
 
-    public TestSnapshotFeedbackItem setCam_password(String cam_password)
-    {
+    public TestSnapshotFeedbackItem setCam_password(String cam_password) {
         this.cam_password = cam_password;
         return this;
     }
 
     @Override
-    public HashMap<String, Object> toHashMap()
-    {
+    public HashMap<String, Object> toHashMap() {
         HashMap<String, Object> map = super.toHashMap();
         map.put("is_success", is_success);
         map.put("is_port_opened", is_port_opened);
@@ -54,17 +48,13 @@ public class TestSnapshotFeedbackItem extends FeedbackItem
     }
 
     @Override
-    public void sendToKeenIo(final KeenClient client)
-    {
-        if(client != null)
-        {
+    public void sendToKeenIo(final KeenClient client) {
+        if (client != null) {
             final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable()
-            {
+            new Thread(new Runnable() {
 
                 @Override
-                public void run()
-                {
+                public void run() {
                     client.addEvent(Constants.KEEN_COLLECTION_TEST_SNAPSHOT, feedbackItem
                             .toHashMap());
 

@@ -10,8 +10,7 @@ import java.util.ArrayList;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
 
-public class DbCamera extends DatabaseMaster
-{
+public class DbCamera extends DatabaseMaster {
     public static final String TABLE_CAMERA = "evercamcamera";
     public static final String KEY_ID = "id";
 
@@ -50,13 +49,11 @@ public class DbCamera extends DatabaseMaster
     private final String KEY_DISCOVERABLE = "isDiscoverable";
     private final String KEY_PUBLIC = "isPublic";
 
-    public DbCamera(Context context)
-    {
+    public DbCamera(Context context) {
         super(context);
     }
 
-    public void onCreateCustom(SQLiteDatabase db)
-    {
+    public void onCreateCustom(SQLiteDatabase db) {
         String CREATE_TABLE_Cameras = "CREATE TABLE " + TABLE_CAMERA + "(" + KEY_ID + " INTEGER " +
                 "PRIMARY KEY autoincrement" + "," + KEY_CAMERA_ID + " TEXT NOT NULL" + "," +
                 "" + KEY_CAMERA_NAME + " TEXT NULL" + "," + KEY_OWNER + " TEXT  NOT NULL" + "," +
@@ -77,8 +74,7 @@ public class DbCamera extends DatabaseMaster
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
-    public void onUpgradeCustom(SQLiteDatabase db, int oldVersion, int newVersion)
-    {
+    public void onUpgradeCustom(SQLiteDatabase db, int oldVersion, int newVersion) {
         // Drop older table if existed
         db.execSQL("DROP TABLE IF EXISTS " + TABLE_CAMERA);
 
@@ -86,8 +82,7 @@ public class DbCamera extends DatabaseMaster
         onCreateCustom(db);
     }
 
-    public void addCamera(EvercamCamera evercamCamera)
-    {
+    public void addCamera(EvercamCamera evercamCamera) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = getContentValueFrom(evercamCamera);
@@ -98,25 +93,22 @@ public class DbCamera extends DatabaseMaster
     }
 
     // Getting single Camera
-    public EvercamCamera getCamera(int id)
-    {
+    public EvercamCamera getCamera(int id) {
         EvercamCamera evercamCamera = null;
 
         SQLiteDatabase db = this.getReadableDatabase();
 
         Cursor cursor = db.query(TABLE_CAMERA, new String[]{KEY_ID, KEY_CAMERA_ID,
-                KEY_CAMERA_NAME, KEY_OWNER, KEY_USERNAME, KEY_PASSWORD, KEY_TIMEZONE, KEY_VENDOR,
-                KEY_MODEL, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
-                KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_STATUS, KEY_HAS_CREDENTIAL,
-                KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
-                KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
-                KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC},
+                        KEY_CAMERA_NAME, KEY_OWNER, KEY_USERNAME, KEY_PASSWORD, KEY_TIMEZONE, KEY_VENDOR,
+                        KEY_MODEL, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
+                        KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_STATUS, KEY_HAS_CREDENTIAL,
+                        KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
+                        KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
+                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC},
                 KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
-        if(cursor != null)
-        {
-            if(cursor.moveToFirst())
-            {
+        if (cursor != null) {
+            if (cursor.moveToFirst()) {
                 evercamCamera = new EvercamCamera();
                 evercamCamera = getCameraFromCursor(cursor, evercamCamera);
             }
@@ -127,22 +119,19 @@ public class DbCamera extends DatabaseMaster
         return evercamCamera;
     }
 
-    public ArrayList<EvercamCamera> getAllCameras(int maxRecords)
-    {
+    public ArrayList<EvercamCamera> getAllCameras(int maxRecords) {
         String selectQuery = "SELECT  * FROM " + TABLE_CAMERA + " order by " + KEY_ID + " asc";
         return selectCameraListByQuery(selectQuery, maxRecords);
     }
 
-    public ArrayList<EvercamCamera> getCamerasByOwner(String ownerUsername, int maxRecords)
-    {
+    public ArrayList<EvercamCamera> getCamerasByOwner(String ownerUsername, int maxRecords) {
         String selectQuery = "SELECT  * FROM " + TABLE_CAMERA + " where upper(" + KEY_OWNER + ") " +
                 "= upper('" + ownerUsername + "') order by " + KEY_ID + " asc";
 
         return selectCameraListByQuery(selectQuery, maxRecords);
     }
 
-    public int updateCamera(EvercamCamera evercamCamera)
-    {
+    public int updateCamera(EvercamCamera evercamCamera) {
         SQLiteDatabase db = this.getWritableDatabase();
 
         ContentValues values = getContentValueFrom(evercamCamera);
@@ -155,40 +144,33 @@ public class DbCamera extends DatabaseMaster
         return return_value;
     }
 
-    public void deleteCamera(EvercamCamera evercamCamera)
-    {
+    public void deleteCamera(EvercamCamera evercamCamera) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CAMERA, KEY_ID + " = ?", new String[]{String.valueOf(evercamCamera.getId
                 ())});
         db.close();
     }
 
-    public void deleteCamera(String cameraId)
-    {
+    public void deleteCamera(String cameraId) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CAMERA, KEY_ID + " = ?", new String[]{cameraId});
         db.close();
     }
 
-    public void deleteCameraByOwner(String ownerUsername)
-    {
+    public void deleteCameraByOwner(String ownerUsername) {
         SQLiteDatabase db = this.getWritableDatabase();
         db.delete(TABLE_CAMERA, " upper(" + KEY_OWNER + ") = upper(?)",
                 new String[]{String.valueOf(ownerUsername)});
         db.close();
     }
 
-    private ContentValues getContentValueFrom(EvercamCamera evercamCamera)
-    {
+    private ContentValues getContentValueFrom(EvercamCamera evercamCamera) {
         ContentValues values = new ContentValues();
 
         values.put(KEY_CAMERA_ID, evercamCamera.getCameraId());
-        if(AppData.defaultUser != null)
-        {
+        if (AppData.defaultUser != null) {
             values.put(KEY_OWNER, AppData.defaultUser.getUsername());
-        }
-        else
-        {
+        } else {
             // If default owner not exists, save username as an empty string.
             values.put(KEY_OWNER, "");
         }
@@ -222,24 +204,21 @@ public class DbCamera extends DatabaseMaster
         return values;
     }
 
-    private ArrayList<EvercamCamera> selectCameraListByQuery(String query, int maxRecords)
-    {
+    private ArrayList<EvercamCamera> selectCameraListByQuery(String query, int maxRecords) {
         ArrayList<EvercamCamera> cameraList = new ArrayList<EvercamCamera>();
 
         SQLiteDatabase db = this.getReadableDatabase();
         Cursor cursor = db.rawQuery(query, null);
 
         int count = 0;
-        if(cursor.moveToFirst())
-        {
-            do
-            {
+        if (cursor.moveToFirst()) {
+            do {
                 EvercamCamera evercamCamera = new EvercamCamera();
                 evercamCamera = getCameraFromCursor(cursor, evercamCamera);
 
                 cameraList.add(evercamCamera);
                 count++;
-            } while(cursor.moveToNext() && (maxRecords == 0 || count < maxRecords));
+            } while (cursor.moveToNext() && (maxRecords == 0 || count < maxRecords));
         }
 
         cursor.close();
@@ -248,8 +227,7 @@ public class DbCamera extends DatabaseMaster
         return cameraList;
     }
 
-    private EvercamCamera getCameraFromCursor(Cursor cursor, EvercamCamera evercamCamera)
-    {
+    private EvercamCamera getCameraFromCursor(Cursor cursor, EvercamCamera evercamCamera) {
         evercamCamera.setId(Integer.parseInt(cursor.getString(0)));
         evercamCamera.setCameraId(cursor.getString(1));
         evercamCamera.setName(cursor.getString(2));

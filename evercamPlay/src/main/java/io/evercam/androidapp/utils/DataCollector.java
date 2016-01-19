@@ -10,32 +10,25 @@ import android.telephony.TelephonyManager;
 
 import io.evercam.androidapp.R;
 
-public class DataCollector
-{
+public class DataCollector {
     private Context mContext;
 
-    public DataCollector(Context context)
-    {
+    public DataCollector(Context context) {
         this.mContext = context;
     }
 
     /**
      * Return app version name, could be an empty string
      */
-    public String getAppVersionName()
-    {
+    public String getAppVersionName() {
         String version = "";
-        if(mContext != null)
-        {
+        if (mContext != null) {
             PackageInfo packageInfo;
-            try
-            {
+            try {
                 packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
 
                 version = packageInfo.versionName;
-            }
-            catch(NameNotFoundException e)
-            {
+            } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -45,20 +38,15 @@ public class DataCollector
     /**
      * Return app version code, return 0 when exception happens
      */
-    public int getAppVersionCode()
-    {
+    public int getAppVersionCode() {
         int versionCode = 0;
-        if(mContext != null)
-        {
+        if (mContext != null) {
             PackageInfo packageInfo;
-            try
-            {
+            try {
                 packageInfo = mContext.getPackageManager().getPackageInfo(mContext.getPackageName(), 0);
 
                 versionCode = packageInfo.versionCode;
-            }
-            catch(NameNotFoundException e)
-            {
+            } catch (NameNotFoundException e) {
                 e.printStackTrace();
             }
         }
@@ -68,30 +56,24 @@ public class DataCollector
     /**
      * Return device name in format manufacturer + model
      */
-    public static String getDeviceName()
-    {
+    public static String getDeviceName() {
         String manufacturer = Build.MANUFACTURER;
         String model = Build.MODEL;
-        if(model.startsWith(manufacturer))
-        {
+        if (model.startsWith(manufacturer)) {
             return capitalize(model);
-        }
-        else
-        {
+        } else {
             return capitalize(manufacturer) + " " + model;
         }
     }
 
-    public static String getAndroidVersion()
-    {
+    public static String getAndroidVersion() {
         return Build.VERSION.RELEASE;
     }
 
     /**
      * Check if there is any connectivity to a Wifi network
      */
-    public boolean isConnectedWifi()
-    {
+    public boolean isConnectedWifi() {
         NetworkInfo info = getNetworkInfo();
         return (info != null && info.isConnected() && info.getType() == ConnectivityManager
                 .TYPE_WIFI);
@@ -100,8 +82,7 @@ public class DataCollector
     /**
      * Check if there is any connectivity to a mobile network
      */
-    public boolean isConnectedMobile()
-    {
+    public boolean isConnectedMobile() {
         NetworkInfo info = getNetworkInfo();
         return (info != null && info.isConnected() && info.getType() == ConnectivityManager
                 .TYPE_MOBILE);
@@ -110,22 +91,15 @@ public class DataCollector
     /**
      * Return '3G' or 'WiFi'
      */
-    public String getNetworkString()
-    {
-        if(mContext != null)
-        {
-            if(isConnectedWifi())
-            {
+    public String getNetworkString() {
+        if (mContext != null) {
+            if (isConnectedWifi()) {
                 return mContext.getString(R.string.wifi);
-            }
-            else if(isConnectedMobile())
-            {
+            } else if (isConnectedMobile()) {
                 return mContext.getString(R.string.three_g);
             }
             return mContext.getString(R.string.unknown);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
@@ -133,10 +107,8 @@ public class DataCollector
     /**
      * Get the network info
      */
-    private NetworkInfo getNetworkInfo()
-    {
-        if(mContext != null)
-        {
+    private NetworkInfo getNetworkInfo() {
+        if (mContext != null) {
             ConnectivityManager connectivityManager = (ConnectivityManager) mContext.getSystemService(Context.CONNECTIVITY_SERVICE);
 
             return connectivityManager.getActiveNetworkInfo();
@@ -144,26 +116,20 @@ public class DataCollector
         return null;
     }
 
-    private static String capitalize(String s)
-    {
-        if(s == null || s.length() == 0)
-        {
+    private static String capitalize(String s) {
+        if (s == null || s.length() == 0) {
             return "";
         }
         char first = s.charAt(0);
-        if(Character.isUpperCase(first))
-        {
+        if (Character.isUpperCase(first)) {
             return s;
-        }
-        else
-        {
+        } else {
             return Character.toUpperCase(first) + s.substring(1);
         }
     }
 
-    public static String getCountryCode(Context context)
-    {
-        TelephonyManager telephonyManager = (TelephonyManager)context.getSystemService(Context.TELEPHONY_SERVICE);
+    public static String getCountryCode(Context context) {
+        TelephonyManager telephonyManager = (TelephonyManager) context.getSystemService(Context.TELEPHONY_SERVICE);
         return telephonyManager.getNetworkCountryIso();
     }
 }

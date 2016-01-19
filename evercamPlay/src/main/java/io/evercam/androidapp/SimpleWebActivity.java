@@ -8,42 +8,35 @@ import io.evercam.androidapp.utils.Constants;
 
 /**
  * The web activity that simply open a web page from a URL
- *
+ * <p/>
  * eg. About, Forget password
  */
-public class SimpleWebActivity extends WebActivity
-{
+public class SimpleWebActivity extends WebActivity {
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_web);
 
         setUpDefaultToolbar();
 
-        if(bundle != null)
-        {
+        if (bundle != null) {
             getSupportActionBar().hide();
             loadPage();
-        }
-        else
-        {
+        } else {
             finish();
         }
     }
 
     @Override
-    protected void loadPage()
-    {
+    protected void loadPage() {
         WebView webView = (WebView) findViewById(R.id.webview);
         webView.getSettings().setJavaScriptEnabled(true);
         webView.setWebViewClient(getWebViewClient());
 
         //Enable DevTool debugging
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
         String url = bundle.getString(Constants.BUNDLE_KEY_URL);

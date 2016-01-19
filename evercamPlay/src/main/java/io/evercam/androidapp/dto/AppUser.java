@@ -3,8 +3,7 @@ package io.evercam.androidapp.dto;
 import io.evercam.EvercamException;
 import io.evercam.User;
 
-public class AppUser
-{
+public class AppUser {
     private int id;
     private String email = "";
     private String username = "";
@@ -15,13 +14,11 @@ public class AppUser
     private String apiKey = "";
     private String apiId = "";
 
-    public AppUser()
-    {
+    public AppUser() {
 
     }
 
-    public AppUser(User user) throws EvercamException
-    {
+    public AppUser(User user) throws EvercamException {
         setUsername(user.getUsername());
         setEmail(user.getEmail());
         setFirstName(user.getFirstName());
@@ -29,100 +26,81 @@ public class AppUser
         setCountry(user.getCountry());
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public String getCountry()
-    {
+    public String getCountry() {
         return country;
     }
 
-    public String getApiId()
-    {
+    public String getApiId() {
         return apiId;
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setCountry(String country)
-    {
+    public void setCountry(String country) {
         this.country = country;
     }
 
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
-    public String getEmail()
-    {
+    public String getEmail() {
         return email;
     }
 
-    public String getApiKey()
-    {
+    public String getApiKey() {
         return apiKey;
     }
 
-    public boolean getIsDefault()
-    {
+    public boolean getIsDefault() {
         return isDefault;
     }
 
-    public int getIsDefaultInteger()
-    {
+    public int getIsDefaultInteger() {
         return (isDefault ? 1 : 0);
     }
 
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public void setEmail(String email)
-    {
+    public void setEmail(String email) {
         this.email = email;
     }
 
-    public void setApiKeyPair(String apiKey, String apiId)
-    {
+    public void setApiKeyPair(String apiKey, String apiId) {
         this.apiKey = apiKey;
         this.apiId = apiId;
     }
 
-    public void setIsDefault(boolean isDefault)
-    {
+    public void setIsDefault(boolean isDefault) {
         this.isDefault = isDefault;
     }
 
-    public String getFirstName()
-    {
+    public String getFirstName() {
         return firstName;
     }
 
-    public void setFirstName(String firstName)
-    {
+    public void setFirstName(String firstName) {
         this.firstName = firstName;
     }
 
-    public String getLastName()
-    {
+    public String getLastName() {
         return lastName;
     }
 
-    public void setLastName(String lastName)
-    {
+    public void setLastName(String lastName) {
         this.lastName = lastName;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "AppUser{" +
                 "id=" + id +
                 ", email='" + email + '\'' +

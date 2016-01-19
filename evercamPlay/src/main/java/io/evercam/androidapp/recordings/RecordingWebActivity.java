@@ -16,35 +16,29 @@ import io.evercam.androidapp.tasks.ValidateRightsRunnable;
 import io.evercam.androidapp.utils.Constants;
 
 
-public class RecordingWebActivity extends WebActivity
-{
+public class RecordingWebActivity extends WebActivity {
     private final String TAG = "RecordingWebActivity";
 
     private String cameraId = "";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_recording_web);
 
         setUpDefaultToolbar();
 
-        if(bundle != null)
-        {
+        if (bundle != null) {
             loadPage();
-        }
-        else
-        {
+        } else {
             setResult(Constants.RESULT_TRUE);
             finish();
         }
     }
 
     @Override
-    protected void loadPage()
-    {
+    protected void loadPage() {
         cameraId = bundle.getString(Constants.BUNDLE_KEY_CAMERA_ID);
 
         //Validate if the user still has access to the camera
@@ -56,27 +50,22 @@ public class RecordingWebActivity extends WebActivity
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         setResult(Constants.RESULT_TRUE);
     }
 
     @Override
-    public WebViewClient getWebViewClient()
-    {
+    public WebViewClient getWebViewClient() {
         return new CloudRecordingWebViewClient();
     }
 
-    private class CloudRecordingWebViewClient extends BaseWebViewClient
-    {
+    private class CloudRecordingWebViewClient extends BaseWebViewClient {
         @Override
-        public boolean shouldOverrideUrlLoading(WebView view, String url)
-        {
+        public boolean shouldOverrideUrlLoading(WebView view, String url) {
             Log.e(TAG, "shouldOverrideUrlLoading " + url);
 
-            if(url.startsWith("data:image/jpeg;"))
-            {
+            if (url.startsWith("data:image/jpeg;")) {
                 String dataString = Snapshot.getBase64DataStringFrom(url);
                 byte[] imageData = Snapshot.getDataFrom(dataString);
                 Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageData.length);

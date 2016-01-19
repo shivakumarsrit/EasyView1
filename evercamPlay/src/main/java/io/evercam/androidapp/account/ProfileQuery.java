@@ -5,8 +5,7 @@ import android.provider.ContactsContract;
 /**
  * Contacts user profile query interface.
  */
-public interface ProfileQuery
-{
+public interface ProfileQuery {
     /**
      * The set of columns to extract from the profile query results
      */

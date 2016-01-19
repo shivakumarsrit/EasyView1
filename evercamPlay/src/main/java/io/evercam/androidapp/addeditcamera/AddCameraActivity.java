@@ -7,7 +7,6 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
-import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.Button;
@@ -41,8 +40,7 @@ import io.evercam.androidapp.tasks.TestSnapshotTask;
 import io.evercam.androidapp.utils.DataCollector;
 import io.intercom.android.sdk.Intercom;
 
-public class AddCameraActivity extends ParentAppCompatActivity
-{
+public class AddCameraActivity extends ParentAppCompatActivity {
     private final String TAG = "AddCameraActivity";
     private final String KEY_FLIPPER_POSITION = "flipperPosition";
     private final String KEY_SELECTED_MODEL = "selectedModel";
@@ -51,12 +49,16 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private ProgressBar mProgressBar;
     private Handler mHandler;
 
-    /** Model selector */
+    /**
+     * Model selector
+     */
     private ModelSelectorFragment mModelSelectorFragment;
     private SelectedModel mSelectedModel;
     private Defaults mSelectedModelDefaults;
 
-    /** Connect camera */
+    /**
+     * Connect camera
+     */
     private PortCheckEditText mPublicIpEditText;
     private PortCheckEditText mHttpEditText;
     private PortCheckEditText mRtspEditText;
@@ -79,12 +81,13 @@ public class AddCameraActivity extends ParentAppCompatActivity
     private EditText mSnapshotPathEditText;
     private EditText mRtspPathEditText;
 
-    /** Camera name view */
+    /**
+     * Camera name view
+     */
     private EditText mCameraNameEditText;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_add_camera);
 
@@ -97,8 +100,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
                 .orange_red), PorterDuff.Mode.SRC_IN);
         mProgressBar.setProgress(33);
 
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             mSelectedModel = (SelectedModel) savedInstanceState.get(KEY_SELECTED_MODEL);
         }
 
@@ -113,27 +115,20 @@ public class AddCameraActivity extends ParentAppCompatActivity
         /** Init UI for camera name view */
         initCameraNameView();
 
-        if (savedInstanceState != null)
-        {
+        if (savedInstanceState != null) {
             int flipperPosition = savedInstanceState.getInt(KEY_FLIPPER_POSITION);
-            if(flipperPosition == 0)
-            {
+            if (flipperPosition == 0) {
                 showModelSelectorView();
-            }
-            else if(flipperPosition == 1)
-            {
+            } else if (flipperPosition == 1) {
                 showConnectCameraView();
-            }
-            else if(flipperPosition == 2)
-            {
+            } else if (flipperPosition == 2) {
                 showCameraNameView();
             }
         }
     }
 
     @Override
-    public void onSaveInstanceState(Bundle savedInstanceState)
-    {
+    public void onSaveInstanceState(Bundle savedInstanceState) {
         super.onSaveInstanceState(savedInstanceState);
 
         int position = mViewFlipper.getDisplayedChild();
@@ -142,10 +137,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 quitAddCamera();
         }
@@ -153,13 +146,11 @@ public class AddCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         quitAddCamera();
     }
 
-    private void initModelSelectorUI()
-    {
+    private void initModelSelectorUI() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         mModelSelectorFragment = (ModelSelectorFragment)
                 fragmentManager.findFragmentById(R.id.add_camera_model_selector_fragment);
@@ -169,16 +160,14 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         reportModelLink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showReportCameraModelDialog(AddCameraActivity.this, null);
             }
         });
 
         modelSelectorViewNextButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
                 String modelId = mModelSelectorFragment.getModelIdFromSpinner();
                 String modelName = mModelSelectorFragment.getModelNameFromSpinner();
                 String vendorId = mModelSelectorFragment.getVendorIdFromSpinner();
@@ -190,8 +179,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
         });
     }
 
-    private void initConnectCameraUI()
-    {
+    private void initConnectCameraUI() {
         mPublicIpEditText = (PortCheckEditText) findViewById(R.id.external_ip_float_edit_text);
         mHttpEditText = (PortCheckEditText) findViewById(R.id.http_float_edit_text);
         mRtspEditText = (PortCheckEditText) findViewById(R.id.rtsp_float_edit_text);
@@ -219,8 +207,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         clearHostImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 mPublicIpEditText.requestFocus();
                 mPublicIpEditText.setText("");
             }
@@ -228,26 +215,22 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         editModelImageButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 showModelSelectorView();
             }
         });
 
         liveSupportLink.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intercom.client().displayConversationsList();
             }
         });
 
         mCheckSnapshotButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(mValidateHostInput.passed())
-                {
+            public void onClick(View v) {
+                if (mValidateHostInput.passed()) {
                     final String username = mCamUsernameEditText.getText().toString();
                     final String password = mCamPasswordEditText.getText().toString();
                     final String externalHost = mPublicIpEditText.getText().toString();
@@ -255,14 +238,10 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
                     String jpgUrl = "";
 
-                    if(mSelectedModel != null)
-                    {
-                        if(!mSelectedModel.isUnknown())
-                        {
+                    if (mSelectedModel != null) {
+                        if (!mSelectedModel.isUnknown()) {
                             jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
-                        }
-                        else
-                        {
+                        } else {
                             final String jpgPath = mSnapshotPathEditText.getText().toString();
                             jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgPath);
                         }
@@ -279,8 +258,7 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         View.OnFocusChangeListener showAuthTextListener = new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
+            public void onFocusChange(View v, boolean hasFocus) {
                 showAuthExplanation();
             }
         };
@@ -289,33 +267,26 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         mAuthCheckBox.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
-            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked)
-            {
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
                 onAuthCheckedChange(isChecked);
             }
         });
 
         requiredAuthText.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 mAuthCheckBox.setChecked(!mAuthCheckBox.isChecked());
                 onAuthCheckedChange(mAuthCheckBox.isChecked());
             }
         });
 
-        mHttpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        mHttpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
                     mHttpEditText.hideStatusViewsOnTextChange(mHttpStatusText);
-                    updateMessage(mConnectExplainView, 0 , R.string.connect_camera_http_message);
-                }
-                else
-                {
+                    updateMessage(mConnectExplainView, 0, R.string.connect_camera_http_message);
+                } else {
                     checkPort(PortCheckTask.PortType.HTTP);
                 }
             }
@@ -323,33 +294,24 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         mRtspEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     mRtspEditText.hideStatusViewsOnTextChange(mRtspStatusText);
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_rtsp_message);
-                }
-                else
-                {
+                } else {
                     checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });
 
-        mPublicIpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        mPublicIpEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     mPublicIpEditText.hideStatusViewsOnTextChange(
                             mHttpStatusText, mRtspStatusText);
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_ip_message);
-                }
-                else
-                {
+                } else {
                     checkPort(PortCheckTask.PortType.HTTP);
                     checkPort(PortCheckTask.PortType.RTSP);
                 }
@@ -358,10 +320,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         mSnapshotPathEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_snapshot_path_message);
                 }
             }
@@ -369,10 +329,8 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
         mRtspPathEditText.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_rtsp_path_message);
                 }
             }
@@ -381,47 +339,40 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mValidateHostInput = new ValidateHostInput(mPublicIpEditText,
                 mHttpEditText, mRtspEditText) {
             @Override
-            public void onHostEmpty()
-            {
+            public void onHostEmpty() {
                 mPublicIpEditText.requestFocus();
                 CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.host_required));
             }
 
             @Override
-            public void onHttpEmpty()
-            {
+            public void onHttpEmpty() {
                 mHttpEditText.requestFocus();
                 CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.external_http_required));
             }
 
             @Override
-            public void onInvalidHttpPort()
-            {
+            public void onInvalidHttpPort() {
                 mHttpEditText.requestFocus();
                 CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.msg_port_range_error));
             }
 
             @Override
-            public void onInvalidRtspPort()
-            {
+            public void onInvalidRtspPort() {
                 mRtspEditText.requestFocus();
                 CustomToast.showInCenter(AddCameraActivity.this, getString(R.string.msg_port_range_error));
             }
         };
     }
 
-    public void initCameraNameView()
-    {
+    public void initCameraNameView() {
         mCameraNameEditText = (EditText) findViewById(R.id.cam_name_float_edit_text);
         Button createCameraButton = (Button) findViewById(R.id.create_camera_button);
 
         createCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CameraBuilder cameraBuilder = buildCamera(mSelectedModel);
-                if(cameraBuilder != null)
-                {
+                if (cameraBuilder != null) {
                     //Set camera status to be online as a temporary fix for #133
                     cameraBuilder.setOnline(true);
                     new AddCameraTask(cameraBuilder.build(), AddCameraActivity.this,
@@ -431,19 +382,14 @@ public class AddCameraActivity extends ParentAppCompatActivity
         });
     }
 
-    public void showTestSnapshotProgress(final boolean show)
-    {
+    public void showTestSnapshotProgress(final boolean show) {
         mHandler.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
-                if(show)
-                {
+            public void run() {
+                if (show) {
                     mButtonIndicatorLayout.setVisibility(View.VISIBLE);
                     mCheckSnapshotButton.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     mButtonIndicatorLayout.setVisibility(View.GONE);
                     mCheckSnapshotButton.setVisibility(View.VISIBLE);
                 }
@@ -452,16 +398,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
     }
 
-    public void showUnknownModelForm(boolean show)
-    {
+    public void showUnknownModelForm(boolean show) {
         /** Adjust form margin */
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mConnectFormLayout.getLayoutParams();
-        if(show)
-        {
+        if (show) {
             layoutParams.setMargins(dpInPixels(10), dpInPixels(5), dpInPixels(10), 0);
-        }
-        else
-        {
+        } else {
             layoutParams.setMargins(dpInPixels(50), dpInPixels(5), dpInPixels(50), 0);
         }
         mConnectFormLayout.setLayoutParams(layoutParams);
@@ -471,55 +413,41 @@ public class AddCameraActivity extends ParentAppCompatActivity
         mRtspPathLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void onDefaultsLoaded(Model model)
-    {
-        if(model != null)
-        {
-            try
-            {
+    public void onDefaultsLoaded(Model model) {
+        if (model != null) {
+            try {
                 mSelectedModelDefaults = model.getDefaults();
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 e.printStackTrace();
             }
-        }
-        else{
+        } else {
             mSelectedModelDefaults = null;
         }
     }
 
-    public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList)
-    {
+    public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList) {
         mModelSelectorFragment.buildVendorSpinner(vendorList, null);
     }
 
-    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList)
-    {
+    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList) {
         mModelSelectorFragment.buildModelSpinner(modelList, null);
     }
 
-    private void onAuthCheckedChange(boolean isChecked)
-    {
+    private void onAuthCheckedChange(boolean isChecked) {
         mAuthLayout.setVisibility(isChecked ? View.VISIBLE : View.GONE);
 
-        if(isChecked)
-        {
+        if (isChecked) {
             mCamUsernameEditText.requestFocus();
             showAuthExplanation();
             populateDefaultAuth();
-        }
-        else
-        {
+        } else {
             mCamUsernameEditText.setText("");
             mCamUsernameEditText.setText("");
         }
     }
 
-    private void populateDefaultAuth()
-    {
-        if(mSelectedModel != null)
-        {
+    private void populateDefaultAuth() {
+        if (mSelectedModel != null) {
             String defaultUsername = mSelectedModel.getDefaultUsername();
             String defaultPassword = mSelectedModel.getDefaultPassword();
 
@@ -528,34 +456,26 @@ public class AddCameraActivity extends ParentAppCompatActivity
             usernameInputLayout.setErrorEnabled(true);
             passwordInputLayout.setErrorEnabled(true);
 
-            if(!defaultUsername.isEmpty())
-            {
+            if (!defaultUsername.isEmpty()) {
                 usernameInputLayout.setError(getString(R.string.default_colon) + defaultUsername);
-            }
-            else
-            {
+            } else {
                 usernameInputLayout.setErrorEnabled(false);
             }
-            if(!defaultPassword.isEmpty())
-            {
+            if (!defaultPassword.isEmpty()) {
                 passwordInputLayout.setError(getString(R.string.default_colon) + defaultPassword);
-            }
-            else
-            {
+            } else {
                 passwordInputLayout.setErrorEnabled(false);
             }
         }
     }
 
-    private void showModelSelectorView()
-    {
+    private void showModelSelectorView() {
         mViewFlipper.setDisplayedChild(0);
         mProgressBar.setProgress(33);
         setTitle(R.string.title_choose_model);
     }
 
-    private void showConnectCameraView()
-    {
+    private void showConnectCameraView() {
         mViewFlipper.setDisplayedChild(1);
         mProgressBar.setProgress(67);
         setTitle(R.string.title_connect_camera);
@@ -568,49 +488,39 @@ public class AddCameraActivity extends ParentAppCompatActivity
          */
         mHandler.postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 autoPopulateExternalIP(mPublicIpEditText);
             }
         }, 100);
     }
 
-    public void showCameraNameView()
-    {
+    public void showCameraNameView() {
         mViewFlipper.setDisplayedChild(2);
         mProgressBar.setProgress(100);
         setTitle(R.string.title_name_camera);
     }
 
-    private void updateMessage(ExplanationView explanationView, int titleId, int messageId)
-    {
+    private void updateMessage(ExplanationView explanationView, int titleId, int messageId) {
         explanationView.updateTitle(titleId);
         explanationView.updateMessage(messageId);
     }
 
-    private void showAuthExplanation()
-    {
+    private void showAuthExplanation() {
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_auth_message);
     }
 
-    private void checkPort(PortCheckTask.PortType type)
-    {
-        if(type == PortCheckTask.PortType.HTTP)
-        {
+    private void checkPort(PortCheckTask.PortType type) {
+        if (type == PortCheckTask.PortType.HTTP) {
             checkPort(mPublicIpEditText, mHttpEditText, mHttpStatusText, mHttpProgressBar);
-        }
-        else if(type == PortCheckTask.PortType.RTSP)
-        {
+        } else if (type == PortCheckTask.PortType.RTSP) {
             checkPort(mPublicIpEditText, mRtspEditText, mRtspStatusText, mRtspProgressBar);
         }
     }
 
-    private CameraBuilder buildCamera(SelectedModel selectedModel)
-    {
+    private CameraBuilder buildCamera(SelectedModel selectedModel) {
         String cameraName = mCameraNameEditText.getText().toString();
 
-        if(!cameraName.isEmpty())
-        {
+        if (!cameraName.isEmpty()) {
             CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
             cameraBuilder.setExternalHttpPort(mHttpEditText.getPort());
             cameraBuilder.setExternalHost(mPublicIpEditText.getText().toString());
@@ -618,54 +528,44 @@ public class AddCameraActivity extends ParentAppCompatActivity
 
             cameraBuilder.setExternalRtspPort(externalRtspInt);
 
-            if(selectedModel != null)
-            {
+            if (selectedModel != null) {
                 String vendorId = selectedModel.getVendorId();
-                if(!vendorId.isEmpty())
-                {
+                if (!vendorId.isEmpty()) {
                     cameraBuilder.setVendor(vendorId);
                 }
 
                 String modelId = selectedModel.getModelId();
-                if(!modelId.isEmpty())
-                {
+                if (!modelId.isEmpty()) {
                     cameraBuilder.setModel(modelId);
                 }
 
                 String jpgUrl;
                 String rtspUrl;
 
-                if(selectedModel.isUnknown())
-                {
+                if (selectedModel.isUnknown()) {
                     jpgUrl = mSnapshotPathEditText.getText().toString();
                     rtspUrl = mRtspPathEditText.getText().toString();
-                }
-                else
-                {
+                } else {
                     jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
                     rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
                 }
 
-                if(!jpgUrl.isEmpty())
-                {
+                if (!jpgUrl.isEmpty()) {
                     cameraBuilder.setJpgUrl(jpgUrl);
                 }
 
-                if(!rtspUrl.isEmpty())
-                {
+                if (!rtspUrl.isEmpty()) {
                     cameraBuilder.setH264Url(rtspUrl);
                 }
             }
 
             String username = mCamUsernameEditText.getText().toString();
-            if(!username.isEmpty())
-            {
+            if (!username.isEmpty()) {
                 cameraBuilder.setCameraUsername(username);
             }
 
             String password = mCamPasswordEditText.getText().toString();
-            if(!password.isEmpty())
-            {
+            if (!password.isEmpty()) {
                 cameraBuilder.setCameraPassword(password);
             }
 
@@ -675,18 +575,16 @@ public class AddCameraActivity extends ParentAppCompatActivity
         return null;
     }
 
-    private void quitAddCamera()
-    {
+    private void quitAddCamera() {
         CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
     }
 
-    private void populateSelectedModel(TextView textView, SelectedModel selectedModel)
-    {
+    private void populateSelectedModel(TextView textView, SelectedModel selectedModel) {
         String modelName = selectedModel.getModelName();
         String vendorName = selectedModel.getVendorName();
 
-        if(modelName.isEmpty()) modelName = getString(R.string.unknown);
-        if(vendorName.isEmpty()) vendorName = getString(R.string.unknown);
+        if (modelName.isEmpty()) modelName = getString(R.string.unknown);
+        if (vendorName.isEmpty()) vendorName = getString(R.string.unknown);
 
         textView.setText(vendorName + " - " + modelName);
 
@@ -695,27 +593,21 @@ public class AddCameraActivity extends ParentAppCompatActivity
         populateDefaultAuth();
     }
 
-    private void autoPopulateExternalIP(final EditText editText)
-    {
+    private void autoPopulateExternalIP(final EditText editText) {
         /**
          * Auto populate IP as external IP address if on WiFi
          */
-        if(new DataCollector(this).isConnectedWifi())
-        {
-            if(editText.getText().toString().isEmpty())
-            {
+        if (new DataCollector(this).isConnectedWifi()) {
+            if (editText.getText().toString().isEmpty()) {
 
-                new AsyncTask<Void, Void, String>()
-                {
+                new AsyncTask<Void, Void, String>() {
                     @Override
-                    protected String doInBackground(Void... params)
-                    {
+                    protected String doInBackground(Void... params) {
                         return io.evercam.network.discovery.NetworkInfo.getExternalIP();
                     }
 
                     @Override
-                    protected void onPostExecute(String externalIp)
-                    {
+                    protected void onPostExecute(String externalIp) {
                         editText.setText(externalIp);
                         autoPopulateDefaultPorts(mHttpEditText, mRtspEditText);
                     }
@@ -728,15 +620,12 @@ public class AddCameraActivity extends ParentAppCompatActivity
      * Auto populate default port 80 and 554 and launch port check
      * Only when the port text field is empty
      */
-    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText)
-    {
-        if(httpEditText.getText().toString().isEmpty())
-        {
+    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText) {
+        if (httpEditText.getText().toString().isEmpty()) {
             httpEditText.setText("80");
             checkPort(PortCheckTask.PortType.HTTP);
         }
-        if(rtspEditText.getText().toString().isEmpty())
-        {
+        if (rtspEditText.getText().toString().isEmpty()) {
             rtspEditText.setText("554");
             checkPort(PortCheckTask.PortType.RTSP);
         }

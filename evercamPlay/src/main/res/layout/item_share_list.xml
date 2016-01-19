@@ -1,12 +1,11 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     style="@style/SharingListItemLayout">
 
     <ImageView
         android:id="@+id/share_profile_image_view"
         style="@style/SharingListItemImage"
-        android:visibility="gone"/>
+        android:visibility="gone" />
 
     <LinearLayout
         style="@style/SharingListItemTextLayout"
@@ -14,16 +13,16 @@
 
         <TextView
             android:id="@+id/sharing_fullname_text_view"
-            style="@style/SharingListItemTextTitle"/>
+            style="@style/SharingListItemTextTitle" />
 
         <TextView
             android:id="@+id/sharing_email_text_view"
-            style="@style/SharingListItemTextSubTitle"/>
+            style="@style/SharingListItemTextSubTitle" />
 
     </LinearLayout>
 
     <TextView
         android:id="@+id/sharing_item_status_text_view"
-        style="@style/SharingListItemStatusText"/>
+        style="@style/SharingListItemStatusText" />
 
 </RelativeLayout>

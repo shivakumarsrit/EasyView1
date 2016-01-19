@@ -46,8 +46,7 @@ import io.evercam.network.discovery.DeviceInterface;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.evercam.network.query.EvercamQuery;
 
-public class ScanActivity extends ParentAppCompatActivity
-{
+public class ScanActivity extends ParentAppCompatActivity {
     private final String TAG = "ScanActivity";
 
     private View scanProgressView;
@@ -68,8 +67,7 @@ public class ScanActivity extends ParentAppCompatActivity
     private WeakHandler mHandler;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_scan);
@@ -99,32 +97,24 @@ public class ScanActivity extends ParentAppCompatActivity
                 drawableArray);
         cameraListView.setAdapter(deviceAdapter);
 
-        cameraListView.setOnItemClickListener(new OnItemClickListener()
-        {
+        cameraListView.setOnItemClickListener(new OnItemClickListener() {
             @Override
-            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3)
-            {
+            public void onItemClick(AdapterView<?> arg0, View arg1, int position, long arg3) {
                 final DiscoveredCamera cameraInList = (DiscoveredCamera) cameraListView
                         .getItemAtPosition(position);
 
-                if(cameraInList != null)
-                {
+                if (cameraInList != null) {
                     //If camera has been added to Evercam, show warning dialog
-                    if(isCameraAdded(cameraInList))
-                    {
+                    if (isCameraAdded(cameraInList)) {
                         CustomedDialog.getStandardAlertDialog(ScanActivity.this, new Dialog
-                                .OnClickListener()
-                        {
+                                .OnClickListener() {
 
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 launchAddCameraPage(cameraInList);
                             }
                         }, R.string.msg_camera_has_been_added).show();
-                    }
-                    else
-                    {
+                    } else {
                         launchAddCameraPage(cameraInList);
                     }
                 }
@@ -133,17 +123,14 @@ public class ScanActivity extends ParentAppCompatActivity
 
         showAllDeviceFooterButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 AllDevicesActivity.showAllDevices(ScanActivity.this, nonCameraDevices);
             }
         });
 
-        addManuallyButton.setOnClickListener(new OnClickListener()
-        {
+        addManuallyButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 startActivityForResult(new Intent(ScanActivity.this, AddEditCameraActivity.class)
                         , Constants.REQUEST_CODE_ADD_CAMERA);
             }
@@ -151,8 +138,7 @@ public class ScanActivity extends ParentAppCompatActivity
 
         showAllDeviceButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 AllDevicesActivity.showAllDevices(ScanActivity.this, nonCameraDevices);
             }
         });
@@ -161,8 +147,7 @@ public class ScanActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_scan, menu);
 
@@ -173,19 +158,14 @@ public class ScanActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
 
-                if(isScanning())
-                {
+                if (isScanning()) {
                     showConfirmCancelScanDialog();
-                }
-                else
-                {
+                } else {
                     finish();
                 }
                 return true;
@@ -208,14 +188,10 @@ public class ScanActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
-        if(isScanning())
-        {
+    public void onBackPressed() {
+        if (isScanning()) {
             showConfirmCancelScanDialog();
-        }
-        else
-        {
+        } else {
             finish();
         }
     }
@@ -224,24 +200,18 @@ public class ScanActivity extends ParentAppCompatActivity
     // to
     // CamerasActivity.
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_ADD_CAMERA)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_ADD_CAMERA) {
             Intent returnIntent = new Intent();
 
-            if(resultCode == Constants.RESULT_TRUE)
-            {
+            if (resultCode == Constants.RESULT_TRUE) {
                 setResult(Constants.RESULT_TRUE, returnIntent);
                 finish();
-            }
-            else
-            {
+            } else {
                 setResult(Constants.RESULT_FALSE, returnIntent);
                 // If no camera found, finish this page, otherwise stay in
                 // scanning page to let the user choose another.
-                if(discoveredCameras == null)
-                {
+                if (discoveredCameras == null) {
                     finish();
                 }
             }
@@ -249,147 +219,113 @@ public class ScanActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
     }
 
-    private void launchAddCameraPage(DiscoveredCamera camera)
-    {
+    private void launchAddCameraPage(DiscoveredCamera camera) {
         Intent intentAddCamera = new Intent(ScanActivity.this, AddEditCameraActivity.class);
         intentAddCamera.putExtra("camera", camera);
         startActivityForResult(intentAddCamera, Constants.REQUEST_CODE_ADD_CAMERA);
     }
 
-    private void startDiscovery()
-    {
+    private void startDiscovery() {
         scanTask = new ScanForCameraTask(ScanActivity.this);
         scanTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void stopDiscovery()
-    {
-        if(scanTask != null && !scanTask.isCancelled())
-        {
+    private void stopDiscovery() {
+        if (scanTask != null && !scanTask.isCancelled()) {
             scanTask.cancel(true);
         }
     }
 
-    public void showTextProgress(boolean show)
-    {
+    public void showTextProgress(boolean show) {
         scanProgressView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void showCameraListView(boolean show)
-    {
+    public void showCameraListView(boolean show) {
         scanResultListView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void showNoCameraView(boolean show)
-    {
+    public void showNoCameraView(boolean show) {
         scanResultNoCameraView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    private void updateScanResultMessage(int messageId)
-    {
+    private void updateScanResultMessage(int messageId) {
         TextView messageTextView = (TextView) findViewById(R.id.scan_result_message);
         messageTextView.setText(messageId);
     }
 
-    public void showHorizontalProgress(boolean show)
-    {
+    public void showHorizontalProgress(boolean show) {
         progressBar.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void showCancelMenuItem(final boolean show)
-    {
-        if(cancelMenuItem == null)
-        {
-            mHandler.postDelayed(new Runnable()
-            {
+    public void showCancelMenuItem(final boolean show) {
+        if (cancelMenuItem == null) {
+            mHandler.postDelayed(new Runnable() {
                 @Override
-                public void run()
-                {
-                    if(cancelMenuItem != null) cancelMenuItem.setVisible(show);
+                public void run() {
+                    if (cancelMenuItem != null) cancelMenuItem.setVisible(show);
                 }
             }, 1000);
-        }
-        else
-        {
+        } else {
             cancelMenuItem.setVisible(show);
         }
     }
 
-    public void showAllDeviceMenu(final boolean show)
-    {
-        if(showAllDeviceMenu == null)
-        {
-            mHandler.postDelayed(new Runnable()
-            {
+    public void showAllDeviceMenu(final boolean show) {
+        if (showAllDeviceMenu == null) {
+            mHandler.postDelayed(new Runnable() {
                 @Override
-                public void run()
-                {
-                    if(showAllDeviceMenu != null) showAllDeviceMenu.setVisible(show);
+                public void run() {
+                    if (showAllDeviceMenu != null) showAllDeviceMenu.setVisible(show);
                 }
             }, 1000);
-        }
-        else
-        {
+        } else {
             showAllDeviceMenu.setVisible(show);
         }
     }
 
-    public void showConfirmCancelScanDialog()
-    {
+    public void showConfirmCancelScanDialog() {
         CustomedDialog.getConfirmCancelScanDialog(ScanActivity.this, new DialogInterface
-                .OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        stopDiscovery();
-                        finish();
-                    }
-                }).show();
+                .OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                stopDiscovery();
+                finish();
+            }
+        }).show();
     }
 
-    public boolean isScanning()
-    {
+    public boolean isScanning() {
         return cancelMenuItem != null && cancelMenuItem.isVisible();
     }
 
-    public void showScanResults(ArrayList<DiscoveredCamera> discoveredCameras)
-    {
-        if(discoveredCameras != null && discoveredCameras.size() > 0)
-        {
+    public void showScanResults(ArrayList<DiscoveredCamera> discoveredCameras) {
+        if (discoveredCameras != null && discoveredCameras.size() > 0) {
             showCameraListView(true);
             showNoCameraView(false);
 
             EvercamDiscover.mergeDuplicateCameraFromList(discoveredCameras);
             deviceAdapter.notifyDataSetChanged();
-        }
-        else
-        {
+        } else {
             showCameraListView(false);
             showNoCameraView(true);
         }
     }
 
-    public void addNonCameraDevice(final Device device)
-    {
+    public void addNonCameraDevice(final Device device) {
         runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 nonCameraDevices.add(device);
             }
         });
     }
 
-    public void addNewCameraToResultList(DiscoveredCamera discoveredCamera)
-    {
-        try
-        {
+    public void addNewCameraToResultList(DiscoveredCamera discoveredCamera) {
+        try {
             //Log.d(TAG, "New discovered camera: " + discoveredCamera.getIP());
             showCameraListView(true);
             showNoCameraView(false);
@@ -397,14 +333,11 @@ public class ScanActivity extends ParentAppCompatActivity
 
             boolean merged = false; //The new device has been included in the device list or not
 
-            if(discoveredCameras.size() > 0)
-            {
-                for(int index = 0; index < discoveredCameras.size(); index++)
-                {
+            if (discoveredCameras.size() > 0) {
+                for (int index = 0; index < discoveredCameras.size(); index++) {
                     DiscoveredCamera originalCamera = discoveredCameras.get(index);
 
-                    if(originalCamera.getIP().equals(discoveredCamera.getIP()))
-                    {
+                    if (originalCamera.getIP().equals(discoveredCamera.getIP())) {
                         originalCamera.merge(discoveredCamera);
 
                         //Log.d(TAG, "Camera after merging: " + originalCamera.toString());
@@ -415,33 +348,26 @@ public class ScanActivity extends ParentAppCompatActivity
                 }
             }
 
-            if(!merged)
-            {
+            if (!merged) {
                 discoveredCameras.add(discoveredCamera);
 
                 new RetrieveThumbnailTask(discoveredCamera, discoveredCameras.indexOf(discoveredCamera)).executeOnExecutor
                         (AsyncTask.THREAD_POOL_EXECUTOR);
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
         deviceAdapter.notifyDataSetChanged();
     }
 
-    public static boolean isCameraAdded(DiscoveredCamera discoveredCamera)
-    {
+    public static boolean isCameraAdded(DiscoveredCamera discoveredCamera) {
         ArrayList<EvercamCamera> cameras = AppData.evercamCameraList;
-        if(cameras.size() > 0)
-        {
+        if (cameras.size() > 0) {
             String discoveredMacAddress = discoveredCamera.getMAC();
-            for(EvercamCamera camera : cameras)
-            {
+            for (EvercamCamera camera : cameras) {
                 String evercamCameraMac = camera.getMac();
-                if(!evercamCameraMac.isEmpty() && evercamCameraMac.equals(discoveredMacAddress))
-                {
+                if (!evercamCameraMac.isEmpty() && evercamCameraMac.equals(discoveredMacAddress)) {
                     return true;
                 }
             }
@@ -449,35 +375,28 @@ public class ScanActivity extends ParentAppCompatActivity
         return false;
     }
 
-    private class RetrieveThumbnailTask extends AsyncTask<Void, Void, Drawable>
-    {
+    private class RetrieveThumbnailTask extends AsyncTask<Void, Void, Drawable> {
         private DiscoveredCamera discoveredCamera;
         private int position;
 
-        public RetrieveThumbnailTask(DiscoveredCamera discoveredCamera, int position)
-        {
+        public RetrieveThumbnailTask(DiscoveredCamera discoveredCamera, int position) {
             this.discoveredCamera = discoveredCamera;
             this.position = position;
         }
 
         @Override
-        protected Drawable doInBackground(Void... params)
-        {
+        protected Drawable doInBackground(Void... params) {
             discoveredCamera = EvercamQuery.fillDefaults(discoveredCamera);
 
             String thumbnailUrl = discoveredCamera.getModelThumbnail();
 
             Drawable drawable = null;
 
-            if(!thumbnailUrl.isEmpty())
-            {
-                try
-                {
+            if (!thumbnailUrl.isEmpty()) {
+                try {
                     InputStream stream = Unirest.get(thumbnailUrl).asBinary().getRawBody();
                     drawable = Drawable.createFromStream(stream, "src");
-                }
-                catch(UnirestException e)
-                {
+                } catch (UnirestException e) {
                     Log.e(TAG, e.getStackTrace()[0].toString());
                 }
             }
@@ -486,14 +405,10 @@ public class ScanActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(Drawable drawable)
-        {
-            if(drawable != null)
-            {
+        protected void onPostExecute(Drawable drawable) {
+            if (drawable != null) {
                 drawableArray.put(position, drawable);
-            }
-            else
-            {
+            } else {
                 Drawable questionImage = ScanActivity.this.getResources().getDrawable(R.drawable
                         .question_img_trans);
                 drawableArray.put(position, questionImage);
@@ -503,16 +418,14 @@ public class ScanActivity extends ParentAppCompatActivity
         }
     }
 
-    public void onScanningStarted()
-    {
+    public void onScanningStarted() {
         showHorizontalProgress(true);
         showTextProgress(true);
         showCancelMenuItem(true);
         showAllDeviceMenu(false);
     }
 
-    public void onScanningFinished(ArrayList<DiscoveredCamera> cameraList)
-    {
+    public void onScanningFinished(ArrayList<DiscoveredCamera> cameraList) {
         //Hide the scanning percentage
         updateScanPercentage(null);
         //Hide the scanning text
@@ -522,31 +435,23 @@ public class ScanActivity extends ParentAppCompatActivity
         //Hide the cancel button
         showCancelMenuItem(false);
         //Show all device menu item
-        if(nonCameraDevices.size() > 0)
-        {
+        if (nonCameraDevices.size() > 0) {
             showAllDeviceMenu(true);
         }
 
         updateTitleText("Finished. " + cameraList.size() + " Camera(s) Found.");
     }
 
-    public void updateScanPercentage(final Float percentageFloat)
-    {
-        runOnUiThread(new Runnable()
-        {
+    public void updateScanPercentage(final Float percentageFloat) {
+        runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
-                if(percentageFloat == null)
-                {
+            public void run() {
+                if (percentageFloat == null) {
                     updateTitleText("");
-                }
-                else
-                {
+                } else {
                     float percentf = percentageFloat;
                     int percentageInt = (int) percentf;
-                    if(percentageInt < 100)
-                    {
+                    if (percentageInt < 100) {
                         updateTitleText("Scanning... " + percentageInt + '%');
                         progressBar.setProgress(percentageInt);
                     }
@@ -555,20 +460,16 @@ public class ScanActivity extends ParentAppCompatActivity
         });
     }
 
-    class ScanCheckInternetTask extends CheckInternetTask
-    {
-        public ScanCheckInternetTask(Context context)
-        {
+    class ScanCheckInternetTask extends CheckInternetTask {
+        public ScanCheckInternetTask(Context context) {
             super(context);
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             //Check is Wifi connected or not first
             DataCollector dataCollector = new DataCollector(ScanActivity.this);
-            if(dataCollector.isConnectedMobile() && !dataCollector.isConnectedWifi())
-            {
+            if (dataCollector.isConnectedMobile() && !dataCollector.isConnectedWifi()) {
                 this.cancel(true);
                 showTextProgress(false);
                 showNoCameraView(true);
@@ -578,14 +479,10 @@ public class ScanActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
                 startDiscovery();
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(ScanActivity.this);
             }
         }

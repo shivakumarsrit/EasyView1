@@ -22,8 +22,7 @@ import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.TestSnapshotFeedbackItem;
 import io.keen.client.java.KeenClient;
 
-public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
-{
+public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable> {
     private final String TAG = "TestSnapshotTask";
     private String url;
     private String ending;
@@ -33,8 +32,7 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
     private CustomProgressDialog customProgressDialog;
     private String errorMessage = null;
 
-    public TestSnapshotTask(String url, String ending, String username, String password, Activity activity)
-    {
+    public TestSnapshotTask(String url, String ending, String username, String password, Activity activity) {
         this.url = url;
         this.ending = ending;
         this.username = username;
@@ -43,92 +41,68 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable>
     }
 
     @Override
-    protected void onPreExecute()
-    {
-        if(activity instanceof AddEditCameraActivity)
-        {
+    protected void onPreExecute() {
+        if (activity instanceof AddEditCameraActivity) {
             customProgressDialog = new CustomProgressDialog(activity);
             customProgressDialog.show(activity.getString(R.string.retrieving_snapshot));
-        }
-        else if(activity instanceof AddCameraActivity)
-        {
+        } else if (activity instanceof AddCameraActivity) {
             ((AddCameraActivity) activity).showTestSnapshotProgress(true);
         }
     }
 
     @Override
-    protected Drawable doInBackground(Void... params)
-    {
-        try
-        {
+    protected Drawable doInBackground(Void... params) {
+        try {
             URL urlObject = new URL(url);
             boolean isReachable = PortCheckTask.isPortOpen(urlObject.getHost(),
                     String.valueOf(urlObject.getPort()));
-            if(!isReachable)
-            {
+            if (!isReachable) {
                 errorMessage = activity.getString(R.string.snapshot_test_port_closed);
                 return null;
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
             return null;
         }
 
-        try
-        {
+        try {
             Snapshot snapshot = Camera.testSnapshot(url, ending, username, password);
-            if(snapshot != null)
-            {
+            if (snapshot != null) {
                 byte[] snapshotData = snapshot.getData();
                 return new BitmapDrawable(BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length));
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(Drawable drawable)
-    {
-        if(activity instanceof AddEditCameraActivity)
-        {
+    protected void onPostExecute(Drawable drawable) {
+        if (activity instanceof AddEditCameraActivity) {
             customProgressDialog.dismiss();
-        }
-        else if(activity instanceof AddCameraActivity)
-        {
+        } else if (activity instanceof AddCameraActivity) {
             ((AddCameraActivity) activity).showTestSnapshotProgress(false);
         }
 
         KeenClient client = KeenHelper.getClient(activity);
 
-        if(drawable != null)
-        {
+        if (drawable != null) {
             CustomedDialog.getSnapshotDialog(activity, drawable).show();
 
             new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)
-            .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
-        }
-        else
-        {
+                    .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
+        } else {
             String username = "";
-            if(AppData.defaultUser != null)
-            {
+            if (AppData.defaultUser != null) {
                 username = AppData.defaultUser.getUsername();
             }
 
-            if(errorMessage == null)
-            {
+            if (errorMessage == null) {
                 CustomToast.showInCenterLong(activity, R.string.snapshot_test_failed);
                 new TestSnapshotFeedbackItem(activity, username, false, true)
                         .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
-            }
-            else
-            {
+            } else {
                 CustomToast.showInCenterLong(activity, errorMessage);
                 new TestSnapshotFeedbackItem(activity, username, false, false)
                         .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);

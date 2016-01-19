@@ -1,5 +1,4 @@
-<RelativeLayout
-    android:id="@+id/gredient_background_layout"
+<RelativeLayout android:id="@+id/gredient_background_layout"
     xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
@@ -25,7 +24,7 @@
             android:shadowRadius="1.0"
             android:singleLine="true"
             android:textColor="#f5f5f5"
-            android:textSize="14dp"/>
+            android:textSize="14dp" />
 
         <ImageView
             android:id="@+id/offline_image_view"
@@ -33,7 +32,7 @@
             android:layout_height="16dp"
             android:layout_gravity="bottom"
             android:src="@drawable/icon_offline"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
 
     </LinearLayout>
 
@@ -45,5 +44,5 @@
         android:layout_alignParentBottom="true"
         android:layout_marginBottom="4dp"
         android:src="@drawable/icon_offline"
-        android:visibility="invisible"/>
+        android:visibility="invisible" />
 </RelativeLayout>

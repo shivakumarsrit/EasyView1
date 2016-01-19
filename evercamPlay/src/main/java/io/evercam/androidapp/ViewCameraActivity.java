@@ -19,8 +19,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class ViewCameraActivity extends ParentAppCompatActivity
-{
+public class ViewCameraActivity extends ParentAppCompatActivity {
     private final String TAG = "ViewCameraActivity";
     private LinearLayout canEditDetailLayout;
     private TextView cameraIdTextView;
@@ -44,8 +43,7 @@ public class ViewCameraActivity extends ParentAppCompatActivity
     private EvercamCamera evercamCamera;
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         evercamCamera = VideoActivity.evercamCamera;
@@ -60,26 +58,20 @@ public class ViewCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
 
         getMenuInflater().inflate(R.menu.activity_camera_details, menu);
         return true;
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem editItem = menu.findItem(R.id.menu_action_edit_camera);
 
-        if(evercamCamera != null)
-        {
-            if(evercamCamera.canEdit())
-            {
+        if (evercamCamera != null) {
+            if (evercamCamera.canEdit()) {
                 editItem.setVisible(true);
-            }
-            else
-            {
+            } else {
                 editItem.setVisible(false);
             }
         }
@@ -87,34 +79,22 @@ public class ViewCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
 
-        if(itemId == android.R.id.home)
-        {
+        if (itemId == android.R.id.home) {
             finish();
-        }
-        else if(itemId == R.id.menu_action_edit_camera)
-        {
+        } else if (itemId == R.id.menu_action_edit_camera) {
             linkToEditCamera();
-        }
-        else if(itemId ==R.id.menu_action_delete_camera)
-        {
-            CustomedDialog.getConfirmDeleteDialog(ViewCameraActivity.this, new DialogInterface.OnClickListener()
-            {
+        } else if (itemId == R.id.menu_action_delete_camera) {
+            CustomedDialog.getConfirmDeleteDialog(ViewCameraActivity.this, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface warningDialog, int which)
-                {
-                    if(evercamCamera != null)
-                    {
-                        if(evercamCamera.canDelete())
-                        {
+                public void onClick(DialogInterface warningDialog, int which) {
+                    if (evercamCamera != null) {
+                        if (evercamCamera.canDelete()) {
                             new DeleteCameraTask(evercamCamera.getCameraId(), ViewCameraActivity.this, EnumConstants.DeleteType.DELETE_OWNED).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                        }
-                        else
-                        {
+                        } else {
                             new DeleteCameraTask(evercamCamera.getCameraId(), ViewCameraActivity.this, EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                         }
                     }
@@ -126,21 +106,17 @@ public class ViewCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_PATCH_CAMERA) {
             //If camera details have been edited, return to live view
-            if(resultCode == Constants.RESULT_TRUE)
-            {
+            if (resultCode == Constants.RESULT_TRUE) {
                 setResult(Constants.RESULT_TRUE);
                 finish();
             }
         }
     }
 
-    private void initialScreen()
-    {
+    private void initialScreen() {
         canEditDetailLayout = (LinearLayout) findViewById(R.id.can_edit_detail_layout);
         editLinkButton = (Button) findViewById(R.id.button_edit_camera_link);
 
@@ -163,38 +139,28 @@ public class ViewCameraActivity extends ParentAppCompatActivity
         cameraExternalHttpTextView = (TextView) findViewById(R.id.view_external_http_value);
         cameraExternalRtspTextView = (TextView) findViewById(R.id.view_external_rtsp_value);
 
-        editLinkButton.setOnClickListener(new View.OnClickListener()
-        {
+        editLinkButton.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 linkToEditCamera();
             }
         });
     }
 
-    private void fillCameraDetails(EvercamCamera camera)
-    {
-        if(camera != null)
-        {
+    private void fillCameraDetails(EvercamCamera camera) {
+        if (camera != null) {
             cameraIdTextView.setText(camera.getCameraId());
             cameraNameTextView.setText(camera.getName());
             cameraOwnerTextView.setText(camera.getRealOwner());
             cameraTimezoneTextView.setText(camera.getTimezone());
-            if(camera.getVendor().isEmpty())
-            {
+            if (camera.getVendor().isEmpty()) {
                 setAsNotSpecified(cameraVendorTextView);
-            }
-            else
-            {
+            } else {
                 cameraVendorTextView.setText(camera.getVendor());
             }
-            if(camera.getModel().isEmpty())
-            {
+            if (camera.getModel().isEmpty()) {
                 setAsNotSpecified(cameraModelTextView);
-            }
-            else
-            {
+            } else {
                 cameraModelTextView.setText(camera.getModel());
             }
 
@@ -203,66 +169,46 @@ public class ViewCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private void fillCanEditDetails(EvercamCamera camera)
-    {
-        if(camera.canEdit())
-        {
+    private void fillCanEditDetails(EvercamCamera camera) {
+        if (camera.canEdit()) {
             editLinkButton.setVisibility(View.VISIBLE);
             canEditDetailLayout.setVisibility(View.VISIBLE);
 
-            if(camera.getUsername().isEmpty())
-            {
+            if (camera.getUsername().isEmpty()) {
                 setAsNotSpecified(cameraUsernameTextView);
 
-            }
-            else
-            {
+            } else {
                 cameraUsernameTextView.setText(camera.getUsername());
             }
 
-            if(camera.getPassword().isEmpty())
-            {
+            if (camera.getPassword().isEmpty()) {
                 setAsNotSpecified(cameraPasswordTextView);
 
-            }
-            else
-            {
+            } else {
                 cameraPasswordTextView.setText(camera.getPassword());
             }
 
-            if(camera.getJpgPath().isEmpty())
-            {
+            if (camera.getJpgPath().isEmpty()) {
                 setAsNotSpecified(cameraSnapshotUrlTextView);
-            }
-            else
-            {
+            } else {
                 cameraSnapshotUrlTextView.setText(camera.getJpgPath());
             }
 
-            if(camera.getH264Path().isEmpty())
-            {
+            if (camera.getH264Path().isEmpty()) {
                 setAsNotSpecified(cameraRtspUrlTextView);
-            }
-            else
-            {
+            } else {
                 cameraRtspUrlTextView.setText(camera.getH264Path());
             }
 
-            if(camera.getExternalHost().isEmpty())
-            {
+            if (camera.getExternalHost().isEmpty()) {
                 setAsNotSpecified(cameraExternalHostTextView);
-            }
-            else
-            {
+            } else {
                 cameraExternalHostTextView.setText(camera.getExternalHost());
             }
 
-            if(camera.getInternalHost().isEmpty())
-            {
+            if (camera.getInternalHost().isEmpty()) {
                 setAsNotSpecified(cameraInternalHostTextView);
-            }
-            else
-            {
+            } else {
                 cameraInternalHostTextView.setText(camera.getInternalHost());
             }
 
@@ -271,49 +217,35 @@ public class ViewCameraActivity extends ParentAppCompatActivity
             int internalHttp = camera.getInternalHttp();
             int internalRtsp = camera.getInternalRtsp();
 
-            if(externalHttp != 0)
-            {
+            if (externalHttp != 0) {
                 cameraExternalHttpTextView.setText(String.valueOf(externalHttp));
-            }
-            else
-            {
+            } else {
                 setAsNotSpecified(cameraExternalHttpTextView);
             }
-            if(externalRtsp != 0)
-            {
+            if (externalRtsp != 0) {
                 cameraExternalRtspTextView.setText(String.valueOf(externalRtsp));
-            }
-            else
-            {
+            } else {
                 setAsNotSpecified(cameraExternalRtspTextView);
             }
-            if(internalHttp != 0)
-            {
+            if (internalHttp != 0) {
                 cameraInternalHttpTextView.setText(String.valueOf(camera.getInternalHttp()));
-            }
-            else
-            {
+            } else {
                 setAsNotSpecified(cameraInternalHttpTextView);
             }
-            if(internalRtsp != 0)
-            {
+            if (internalRtsp != 0) {
                 cameraInternalRtspTextView.setText(String.valueOf(camera.getInternalRtsp()));
-            }
-            else
-            {
+            } else {
                 setAsNotSpecified(cameraInternalRtspTextView);
             }
         }
     }
 
-    private void setAsNotSpecified(TextView textView)
-    {
+    private void setAsNotSpecified(TextView textView) {
         textView.setText(R.string.not_specified);
         textView.setTextColor(Color.GRAY);
     }
 
-    private void linkToEditCamera()
-    {
+    private void linkToEditCamera() {
         Intent intent = new Intent(ViewCameraActivity.this, AddEditCameraActivity.class);
         intent.putExtra(Constants.KEY_IS_EDIT, true);
         startActivityForResult(intent, Constants.REQUEST_CODE_PATCH_CAMERA);

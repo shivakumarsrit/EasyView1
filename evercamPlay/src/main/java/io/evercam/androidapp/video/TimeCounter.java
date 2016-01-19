@@ -6,16 +6,14 @@ import android.widget.TextView;
 
 import io.evercam.androidapp.R;
 
-public class TimeCounter
-{
+public class TimeCounter {
     private Activity activity;
     private Thread thread;
     private TextView timeTextView;
     private boolean isStarted = false;
     private String timezone;
 
-    public TimeCounter(Activity activity, String timezone)
-    {
+    public TimeCounter(Activity activity, String timezone) {
         this.activity = activity;
         this.timezone = timezone;
         this.timeTextView = (TextView) activity.findViewById(R.id.time_text_view);
@@ -23,35 +21,28 @@ public class TimeCounter
         thread = new Thread(countRunnable);
     }
 
-    public void start()
-    {
+    public void start() {
         isStarted = true;
         timeTextView.setVisibility(View.VISIBLE);
-        if(!thread.isInterrupted())
-        {
+        if (!thread.isInterrupted()) {
             thread.start();
         }
     }
 
-    public boolean isStarted()
-    {
+    public boolean isStarted() {
         return isStarted;
     }
 
-    public void stop()
-    {
+    public void stop() {
         timeTextView.setVisibility(View.INVISIBLE);
         thread.interrupt();
         thread = null;
     }
 
-    public void updateTime()
-    {
-        activity.runOnUiThread(new Runnable()
-        {
+    public void updateTime() {
+        activity.runOnUiThread(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 org.joda.time.DateTimeZone timeZone = org.joda.time.DateTimeZone.forID(timezone);
                 org.joda.time.DateTime dateTime = new org.joda.time.DateTime(timeZone);
                 org.joda.time.format.DateTimeFormatter formatter = org.joda.time.format
@@ -63,20 +54,14 @@ public class TimeCounter
         });
     }
 
-    class CountRunner implements Runnable
-    {
+    class CountRunner implements Runnable {
         @Override
-        public void run()
-        {
-            while(!Thread.currentThread().isInterrupted())
-            {
-                try
-                {
+        public void run() {
+            while (!Thread.currentThread().isInterrupted()) {
+                try {
                     updateTime();
                     Thread.sleep(1000);
-                }
-                catch(InterruptedException e)
-                {
+                } catch (InterruptedException e) {
                     Thread.currentThread().interrupt();
                 }
             }

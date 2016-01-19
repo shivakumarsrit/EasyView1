@@ -9,23 +9,19 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.WebActivity;
 import io.evercam.androidapp.dto.AppData;
 
-public class PublicCamerasWebView  extends BaseWebView
-{
+public class PublicCamerasWebView extends BaseWebView {
     private final String TAG = "PublicCamerasWebView";
     public WebActivity webActivity;
 
-    public PublicCamerasWebView(Context context)
-    {
+    public PublicCamerasWebView(Context context) {
         super(context);
     }
 
-    public PublicCamerasWebView(Context context, AttributeSet attrs)
-    {
+    public PublicCamerasWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void loadPublicCameras()
-    {
+    public void loadPublicCameras() {
         enableJavascript(true);
 
         enableChromeDebugging();

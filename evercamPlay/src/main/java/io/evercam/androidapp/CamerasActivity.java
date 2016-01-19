@@ -61,8 +61,7 @@ import io.intercom.android.sdk.Intercom;
 import io.keen.client.java.KeenClient;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
-        ObservableScrollViewCallbacks, OnClickListener
-{
+        ObservableScrollViewCallbacks, OnClickListener {
     public static CamerasActivity activity = null;
     public MenuItem refresh;
 
@@ -94,8 +93,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private float databaseLoadTime = 0;
     private KeenClient client;
 
-    private enum InternetCheckType
-    {
+    private enum InternetCheckType {
         START, RESTART
     }
 
@@ -103,8 +101,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private boolean showOfflineOnStop;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.navigation_drawer_layout);
@@ -134,22 +131,18 @@ public class CamerasActivity extends ParentAppCompatActivity implements
          * TODO: Check is it really necessary to keep the post delay handler here
          * See if refresh icon stop animating or not.
          */
-        new Handler().postDelayed(new Runnable()
-        {
+        new Handler().postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 /**
                  * Sometimes Evercam returns the list less than 0.1 sec?
                  * so check it's returned or not before
                  * the first load to avoid loading it twice.
                  */
                 io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom.FlowLayout) CamerasActivity.this.findViewById(R.id.cameras_flow_layout);
-                if(!(camsLineView.getChildCount() > 0))
-                {
+                if (!(camsLineView.getChildCount() > 0)) {
                     addAllCameraViews(false, false);
-                    if(camsLineView.getChildCount() > 0 && databaseLoadTime == 0 && startTime != null)
-                    {
+                    if (camsLineView.getChildCount() > 0 && databaseLoadTime == 0 && startTime != null) {
                         databaseLoadTime = Commons.calculateTimeDifferenceFrom(startTime);
                     }
                 }
@@ -162,16 +155,14 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     @Override
-    protected void onPostCreate(Bundle savedInstanceState)
-    {
+    protected void onPostCreate(Bundle savedInstanceState) {
         super.onPostCreate(savedInstanceState);
         // Sync the toggle state after onRestoreInstanceState has occurred.
         mDrawerToggle.syncState();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         // draw the options defined in the following file
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_camera_list, menu);
@@ -185,20 +176,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     // Tells that the item has been selected from the menu. Now check and get
     // the selected item and perform the relevant action
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        if(itemId == R.id.menurefresh)
-        {
+        if (itemId == R.id.menurefresh) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_refresh, R.string.label_list_refresh);
 
-            if(refresh != null) refresh.setActionView(R.layout.partial_actionbar_progress);
+            if (refresh != null) refresh.setActionView(R.layout.partial_actionbar_progress);
 
             startCameraLoadingTask();
 
-        }
-        else
-        {
+        } else {
             return super.onOptionsItemSelected(item);
         }
 
@@ -206,148 +193,112 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     @Override
-    public void onRestart()
-    {
+    public void onRestart() {
         super.onRestart();
 
-        if(MainActivity.isUserLogged(this))
-        {
+        if (MainActivity.isUserLogged(this)) {
             //Reload camera list if default user has been changed, or offline settings has been changed
-            if(isUserChanged() || isOfflineSettingChanged())
-            {
+            if (isUserChanged() || isOfflineSettingChanged()) {
                 new CamerasCheckInternetTask(CamerasActivity.this, InternetCheckType.START).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-            else
-            {
-                try
-                {
+            } else {
+                try {
                     new CamerasCheckInternetTask(CamerasActivity.this, InternetCheckType.RESTART).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
 
-                }
-                catch(RejectedExecutionException e)
-                {
+                } catch (RejectedExecutionException e) {
                     EvercamPlayApplication.sendCaughtExceptionNotImportant(activity, e);
                 }
-            } usernameOnStop = "";
-        }
-        else
-        {
+            }
+            usernameOnStop = "";
+        } else {
             startActivity(new Intent(this, SlideActivity.class));
             finish();
         }
     }
 
-    private boolean isUserChanged()
-    {
+    private boolean isUserChanged() {
         String restartedUsername = AppData.defaultUser.getUsername();
         return !usernameOnStop.isEmpty() && !usernameOnStop.equals(restartedUsername);
     }
 
-    private boolean isOfflineSettingChanged()
-    {
+    private boolean isOfflineSettingChanged() {
         return showOfflineOnStop != PrefsManager.showOfflineCameras(this);
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_ADD_CAMERA)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_ADD_CAMERA) {
             reloadCameraList = (resultCode == Constants.RESULT_TRUE);
-        }
-        else if (requestCode == Constants.REQUEST_CODE_DELETE_CAMERA)
-        {
+        } else if (requestCode == Constants.REQUEST_CODE_DELETE_CAMERA) {
             // Don't reset reload variable to false because it's possible set to TRUE when
             // return from shortcut live view
-            if(resultCode == Constants.RESULT_TRUE)
-            {
+            if (resultCode == Constants.RESULT_TRUE) {
                 reloadCameraList = true;
                 CustomSnackbar.showLong(activity, R.string.msg_delete_success);
             }
-        }
-        else if(requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT)
-        {
+        } else if (requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT) {
             reloadCameraList = (resultCode == Constants.RESULT_ACCOUNT_CHANGED);
         }
 
-        if(resultCode == Constants.RESULT_TRANSFERRED)
-        {
+        if (resultCode == Constants.RESULT_TRANSFERRED) {
             reloadCameraList = true;
             CustomSnackbar.showLong(this, R.string.msg_transfer_success);
-        }
-        else if(resultCode == Constants.RESULT_ACCESS_REMOVED)
-        {
+        } else if (resultCode == Constants.RESULT_ACCESS_REMOVED) {
             reloadCameraList = true;
             CustomSnackbar.showShort(this, R.string.msg_share_updated);
-        }
-        else if(resultCode == Constants.RESULT_NO_ACCESS)
-        {
+        } else if (resultCode == Constants.RESULT_NO_ACCESS) {
             reloadCameraList = true;
             CustomSnackbar.showLong(this, R.string.msg_no_access);
         }
     }
 
-    private void startLoadingCameras()
-    {
+    private void startLoadingCameras() {
         reloadProgressDialog = new CustomProgressDialog(this);
-        if(reloadCameraList)
-        {
+        if (reloadCameraList) {
             reloadProgressDialog.show(getString(R.string.loading_cameras));
         }
 
         startCameraLoadingTask();
     }
 
-    private void checkUser()
-    {
-        if(AppData.defaultUser == null)
-        {
+    private void checkUser() {
+        if (AppData.defaultUser == null) {
             AppData.defaultUser = new EvercamAccount(this).getDefaultUser();
         }
     }
 
-    private void startCameraLoadingTask()
-    {
-        if(Commons.isOnline(this))
-        {
+    private void startCameraLoadingTask() {
+        if (Commons.isOnline(this)) {
             LoadCameraListTask loadTask = new LoadCameraListTask(AppData.defaultUser,
                     CamerasActivity.this);
             loadTask.reload = true; // be default do not refresh until there
             // is
             // any change in cameras in database
             loadTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-        }
-        else
-        {
+        } else {
             CustomedDialog.showInternetNotConnectDialog(CamerasActivity.this);
         }
     }
 
     // Stop All Camera Views
-    public void stopAllCameraViews()
-    {
+    public void stopAllCameraViews() {
         io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
                 .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-        for(int count = 0; count < camsLineView.getChildCount(); count++)
-        {
+        for (int count = 0; count < camsLineView.getChildCount(); count++) {
             LinearLayout linearLayout = (LinearLayout) camsLineView.getChildAt(count);
             CameraLayout cameraLayout = (CameraLayout) linearLayout.getChildAt(0);
             cameraLayout.stopAllActivity();
         }
     }
 
-    private void updateNavDrawerUserInfo()
-    {
+    private void updateNavDrawerUserInfo() {
         AppUser defaultUser = AppData.defaultUser;
-        if(defaultUser != null)
-        {
+        if (defaultUser != null) {
             mUserNameTextView.setText(defaultUser.getFirstName() + " " + defaultUser.getLastName());
             mUserEmailTextView.setText(defaultUser.getEmail());
         }
     }
 
-    private void initNavigationDrawer()
-    {
+    private void initNavigationDrawer() {
         mNavAccountItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_account_layout);
         mNavSettingsItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_settings_layout);
         mNavFeedbackItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_feedback_layout);
@@ -367,11 +318,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 mToolbar,
                 R.string.navigation_drawer_opened,
                 R.string.navigation_drawer_closed
-        )
-        {
+        ) {
             @Override
-            public void onDrawerSlide(View drawerView, float slideOffset)
-            {
+            public void onDrawerSlide(View drawerView, float slideOffset) {
                 // Disables the burger/arrow animation by default
                 super.onDrawerSlide(drawerView, 0);
             }
@@ -392,50 +341,35 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     @Override
-    public void onClick(View view)
-    {
+    public void onClick(View view) {
         //Close the navigation drawer, currently all click listeners are drawer items
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        if(view == mNavAccountItemLayout)
-        {
+        if (view == mNavAccountItemLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
 
             startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
-        }
-        else if(view == mNavSettingsItemLayout)
-        {
+        } else if (view == mNavSettingsItemLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_settings, R.string.label_settings);
 
             startActivity(new Intent(CamerasActivity.this, CameraPrefsActivity.class));
-        }
-        else if(view == mNavFeedbackItemLayout)
-        {
+        } else if (view == mNavFeedbackItemLayout) {
             Intercom.client().displayConversationsList();
-        }
-        else if(view == mNavAboutItemLayout)
-        {
+        } else if (view == mNavAboutItemLayout) {
             Intent aboutIntent = new Intent(CamerasActivity.this, SimpleWebActivity.class);
             aboutIntent.putExtra(Constants.BUNDLE_KEY_URL, getString(R.string.evercam_url));
             startActivity(aboutIntent);
-        }
-        else if(view == mNavScanLayout)
-        {
+        } else if (view == mNavScanLayout) {
             startActivityForResult(new Intent(CamerasActivity.this, ScanActivity.class),
                     Constants.REQUEST_CODE_ADD_CAMERA);
-        }
-        else if(view == mNavExploreLayout)
-        {
+        } else if (view == mNavExploreLayout) {
             startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
-        }
-        else if(view == mNavLogoutLayout)
-        {
+        } else if (view == mNavLogoutLayout) {
             showSignOutDialog();
         }
     }
 
-    private void setUpActionButtons()
-    {
+    private void setUpActionButtons() {
         actionButtonLayout = (RelativeLayout) findViewById(R.id
                 .action_button_layout);
         final FloatingActionsMenu actionMenu = (FloatingActionsMenu) findViewById(R.id.add_action_menu);
@@ -445,49 +379,42 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu
                 .OnFloatingActionsMenuUpdateListener() {
             @Override
-            public void onMenuExpanded()
-            {
-               dimBackgroundAsAnimation(actionButtonLayout);
+            public void onMenuExpanded() {
+                dimBackgroundAsAnimation(actionButtonLayout);
 
                 actionButtonLayout.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(View v) {
                         actionMenu.collapse();
                     }
                 });
             }
 
             @Override
-            public void onMenuCollapsed()
-            {
+            public void onMenuCollapsed() {
                 actionButtonLayout.setBackgroundColor(getResources().getColor(android.R.color.transparent));
                 actionButtonLayout.setOnClickListener(null);
                 actionButtonLayout.setClickable(false);
             }
         });
 
-        manuallyAddButton.setOnClickListener(new OnClickListener()
-        {
+        manuallyAddButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View view)
-            {
+            public void onClick(View view) {
 
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string
                         .label_add_camera_manually);
 
                 startActivityForResult(new Intent(CamerasActivity.this, AddCameraActivity
-                                                .class), Constants.REQUEST_CODE_ADD_CAMERA);
+                        .class), Constants.REQUEST_CODE_ADD_CAMERA);
 
                 actionMenu.collapse();
             }
         });
-        scanButton.setOnClickListener(new OnClickListener()
-        {
+        scanButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
 
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string.label_add_camera_scan);
@@ -500,31 +427,26 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         });
     }
 
-    private void dimBackgroundAsAnimation(final View view)
-    {
+    private void dimBackgroundAsAnimation(final View view) {
         Integer colorFrom = getResources().getColor(android.R.color.transparent);
         Integer colorTo = getResources().getColor(R.color.black_semi_transparent);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
-        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener()
-        {
+        colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
-            public void onAnimationUpdate(ValueAnimator animator)
-            {
-                view.setBackgroundColor((Integer)animator.getAnimatedValue());
+            public void onAnimationUpdate(ValueAnimator animator) {
+                view.setBackgroundColor((Integer) animator.getAnimatedValue());
             }
         });
         colorAnimation.start();
     }
 
-    private void resizeCameras()
-    {
+    private void resizeCameras() {
         int screen_width = readScreenWidth(this);
         camerasPerRow = recalculateCameraPerRow();
 
         io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
                 .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-        for(int i = 0; i < camsLineView.getChildCount(); i++)
-        {
+        for (int i = 0; i < camsLineView.getChildCount(); i++) {
             LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
             CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
 
@@ -541,22 +463,17 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
     }
 
-    private void updateCameraNames()
-    {
-        try
-        {
+    private void updateCameraNames() {
+        try {
             io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
                     .FlowLayout) this.findViewById(R.id.cameras_flow_layout);
-            for(int i = 0; i < camsLineView.getChildCount(); i++)
-            {
+            for (int i = 0; i < camsLineView.getChildCount(); i++) {
                 LinearLayout pview = (LinearLayout) camsLineView.getChildAt(i);
                 CameraLayout cameraLayout = (CameraLayout) pview.getChildAt(0);
 
                 cameraLayout.updateTitleIfDifferent();
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, e.toString());
             EvercamPlayApplication.sendCaughtException(this, e);
         }
@@ -565,8 +482,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     /**
      * Remove all the cameras so that all activities being performed can be stopped
      */
-    public void removeAllCameraViews()
-    {
+    public void removeAllCameraViews() {
         stopAllCameraViews();
 
         io.evercam.androidapp.custom.FlowLayout camsLineView = (io.evercam.androidapp.custom
@@ -583,8 +499,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      *                       instead. If false,
      *                       it will request neither thumbnail nor latest snapshot.
      */
-    public void addAllCameraViews(final boolean reloadImages, final boolean showThumbnails)
-    {
+    public void addAllCameraViews(final boolean reloadImages, final boolean showThumbnails) {
         // Recalculate camera per row
         camerasPerRow = recalculateCameraPerRow();
 
@@ -595,11 +510,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         int index = 0;
 
-        for(final EvercamCamera evercamCamera : AppData.evercamCameraList)
-        {
+        for (final EvercamCamera evercamCamera : AppData.evercamCameraList) {
             //Don't show offline camera
-            if(!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive())
-            {
+            if (!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive()) {
                 continue;
             }
 
@@ -607,7 +520,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
             int indexPlus = index + 1;
 
-            if(reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
+            if (reloadImages) evercamCamera.loadingStatus = ImageLoadingStatus.not_started;
 
             final CameraLayout cameraLayout = new CameraLayout(this, evercamCamera,
                     showThumbnails);
@@ -630,11 +543,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
             index++;
 
-            new Handler().postDelayed(new Runnable()
-            {
+            new Handler().postDelayed(new Runnable() {
                 @Override
-                public void run()
-                {
+                public void run() {
 
                     Rect cameraBounds = new Rect();
                     cameraListLayout.getHitRect(cameraBounds);
@@ -644,56 +555,47 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                     int offlineStartsAt = offlineIconBounds.left;
                     int offlineIconWidth = offlineIconBounds.right - offlineIconBounds.left;
 
-                    if(layoutWidth > offlineStartsAt + offlineIconWidth*2)
-                    {
+                    if (layoutWidth > offlineStartsAt + offlineIconWidth * 2) {
                         cameraLayout.showOfflineIconAsFloat = false;
-                    }
-                    else
-                    {
+                    } else {
                         cameraLayout.showOfflineIconAsFloat = true;
                     }
                 }
             }, 200);
         }
 
-        if(refresh != null) refresh.setActionView(null);
+        if (refresh != null) refresh.setActionView(null);
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         super.onDestroy();
         activity = null;
         removeAllCameraViews();
     }
 
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
         resizeCameras();
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
 
-        if(AppData.defaultUser != null)
-        {
+        if (AppData.defaultUser != null) {
             usernameOnStop = AppData.defaultUser.getUsername();
         }
 
         showOfflineOnStop = PrefsManager.showOfflineCameras(this);
     }
 
-    public static void logOutDefaultUser(Activity activity)
-    {
+    public static void logOutDefaultUser(Activity activity) {
         getMixpanel().identifyUser(UUID.randomUUID().toString());
 
-        if(AppData.defaultUser != null)
-        {
+        if (AppData.defaultUser != null) {
             new EvercamAccount(activity).remove(AppData.defaultUser.getEmail(), null);
         }
 
@@ -704,13 +606,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         activity.startActivity(new Intent(activity, SlideActivity.class));
     }
 
-    private void showSignOutDialog()
-    {
-        CustomedDialog.getConfirmLogoutDialog(this, new DialogInterface.OnClickListener()
-        {
+    private void showSignOutDialog() {
+        CustomedDialog.getConfirmLogoutDialog(this, new DialogInterface.OnClickListener() {
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this,
                         R.string.category_menu, R.string.action_logout, R.string.label_user_logout);
                 logOutDefaultUser(CamerasActivity.this);
@@ -718,16 +617,14 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }).show();
     }
 
-    public static int readScreenWidth(Activity activity)
-    {
+    public static int readScreenWidth(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.x;
     }
 
-    public static int readScreenHeight(Activity activity)
-    {
+    public static int readScreenHeight(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
@@ -745,54 +642,41 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      *
      * @return The recalculated value of camera per row
      */
-    public int recalculateCameraPerRow()
-    {
+    public int recalculateCameraPerRow() {
         int totalCameras = AppData.evercamCameraList.size();
         boolean isInfluencingOtherUser = false;
         ArrayList<AppUser> userList = new EvercamAccount(this).retrieveUserList();
-        if(userList.size() > 1)
-        {
+        if (userList.size() > 1) {
             isInfluencingOtherUser = true;
         }
 
-        if(totalCameras != 0 && totalCameras <= 2)
-        {
-            if(!isInfluencingOtherUser)
-            {
+        if (totalCameras != 0 && totalCameras <= 2) {
+            if (!isInfluencingOtherUser) {
                 PrefsManager.setCameraPerRow(this, 1);
                 return 1;
-            }
-            else
-            {
+            } else {
                 return PrefsManager.getCameraPerRow(this, 2);
             }
-        }
-        else
-        {
+        } else {
             int screenWidth = readScreenWidth(this);
             int maxCamerasPerRow = 3;
             int minCamerasPerRow = 1;
-            if(screenWidth != 0)
-            {
+            if (screenWidth != 0) {
                 maxCamerasPerRow = screenWidth / 350;
             }
 
             int oldCamerasPerRow = PrefsManager.getCameraPerRow(this, 2);
-            if(maxCamerasPerRow < oldCamerasPerRow && maxCamerasPerRow != 0)
-            {
+            if (maxCamerasPerRow < oldCamerasPerRow && maxCamerasPerRow != 0) {
                 PrefsManager.setCameraPerRow(this, maxCamerasPerRow);
                 return maxCamerasPerRow;
-            }
-            else if(maxCamerasPerRow == 0)
-            {
+            } else if (maxCamerasPerRow == 0) {
                 return minCamerasPerRow;
             }
             return oldCamerasPerRow;
         }
     }
 
-    private void initDataCollectionObjects()
-    {
+    private void initDataCollectionObjects() {
         startTime = new Date();
 
         client = KeenHelper.getClient(this);
@@ -801,18 +685,15 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     /**
      * Calculate how long it takes for the user to see the camera list
      */
-    public void calculateLoadingTimeAndSend()
-    {
-        if(startTime != null)
-        {
+    public void calculateLoadingTimeAndSend() {
+        if (startTime != null) {
             float timeDifferenceFloat = Commons.calculateTimeDifferenceFrom(startTime);
             Log.d(TAG, "It takes " + databaseLoadTime + " and " + timeDifferenceFloat + " seconds" +
                     " to load camera list");
             startTime = null;
 
             String username = "";
-            if(AppData.defaultUser != null)
-            {
+            if (AppData.defaultUser != null) {
                 username = AppData.defaultUser.getUsername();
             }
             LoadTimeFeedbackItem feedbackItem = new LoadTimeFeedbackItem(this,
@@ -823,42 +704,31 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
     }
 
-    class CamerasCheckInternetTask extends CheckInternetTask
-    {
+    class CamerasCheckInternetTask extends CheckInternetTask {
         InternetCheckType type;
 
-        public CamerasCheckInternetTask(Context context, InternetCheckType type)
-        {
+        public CamerasCheckInternetTask(Context context, InternetCheckType type) {
             super(context);
             this.type = type;
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
-                if(type == InternetCheckType.START)
-                {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
+                if (type == InternetCheckType.START) {
                     updateNavDrawerUserInfo();
                     startLoadingCameras();
-                }
-                else if(type == InternetCheckType.RESTART)
-                {
-                    if(reloadCameraList)
-                    {
+                } else if (type == InternetCheckType.RESTART) {
+                    if (reloadCameraList) {
                         removeAllCameraViews();
                         startLoadingCameras();
                         reloadCameraList = false;
-                    }
-                    else
-                    {
+                    } else {
                         // Re-calculate camera per row because screen size
                         // could change because of screen rotation.
                         int camsOldValue = camerasPerRow;
                         camerasPerRow = recalculateCameraPerRow();
-                        if(camsOldValue != camerasPerRow)
-                        {
+                        if (camsOldValue != camerasPerRow) {
                             removeAllCameraViews();
                             addAllCameraViews(true, true);
                         }
@@ -868,16 +738,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                         updateCameraNames();
                     }
                 }
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(CamerasActivity.this);
             }
         }
     }
 
-    private void showActionButtons(boolean show)
-    {
+    private void showActionButtons(boolean show) {
         actionButtonLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
@@ -885,38 +752,29 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      * ObservableScrollView callbacks
      */
     @Override
-    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging)
-    {
+    public void onScrollChanged(int scrollY, boolean firstScroll, boolean dragging) {
         //Log.e(TAG, "onScrollChanged: " + scrollY + " " + firstScroll + " " + dragging);
         lastScrollY = scrollY;
     }
 
     @Override
-    public void onDownMotionEvent()
-    {
+    public void onDownMotionEvent() {
 
     }
 
     @Override
-    public void onUpOrCancelMotionEvent(ScrollState scrollState)
-    {
+    public void onUpOrCancelMotionEvent(ScrollState scrollState) {
         //Log.e(TAG, "onUpOrCancelMotionEvent: " + scrollState);
-        if (scrollState == ScrollState.UP)
-        {
+        if (scrollState == ScrollState.UP) {
             //Fix the bug that it's UP if swiping down when the view reaches screen top
-            if(lastScrollY != 0)
-            {
-                if(toolbarIsShown())
-                {
+            if (lastScrollY != 0) {
+                if (toolbarIsShown()) {
                     hideToolbar();
                     showActionButtons(false);
                 }
             }
-        }
-        else if (scrollState == ScrollState.DOWN)
-        {
-            if (toolbarIsHidden())
-            {
+        } else if (scrollState == ScrollState.DOWN) {
+            if (toolbarIsHidden()) {
                 showToolbar();
                 showActionButtons(true);
             }

@@ -32,8 +32,7 @@ import io.fabric.sdk.android.Fabric;
  * Main starting activity. 
  * Checks whether user should login first or load the cameras straight away
  * */
-public class MainActivity extends ParentAppCompatActivity
-{
+public class MainActivity extends ParentAppCompatActivity {
     private static final String TAG = "MainActivity";
 
     private final String GCM_SENDER_ID = "761768764442";
@@ -46,24 +45,18 @@ public class MainActivity extends ParentAppCompatActivity
     private static long retryTime = 10000;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-        if (isPlayServicesAvailable())
-        {
+        if (isPlayServicesAvailable()) {
             gcm = GoogleCloudMessaging.getInstance(this);
             registrationId = PrefsManager.getGcmRegistrationId(this);
-            if (registrationId.isEmpty())
-            {
+            if (registrationId.isEmpty()) {
                 registerInBackground();
-            }
-            else
-            {
+            } else {
                 sendRegistrationIdToIntercomBackend(registrationId);
             }
-        } else
-        {
+        } else {
             Log.i(TAG, "Google Play Services is not available");
         }
 
@@ -75,25 +68,19 @@ public class MainActivity extends ParentAppCompatActivity
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         super.onRestart();
         launch();
     }
 
-    private void launch()
-    {
+    private void launch() {
         int versionCode = new DataCollector(this).getAppVersionCode();
         boolean isReleaseNotesShown = PrefsManager.isReleaseNotesShown(this, versionCode);
 
-        if(versionCode > 0)
-        {
-            if(isReleaseNotesShown)
-            {
+        if (versionCode > 0) {
+            if (isReleaseNotesShown) {
                 startApplication();
-            }
-            else
-            {
+            } else {
                 Intent act = new Intent(MainActivity.this, ReleaseNotesActivity.class);
                 startActivity(act);
                 this.finish();
@@ -101,16 +88,13 @@ public class MainActivity extends ParentAppCompatActivity
         }
     }
 
-    private void startApplication()
-    {
+    private void startApplication() {
         new MainCheckInternetTask(MainActivity.this).executeOnExecutor(AsyncTask
                 .THREAD_POOL_EXECUTOR);
     }
 
-    private void startCamerasActivity()
-    {
-        if(CamerasActivity.activity != null)
-        {
+    private void startCamerasActivity() {
+        if (CamerasActivity.activity != null) {
             CamerasActivity.activity.finish();
         }
 
@@ -119,11 +103,9 @@ public class MainActivity extends ParentAppCompatActivity
         MainActivity.this.finish();
     }
 
-    public static boolean isUserLogged(Context context)
-    {
+    public static boolean isUserLogged(Context context) {
         AppData.defaultUser = new EvercamAccount(context).getDefaultUser();
-        if(AppData.defaultUser != null)
-        {
+        if (AppData.defaultUser != null) {
             AppData.evercamCameraList = new DbCamera(context).getCamerasByOwner(AppData
                     .defaultUser.getUsername(), 500);
             API.setUserKeyPair(AppData.defaultUser.getApiKey(), AppData.defaultUser.getApiId());
@@ -134,83 +116,63 @@ public class MainActivity extends ParentAppCompatActivity
 
     /**
      * Check the API key and ID is valid or not
-     *
+     * <p/>
      * In case the key and ID has already changed by Evercam system
      */
-    public static boolean isApiKeyExpired(String username, String apiKey, String apiId)
-    {
-        try
-        {
+    public static boolean isApiKeyExpired(String username, String apiKey, String apiId) {
+        try {
             API.setUserKeyPair(apiKey, apiId);
 
             new User(username);
-        }
-        catch(EvercamException e)
-        {
-            if(e.getMessage().equals(Constants.API_MESSAGE_UNAUTHORIZED) ||
-                    e.getMessage().equals(Constants.API_MESSAGE_INVALID_API_KEY))
-            {
+        } catch (EvercamException e) {
+            if (e.getMessage().equals(Constants.API_MESSAGE_UNAUTHORIZED) ||
+                    e.getMessage().equals(Constants.API_MESSAGE_INVALID_API_KEY)) {
                 return true;
             }
         }
         return false;
     }
 
-    class MainCheckInternetTask extends CheckInternetTask
-    {
+    class MainCheckInternetTask extends CheckInternetTask {
 
-        public MainCheckInternetTask(Context context)
-        {
+        public MainCheckInternetTask(Context context) {
             super(context);
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
-                if(isUserLogged(MainActivity.this))
-                {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
+                if (isUserLogged(MainActivity.this)) {
                     AppUser defaultUser = AppData.defaultUser;
                     new CheckKeyExpirationTaskMain(defaultUser.getUsername(),
                             defaultUser.getApiKey(), defaultUser.getApiId())
-                    .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
-                else
-                {
+                            .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                } else {
                     finish();
                     Intent slideIntent = new Intent(MainActivity.this, SlideActivity.class);
                     startActivity(slideIntent);
                 }
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(MainActivity.this);
             }
         }
     }
 
-    class CheckKeyExpirationTaskMain extends CheckKeyExpirationTask
-    {
-        public CheckKeyExpirationTaskMain(String username, String apiKey, String apiId)
-        {
+    class CheckKeyExpirationTaskMain extends CheckKeyExpirationTask {
+        public CheckKeyExpirationTaskMain(String username, String apiKey, String apiId) {
             super(username, apiKey, apiId);
         }
 
         @Override
-        protected void onPostExecute(Boolean isExpired)
-        {
+        protected void onPostExecute(Boolean isExpired) {
             //If API key and ID is no longer valid, show the login page
-            if(isExpired)
-            {
+            if (isExpired) {
                 new EvercamAccount(MainActivity.this).remove(AppData.defaultUser.getEmail(), null);
 
                 finish();
                 Intent slideIntent = new Intent(MainActivity.this, SlideActivity.class);
                 startActivity(slideIntent);
-            }
-            else
-            {
+            } else {
                 registerUserWithIntercom(AppData.defaultUser);
                 finish();
                 startCamerasActivity();
@@ -218,18 +180,13 @@ public class MainActivity extends ParentAppCompatActivity
         }
     }
 
-    private void registerInBackground()
-    {
-        new AsyncTask<Void, Void, Void>()
-        {
+    private void registerInBackground() {
+        new AsyncTask<Void, Void, Void>() {
             @Override
-            protected Void doInBackground(Void... params)
-            {
+            protected Void doInBackground(Void... params) {
                 String msg = "";
-                try
-                {
-                    if (gcm == null)
-                    {
+                try {
+                    if (gcm == null) {
                         gcm = GoogleCloudMessaging.getInstance(getApplicationContext());
                     }
                     registrationId = gcm.register(GCM_SENDER_ID);
@@ -237,26 +194,21 @@ public class MainActivity extends ParentAppCompatActivity
                     sendRegistrationIdToIntercomBackend(registrationId);
                     PrefsManager.storeGcmRegistrationId(getApplicationContext(), registrationId);
                     Log.d("GCM_SUCCESS", "Current Device's Registration ID is: " + msg);
-                }
-                catch (IOException ex)
-                {
+                } catch (IOException ex) {
                     Log.d("GCM_ISSUE", "Error :" + ex.getMessage());
                     //retry the registration after delay
                     runOnUiThread(new Runnable() {
                         @Override
-                        public void run()
-                        {
-                            new Handler().postDelayed(new Runnable()
-                            {
-                                @Override public void run()
-                                {
+                        public void run() {
+                            new Handler().postDelayed(new Runnable() {
+                                @Override
+                                public void run() {
                                     registerInBackground();
                                 }
                             }, retryTime);
                             //increase the time of wait period
-                            if (retryTime < MAX_RETRY)
-                            {
-                                retryTime *=2;
+                            if (retryTime < MAX_RETRY) {
+                                retryTime *= 2;
                             }
                         }
                     });

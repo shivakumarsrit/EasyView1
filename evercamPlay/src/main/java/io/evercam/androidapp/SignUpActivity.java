@@ -8,7 +8,6 @@ import android.os.Bundle;
 import android.text.TextUtils;
 import android.view.View;
 import android.view.View.OnClickListener;
-import android.view.inputmethod.InputMethodManager;
 import android.widget.Button;
 import android.widget.EditText;
 
@@ -31,8 +30,7 @@ import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 
-public class SignUpActivity extends ParentAppCompatActivity
-{
+public class SignUpActivity extends ParentAppCompatActivity {
     private final String TAG = "SignUpActivity";
     // Auto filled profiles
     private String filledFirstname = "";
@@ -52,8 +50,7 @@ public class SignUpActivity extends ParentAppCompatActivity
     private View focusView = null;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_sign_up);
@@ -67,35 +64,26 @@ public class SignUpActivity extends ParentAppCompatActivity
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
-            grantResults)
-    {
-        switch(requestCode)
-        {
+            grantResults) {
+        switch (requestCode) {
             case Permission.REQUEST_CODE_CONTACTS:
 
                 boolean contactsAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
-                if(contactsAccepted)
-                {
-                   checkContactPermission();
+                if (contactsAccepted) {
+                    checkContactPermission();
                 }
                 break;
         }
     }
 
-    private void checkContactPermission()
-    {
-        if(Permission.isGranted(this, Permission.CONTACTS))
-        {
+    private void checkContactPermission() {
+        if (Permission.isGranted(this, Permission.CONTACTS)) {
             readFromAccount();
-        }
-        else
-        {
-            CustomedDialog.getSingleButtonDialog(this, new DialogInterface.OnClickListener()
-            {
+        } else {
+            CustomedDialog.getSingleButtonDialog(this, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
+                public void onClick(DialogInterface dialog, int which) {
                     Permission.request(SignUpActivity.this, new String[]{Permission.CONTACTS},
                             Permission.REQUEST_CODE_CONTACTS);
                 }
@@ -103,8 +91,7 @@ public class SignUpActivity extends ParentAppCompatActivity
         }
     }
 
-    private void initialPage()
-    {
+    private void initialPage() {
         signUpFormView = findViewById(R.id.signup_form);
         signUpStatusView = findViewById(R.id.signup_status);
         firstnameEdit = (EditText) findViewById(R.id.forename_edit);
@@ -118,19 +105,16 @@ public class SignUpActivity extends ParentAppCompatActivity
 
         fillDefaultProfile();
 
-        signupBtn.setOnClickListener(new OnClickListener()
-        {
+        signupBtn.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 new SignUpCheckInternetTask(SignUpActivity.this).executeOnExecutor(AsyncTask
                         .THREAD_POOL_EXECUTOR);
             }
         });
     }
 
-    private UserDetail checkDetails()
-    {
+    private UserDetail checkDetails() {
         UserDetail user = new UserDetail();
         String firstname = firstnameEdit.getText().toString();
         String lastname = lastnameEdit.getText().toString();
@@ -139,127 +123,93 @@ public class SignUpActivity extends ParentAppCompatActivity
         String password = passwordEdit.getText().toString();
         String repassword = repasswordEdit.getText().toString();
 
-        if(TextUtils.isEmpty(firstname))
-        {
+        if (TextUtils.isEmpty(firstname)) {
             CustomToast.showInCenter(this, R.string.error_firstname_required);
             focusView = firstnameEdit;
             return null;
-        }
-        else
-        {
+        } else {
             user.setFirstname(firstname);
         }
 
-        if(TextUtils.isEmpty(lastname))
-        {
+        if (TextUtils.isEmpty(lastname)) {
             CustomToast.showInCenter(this, R.string.error_lastname_required);
             focusView = lastnameEdit;
             return null;
-        }
-        else
-        {
+        } else {
             user.setLastname(lastname);
         }
 
-        if(TextUtils.isEmpty(username))
-        {
+        if (TextUtils.isEmpty(username)) {
             CustomToast.showInCenter(this, R.string.error_username_required);
             focusView = usernameEdit;
             return null;
-        }
-        else if(username.length() < 3)
-        {
+        } else if (username.length() < 3) {
             CustomToast.showInCenter(this, R.string.username_too_short);
             focusView = usernameEdit;
             return null;
-        }
-        else if(username.contains(" "))
-        {
+        } else if (username.contains(" ")) {
             CustomToast.showInCenter(this, R.string.error_invalid_username);
             focusView = usernameEdit;
             return null;
-        }
-        else
-        {
+        } else {
             user.setUsername(username);
         }
 
-        if(TextUtils.isEmpty(email))
-        {
+        if (TextUtils.isEmpty(email)) {
             CustomToast.showInCenter(this, R.string.error_email_required);
             focusView = emailEdit;
             return null;
-        }
-        else if(!email.contains("@"))
-        {
+        } else if (!email.contains("@")) {
             CustomToast.showInCenter(this, R.string.invalidEmail);
             focusView = emailEdit;
             return null;
-        }
-        else
-        {
+        } else {
             user.setEmail(email);
         }
 
-        if(TextUtils.isEmpty(password))
-        {
+        if (TextUtils.isEmpty(password)) {
             CustomToast.showInCenter(this, R.string.error_password_required);
             focusView = passwordEdit;
             return null;
         }
 
-        if(TextUtils.isEmpty(repassword))
-        {
+        if (TextUtils.isEmpty(repassword)) {
             CustomToast.showInCenter(this, R.string.error_confirmpassword_required);
             focusView = repasswordEdit;
             return null;
-        }
-        else if(!password.equals(repassword))
-        {
+        } else if (!password.equals(repassword)) {
             CustomToast.showInCenter(this, R.string.passwordNotMatch);
             return null;
-        }
-        else
-        {
+        } else {
             user.setPassword(password);
         }
 
         //Append user country if available, but the country field will not be showing in sign up form
         String countryCode = DataCollector.getCountryCode(this);
-        if(countryCode != null && !countryCode.isEmpty())
-        {
+        if (countryCode != null && !countryCode.isEmpty()) {
             user.setCountrycode(countryCode);
         }
         return user;
     }
 
-    private void readFromAccount()
-    {
-        try
-        {
+    private void readFromAccount() {
+        try {
             UserProfile profile = AccountUtils.getUserProfile(this);
-            if(profile.primaryEmail() != null)
-            {
+            if (profile.primaryEmail() != null) {
                 filledEmail = profile.primaryEmail();
-            }
-            else if(profile.possibleEmails().size() > 0)
-            {
+            } else if (profile.possibleEmails().size() > 0) {
                 filledEmail = profile.possibleEmails().get(0);
             }
 
-            if(profile.possibleNames().size() > 0)
-            {
+            if (profile.possibleNames().size() > 0) {
                 String name = profile.possibleNames().get(0);
                 String[] nameArray = name.split("\\s+");
-                if(nameArray.length >= 2)
-                {
+                if (nameArray.length >= 2) {
                     filledFirstname = nameArray[0];
                     filledLastname = nameArray[1];
                 }
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             // If exceptions happen here, will not influence app functionality.
             // Just catch it to avoid crashing.
             e.printStackTrace();
@@ -268,55 +218,43 @@ public class SignUpActivity extends ParentAppCompatActivity
         fillDefaultProfile();
     }
 
-    private void fillDefaultProfile()
-    {
+    private void fillDefaultProfile() {
         firstnameEdit.setText(filledFirstname);
         lastnameEdit.setText(filledLastname);
         emailEdit.setText(filledEmail);
     }
 
-    private void showProgress(boolean show)
-    {
+    private void showProgress(boolean show) {
         signUpStatusView.setVisibility(show ? View.VISIBLE : View.GONE);
         signUpFormView.setVisibility(show ? View.GONE : View.VISIBLE);
     }
 
-    private void attemptSignUp()
-    {
+    private void attemptSignUp() {
         UserDetail userDetail = checkDetails();
-        if(userDetail != null)
-        {
-            if(createUserTask != null)
-            {
+        if (userDetail != null) {
+            if (createUserTask != null) {
                 createUserTask = null;
             }
             createUserTask = new CreateUserTask(userDetail);
             createUserTask.execute();
-        }
-        else
-        {
-            if(focusView != null)
-            {
+        } else {
+            if (focusView != null) {
                 focusView.requestFocus();
             }
         }
     }
 
-    public class CreateUserTask extends AsyncTask<Void, Void, String>
-    {
+    public class CreateUserTask extends AsyncTask<Void, Void, String> {
         private UserDetail userDetail;
         private AppUser newUser = null;
 
-        public CreateUserTask(UserDetail userDetail)
-        {
+        public CreateUserTask(UserDetail userDetail) {
             this.userDetail = userDetail;
         }
 
         @Override
-        protected void onPostExecute(String message)
-        {
-            if(message == null)
-            {
+        protected void onPostExecute(String message) {
+            if (message == null) {
                 EvercamPlayApplication.sendEventAnalytics(SignUpActivity.this,
                         R.string.category_sign_up, R.string.action_signup_success,
                         R.string.label_signup_successful);
@@ -337,26 +275,21 @@ public class SignUpActivity extends ParentAppCompatActivity
                 showProgress(false);
                 setResult(Constants.RESULT_TRUE);
                 finish();
-            }
-            else
-            {
+            } else {
                 showProgress(false);
                 CustomToast.showInCenter(SignUpActivity.this, message);
             }
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             hideSoftKeyboard();
             showProgress(true);
         }
 
         @Override
-        protected String doInBackground(Void... args)
-        {
-            try
-            {
+        protected String doInBackground(Void... args) {
+            try {
                 User.create(userDetail);
                 ApiKeyPair userKeyPair = API.requestUserKeyPairFromEvercam(userDetail.getUsername
                         (), userDetail.getPassword());
@@ -369,30 +302,22 @@ public class SignUpActivity extends ParentAppCompatActivity
                 newUser.setApiKeyPair(userApiKey, userApiId);
 
                 return null;
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 return e.getMessage();
             }
         }
     }
 
-    class SignUpCheckInternetTask extends CheckInternetTask
-    {
-        public SignUpCheckInternetTask(Context context)
-        {
+    class SignUpCheckInternetTask extends CheckInternetTask {
+        public SignUpCheckInternetTask(Context context) {
             super(context);
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
                 attemptSignUp();
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(SignUpActivity.this);
             }
         }

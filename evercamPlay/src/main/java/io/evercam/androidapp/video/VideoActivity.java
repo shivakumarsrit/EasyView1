@@ -91,8 +91,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
 
-public class VideoActivity extends ParentAppCompatActivity implements SurfaceHolder.Callback
-{
+public class VideoActivity extends ParentAppCompatActivity implements SurfaceHolder.Callback {
     public static EvercamCamera evercamCamera;
 
     private final static String TAG = "VideoActivity";
@@ -182,31 +181,38 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private long native_app_data;
 
     private native void nativeRequestSample(String format); // supported values are png and jpeg
+
     private native void nativeSetUri(String uri, int connectionTimeout);
+
     private native void nativeInit();     // Initialize native code, build pipeline, etc
+
     private native void nativeFinalize(); // Destroy pipeline and shutdown native code
+
     private native void nativePlay();     // Set pipeline to PLAYING
+
     private native void nativePause();    // Set pipeline to PAUSED
+
     private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
+
     private native void nativeSurfaceInit(Object surface);
+
     private native void nativeSurfaceFinalize();
+
     private native void nativeExpose();
+
     private long native_custom_data;      // Native code will use this to keep private data
 
     private final int TCP_TIMEOUT = 10 * 1000000; // 10 seconds in micro seconds
 
-    static
-    {
+    static {
         System.loadLibrary("gstreamer_android");
         System.loadLibrary("evercam");
         nativeClassInit();
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
-        try
-        {
+    public void onCreate(Bundle savedInstanceState) {
+        try {
             super.onCreate(savedInstanceState);
 
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
@@ -215,8 +221,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
             readShortcutCameraId();
 
-            if(!liveViewCameraId.isEmpty())
-            {
+            if (!liveViewCameraId.isEmpty()) {
                 startingCameraID = liveViewCameraId;
                 liveViewCameraId = "";
             }
@@ -228,11 +233,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             /**
              * Init Gstreamer
              */
-            try
-            {
+            try {
                 GStreamer.init(this);
-            } catch (Exception e)
-            {
+            } catch (Exception e) {
                 Log.e(TAG, e.getLocalizedMessage());
                 EvercamPlayApplication.sendCaughtException(this, e);
                 finish();
@@ -254,69 +257,51 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
             startPlay();
 
-            if(showCameraCreated)
-            {
+            if (showCameraCreated) {
                 CustomSnackbar.showLong(this, R.string.create_success);
                 showCameraCreated = false;
             }
-        }
-        catch(OutOfMemoryError e)
-        {
+        } catch (OutOfMemoryError e) {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_PATCH_CAMERA
-                || requestCode == Constants.REQUEST_CODE_VIEW_CAMERA)
-        {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_PATCH_CAMERA
+                || requestCode == Constants.REQUEST_CODE_VIEW_CAMERA) {
             // Restart video playing no matter the patch is success or not.
-            if(resultCode == Constants.RESULT_TRUE)
-            {
+            if (resultCode == Constants.RESULT_TRUE) {
                 new Handler().postDelayed(new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         CustomSnackbar.showLong(VideoActivity.this, R.string.patch_success);
                     }
                 }, 1000);
 
                 startPlay();
-            }
-            else if(resultCode == Constants.RESULT_FALSE)
-            {
+            } else if (resultCode == Constants.RESULT_FALSE) {
                 startPlay();
             }
             /* Returned from view camera and the camera has been deleted */
-            else if(resultCode == Constants.RESULT_DELETED)
-            {
+            else if (resultCode == Constants.RESULT_DELETED) {
                 setResult(Constants.RESULT_TRUE);
                 finish();
             }
-        }
-        else
+        } else
         // If back from feedback or recording or sharing
         {
 
-            if(resultCode == Constants.RESULT_TRANSFERRED)
-            {
+            if (resultCode == Constants.RESULT_TRANSFERRED) {
                 setResult(Constants.RESULT_TRANSFERRED);
                 finish();
-            }
-            else if(resultCode == Constants.RESULT_ACCESS_REMOVED)
-            {
+            } else if (resultCode == Constants.RESULT_ACCESS_REMOVED) {
                 setResult(Constants.RESULT_ACCESS_REMOVED);
                 finish();
-            }
-            else if(resultCode == Constants.RESULT_NO_ACCESS)
-            {
+            } else if (resultCode == Constants.RESULT_NO_ACCESS) {
                 setResult(Constants.RESULT_NO_ACCESS);
                 finish();
-            }
-            else
-            {
+            } else {
                 startPlay();
             }
         }
@@ -324,25 +309,19 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     @Override
     public void onRequestPermissionsResult(int requestCode, String[] permissions, int[]
-            grantResults)
-    {
-        switch(requestCode)
-        {
+            grantResults) {
+        switch (requestCode) {
             case Permission.REQUEST_CODE_STORAGE:
 
                 boolean storageAccepted = grantResults[0] == PackageManager.PERMISSION_GRANTED;
 
                 /* If storage permission is granted, continue saving the requested snapshot */
-                if(storageAccepted)
-                {
-                    if(mBitmap != null)
-                    {
+                if (storageAccepted) {
+                    if (mBitmap != null) {
                         new Thread(new CaptureSnapshotRunnable(VideoActivity
                                 .this, evercamCamera.getCameraId(), FileType.JPG, mBitmap)).start();
                     }
-                }
-                else
-                {
+                } else {
                     CustomToast.showInCenter(this, R.string.msg_permission_denied);
                 }
                 break;
@@ -350,10 +329,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public void onResume()
-    {
-        try
-        {
+    public void onResume() {
+        try {
             super.onResume();
             this.paused = false;
             editStarted = false;
@@ -362,8 +339,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             sharingStarted = false;
             snapshotStarted = false;
 
-            if(optionsActivityStarted)
-            {
+            if (optionsActivityStarted) {
                 optionsActivityStarted = false;
 
                 showProgressView();
@@ -375,32 +351,23 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
                 latestStartImageTime = SystemClock.uptimeMillis();
 
-                if(browseJpgTask == null)
-                {
+                if (browseJpgTask == null) {
                     // ignore if image thread is null
-                }
-                else if(browseJpgTask.getStatus() != AsyncTask.Status.RUNNING)
-                {
+                } else if (browseJpgTask.getStatus() != AsyncTask.Status.RUNNING) {
                     browseJpgTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                }
-                else if(browseJpgTask.getStatus() == AsyncTask.Status.FINISHED)
-                {
+                } else if (browseJpgTask.getStatus() == AsyncTask.Status.FINISHED) {
                     createBrowseJpgTask();
                 }
             }
-        }
-        catch(OutOfMemoryError e)
-        {
+        } catch (OutOfMemoryError e) {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
     }
 
     // When activity gets focused again
     @Override
-    public void onRestart()
-    {
-        try
-        {
+    public void onRestart() {
+        try {
             super.onRestart();
             paused = false;
             end = false;
@@ -410,105 +377,83 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             sharingStarted = false;
             snapshotStarted = false;
 
-            if(optionsActivityStarted)
-            {
+            if (optionsActivityStarted) {
                 setCameraForPlaying(evercamCamera);
 
                 createPlayer(evercamCamera);
             }
-        }
-        catch(OutOfMemoryError e)
-        {
+        } catch (OutOfMemoryError e) {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
     }
 
     @Override
-    public void onPause()
-    {
+    public void onPause() {
         super.onPause();
 
-        if(!optionsActivityStarted)
-        {
+        if (!optionsActivityStarted) {
             this.paused = true;
         }
     }
 
     @Override
-    public void onStop()
-    {
+    public void onStop() {
         super.onStop();
         releasePlayer();
         end = true;
-        if(!optionsActivityStarted)
-        {
-            if(browseJpgTask != null)
-            {
+        if (!optionsActivityStarted) {
+            if (browseJpgTask != null) {
                 this.paused = true;
             }
             // Do not finish if user get into edit camera screen,
             // feedback screen recording, sharing, or view snapshot
-            if(!editStarted && !feedbackStarted && !recordingsStarted && !sharingStarted && !snapshotStarted)
-            {
+            if (!editStarted && !feedbackStarted && !recordingsStarted && !sharingStarted && !snapshotStarted) {
                 this.finish();
             }
         }
 
-        if(timeCounter != null)
-        {
+        if (timeCounter != null) {
             timeCounter.stop();
             timeCounter = null;
         }
     }
 
     @Override
-    protected void onDestroy()
-    {
+    protected void onDestroy() {
         nativeFinalize();
         super.onDestroy();
     }
 
     @Override
-    public boolean dispatchTouchEvent(MotionEvent event)
-    {
+    public boolean dispatchTouchEvent(MotionEvent event) {
         // TODO: Reset the timer to keep screen awake
         launchSleepTimer();
         return super.dispatchTouchEvent(event);
     }
 
-    private void checkIsShortcutCameraExists()
-    {
+    private void checkIsShortcutCameraExists() {
         //It will refill global camera list in isUserLogged()
-        if(MainActivity.isUserLogged(this))
-        {
+        if (MainActivity.isUserLogged(this)) {
             username = AppData.defaultUser.getUsername();
-            if(AppData.evercamCameraList.size() > 0)
-            {
+            if (AppData.evercamCameraList.size() > 0) {
                 boolean cameraIsAccessible = false;
-                for(EvercamCamera camera : AppData.evercamCameraList)
-                {
-                    if(camera.getCameraId().equals(startingCameraID))
-                    {
+                for (EvercamCamera camera : AppData.evercamCameraList) {
+                    if (camera.getCameraId().equals(startingCameraID)) {
                         cameraIsAccessible = true;
                         break;
                     }
                 }
 
-                if(!cameraIsAccessible)
-                {
+                if (!cameraIsAccessible) {
                     EvercamAccount evercamAccount = new EvercamAccount(this);
                     AppUser matchedUser = null;
 
                     ArrayList<AppUser> userList = evercamAccount.retrieveUserList();
-                    for(AppUser appUser : userList)
-                    {
-                        if(!appUser.getUsername().equals(username))
-                        {
+                    for (AppUser appUser : userList) {
+                        if (!appUser.getUsername().equals(username)) {
                             ArrayList<EvercamCamera> cameraList = new DbCamera(this).getCamerasByOwner(appUser.getUsername(), 500);
-                            for(EvercamCamera camera : cameraList)
-                            {
-                                if(camera.getCameraId().equals(startingCameraID))
-                                {
+                            for (EvercamCamera camera : cameraList) {
+                                if (camera.getCameraId().equals(startingCameraID)) {
                                     matchedUser = appUser;
                                     break;
                                 }
@@ -516,103 +461,81 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                         }
                     }
 
-                    if(matchedUser != null)
-                    {
+                    if (matchedUser != null) {
                         CustomToast.showInCenterLong(this, getString(R.string.msg_switch_account)
                                 + " - " + matchedUser.getUsername());
                         evercamAccount.updateDefaultUser(matchedUser.getEmail());
                         checkIsShortcutCameraExists();
-                    }
-                    else
-                    {
+                    } else {
                         CustomToast.showInCenterLong(this, getString(R
-                                                                .string.msg_can_not_access_camera) + " - " + username);
+                                .string.msg_can_not_access_camera) + " - " + username);
                         new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
                                 ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_FAILED)
                                 .sendToKeenIo(client);
                         navigateBackToCameraList();
                     }
-                }
-                else
-                {
+                } else {
                     new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
                             ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS)
-                            .sendToKeenIo(client);;
+                            .sendToKeenIo(client);
+                    ;
                 }
             }
-        }
-        else
-        {
+        } else {
             //If no account signed in
             startActivity(new Intent(this, MainActivity.class));
             finish();
         }
     }
 
-    private void launchSleepTimer()
-    {
-        try
-        {
-            if(timerThread != null)
-            {
+    private void launchSleepTimer() {
+        try {
+            if (timerThread != null) {
                 timerThread = null;
                 timerHandler.removeCallbacks(timerRunnable);
             }
 
             final int sleepTime = getSleepTime();
-            if(sleepTime != 0)
-            {
-                timerRunnable = new Runnable()
-                {
+            if (sleepTime != 0) {
+                timerRunnable = new Runnable() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         VideoActivity.this.getWindow().clearFlags(WindowManager.LayoutParams
                                 .FLAG_KEEP_SCREEN_ON);
                     }
                 };
-                timerThread = new Thread()
-                {
+                timerThread = new Thread() {
                     @Override
-                    public void run()
-                    {
+                    public void run() {
                         timerHandler.postDelayed(timerRunnable, sleepTime);
                     }
                 };
                 timerThread.start();
             }
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             // Catch this exception and send by Google Analytics
             // This should not influence user using the app
             EvercamPlayApplication.sendCaughtException(this, e);
         }
     }
 
-    private void initAnalyticsObjects()
-    {
+    private void initAnalyticsObjects() {
         client = KeenHelper.getClient(this);
     }
 
-    private int getSleepTime()
-    {
+    private int getSleepTime() {
         final String VALUE_NEVER = "0";
 
         String valueString = PrefsManager.getSleepTimeValue(this);
-        if(!valueString.equals(VALUE_NEVER))
-        {
+        if (!valueString.equals(VALUE_NEVER)) {
             return Integer.valueOf(valueString) * 1000;
-        }
-        else
-        {
+        } else {
             return 0;
         }
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_video, menu);
 
@@ -620,22 +543,18 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public boolean onPrepareOptionsMenu(Menu menu)
-    {
+    public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem shortcutItem = menu.findItem(R.id.video_menu_create_shortcut);
         MenuItem sharingItem = menu.findItem(R.id.video_menu_share);
 
-        if(evercamCamera != null)
-        {
+        if (evercamCamera != null) {
             //Only show the shortcut menu if camera is online
             shortcutItem.setVisible(!evercamCamera.isOffline());
 
             //Only show the sharing menu if the user has full rights
             Right right = new Right(evercamCamera.getRights());
             sharingItem.setVisible(right.isFullRight());
-        }
-        else
-        {
+        } else {
             Log.e(TAG, "EvercamCamera is null");
         }
 
@@ -643,23 +562,16 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         int itemId = item.getItemId();
-        try
-        {
-            if(itemId == R.id.video_menu_camera_settings)
-            {
+        try {
+            if (itemId == R.id.video_menu_camera_settings) {
                 editStarted = true;
                 Intent viewIntent = new Intent(VideoActivity.this, ViewCameraActivity.class);
                 startActivityForResult(viewIntent, Constants.REQUEST_CODE_VIEW_CAMERA);
-            }
-            else if(itemId == android.R.id.home)
-            {
+            } else if (itemId == android.R.id.home) {
                 navigateBackToCameraList();
-            }
-            else if(itemId == R.id.video_menu_share)
-            {
+            } else if (itemId == R.id.video_menu_share) {
                 sharingStarted = true;
                 Intent shareIntent = new Intent(VideoActivity.this, SharingActivity.class);
                 startActivityForResult(shareIntent, Constants.REQUEST_CODE_SHARE);
@@ -680,14 +592,10 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 //                }
 //                startActivityForResult(feedbackIntent, Constants.REQUEST_CODE_FEEDBACK);
 //            }
-            else if(itemId == R.id.video_menu_view_snapshots)
-            {
+            else if (itemId == R.id.video_menu_view_snapshots) {
                 SnapshotManager.showSnapshotsForCamera(this, evercamCamera.getCameraId());
-            }
-            else if(itemId == R.id.video_menu_create_shortcut)
-            {
-                if(evercamCamera != null)
-                {
+            } else if (itemId == R.id.video_menu_create_shortcut) {
+                if (evercamCamera != null) {
                     Bitmap bitmap = getBitmapFromImageView(imageView);
                     HomeShortcut.create(getApplicationContext(), evercamCamera, bitmap);
                     CustomSnackbar.showShort(this, R.string.msg_shortcut_created);
@@ -697,11 +605,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     getMixpanel().sendEvent(R.string.mixpanel_event_create_shortcut, new
                             JSONObject().put("Camera ID", evercamCamera.getCameraId()));
                 }
-            }
-            else if(itemId == R.id.video_menu_view_recordings)
-            {
-                if(evercamCamera != null)
-                {
+            } else if (itemId == R.id.video_menu_view_recordings) {
+                if (evercamCamera != null) {
                     recordingsStarted = true;
                     Intent recordingIntent = new Intent(this, RecordingWebActivity.class);
                     recordingIntent.putExtra(Constants.BUNDLE_KEY_CAMERA_ID, evercamCamera.getCameraId());
@@ -709,30 +614,22 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     startActivityForResult(recordingIntent, Constants.REQUEST_CODE_RECORDING);
                 }
             }
-        }
-        catch(OutOfMemoryError e)
-        {
+        } catch (OutOfMemoryError e) {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
         }
         return true;
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         navigateBackToCameraList();
     }
 
-    private void navigateBackToCameraList()
-    {
-        if(CamerasActivity.activity == null)
-        {
-            if (android.os.Build.VERSION.SDK_INT >= 16)
-            {
+    private void navigateBackToCameraList() {
+        if (CamerasActivity.activity == null) {
+            if (android.os.Build.VERSION.SDK_INT >= 16) {
                 Intent upIntent = NavUtils.getParentActivityIntent(this);
                 TaskStackBuilder.create(this)
                         .addNextIntentWithParentStack(upIntent)
@@ -743,23 +640,17 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         finish();
     }
 
-    private void readShortcutCameraId()
-    {
+    private void readShortcutCameraId() {
         Intent liveViewIntent = this.getIntent();
-        if(liveViewIntent != null && liveViewIntent.getExtras() != null)
-        {
+        if (liveViewIntent != null && liveViewIntent.getExtras() != null) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut,
                     R.string.action_shortcut_use, R.string.label_shortcut_use);
 
-            try
-            {
-                if(evercamCamera != null)
-                {
+            try {
+                if (evercamCamera != null) {
                     getMixpanel().sendEvent(R.string.mixpanel_event_use_shortcut, new JSONObject().put("Camera ID", evercamCamera.getCameraId()));
                 }
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
             }
 
@@ -767,8 +658,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         }
     }
 
-    private void startPlay()
-    {
+    private void startPlay() {
         paused = false;
         end = false;
 
@@ -777,8 +667,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         loadCamerasToActionBar();
     }
 
-    public static boolean startPlayingVideoForCamera(Activity activity, String cameraId)
-    {
+    public static boolean startPlayingVideoForCamera(Activity activity, String cameraId) {
         startingCameraID = cameraId;
         Intent intent = new Intent(activity, VideoActivity.class);
 
@@ -787,8 +676,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         return false;
     }
 
-    private void setCameraForPlaying(EvercamCamera evercamCamera)
-    {
+    private void setCameraForPlaying(EvercamCamera evercamCamera) {
         VideoActivity.evercamCamera = evercamCamera;
 
         showImagesVideo = false;
@@ -815,8 +703,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         loadImageFromCache(VideoActivity.evercamCamera);
 
-        if(!evercamCamera.isOffline())
-        {
+        if (!evercamCamera.isOffline()) {
             startDownloading = true;
         }
 
@@ -825,24 +712,18 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     // Loads image from cache. First image gets loaded correctly and hence we
     // can start making requests concurrently as well
-    public void loadImageFromCache(EvercamCamera camera)
-    {
+    public void loadImageFromCache(EvercamCamera camera) {
         imageView.setImageDrawable(null);
 
-        if(camera.hasThumbnailUrl())
-        {
+        if (camera.hasThumbnailUrl()) {
             Picasso.with(this).load(camera.getThumbnailUrl()).into(imageView);
-        }
-        else
-        {
+        } else {
             Log.e(TAG, camera.toString());
         }
     }
 
-    private void startMediaPlayerAnimation()
-    {
-        if(fadeInAnimation != null)
-        {
+    private void startMediaPlayerAnimation() {
+        if (fadeInAnimation != null) {
             fadeInAnimation.cancel();
             fadeInAnimation.reset();
 
@@ -851,33 +732,25 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         fadeInAnimation = AnimationUtils.loadAnimation(VideoActivity.this, R.anim.fadein);
 
-        fadeInAnimation.setAnimationListener(new Animation.AnimationListener()
-        {
+        fadeInAnimation.setAnimationListener(new Animation.AnimationListener() {
             @Override
-            public void onAnimationStart(Animation animation)
-            {
+            public void onAnimationStart(Animation animation) {
                 // TODO Auto-generated method stub
             }
 
             @Override
-            public void onAnimationRepeat(Animation animation)
-            {
+            public void onAnimationRepeat(Animation animation) {
                 // TODO Auto-generated method stub
             }
 
             @Override
-            public void onAnimationEnd(Animation animation)
-            {
+            public void onAnimationEnd(Animation animation) {
 
-                if(!paused)
-                {
+                if (!paused) {
                     showAllControlMenus(false);
-                }
-                else
-                {
+                } else {
                     playPauseImageView.setVisibility(View.VISIBLE);
-                    if(surfaceView.getVisibility() != View.VISIBLE)
-                    {
+                    if (surfaceView.getVisibility() != View.VISIBLE) {
                         snapshotMenuView.setVisibility(View.VISIBLE);
                     }
                     //TODO: Enable PTZ switch
@@ -888,8 +761,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 }
 
                 int orientation = VideoActivity.this.getResources().getConfiguration().orientation;
-                if(!paused && orientation == Configuration.ORIENTATION_LANDSCAPE)
-                {
+                if (!paused && orientation == Configuration.ORIENTATION_LANDSCAPE) {
                     hideToolbar();
                 }
             }
@@ -907,14 +779,12 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
      */
 
     @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder)
-    {
+    public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d("GStreamer", "Surface created: " + surfaceHolder.getSurface());
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder surfaceholder, int format, int width, int height)
-    {
+    public void surfaceChanged(SurfaceHolder surfaceholder, int format, int width, int height) {
         Log.d("GStreamer", "Surface changed to format " + format + " width " + width + " height "
                 + height);
         onMediaSizeChanged(width, height);
@@ -924,8 +794,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceholder)
-    {
+    public void surfaceDestroyed(SurfaceHolder surfaceholder) {
         Log.d("GStreamer", "Surface destroyed");
         nativeSurfaceFinalize();
     }
@@ -936,88 +805,72 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
      * ***********
      */
 
-    private String createUri(EvercamCamera camera)
-    {
+    private String createUri(EvercamCamera camera) {
         String uri = "rtsp://" + camera.getUsername() + ":" + camera.getPassword() + "@"
-                + camera.getExternalRtspUrl().replaceFirst("rtsp://","");
+                + camera.getExternalRtspUrl().replaceFirst("rtsp://", "");
         return uri;
     }
 
-    private void createPlayer(EvercamCamera camera)
-    {
+    private void createPlayer(EvercamCamera camera) {
         startTime = new Date();
 
-        if(camera.hasRtspUrl())
-        {
+        if (camera.hasRtspUrl()) {
             Log.e(TAG, "uri " + createUri(camera));
             nativeSetUri(createUri(camera), TCP_TIMEOUT);
             play();
-        }
-        else
-        {
+        } else {
             //If no RTSP URL exists, start JPG view straight away
             showImagesVideo = true;
             createBrowseJpgTask();
         }
     }
 
-    private void play()
-    {
+    private void play() {
         nativePlay();
     }
 
-    private void releasePlayer()
-    {
+    private void releasePlayer() {
         nativePause();
     }
 
-    private void restartPlay()
-    {
+    private void restartPlay() {
         nativePlay();
     }
 
-    private void pausePlayer()
-    {
+    private void pausePlayer() {
         nativePause();
     }
 
     // when screen gets rotated
     @Override
-    public void onConfigurationChanged(Configuration newConfig)
-    {
+    public void onConfigurationChanged(Configuration newConfig) {
         super.onConfigurationChanged(newConfig);
 
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
         getWindow().clearFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
         int orientation = newConfig.orientation;
-        if(orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             showToolbar();
             setOpaqueTitleBackground();
-        }
-        else
-        {
+        } else {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                     .LayoutParams.FLAG_FULLSCREEN);
 
             setGradientTitleBackground();
-            if(!paused && !end && !isProgressShowing) hideToolbar();
+            if (!paused && !end && !isProgressShowing) hideToolbar();
             else showToolbar();
         }
 
         this.invalidateOptionsMenu();
     }
 
-    private void showMediaFailureDialog()
-    {
-        CustomedDialog.getCanNotPlayDialog(this, new DialogInterface.OnClickListener()
-        {
+    private void showMediaFailureDialog() {
+        CustomedDialog.getCanNotPlayDialog(this, new DialogInterface.OnClickListener() {
 
             @Override
-            public void onClick(DialogInterface dialog, int which)
-            {
+            public void onClick(DialogInterface dialog, int which) {
 
                 showToolbar();
                 paused = true;
@@ -1031,37 +884,28 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         showImagesVideo = false;
     }
 
-    private void setDisplayOrientation()
-    {
+    private void setDisplayOrientation() {
         /** Force landscape if it's enabled in settings */
         boolean forceLandscape = PrefsManager.isForceLandscape(this);
-        if(forceLandscape)
-        {
+        if (forceLandscape) {
             this.setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_LANDSCAPE);
         }
 
         int orientation = this.getResources().getConfiguration().orientation;
-        if(orientation == Configuration.ORIENTATION_PORTRAIT)
-        {
+        if (orientation == Configuration.ORIENTATION_PORTRAIT) {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
-        }
-        else
-        {
+        } else {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                     .LayoutParams.FLAG_FULLSCREEN);
         }
     }
 
-    private void checkNetworkStatus()
-    {
-        if(!Commons.isOnline(this))
-        {
-            CustomedDialog.getNoInternetDialog(this, new DialogInterface.OnClickListener()
-            {
+    private void checkNetworkStatus() {
+        if (!Commons.isOnline(this)) {
+            CustomedDialog.getNoInternetDialog(this, new DialogInterface.OnClickListener() {
                 @Override
-                public void onClick(DialogInterface dialog, int which)
-                {
+                public void onClick(DialogInterface dialog, int which) {
                     paused = true;
                     dialog.dismiss();
                     hideProgressView();
@@ -1070,8 +914,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         }
     }
 
-    private void initialPageElements()
-    {
+    private void initialPageElements() {
         imageViewLayout = (RelativeLayout) this.findViewById(R.id.camera_view_layout);
         imageView = (ImageView) this.findViewById(R.id.jpg_image_view);
         playPauseImageView = (ImageView) this.findViewById(R.id.play_pause_image_view);
@@ -1109,65 +952,56 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         /** The click listeners for PTZ control - move, zoom and preset */
         ptzLeftImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).left(4)
                         .build());
             }
         });
         ptzRightImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).right(4)
                         .build());
             }
         });
         ptzUpImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).up(3)
                         .build());
             }
         });
         ptzDownImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).down(3)
                         .build());
             }
         });
         ptzHomeImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZHome(evercamCamera.getCameraId()));
             }
         });
         ptzZoomInImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).zoom(1)
                         .build());
             }
         });
         ptzZoomOutImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 PTZMoveTask.launch(new PTZRelativeBuilder(evercamCamera.getCameraId()).zoom(-1)
                         .build());
             }
         });
         presetsImageView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(presetList.size() > 0)
-                {
+            public void onClick(View v) {
+                if (presetList.size() > 0) {
                     final AlertDialog listDialog = new AlertDialog.Builder(VideoActivity.this)
                             .setNegativeButton(R.string.cancel, null).create();
                     LayoutInflater mInflater = LayoutInflater.from(getApplicationContext());
@@ -1178,19 +1012,15 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     listDialog.setView(view);
                     listView.setAdapter(new PresetsListAdapter(getApplicationContext(), R.layout
                             .item_preset_list, presetList));
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
-                    {
+                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
                         @Override
                         public void onItemClick(AdapterView<?> parent, View view, int position,
-                                                long id)
-                        {
-                            if(position == 0) //Header clicked - Create preset
+                                                long id) {
+                            if (position == 0) //Header clicked - Create preset
                             {
                                 CustomedDialog.getCreatePresetDialog(VideoActivity.this,
                                         evercamCamera.getCameraId()).show();
-                            }
-                            else
-                            {
+                            } else {
                                 PTZPreset preset = presetList.get(position - 1);
                                 PTZMoveTask.launch(new PTZPresetControl(evercamCamera.getCameraId(),
                                         preset.getToken()));
@@ -1206,20 +1036,17 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         });
 
         /** The click listener for pause/play button */
-        playPauseImageView.setOnClickListener(new OnClickListener()
-        {
+        playPauseImageView.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View v)
-            {
-                if(end)
-                {
+            public void onClick(View v) {
+                if (end) {
                     Toast.makeText(VideoActivity.this, R.string.msg_try_again,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(isProgressShowing) return;
-                if(paused) // video is currently paused. Now we need to
+                if (isProgressShowing) return;
+                if (paused) // video is currently paused. Now we need to
                 // resume it.
                 {
                     timeCountTextView.setVisibility(View.VISIBLE);
@@ -1232,25 +1059,21 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     startMediaPlayerAnimation();
 
                     //If playing url is not null, resume rtsp stream
-                    if(evercamCamera != null && !evercamCamera.getExternalRtspUrl().isEmpty())
-                    {
+                    if (evercamCamera != null && !evercamCamera.getExternalRtspUrl().isEmpty()) {
                         restartPlay();
                     }
                     //Otherwise restart jpg view
-                    else
-                    {
+                    else {
                         //Don't need to do anything because image thread is listening
                     }
                     paused = false;
-                }
-                else
+                } else
                 // video is currently playing. Now we need to pause video
                 {
                     timeCountTextView.setVisibility(View.INVISIBLE);
                     clearControlMenuAnimation();
-                    if(fadeInAnimation != null && fadeInAnimation.hasStarted() &&
-                            !fadeInAnimation.hasEnded())
-                    {
+                    if (fadeInAnimation != null && fadeInAnimation.hasStarted() &&
+                            !fadeInAnimation.hasEnded()) {
                         fadeInAnimation.cancel();
                         fadeInAnimation.reset();
                     }
@@ -1272,29 +1095,23 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
          * The click listener of camera live view layout, including both RTSP and JPG view
          *  Once clicked, if camera view is playing, show the pause menu, otherwise do nothing.
          */
-        imageViewLayout.setOnClickListener(new OnClickListener()
-        {
+        imageViewLayout.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(end)
-                {
+            public void onClick(View v) {
+                if (end) {
                     Toast.makeText(VideoActivity.this, R.string.msg_try_again,
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if(isProgressShowing) return;
+                if (isProgressShowing) return;
 
-                if(!paused && !end) // video is currently playing. Show pause button
+                if (!paused && !end) // video is currently playing. Show pause button
                 {
-                    if(playPauseImageView.getVisibility() == View.VISIBLE)
-                    {
+                    if (playPauseImageView.getVisibility() == View.VISIBLE) {
                         showAllControlMenus(false);
                         clearControlMenuAnimation();
                         fadeInAnimation.reset();
-                    }
-                    else
-                    {
+                    } else {
                         showToolbar();
                         playPauseImageView.setImageResource(R.drawable.ic_pause);
 
@@ -1306,27 +1123,21 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
         });
 
-        snapshotMenuView.setOnClickListener(new OnClickListener()
-        {
+        snapshotMenuView.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 //Hide pause/snapshot menu if the live view is not paused
-                if(!paused)
-                {
+                if (!paused) {
                     showAllControlMenus(false);
                     clearControlMenuAnimation();
                     fadeInAnimation.reset();
                 }
 
-                if(imageView.getVisibility() == View.VISIBLE)
-                {
+                if (imageView.getVisibility() == View.VISIBLE) {
                     Bitmap bitmap = getBitmapFromImageView(imageView);
 
                     processSnapshot(bitmap, FileType.JPG);
-                }
-                else if(surfaceView.getVisibility() == View.VISIBLE)
-                {
+                } else if (surfaceView.getVisibility() == View.VISIBLE) {
                     nativeRequestSample("jpeg");
                 }
             }
@@ -1352,23 +1163,17 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 //        });
     }
 
-    public void setTempSnapshotBitmap(Bitmap bitmap)
-    {
+    public void setTempSnapshotBitmap(Bitmap bitmap) {
         this.mBitmap = bitmap;
     }
 
-    private Bitmap getBitmapFromImageView(ImageView imageView)
-    {
+    private Bitmap getBitmapFromImageView(ImageView imageView) {
         Bitmap bitmap = null;
-        if(imageView.getDrawable() instanceof BitmapDrawable)
-        {
+        if (imageView.getDrawable() instanceof BitmapDrawable) {
             bitmap = ((BitmapDrawable) imageView.getDrawable()).getBitmap();
-        }
-        else
-        {
+        } else {
             Drawable drawable = imageView.getDrawable();
-            if(drawable != null)
-            {
+            if (drawable != null) {
                 bitmap = Bitmap.createBitmap(drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight(), Bitmap.Config.ARGB_8888);
 
                 Canvas canvas = new Canvas(bitmap);
@@ -1379,69 +1184,56 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     // Hide progress view
-    void hideProgressView()
-    {
+    void hideProgressView() {
         imageViewLayout.findViewById(R.id.live_progress_view).setVisibility(View.GONE);
         isProgressShowing = false;
     }
 
-    void showProgressView()
-    {
+    void showProgressView() {
         progressView.canvasColor = Color.TRANSPARENT;
         progressView.setVisibility(View.VISIBLE);
         isProgressShowing = true;
     }
 
-    private void createBrowseJpgTask()
-    {
+    private void createBrowseJpgTask() {
         browseJpgTask = new BrowseJpgTask();
         browseJpgTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }
 
-    private void startTimeCounter()
-    {
-        if(timeCounter == null)
-        {
+    private void startTimeCounter() {
+        if (timeCounter == null) {
             String timezone = "Etc/UTC";
-            if(evercamCamera != null)
-            {
+            if (evercamCamera != null) {
                 timezone = evercamCamera.getTimezone();
             }
             timeCounter = new TimeCounter(this, timezone);
         }
-        if(!timeCounter.isStarted())
-        {
+        if (!timeCounter.isStarted()) {
             timeCounter.start();
         }
     }
-    private void processSnapshot(Bitmap btm, SnapshotManager.FileType type)
-    {
+
+    private void processSnapshot(Bitmap btm, SnapshotManager.FileType type) {
         final Bitmap bitmap = btm;
         final SnapshotManager.FileType fileType = type;
 
-        if (bitmap != null)
-        {
+        if (bitmap != null) {
             CustomedDialog.getConfirmSnapshotDialog(VideoActivity.this, bitmap,
-                new DialogInterface.OnClickListener()
-                {
-                    @Override
-                    public void onClick(DialogInterface dialog, int which)
-                    {
-                        new Thread(new CaptureSnapshotRunnable(VideoActivity
-                                  .this, evercamCamera.getCameraId(), fileType, bitmap)).start();
+                    new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            new Thread(new CaptureSnapshotRunnable(VideoActivity
+                                    .this, evercamCamera.getCameraId(), fileType, bitmap)).start();
                         }
-                }).show();
+                    }).show();
         }
     }
 
     // Handle stream loaded
-    private void onVideoLoaded()
-    {
+    private void onVideoLoaded() {
         Log.d(TAG, "onVideoLoaded()");
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
+        runOnUiThread(new Runnable() {
+            public void run() {
                 //View gets played, show time count, and start buffering
                 hideProgressView();
                 surfaceView.setVisibility(View.VISIBLE);
@@ -1459,8 +1251,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 successItem.setCameraId(evercamCamera.getCameraId());
                 successItem.setUrl(createUri(evercamCamera));
                 successItem.setType(StreamFeedbackItem.TYPE_RTSP);
-                if(startTime != null)
-                {
+                if (startTime != null) {
                     float timeDifferenceFloat = Commons.calculateTimeDifferenceFrom
                             (startTime);
                     Log.d(TAG, "Time difference: " + timeDifferenceFloat + " seconds");
@@ -1472,14 +1263,12 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
         });
     }
+
     // Handle stream loading failed
-    private void onVideoLoadFailed()
-    {
+    private void onVideoLoadFailed() {
         Log.d(TAG, "onVideoLoadFailed()");
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
+        runOnUiThread(new Runnable() {
+            public void run() {
                 EvercamPlayApplication.sendEventAnalytics(VideoActivity.this, R.string
                         .category_streaming_rtsp, R.string.action_streaming_rtsp_failed, R.string
                         .label_streaming_rtsp_failed);
@@ -1499,9 +1288,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         });
     }
 
-    private void onSampleRequestSuccess(byte[] data, int size)
-    {
-        final byte [] imageData = data;
+    private void onSampleRequestSuccess(byte[] data, int size) {
+        final byte[] imageData = data;
         final int imageSize = size;
 
         runOnUiThread(new Runnable() {
@@ -1512,8 +1300,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         });
     }
 
-    private void onSampleRequestFailed()
-    {
+    private void onSampleRequestFailed() {
         runOnUiThread(new Runnable() {
             public void run() {
                 Log.d(TAG, "onSampleRequestFailed");
@@ -1522,74 +1309,54 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         });
     }
 
-    public class BrowseJpgTask extends AsyncTask<String, String, String>
-    {
+    public class BrowseJpgTask extends AsyncTask<String, String, String> {
         @Override
-        protected String doInBackground(String... params)
-        {
-            while(!end && !isCancelled() && showImagesVideo)
-            {
-                try
-                {
+        protected String doInBackground(String... params) {
+            while (!end && !isCancelled() && showImagesVideo) {
+                try {
                     // wait for starting
-                    while(!startDownloading)
-                    {
+                    while (!startDownloading) {
                         Thread.sleep(500);
                     }
 
-                    if(!paused) // if application is paused, do not send the
+                    if (!paused) // if application is paused, do not send the
                     // requests. Rather wait for the play
                     // command
                     {
                         final DownloadImageTask downloadImageTask = new DownloadImageTask(evercamCamera
                                 .getCameraId());
 
-                        if(downloadStartCount - downloadEndCount < 5)
-                        {
-                            VideoActivity.this.runOnUiThread(new Runnable()
-                            {
+                        if (downloadStartCount - downloadEndCount < 5) {
+                            VideoActivity.this.runOnUiThread(new Runnable() {
                                 @Override
-                                public void run()
-                                {
+                                public void run() {
                                     downloadImageTask.executeOnExecutor(AsyncTask
                                             .THREAD_POOL_EXECUTOR);
                                 }
                             });
                         }
 
-                        if(downloadStartCount - downloadEndCount > 5 && sleepInterval < 2000)
-                        {
+                        if (downloadStartCount - downloadEndCount > 5 && sleepInterval < 2000) {
                             sleepInterval += ADJUSTMENT_INTERVAL;
                             Log.d(TAG, "Sleep interval adjusted to: " + sleepInterval);
-                        }
-                        else if(sleepInterval >= MIN_SLEEP_INTERVAL)
-                        {
+                        } else if (sleepInterval >= MIN_SLEEP_INTERVAL) {
                             sleepInterval -= ADJUSTMENT_INTERVAL;
                             Log.d(TAG, "Sleep interval adjusted to: " + sleepInterval);
                         }
                     }
-                }
-                catch(RejectedExecutionException ree)
-                {
+                } catch (RejectedExecutionException ree) {
                     Log.e(TAG, ree.toString() + "-::REE::-" + Log.getStackTraceString(ree));
 
-                }
-                catch(OutOfMemoryError e)
-                {
+                } catch (OutOfMemoryError e) {
                     Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-                }
-                catch(Exception ex)
-                {
+                } catch (Exception ex) {
                     downloadStartCount--;
                     Log.e(TAG, ex.toString() + "-::::-" + Log.getStackTraceString(ex));
                 }
-                try
-                {
+                try {
                     Thread.currentThread();
                     Thread.sleep(sleepInterval, 50);
-                }
-                catch(Exception e)
-                {
+                } catch (Exception e) {
                     EvercamPlayApplication.sendCaughtException(VideoActivity.this, e);
                     Log.e(TAG, e.toString() + "-::::-" + Log.getStackTraceString(e));
                 }
@@ -1598,93 +1365,69 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         }
     }
 
-    private class DownloadImageTask extends AsyncTask<Void, Void, Drawable>
-    {
+    private class DownloadImageTask extends AsyncTask<Void, Void, Drawable> {
         private long myStartImageTime;
         private String successUrl = "";//Only used for data collection
         private String cameraId = "";
 
-        public DownloadImageTask(String cameraId)
-        {
+        public DownloadImageTask(String cameraId) {
             this.cameraId = cameraId;
         }
 
         @Override
-        protected Drawable doInBackground(Void... params)
-        {
-            if(!showImagesVideo)
-            {
+        protected Drawable doInBackground(Void... params) {
+            if (!showImagesVideo) {
                 return null;
             }
             Drawable response = null;
-            if(!paused && !end)
-            {
-                try
-                {
+            if (!paused && !end) {
+                try {
                     myStartImageTime = SystemClock.uptimeMillis();
                     downloadStartCount++;
                     Camera camera = Camera.getById(cameraId, false);
                     InputStream stream = camera.getSnapshotFromEvercam();
                     response = Drawable.createFromStream(stream, "src");
-                    if(response != null)
-                    {
+                    if (response != null) {
                         successiveFailureCount = 0;
                     }
-                }
-                catch(Exception e)
-                {
+                } catch (Exception e) {
                     Log.e(TAG, "Request snapshot from Evercam error: " + e.toString());
                     successiveFailureCount++;
-                }
-                catch(OutOfMemoryError e)
-                {
+                } catch (OutOfMemoryError e) {
                     Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
                     successiveFailureCount++;
-                }
-                finally
-                {
+                } finally {
                     downloadEndCount++;
                 }
-            }
-            else
-            {
+            } else {
                 Log.d(TAG, "Paused or ended");
             }
             return response;
         }
 
         @Override
-        protected void onPostExecute(Drawable result)
-        {
-            try
-            {
-                if(!showImagesVideo) return;
+        protected void onPostExecute(Drawable result) {
+            try {
+                if (!showImagesVideo) return;
 
                 Log.d(TAG, "Failure count:" + successiveFailureCount);
 
-                if(!paused && !end)
-                {
-                    if(result != null)
-                    {
+                if (!paused && !end) {
+                    if (result != null) {
                         Log.d(TAG, "result not null");
-                        if(result.getIntrinsicWidth() > 0 && result.getIntrinsicHeight() > 0)
-                        {
-                            if(myStartImageTime >= latestStartImageTime)
-                            {
+                        if (result.getIntrinsicWidth() > 0 && result.getIntrinsicHeight() > 0) {
+                            if (myStartImageTime >= latestStartImageTime) {
                                 latestStartImageTime = myStartImageTime;
 
-                                if(playPauseImageView.getVisibility() != View.VISIBLE &&
+                                if (playPauseImageView.getVisibility() != View.VISIBLE &&
                                         VideoActivity.this.getResources().getConfiguration()
                                                 .orientation == Configuration.ORIENTATION_LANDSCAPE)
                                     hideToolbar();
 
-                                if(showImagesVideo && cameraId.equals(evercamCamera.getCameraId()))
-                                {
+                                if (showImagesVideo && cameraId.equals(evercamCamera.getCameraId())) {
                                     //Only update JPG when the image belongs to the current camera
                                     imageView.setImageDrawable(result);
-                                }
-                                else if(!cameraId.equals(evercamCamera.getCameraId()))
-                                {
+                                } else if (!cameraId.equals(evercamCamera.getCameraId())) {
                                     Log.e(TAG, "Image received but not to show");
                                 }
 
@@ -1693,8 +1436,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                                 //Image received, start time counter, need more tests
                                 startTimeCounter();
 
-                                if(!isJpgSuccessful)
-                                {
+                                if (!isJpgSuccessful) {
                                     //Successfully played JPG view, send Google Analytics event
                                     isJpgSuccessful = true;
                                     EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
@@ -1708,26 +1450,18 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                                     successItem.setUrl(successUrl);
                                     successItem.setType(StreamFeedbackItem.TYPE_JPG);
                                     successItem.sendToKeenIo(client);
-                                }
-                                else
-                                {
+                                } else {
                                     //Log.d(TAG, "Jpg success but already reported");
                                 }
-                            }
-                            else
-                            {
-                                if(enableLogs) Log.i(TAG, "downloaded image discarded. ");
+                            } else {
+                                if (enableLogs) Log.i(TAG, "downloaded image discarded. ");
                             }
                         }
-                    }
-                    else
-                    {
+                    } else {
                         Log.d(TAG, "result is null");
-                        if(successiveFailureCount > 10 && !isShowingFailureMessage)
-                        {
+                        if (successiveFailureCount > 10 && !isShowingFailureMessage) {
                             Log.d(TAG, "successiveFailureCount > 5 && !isShowingFailureMessage");
-                            if(myStartImageTime >= latestStartImageTime)
-                            {
+                            if (myStartImageTime >= latestStartImageTime) {
                                 Log.d(TAG, "myStartImageTime >= latestStartImageTime");
                                 showMediaFailureDialog();
                                 browseJpgTask.cancel(true);
@@ -1749,43 +1483,33 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                             }
                         }
                     }
-                }
-                else
-                {
+                } else {
                     Log.d(TAG, "paused or ended");
                 }
-            }
-            catch(OutOfMemoryError e)
-            {
-                if(enableLogs) Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-            }
-            catch(Exception e)
-            {
-                if(enableLogs) Log.e(TAG, e.toString());
+            } catch (OutOfMemoryError e) {
+                if (enableLogs) Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
+            } catch (Exception e) {
+                if (enableLogs) Log.e(TAG, e.toString());
             }
 
             startDownloading = true;
         }
     }
 
-    private String[] getCameraNameArray(ArrayList<EvercamCamera> cameraList)
-    {
+    private String[] getCameraNameArray(ArrayList<EvercamCamera> cameraList) {
         ArrayList<String> cameraNames = new ArrayList<>();
 
         boolean matched = false;
-        for(int count = 0; count < cameraList.size(); count++)
-        {
+        for (int count = 0; count < cameraList.size(); count++) {
             EvercamCamera camera = cameraList.get(count);
 
             cameraNames.add(camera.getName());
-            if(cameraList.get(count).getCameraId().equals(startingCameraID))
-            {
+            if (cameraList.get(count).getCameraId().equals(startingCameraID)) {
                 defaultCameraIndex = cameraNames.size() - 1;
                 matched = true;
             }
         }
-        if(!matched && cameraExistsInListButOffline(startingCameraID))
-        {
+        if (!matched && cameraExistsInListButOffline(startingCameraID)) {
             CustomedDialog.getMessageDialog(this, R.string.msg_camera_is_hidden).show();
         }
 
@@ -1795,36 +1519,27 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         return cameraNameArray;
     }
 
-    private boolean cameraExistsInListButOffline(String cameraId)
-    {
-        for (EvercamCamera camera : AppData.evercamCameraList)
-        {
-            if(camera.getCameraId().equals(cameraId) && camera.isOffline())
-            {
+    private boolean cameraExistsInListButOffline(String cameraId) {
+        for (EvercamCamera camera : AppData.evercamCameraList) {
+            if (camera.getCameraId().equals(cameraId) && camera.isOffline()) {
                 return true;
             }
         }
         return false;
     }
 
-    private void loadCamerasToActionBar()
-    {
+    private void loadCamerasToActionBar() {
         String[] cameraNames;
 
         final ArrayList<EvercamCamera> onlineCameraList = new ArrayList<>();
         final ArrayList<EvercamCamera> cameraList;
 
         //If is not showing offline cameras, the offline cameras should be excluded from list
-        if(PrefsManager.showOfflineCameras(VideoActivity.this))
-        {
+        if (PrefsManager.showOfflineCameras(VideoActivity.this)) {
             cameraList = AppData.evercamCameraList;
-        }
-        else
-        {
-            for(EvercamCamera evercamCamera : AppData.evercamCameraList)
-            {
-                if(!evercamCamera.isOffline())
-                {
+        } else {
+            for (EvercamCamera evercamCamera : AppData.evercamCameraList) {
+                if (!evercamCamera.isOffline()) {
                     onlineCameraList.add(evercamCamera);
                 }
             }
@@ -1839,17 +1554,14 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         mCameraListSpinner.setAdapter(adapter);
         mCameraListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onItemSelected(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 //Stop time counter when another camera selected
-                if(timeCounter != null)
-                {
+                if (timeCounter != null) {
                     timeCounter.stop();
                     timeCounter = null;
                 }
 
-                if(browseJpgTask != null && browseJpgTask.getStatus() != AsyncTask.Status.RUNNING)
-                {
+                if (browseJpgTask != null && browseJpgTask.getStatus() != AsyncTask.Status.RUNNING) {
                     browseJpgTask.cancel(true);
                 }
                 browseJpgTask = null;
@@ -1862,8 +1574,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 //Hide the PTZ control panel when switch to another camera
                 showPtzControl(false);
 
-                if(evercamCamera.isOffline())
-                {
+                if (evercamCamera.isOffline()) {
                     // If camera is offline, show offline msg and stop video
                     // playing.
                     offlineTextView.setVisibility(View.VISIBLE);
@@ -1872,16 +1583,13 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     // Hide video elements if switch to an offline camera.
                     surfaceView.setVisibility(View.GONE);
                     imageView.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     offlineTextView.setVisibility(View.GONE);
 
                     setCameraForPlaying(cameraList.get(position));
                     createPlayer(evercamCamera);
 
-                    if(evercamCamera.hasModel())
-                    {
+                    if (evercamCamera.hasModel()) {
                         new CheckOnvifTask(VideoActivity.this, evercamCamera)
                                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
@@ -1889,8 +1597,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
 
             @Override
-            public void onNothingSelected(AdapterView<?> parent)
-            {
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
@@ -1898,22 +1605,19 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         mCameraListSpinner.setSelection(defaultCameraIndex);
     }
 
-    private void onMediaSizeChanged (int width, int height) {
+    private void onMediaSizeChanged(int width, int height) {
         Log.i("GStreamer", "Media size changed to " + width + "x" + height);
         final GStreamerSurfaceView gstreamerSurfaceView = (GStreamerSurfaceView) this.findViewById(R.id.surface_view);
         gstreamerSurfaceView.media_width = width;
         gstreamerSurfaceView.media_height = height;
-        runOnUiThread(new Runnable()
-        {
-            public void run()
-            {
+        runOnUiThread(new Runnable() {
+            public void run() {
                 gstreamerSurfaceView.requestLayout();
             }
         });
     }
 
-    public void showAllControlMenus(boolean show)
-    {
+    public void showAllControlMenus(boolean show) {
         playPauseImageView.setVisibility(show ? View.VISIBLE : View.GONE);
         snapshotMenuView.setVisibility(show ? View.VISIBLE : View.GONE);
 
@@ -1928,15 +1632,13 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 //        }
     }
 
-    public void clearControlMenuAnimation()
-    {
+    public void clearControlMenuAnimation() {
         snapshotMenuView.clearAnimation();
         playPauseImageView.clearAnimation();
         ptzSwitchImageView.clearAnimation();
     }
 
-    public void showPtzControl(boolean show)
-    {
+    public void showPtzControl(boolean show) {
         ptzMoveLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         ptzZoomLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }

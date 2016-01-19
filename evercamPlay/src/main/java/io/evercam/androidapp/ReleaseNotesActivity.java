@@ -14,14 +14,12 @@ import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 
 // 	This activity verifies the login and requests the cams data from the api 
-public class ReleaseNotesActivity extends ParentAppCompatActivity
-{
+public class ReleaseNotesActivity extends ParentAppCompatActivity {
     public String TAG = "ReleaseNotesActivity";
     private Button btnReleaseNotes;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_release_notes);
@@ -33,11 +31,9 @@ public class ReleaseNotesActivity extends ParentAppCompatActivity
 
         textViewNotes.setPadding(25, 14, 14, 14);
 
-        btnReleaseNotes.setOnClickListener(new Button.OnClickListener()
-        {
+        btnReleaseNotes.setOnClickListener(new Button.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 onNotesRead();
             }
         });
@@ -48,8 +44,7 @@ public class ReleaseNotesActivity extends ParentAppCompatActivity
 
     }
 
-    private void onNotesRead()
-    {
+    private void onNotesRead() {
         int versionCode = new DataCollector(this).getAppVersionCode();
         PrefsManager.setReleaseNotesShown(this, versionCode);
 
@@ -59,16 +54,14 @@ public class ReleaseNotesActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onWindowFocusChanged(boolean hasfocus)
-    {
+    public void onWindowFocusChanged(boolean hasfocus) {
         ScrollView svreleasenotes = (ScrollView) findViewById(R.id.svreleasenotes);
         svreleasenotes.getLayoutParams().height = svreleasenotes.getMeasuredHeight() -
                 btnReleaseNotes.getMeasuredHeight();
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         onNotesRead();
     }
 }

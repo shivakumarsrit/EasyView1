@@ -41,8 +41,7 @@ import io.evercam.androidapp.tasks.CheckKeyExpirationTask;
 import io.evercam.androidapp.utils.Constants;
 import io.intercom.android.sdk.Intercom;
 
-public class ManageAccountsActivity extends ParentAppCompatActivity
-{
+public class ManageAccountsActivity extends ParentAppCompatActivity {
     private static String TAG = "ManageAccountsActivity";
 
     private AlertDialog alertDialog = null;
@@ -50,8 +49,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     private CustomProgressDialog progressDialog;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_manage_account);
@@ -63,24 +61,21 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         // create and start the task to show all user accounts
         ListView listview = (ListView) findViewById(R.id.email_list);
 
-        if(AppData.defaultUser != null)
-        {
+        if (AppData.defaultUser != null) {
             oldDefaultUser = AppData.defaultUser.getUsername();
         }
 
         showAllAccounts();
 
-        listview.setOnItemClickListener(new OnItemClickListener()
-        {
+        listview.setOnItemClickListener(new OnItemClickListener() {
 
             @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id)
-            {
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
                 ListView listview = (ListView) findViewById(R.id.email_list);
 
                 final AppUser user = (AppUser) listview.getItemAtPosition(position);
 
-                if(user.getId() < 0) // add new user item
+                if (user.getId() < 0) // add new user item
                 {
                     showAddUserDialogue(null, null, false);
                     return;
@@ -90,77 +85,58 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                         .dialog_manage_account_options, null);
 
                 final AlertDialog dialog = CustomedDialog.getAlertDialogNoTitle
-                        (ManageAccountsActivity.this, optionListView );
+                        (ManageAccountsActivity.this, optionListView);
                 dialog.show();
 
-                Button openDefault = (Button) optionListView .findViewById(R.id.btn_open_account);
+                Button openDefault = (Button) optionListView.findViewById(R.id.btn_open_account);
                 Button delete = (Button) optionListView.findViewById(R.id.btn_delete_account);
 
-                openDefault.setOnClickListener(new OnClickListener()
-                {
+                openDefault.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(View v) {
                         //Check if stored API key and ID before switching account
                         new CheckKeyExpirationTaskAccount(user, optionListView, dialog)
                                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
                 });
 
-                delete.setOnClickListener(new OnClickListener()
-                {
+                delete.setOnClickListener(new OnClickListener() {
                     @Override
-                    public void onClick(View v)
-                    {
+                    public void onClick(View v) {
                         CustomedDialog.getConfirmRemoveDialog(ManageAccountsActivity.this,
-                                new DialogInterface.OnClickListener()
-                                {
+                                new DialogInterface.OnClickListener() {
                                     @Override
-                                    public void onClick(DialogInterface warningDialog, int which)
-                                    {
-                                        if(AppData.appUsers != null && AppData.appUsers.size() == 2)
-                                        {
+                                    public void onClick(DialogInterface warningDialog, int which) {
+                                        if (AppData.appUsers != null && AppData.appUsers.size() == 2) {
                                             // If only one user exists, log out the user
                                             CamerasActivity.logOutDefaultUser(ManageAccountsActivity.this);
-                                        }
-                                        else
-                                        {
+                                        } else {
                                             new EvercamAccount(ManageAccountsActivity.this)
                                                     .remove(user.getEmail(),
-                                                            new AccountManagerCallback<Boolean>()
-                                                    {
-                                                        @Override
-                                                        public void run
-                                                                (AccountManagerFuture<Boolean>
-                                                                         future)
-                                                        {
-                                                            // This is the line that
-                                                            // actually
-                                                            // starts the
-                                                            // call to remove the account.
-                                                            try
-                                                            {
-                                                                boolean isAccountDeleted = future
-                                                                        .getResult();
-                                                                if(isAccountDeleted)
-                                                                {
-                                                                    showAllAccounts();
+                                                            new AccountManagerCallback<Boolean>() {
+                                                                @Override
+                                                                public void run
+                                                                        (AccountManagerFuture<Boolean>
+                                                                                 future) {
+                                                                    // This is the line that
+                                                                    // actually
+                                                                    // starts the
+                                                                    // call to remove the account.
+                                                                    try {
+                                                                        boolean isAccountDeleted = future
+                                                                                .getResult();
+                                                                        if (isAccountDeleted) {
+                                                                            showAllAccounts();
+                                                                        }
+                                                                    } catch (OperationCanceledException e) {
+                                                                        e.printStackTrace();
+                                                                    } catch (IOException e) {
+                                                                        e.printStackTrace();
+                                                                    } catch (AuthenticatorException e) {
+                                                                        e.printStackTrace();
+                                                                    }
                                                                 }
-                                                            }
-                                                            catch(OperationCanceledException e)
-                                                            {
-                                                                e.printStackTrace();
-                                                            }
-                                                            catch(IOException e)
-                                                            {
-                                                                e.printStackTrace();
-                                                            }
-                                                            catch(AuthenticatorException e)
-                                                            {
-                                                                e.printStackTrace();
-                                                            }
-                                                        }
-                                                    });
+                                                            });
                                         }
                                         dialog.dismiss();
                                     }
@@ -172,8 +148,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         super.onRestart();
 
         // Finish this activity on restart because there are lots of opportunities
@@ -183,10 +158,8 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
-        if(!AppData.defaultUser.getUsername().equals(oldDefaultUser))
-        {
+    public void onBackPressed() {
+        if (!AppData.defaultUser.getUsername().equals(oldDefaultUser)) {
             setResult(Constants.RESULT_ACCOUNT_CHANGED);
         }
         this.finish();
@@ -195,22 +168,16 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     // Tells that what item has been selected from options. We need to call the
     // relevant code for that item.
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
 
-                if(AppData.defaultUser != null && oldDefaultUser != null)
-                {
-                    if(!AppData.defaultUser.getUsername().equals(oldDefaultUser))
-                    {
+                if (AppData.defaultUser != null && oldDefaultUser != null) {
+                    if (!AppData.defaultUser.getUsername().equals(oldDefaultUser)) {
                         setResult(Constants.RESULT_ACCOUNT_CHANGED);
                     }
-                }
-                else
-                {
+                } else {
                     setResult(Constants.RESULT_ACCOUNT_CHANGED);
                 }
                 this.finish();
@@ -220,8 +187,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         }
     }
 
-    private void showAddUserDialogue(String username, String password, boolean isdefault)
-    {
+    private void showAddUserDialogue(String username, String password, boolean isdefault) {
         final View dialog_layout = getLayoutInflater().inflate(R.layout
                 .dialog_add_user, null);
 
@@ -229,27 +195,21 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 .setNegativeButton(R.string.cancel, null).setPositiveButton((getString(R.string
                         .add)), null).create();
 
-        if(username != null)
-        {
+        if (username != null) {
             ((EditText) dialog_layout.findViewById(R.id.username_edit)).setText(username);
         }
-        if(password != null)
-        {
+        if (password != null) {
             ((EditText) dialog_layout.findViewById(R.id.user_password)).setText(password);
         }
 
         alertDialog.setCanceledOnTouchOutside(false);
-        alertDialog.setOnShowListener(new DialogInterface.OnShowListener()
-        {
+        alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
             @Override
-            public void onShow(DialogInterface dialog)
-            {
+            public void onShow(DialogInterface dialog) {
                 Button button = alertDialog.getButton(DialogInterface.BUTTON_POSITIVE);
-                button.setOnClickListener(new View.OnClickListener()
-                {
+                button.setOnClickListener(new View.OnClickListener() {
                     @Override
-                    public void onClick(View view)
-                    {
+                    public void onClick(View view) {
                         new AccountCheckInternetTask(ManageAccountsActivity.this,
                                 dialog_layout).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                     }
@@ -260,8 +220,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         alertDialog.show();
     }
 
-    private void launchLogin(View view)
-    {
+    private void launchLogin(View view) {
         EditText usernameEdit = (EditText) view.findViewById(R.id.username_edit);
         EditText passwordEdit = (EditText) view.findViewById(R.id.user_password);
         ProgressBar progressBar = (ProgressBar) alertDialog.findViewById(R.id.pb_loadinguser);
@@ -269,27 +228,21 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         String username = usernameEdit.getText().toString();
         String password = passwordEdit.getText().toString();
 
-        if(TextUtils.isEmpty(username))
-        {
+        if (TextUtils.isEmpty(username)) {
             CustomToast.showInCenter(this, R.string.error_username_required);
             progressBar.setVisibility(View.GONE);
             return;
-        }
-        else if(username.contains(" "))
-        {
+        } else if (username.contains(" ")) {
             CustomToast.showInCenter(this, R.string.error_invalid_username);
             progressBar.setVisibility(View.GONE);
             return;
         }
 
-        if(TextUtils.isEmpty(password))
-        {
+        if (TextUtils.isEmpty(password)) {
             CustomToast.showInCenter(this, R.string.error_password_required);
             progressBar.setVisibility(View.GONE);
             return;
-        }
-        else if(password.contains(" "))
-        {
+        } else if (password.contains(" ")) {
             CustomToast.showInCenter(this, R.string.error_invalid_password);
             progressBar.setVisibility(View.GONE);
             return;
@@ -306,8 +259,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
      * @param dialogToDismiss the account manage dialog that is showing
      */
     public void updateDefaultUser(final String userEmail, final Boolean closeActivity,
-                                  final AlertDialog dialogToDismiss)
-    {
+                                  final AlertDialog dialogToDismiss) {
         EvercamAccount evercamAccount = new EvercamAccount(this);
         evercamAccount.updateDefaultUser(userEmail);
         AppData.appUsers = evercamAccount.retrieveUserList();
@@ -315,27 +267,21 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         getMixpanel().identifyUser(AppData.defaultUser.getUsername());
         registerUserWithIntercom(AppData.defaultUser);
 
-        if(closeActivity)
-        {
-            if(!AppData.defaultUser.getUsername().equals(oldDefaultUser))
-            {
+        if (closeActivity) {
+            if (!AppData.defaultUser.getUsername().equals(oldDefaultUser)) {
                 setResult(Constants.RESULT_ACCOUNT_CHANGED);
             }
             ManageAccountsActivity.this.finish();
-        }
-        else
-        {
+        } else {
             showAllAccounts();
         }
 
-        if(dialogToDismiss != null && dialogToDismiss.isShowing())
-        {
+        if (dialogToDismiss != null && dialogToDismiss.isShowing()) {
             dialogToDismiss.dismiss();
         }
     }
 
-    private void showAllAccounts()
-    {
+    private void showAllAccounts() {
         ArrayList<AppUser> appUsers = new EvercamAccount(this).retrieveUserList();
 
         ListAdapter listAdapter = new CustomAdapter(ManageAccountsActivity.this,
@@ -346,8 +292,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         listview.setAdapter(listAdapter);
     }
 
-    private class AddAccountTask extends AsyncTask<String, Void, Boolean>
-    {
+    private class AddAccountTask extends AsyncTask<String, Void, Boolean> {
         String username;
         String password;
         AlertDialog alertDialog = null;
@@ -356,8 +301,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         ProgressBar progressBar;
         String unExpectedErrorMessage = "";
 
-        public AddAccountTask(String username, String password, AlertDialog alertDialog)
-        {
+        public AddAccountTask(String username, String password, AlertDialog alertDialog) {
             this.username = username;
             this.password = password;
             this.alertDialog = alertDialog;
@@ -365,10 +309,8 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected Boolean doInBackground(String... values)
-        {
-            try
-            {
+        protected Boolean doInBackground(String... values) {
+            try {
                 ApiKeyPair userKeyPair = API.requestUserKeyPairFromEvercam(username, password);
                 String userApiKey = userKeyPair.getApiKey();
                 String userApiId = userKeyPair.getApiId();
@@ -381,16 +323,11 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 new EvercamAccount(ManageAccountsActivity.this).add(newUser);
 
                 return true;
-            }
-            catch(EvercamException e)
-            {
-                if(e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
-                        .contains(getString(R.string.prefix_no_user)))
-                {
+            } catch (EvercamException e) {
+                if (e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
+                        .contains(getString(R.string.prefix_no_user))) {
                     errorMessage = e.getMessage();
-                }
-                else
-                {
+                } else {
                     unExpectedErrorMessage = errorMessage;
                 }
             }
@@ -398,29 +335,21 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(Boolean success)
-        {
+        protected void onPostExecute(Boolean success) {
             progressBar.setVisibility(View.GONE);
-            if(!success)
-            {
-                if(errorMessage != null)
-                {
+            if (!success) {
+                if (errorMessage != null) {
                     CustomToast.showInCenter(getApplicationContext(), errorMessage);
-                }
-                else
-                {
+                } else {
                     EvercamPlayApplication.sendCaughtException(ManageAccountsActivity.this,
                             getString(R.string.exception_error_login) + " Manage Account: " + unExpectedErrorMessage);
-                    if(!ManageAccountsActivity.this.isFinishing())
-                    {
+                    if (!ManageAccountsActivity.this.isFinishing()) {
                         CustomedDialog.showUnexpectedErrorDialog(ManageAccountsActivity.this);
                     }
                 }
 
                 return;
-            }
-            else
-            {
+            } else {
                 showAllAccounts();
                 alertDialog.dismiss();
 
@@ -433,59 +362,46 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         }
     }
 
-    class AccountCheckInternetTask extends CheckInternetTask
-    {
+    class AccountCheckInternetTask extends CheckInternetTask {
         View dialogView;
 
-        public AccountCheckInternetTask(Context context, View view)
-        {
+        public AccountCheckInternetTask(Context context, View view) {
             super(context);
             this.dialogView = view;
         }
 
         @Override
-        protected void onPreExecute()
-        {
+        protected void onPreExecute() {
             // Show the progress bar before the task starts
             ProgressBar progressBar = (ProgressBar) alertDialog.findViewById(R.id.pb_loadinguser);
             progressBar.setVisibility(View.VISIBLE);
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
                 launchLogin(dialogView);
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(ManageAccountsActivity.this);
             }
         }
     }
 
-    class CheckKeyExpirationTaskAccount extends CheckKeyExpirationTask
-    {
+    class CheckKeyExpirationTaskAccount extends CheckKeyExpirationTask {
         public CheckKeyExpirationTaskAccount(AppUser appUser, View viewToDismiss, AlertDialog
-                dialogToDismiss)
-        {
+                dialogToDismiss) {
             super(appUser, viewToDismiss, dialogToDismiss);
         }
 
         @Override
-        protected void onPostExecute(Boolean isExpired)
-        {
-            if(isExpired)
-            {
+        protected void onPostExecute(Boolean isExpired) {
+            if (isExpired) {
                 new EvercamAccount(ManageAccountsActivity.this).remove(appUser.getEmail(), null);
 
                 finish();
                 Intent slideIntent = new Intent(ManageAccountsActivity.this, SlideActivity.class);
                 startActivity(slideIntent);
-            }
-            else
-            {
+            } else {
                 progressDialog.show(ManageAccountsActivity.this.getString(R.string.switching_account));
 
                 updateDefaultUser(appUser.getEmail(), true, dialogToDismiss);

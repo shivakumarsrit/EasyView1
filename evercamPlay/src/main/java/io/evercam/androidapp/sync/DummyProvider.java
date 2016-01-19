@@ -9,42 +9,35 @@ import android.net.Uri;
  * A dummy content provider for sync service
  * Content provider is mandatory for data sync, but we are using SQLite DB
  */
-public class DummyProvider extends ContentProvider
-{
+public class DummyProvider extends ContentProvider {
     @Override
-    public boolean onCreate()
-    {
+    public boolean onCreate() {
         return false;
     }
 
     @Override
     public Cursor query(Uri uri, String[] projection, String selection, String[] selectionArgs,
-                        String sortOrder)
-    {
+                        String sortOrder) {
         return null;
     }
 
     @Override
-    public String getType(Uri uri)
-    {
+    public String getType(Uri uri) {
         return null;
     }
 
     @Override
-    public Uri insert(Uri uri, ContentValues values)
-    {
+    public Uri insert(Uri uri, ContentValues values) {
         return null;
     }
 
     @Override
-    public int delete(Uri uri, String selection, String[] selectionArgs)
-    {
+    public int delete(Uri uri, String selection, String[] selectionArgs) {
         return 0;
     }
 
     @Override
-    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs)
-    {
+    public int update(Uri uri, ContentValues values, String selection, String[] selectionArgs) {
         return 0;
     }
 }

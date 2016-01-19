@@ -30,8 +30,7 @@ import io.evercam.androidapp.feedback.NewCameraFeedbackItem;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
-{
+public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
     private final String TAG = "AddCameraTask";
     private CameraDetail cameraDetail;
     private ParentAppCompatActivity activity;
@@ -41,49 +40,39 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
     private Boolean readyToCreateCamera = null;
     private boolean isFromScan;
 
-    public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan)
-    {
+    public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan) {
         this.cameraDetail = cameraDetail;
         this.activity = activity;
         this.isFromScan = isFromScan;
     }
 
     @Override
-    protected void onPreExecute()
-    {
+    protected void onPreExecute() {
         customProgressDialog = new CustomProgressDialog(activity);
         customProgressDialog.show(activity.getString(R.string.testing_snapshot));
     }
 
     @Override
-    protected void onPostExecute(EvercamCamera evercamCamera)
-    {
+    protected void onPostExecute(EvercamCamera evercamCamera) {
         customProgressDialog.dismiss();
-        if(evercamCamera != null)
-        {
+        if (evercamCamera != null) {
             NewCameraFeedbackItem newCameraItem = new NewCameraFeedbackItem(activity,
                     AppData.defaultUser.getUsername(), evercamCamera.getCameraId());
-            if(isFromScan)
-            {
+            if (isFromScan) {
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_scan,
                         R.string.label_addcamera_successful_scan);
                 newCameraItem.setIsFromDiscovery(true);
-            }
-            else
-            {
+            } else {
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_manual, R.string.label_addcamera_successful_manual);
             }
 
-            try
-            {
+            try {
                 activity.getMixpanel().sendEvent(R.string.mixpanel_event_create_camera, new JSONObject()
                         .put(activity.getString(R.string.mixpanel_property_camera_id),
                                 evercamCamera.getCameraId()));
-            }
-            catch(JSONException e)
-            {
+            } catch (JSONException e) {
                 e.printStackTrace();
                 EvercamPlayApplication.sendCaughtException(activity, e);
             }
@@ -104,86 +93,63 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
             VideoActivity.showCameraCreated = true;
             VideoActivity.startPlayingVideoForCamera(activity, evercamCamera.getCameraId());
             activity.finish();
-        }
-        else
-        {
-            if(errorMessage != null)
-            {
+        } else {
+            if (errorMessage != null) {
                 CustomToast.showInCenterLong(activity, errorMessage);
             }
         }
     }
 
     @Override
-    protected EvercamCamera doInBackground(Void... params)
-    {
+    protected EvercamCamera doInBackground(Void... params) {
         // Check camera is reachable or not by request for snapshot
         // If either internal or external url return a snapshot, create the
         // camera
         // If neither of the urls return a snapshot, warn the user.
         isReachableExternally = isSnapshotReachableExternally();
 
-        if(isReachableExternally)
-        {
+        if (isReachableExternally) {
             publishProgress(true);
-        }
-        else
-        {
+        } else {
             publishProgress(false);
         }
 
-        while(readyToCreateCamera == null)
-        {
-            try
-            {
+        while (readyToCreateCamera == null) {
+            try {
                 Thread.sleep(500);
-            }
-            catch(InterruptedException e)
-            {
+            } catch (InterruptedException e) {
                 Log.e(TAG, e.toString());
             }
         }
 
-        if(readyToCreateCamera)
-        {
+        if (readyToCreateCamera) {
             return createCamera(cameraDetail);
-        }
-        else if(!readyToCreateCamera)
-        {
+        } else if (!readyToCreateCamera) {
             Log.d(TAG, "Not ready to create camera");
         }
         return null;
     }
 
     @Override
-    protected void onProgressUpdate(Boolean... values)
-    {
+    protected void onProgressUpdate(Boolean... values) {
         boolean isSnapshotReceived = values[0];
 
-        if(isSnapshotReceived)
-        {
+        if (isSnapshotReceived) {
             customProgressDialog.setMessage(activity.getString(R.string.creating_camera));
             readyToCreateCamera = true;
-        }
-        else
-        {
-            if(!activity.isFinishing())
-            {
+        } else {
+            if (!activity.isFinishing()) {
                 CustomedDialog.getConfirmCreateDialog(activity,
-                        new DialogInterface.OnClickListener()
-                        {
+                        new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 customProgressDialog.setMessage(activity.getString(R.string.creating_camera));
                                 readyToCreateCamera = true;
                                 return;
                             }
-                        }, new DialogInterface.OnClickListener()
-                        {
+                        }, new DialogInterface.OnClickListener() {
                             @Override
-                            public void onClick(DialogInterface dialog, int which)
-                            {
+                            public void onClick(DialogInterface dialog, int which) {
                                 readyToCreateCamera = false;
                                 customProgressDialog.dismiss();
                                 return;
@@ -193,8 +159,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
         }
     }
 
-    private boolean isSnapshotReachableExternally()
-    {
+    private boolean isSnapshotReachableExternally() {
         String externalHost = cameraDetail.getExternalHost();
         final String username = cameraDetail.getCameraUsername();
         final String password = cameraDetail.getCameraPassword();
@@ -202,51 +167,40 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
 
         final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
 
-        if(externalHost != null && !externalHost.isEmpty())
-        {
+        if (externalHost != null && !externalHost.isEmpty()) {
             String portString = String.valueOf(cameraDetail.getExternalHttpPort());
             String externalUrl = buildHttpUrl(externalHost, portString);
 
-            try
-            {
+            try {
                 Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password);
 
-                if(snapshot != null)
-                {
+                if (snapshot != null) {
                     byte[] snapshotData = snapshot.getData();
                     Bitmap bitmap = BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length);
 
-                    if(bitmap != null)
-                    {
+                    if (bitmap != null) {
                         return true;
                     }
                 }
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 Log.e(TAG, "test snapshot: " + e.toString());
             }
         }
         return false;
     }
 
-    private String buildHttpUrl(String host, String portString)
-    {
-        if(portString == null || portString.isEmpty() || portString.equals("0"))
-        {
+    private String buildHttpUrl(String host, String portString) {
+        if (portString == null || portString.isEmpty() || portString.equals("0")) {
             portString = "80";
         }
         return activity.getString(R.string.prefix_http) + host + ":" + portString;
     }
 
-    private EvercamCamera createCamera(CameraDetail detail)
-    {
-        try
-        {
+    private EvercamCamera createCamera(CameraDetail detail) {
+        try {
             Camera camera = Camera.create(detail);
             EvercamCamera evercamCamera = new EvercamCamera().convertFromEvercam(camera);
-            if(isReachableExternally)
-            {
+            if (isReachableExternally) {
                 evercamCamera.setStatus(CameraStatus.ACTIVE);
             }
             DbCamera dbCamera = new DbCamera(activity);
@@ -254,9 +208,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera>
             AppData.evercamCameraList.add(evercamCamera);
 
             return evercamCamera;
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             errorMessage = e.getMessage();
             Log.e(TAG, "add camera to evercam: " + e.getMessage());
             EvercamPlayApplication.sendCaughtException(activity, e);

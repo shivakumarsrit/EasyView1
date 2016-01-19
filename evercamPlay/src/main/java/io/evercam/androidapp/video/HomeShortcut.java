@@ -16,8 +16,7 @@ import android.net.Uri;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.EvercamCamera;
 
-public class HomeShortcut
-{
+public class HomeShortcut {
     public static final String KEY_CAMERA_ID = "cameraId";
 
     private static final String TAG = "HomeShortcut";
@@ -25,8 +24,7 @@ public class HomeShortcut
     /**
      * Create a shortcut that link to specific camera live view on home screen
      */
-    public static void create(Context context, EvercamCamera evercamCamera, Bitmap snapshotBitmap)
-    {
+    public static void create(Context context, EvercamCamera evercamCamera, Bitmap snapshotBitmap) {
         //The intent that launches the live view for specific camera
         Intent shortcutIntent = new Intent(Intent.ACTION_VIEW, Uri.parse(getLiveViewUri(context)));
         shortcutIntent.putExtra(KEY_CAMERA_ID, evercamCamera.getCameraId());
@@ -46,18 +44,15 @@ public class HomeShortcut
         context.sendBroadcast(addIntent);
     }
 
-    private static String getLiveViewUri(Context context)
-    {
+    private static String getLiveViewUri(Context context) {
         return context.getString(R.string.data_scheme) + "://" + context.getString(R.string
                 .data_host) + context.getString(R.string.data_path);
     }
 
-    private static Bitmap getIconForShortcut(Context context, Bitmap snapshotBitmap)
-    {
+    private static Bitmap getIconForShortcut(Context context, Bitmap snapshotBitmap) {
         Bitmap bitmap = snapshotBitmap;
 
-        if(bitmap == null)
-        {
+        if (bitmap == null) {
             bitmap = BitmapFactory.decodeResource(context.getResources(),
                     R.drawable.icon_evercam);
             return Bitmap.createScaledBitmap(bitmap, 192, 192, false);
@@ -89,8 +84,7 @@ public class HomeShortcut
      * Add border to existing bitmap
      */
     private static Bitmap addBorder(Bitmap bmp, int topBorderSize, int bottomBorderSize,
-                                    int leftBorderSize, int rightBorderSize, int color)
-    {
+                                    int leftBorderSize, int rightBorderSize, int color) {
         Bitmap bmpWithBorder = Bitmap.createBitmap(bmp.getWidth() + leftBorderSize +
                         rightBorderSize, bmp.getHeight() + topBorderSize + bottomBorderSize,
                 bmp.getConfig());
@@ -103,8 +97,7 @@ public class HomeShortcut
     /**
      * Transform existing bitmap to rounded corner
      */
-    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap)
-    {
+    public static Bitmap getRoundedCornerBitmap(Bitmap bitmap) {
         Bitmap output = Bitmap.createBitmap(bitmap.getWidth(), bitmap.getHeight(),
                 Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(output);
@@ -126,8 +119,7 @@ public class HomeShortcut
         return output;
     }
 
-    public static void appendOverlay(Bitmap bitmap, Bitmap overlay)
-    {
+    public static void appendOverlay(Bitmap bitmap, Bitmap overlay) {
         Canvas canvas = new Canvas(bitmap);
         Paint paint = new Paint(Paint.FILTER_BITMAP_FLAG);
         canvas.drawBitmap(overlay, bitmap.getWidth() - 80, bitmap.getHeight() - 80, paint);

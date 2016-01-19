@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="wrap_content">
 
@@ -15,17 +14,17 @@
 
         <TextView
             android:id="@+id/device_ip_text_view"
-            style="@style/DarkText"/>
+            style="@style/DarkText" />
 
         <TextView
             android:id="@+id/device_mac_text_view"
             android:layout_marginTop="5dp"
-            style="@style/DarkText"/>
+            style="@style/DarkText" />
 
         <TextView
             android:id="@+id/device_company_text_view"
             android:layout_marginTop="5dp"
-            style="@style/DarkText"/>
+            style="@style/DarkText" />
 
     </LinearLayout>
 
@@ -42,6 +41,6 @@
         android:background="@drawable/border_button_selector"
         android:clickable="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/orange_red"/>
+        android:textColor="@color/orange_red" />
 
 </RelativeLayout>

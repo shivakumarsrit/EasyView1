@@ -3,8 +3,8 @@
 
     <!--<corners android:bottomLeftRadius="20px" android:topLeftRadius="20px"/>-->
 
-    <corners android:radius="20px"/>
+    <corners android:radius="20px" />
 
-    <solid android:color="#40000000"/><!--20% transparent black-->
+    <solid android:color="#40000000" /><!--20% transparent black-->
 
 </shape>

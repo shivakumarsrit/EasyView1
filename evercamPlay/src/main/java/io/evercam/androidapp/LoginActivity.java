@@ -29,8 +29,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 
-public class LoginActivity extends ParentAppCompatActivity
-{
+public class LoginActivity extends ParentAppCompatActivity {
     private EditText usernameEdit;
     private EditText passwordEdit;
     private String username;
@@ -39,14 +38,12 @@ public class LoginActivity extends ParentAppCompatActivity
     private String TAG = "LoginActivity";
     private CustomProgressDialog customProgressDialog;
 
-    private enum InternetCheckType
-    {
+    private enum InternetCheckType {
         LOGIN, SIGNUP
     }
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         customProgressDialog = new CustomProgressDialog(this);
@@ -60,22 +57,18 @@ public class LoginActivity extends ParentAppCompatActivity
         usernameEdit = (EditText) findViewById(R.id.editUsername);
         passwordEdit = (EditText) findViewById(R.id.editPassword);
 
-        btnLogin.setOnClickListener(new View.OnClickListener()
-        {
+        btnLogin.setOnClickListener(new View.OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 new LoginCheckInternetTask(LoginActivity.this,
                         InternetCheckType.LOGIN).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
 
-        signUpLink.setOnClickListener(new OnClickListener()
-        {
+        signUpLink.setOnClickListener(new OnClickListener() {
 
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 new LoginCheckInternetTask(LoginActivity.this,
                         InternetCheckType.SIGNUP).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
@@ -83,8 +76,7 @@ public class LoginActivity extends ParentAppCompatActivity
 
         forgotPasswordLink.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 Intent aboutIntent = new Intent(LoginActivity.this, SimpleWebActivity.class);
                 aboutIntent.putExtra(Constants.BUNDLE_KEY_URL,
                         getString(R.string.forget_password_url));
@@ -98,25 +90,19 @@ public class LoginActivity extends ParentAppCompatActivity
      * (Currently only for portrait mode)
      * Hide Evercam logo when soft keyboard shows up, and show the logo when keyboard is hidden
      */
-    public void adjustLoginFormForKeyboardChange()
-    {
+    public void adjustLoginFormForKeyboardChange() {
         final View activityRootView = findViewById(R.id.login_form);
-        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener()
-        {
+        activityRootView.getViewTreeObserver().addOnGlobalLayoutListener(new OnGlobalLayoutListener() {
             @Override
-            public void onGlobalLayout()
-            {
+            public void onGlobalLayout() {
                 int heightDiff = activityRootView.getRootView().getHeight() - activityRootView
                         .getHeight();
                 ImageView logoImageView = (ImageView) findViewById(R.id.icon_imgview);
                 //Log.d(TAG, activityRootView.getRootView().getHeight() + " - " +
                 // activityRootView.getHeight() + " = " + heightDiff);
-                if(heightDiff > activityRootView.getRootView().getHeight() / 3)
-                {
+                if (heightDiff > activityRootView.getRootView().getHeight() / 3) {
                     logoImageView.setVisibility(View.GONE);
-                }
-                else
-                {
+                } else {
                     logoImageView.setVisibility(View.VISIBLE);
                 }
             }
@@ -126,23 +112,17 @@ public class LoginActivity extends ParentAppCompatActivity
     /**
      * Hide logo when landscape, or when soft keyboard showing up in portrait
      */
-    public void hideLogoIfNecessary()
-    {
-        if(getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE)
-        {
+    public void hideLogoIfNecessary() {
+        if (getResources().getConfiguration().orientation == Configuration.ORIENTATION_LANDSCAPE) {
             ImageView logoImageView = (ImageView) findViewById(R.id.icon_imgview);
             logoImageView.setVisibility(View.GONE);
-        }
-        else
-        {
+        } else {
             adjustLoginFormForKeyboardChange();
         }
     }
 
-    public void attemptLogin()
-    {
-        if(loginTask != null)
-        {
+    public void attemptLogin() {
+        if (loginTask != null) {
             return;
         }
 
@@ -155,44 +135,33 @@ public class LoginActivity extends ParentAppCompatActivity
         boolean cancel = false;
         View focusView = null;
 
-        if(TextUtils.isEmpty(username))
-        {
+        if (TextUtils.isEmpty(username)) {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_username_required);
             focusView = usernameEdit;
             cancel = true;
-        }
-        else if((!username.contains("@") && !username.matches(Constants.REGULAR_EXPRESSION_USERNAME)))
-        {
+        } else if ((!username.contains("@") && !username.matches(Constants.REGULAR_EXPRESSION_USERNAME))) {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_invalid_username);
             focusView = usernameEdit;
             cancel = true;
-        }
-        else if(TextUtils.isEmpty(password))
-        {
+        } else if (TextUtils.isEmpty(password)) {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_password_required);
             focusView = passwordEdit;
             cancel = true;
-        }
-        else if(password.contains(" "))
-        {
+        } else if (password.contains(" ")) {
             CustomToast.showInCenter(getApplicationContext(), R.string.error_invalid_password);
             focusView = passwordEdit;
             cancel = true;
         }
 
-        if(cancel)
-        {
+        if (cancel) {
             focusView.requestFocus();
-        }
-        else
-        {
+        } else {
             customProgressDialog.show(getString(R.string.login_progress_signing_in));
 
             //Hide soft keyboard
             InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context
                     .INPUT_METHOD_SERVICE);
-            if(getCurrentFocus() != null)
-            {
+            if (getCurrentFocus() != null) {
                 inputMethodManager.hideSoftInputFromWindow(getCurrentFocus().getWindowToken(), 0);
             }
 
@@ -201,17 +170,14 @@ public class LoginActivity extends ParentAppCompatActivity
         }
     }
 
-    public class LoginTask extends AsyncTask<Void, Void, Boolean>
-    {
+    public class LoginTask extends AsyncTask<Void, Void, Boolean> {
         private String errorMessage = null;
         private AppUser newUser = null;
         private String unExpectedMessage = "";
 
         @Override
-        protected Boolean doInBackground(Void... params)
-        {
-            try
-            {
+        protected Boolean doInBackground(Void... params) {
+            try {
                 ApiKeyPair userKeyPair = API.requestUserKeyPairFromEvercam(username, password);
                 String userApiKey = userKeyPair.getApiKey();
                 String userApiId = userKeyPair.getApiId();
@@ -220,18 +186,13 @@ public class LoginActivity extends ParentAppCompatActivity
                 newUser = new AppUser(evercamUser);
                 newUser.setApiKeyPair(userApiKey, userApiId);
                 return true;
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 Log.e(TAG, e.toString());
 
-                if(e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
-                        .contains(getString(R.string.prefix_no_user)))
-                {
+                if (e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
+                        .contains(getString(R.string.prefix_no_user))) {
                     errorMessage = e.getMessage();
-                }
-                else
-                {
+                } else {
                     unExpectedMessage = e.getMessage();
                 }
             }
@@ -239,13 +200,11 @@ public class LoginActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected void onPostExecute(final Boolean success)
-        {
+        protected void onPostExecute(final Boolean success) {
             loginTask = null;
             customProgressDialog.dismiss();
 
-            if(success)
-            {
+            if (success) {
                 AppData.defaultUser = newUser;
                 new EvercamAccount(LoginActivity.this).add(newUser);
 
@@ -256,19 +215,13 @@ public class LoginActivity extends ParentAppCompatActivity
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_in, null);
 
                 registerUserWithIntercom(newUser);
-            }
-            else
-            {
-                if(errorMessage != null)
-                {
+            } else {
+                if (errorMessage != null) {
                     CustomToast.showInCenter(getApplicationContext(), errorMessage);
-                }
-                else
-                {
+                } else {
                     EvercamPlayApplication.sendCaughtException(LoginActivity.this,
                             getString(R.string.exception_error_login) + " " + unExpectedMessage);
-                    if(!LoginActivity.this.isFinishing())
-                    {
+                    if (!LoginActivity.this.isFinishing()) {
                         CustomedDialog.showUnexpectedErrorDialog(LoginActivity.this);
                     }
                 }
@@ -278,20 +231,16 @@ public class LoginActivity extends ParentAppCompatActivity
         }
 
         @Override
-        protected void onCancelled()
-        {
+        protected void onCancelled() {
             loginTask = null;
             customProgressDialog.dismiss();
         }
     }
 
     @Override
-    protected void onActivityResult(int requestCode, int resultCode, Intent data)
-    {
-        if(requestCode == Constants.REQUEST_CODE_SIGN_UP)
-        {
-            if(resultCode == Constants.RESULT_TRUE)
-            {
+    protected void onActivityResult(int requestCode, int resultCode, Intent data) {
+        if (requestCode == Constants.REQUEST_CODE_SIGN_UP) {
+            if (resultCode == Constants.RESULT_TRUE) {
                 setResult(Constants.RESULT_TRUE);
 
                 finish();
@@ -299,16 +248,11 @@ public class LoginActivity extends ParentAppCompatActivity
         }
     }
 
-    private void startCamerasActivity()
-    {
-        if(CamerasActivity.activity != null)
-        {
-            try
-            {
+    private void startCamerasActivity() {
+        if (CamerasActivity.activity != null) {
+            try {
                 CamerasActivity.activity.finish();
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 Log.e(TAG, e.toString(), e);
             }
         }
@@ -318,33 +262,24 @@ public class LoginActivity extends ParentAppCompatActivity
         this.finish();
     }
 
-    class LoginCheckInternetTask extends CheckInternetTask
-    {
+    class LoginCheckInternetTask extends CheckInternetTask {
         InternetCheckType type;
 
-        public LoginCheckInternetTask(Context context, InternetCheckType type)
-        {
+        public LoginCheckInternetTask(Context context, InternetCheckType type) {
             super(context);
             this.type = type;
         }
 
         @Override
-        protected void onPostExecute(Boolean hasNetwork)
-        {
-            if(hasNetwork)
-            {
-                if(type == InternetCheckType.LOGIN)
-                {
+        protected void onPostExecute(Boolean hasNetwork) {
+            if (hasNetwork) {
+                if (type == InternetCheckType.LOGIN) {
                     attemptLogin();
-                }
-                else if(type == InternetCheckType.SIGNUP)
-                {
+                } else if (type == InternetCheckType.SIGNUP) {
                     Intent signupIntent = new Intent(LoginActivity.this, SignUpActivity.class);
                     startActivityForResult(signupIntent, Constants.REQUEST_CODE_SIGN_UP);
                 }
-            }
-            else
-            {
+            } else {
                 CustomedDialog.showInternetNotConnectDialog(LoginActivity.this);
             }
         }

@@ -5,19 +5,16 @@ import android.test.AndroidTestCase;
 
 import io.evercam.androidapp.utils.DataCollector;
 
-public class DataCollectorTest extends AndroidTestCase
-{
+public class DataCollectorTest extends AndroidTestCase {
     Context mContext;
 
     @Override
-    protected void setUp() throws Exception
-    {
+    protected void setUp() throws Exception {
         super.setUp();
         mContext = this.getContext();
     }
 
-    public void testGetCountryCode()
-    {
+    public void testGetCountryCode() {
         assertEquals("ie", DataCollector.getCountryCode(mContext));
     }
 }

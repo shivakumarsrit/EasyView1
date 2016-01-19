@@ -9,36 +9,29 @@ import javax.crypto.KeyGenerator;
 import javax.crypto.SecretKey;
 import javax.crypto.spec.SecretKeySpec;
 
-public class Crypto
-{
+public class Crypto {
     public static final String EncryptionKey = "sajjadpp";
     private final static int JELLY_BEAN_4_2 = 17;
 
-    public static String encrypt(String cleartext) throws Exception
-    {
+    public static String encrypt(String cleartext) throws Exception {
         byte[] rawKey = getRawKey(EncryptionKey.getBytes());
         byte[] result = encrypt(rawKey, cleartext.getBytes());
         return toHex(result);
     }
 
-    public static String decrypt(String encrypted) throws Exception
-    {
+    public static String decrypt(String encrypted) throws Exception {
         byte[] rawKey = getRawKey(EncryptionKey.getBytes());
         byte[] enc = toByte(encrypted);
         byte[] result = decrypt(rawKey, enc);
         return new String(result);
     }
 
-    private static byte[] getRawKey(byte[] seed) throws Exception
-    {
+    private static byte[] getRawKey(byte[] seed) throws Exception {
         KeyGenerator kgen = KeyGenerator.getInstance("AES");
         SecureRandom sr = null;
-        if(android.os.Build.VERSION.SDK_INT >= JELLY_BEAN_4_2)
-        {
+        if (android.os.Build.VERSION.SDK_INT >= JELLY_BEAN_4_2) {
             sr = SecureRandom.getInstance("SHA1PRNG", "Crypto");
-        }
-        else
-        {
+        } else {
             sr = SecureRandom.getInstance("SHA1PRNG");
         }
         sr.setSeed(seed);
@@ -48,8 +41,7 @@ public class Crypto
         return raw;
     }
 
-    private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception
-    {
+    private static byte[] encrypt(byte[] raw, byte[] clear) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.ENCRYPT_MODE, skeySpec);
@@ -57,8 +49,7 @@ public class Crypto
         return encrypted;
     }
 
-    private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception
-    {
+    private static byte[] decrypt(byte[] raw, byte[] encrypted) throws Exception {
         SecretKeySpec skeySpec = new SecretKeySpec(raw, "AES");
         Cipher cipher = Cipher.getInstance("AES");
         cipher.init(Cipher.DECRYPT_MODE, skeySpec);
@@ -66,33 +57,27 @@ public class Crypto
         return decrypted;
     }
 
-    public static String toHex(String txt)
-    {
+    public static String toHex(String txt) {
         return toHex(txt.getBytes());
     }
 
-    public static String fromHex(String hex)
-    {
+    public static String fromHex(String hex) {
         return new String(toByte(hex));
     }
 
-    public static byte[] toByte(String hexString)
-    {
+    public static byte[] toByte(String hexString) {
         int len = hexString.length() / 2;
         byte[] result = new byte[len];
-        for(int i = 0; i < len; i++)
-        {
+        for (int i = 0; i < len; i++) {
             result[i] = Integer.valueOf(hexString.substring(2 * i, 2 * i + 2), 16).byteValue();
         }
         return result;
     }
 
-    public static String toHex(byte[] buf)
-    {
-        if(buf == null) return "";
+    public static String toHex(byte[] buf) {
+        if (buf == null) return "";
         StringBuffer result = new StringBuffer(2 * buf.length);
-        for(int i = 0; i < buf.length; i++)
-        {
+        for (int i = 0; i < buf.length; i++) {
             appendHex(result, buf[i]);
         }
         return result.toString();
@@ -100,8 +85,7 @@ public class Crypto
 
     private final static String HEX = "0123456789ABCDEF";
 
-    private static void appendHex(StringBuffer sb, byte b)
-    {
+    private static void appendHex(StringBuffer sb, byte b) {
         sb.append(HEX.charAt((b >> 4) & 0x0f)).append(HEX.charAt(b & 0x0f));
     }
 

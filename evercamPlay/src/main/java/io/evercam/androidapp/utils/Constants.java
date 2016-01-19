@@ -1,13 +1,12 @@
 package io.evercam.androidapp.utils;
 
-public final class Constants
-{
+public final class Constants {
     public static final String KEEN_COLLECTION_LIST_LOADING_TIME = "Camera List Loading Time";
     public static final String KEEN_COLLECTION_STREAM_LOADING_TIME = "Camera Live view Loading "
             + "Time";
     public static final String KEEN_COLLECTION_NEW_CAMERA = "New Camera Added";
     public static final String KEEN_COLLECTION_NEW_USER = "New User Created";
-    public static final String KEEN_COLLECTION_HOME_SHORTCUT= "Home Shortcut";
+    public static final String KEEN_COLLECTION_HOME_SHORTCUT = "Home Shortcut";
     public static final String KEEN_COLLECTION_TEST_SNAPSHOT = "Test Snapshot";
     public static final String KEEN_COLLECTION_SCANNING_METRIC = "Scanning Metrics";
     public static final String KEEN_COLLECTION_DISCOVERED_CAMERAS = "Discovered Cameras";
@@ -41,7 +40,7 @@ public final class Constants
      * Bundle keys
      */
     public static final String BUNDLE_KEY_CAMERA_ID = "cameraId";
-    public static final String BUNDLE_KEY_URL= "webUrl";
+    public static final String BUNDLE_KEY_URL = "webUrl";
     public static final String KEY_IS_EDIT = "isEdit";
 
     /**

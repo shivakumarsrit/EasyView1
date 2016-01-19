@@ -46,8 +46,7 @@ import io.evercam.androidapp.video.VideoActivity;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.intercom.android.sdk.Intercom;
 
-public class AddEditCameraActivity extends ParentAppCompatActivity
-{
+public class AddEditCameraActivity extends ParentAppCompatActivity {
     private final String TAG = "AddEditCameraActivity";
 
     private LinearLayout cameraIdLayout;
@@ -74,8 +73,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     private EvercamCamera cameraEdit;
 
     @Override
-    public void onCreate(Bundle savedInstanceState)
-    {
+    public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_add_edit_camera);
@@ -84,15 +82,13 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         Bundle bundle = getIntent().getExtras();
         // Edit Camera
-        if(bundle != null && bundle.containsKey(Constants.KEY_IS_EDIT))
-        {
+        if (bundle != null && bundle.containsKey(Constants.KEY_IS_EDIT)) {
             EvercamPlayApplication.sendScreenAnalytics(this,
                     getString(R.string.screen_edit_camera));
             cameraEdit = VideoActivity.evercamCamera;
 
             updateTitleText(R.string.title_edit_camera);
-        }
-        else
+        } else
         // Add Camera
         {
             EvercamPlayApplication.sendScreenAnalytics(this, getString(R.string.screen_add_camera));
@@ -106,8 +102,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         fillDiscoveredCameraDetails(discoveredCamera);
 
-        if(cameraEdit == null)
-        {
+        if (cameraEdit == null) {
             //Populate name and IP only when adding camera
             autoPopulateCameraName();
             autoPopulateExternalIP(externalHostEdit);
@@ -117,20 +112,17 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public void onBackPressed()
-    {
+    public void onBackPressed() {
         showConfirmQuitIfAddingCamera();
     }
 
     @Override
-    public boolean onCreateOptionsMenu(Menu menu)
-    {
+    public boolean onCreateOptionsMenu(Menu menu) {
         MenuInflater inflater = getMenuInflater();
         inflater.inflate(R.menu.activity_add_edit_camera, menu);
 
         MenuItem supportMenuItem = menu.findItem(R.id.menu_action_support);
-        if(supportMenuItem != null)
-        {
+        if (supportMenuItem != null) {
             LinearLayout menuLayout = (LinearLayout) LayoutInflater.from(this)
                     .inflate(R.layout.menu_support_lowercase, null);
             supportMenuItem.setActionView(menuLayout);
@@ -138,8 +130,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
             menuLayout.setOnClickListener(new OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     Intercom.client().displayConversationsList();
                 }
             });
@@ -149,10 +140,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
-        switch(item.getItemId())
-        {
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 showConfirmQuitIfAddingCamera();
                 return true;
@@ -160,17 +149,14 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         return true;
     }
 
-    private void showConfirmQuitIfAddingCamera()
-    {
+    private void showConfirmQuitIfAddingCamera() {
         //If edit camera
-        if(addEditButton.getText().equals(getString(R.string.save_changes)))
-        {
+        if (addEditButton.getText().equals(getString(R.string.save_changes))) {
             setResult(Constants.RESULT_FALSE);
             super.onBackPressed();
         }
         //If add camera
-        else
-        {
+        else {
             String cameraName = cameraNameEdit.getText().toString();
             String username = usernameEdit.getText().toString();
             String password = passwordEdit.getText().toString();
@@ -179,22 +165,18 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             String externalRtsp = externalRtspEdit.getText().toString();
             String jpgUrl = jpgUrlEdit.getText().toString();
             String rtspUrl = rtspUrlEdit.getText().toString();
-            if(!(cameraName.isEmpty() && username.isEmpty() && password
+            if (!(cameraName.isEmpty() && username.isEmpty() && password
                     .isEmpty() && externalHost.isEmpty() && externalHttp.isEmpty() &&
-                    externalRtsp.isEmpty() && jpgUrl.isEmpty() && rtspUrl.isEmpty()))
-            {
+                    externalRtsp.isEmpty() && jpgUrl.isEmpty() && rtspUrl.isEmpty())) {
                 CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
-            }
-            else
-            {
+            } else {
                 setResult(Constants.RESULT_FALSE);
                 super.onBackPressed();
             }
         }
     }
 
-    private void initialScreen()
-    {
+    private void initialScreen() {
         FragmentManager fragmentManager = getSupportFragmentManager();
         modelSelectorFragment = (ModelSelectorFragment) fragmentManager.findFragmentById(R.id.model_selector_fragment);
 
@@ -223,47 +205,39 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         Button testButton = (Button) findViewById(R.id.button_test_snapshot);
 
         mValidateHostInput = new ValidateHostInput(externalHostEdit,
-            externalHttpEdit, externalRtspEdit) {
-        @Override
-        public void onHostEmpty()
-        {
-            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.host_required));
-        }
+                externalHttpEdit, externalRtspEdit) {
+            @Override
+            public void onHostEmpty() {
+                CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.host_required));
+            }
 
-        @Override
-        public void onHttpEmpty()
-        {
-            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.external_http_required));
-        }
+            @Override
+            public void onHttpEmpty() {
+                CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.external_http_required));
+            }
 
-        @Override
-        public void onInvalidHttpPort()
-        {
-            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
-        }
+            @Override
+            public void onInvalidHttpPort() {
+                CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
+            }
 
-        @Override
-        public void onInvalidRtspPort()
-        {
-            CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
-        }
-    };
+            @Override
+            public void onInvalidRtspPort() {
+                CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.msg_port_range_error));
+            }
+        };
 
-        if(cameraEdit != null)
-        {
+        if (cameraEdit != null) {
             addEditButton.setText(getString(R.string.save_changes));
             cameraIdLayout.setVisibility(View.VISIBLE);
-        }
-        else
-        {
+        } else {
             cameraIdLayout.setVisibility(View.GONE);
             addEditButton.setText(getString(R.string.finish_and_add));
         }
 
         externalIpExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
                         .msg_ip_explanation_title, R.string
                         .msg_ip_explanation);
@@ -271,8 +245,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         });
         jpgExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
                         .msg_jpg_explanation_title, R.string
                         .msg_jpg_explanation);
@@ -280,8 +253,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         });
         httpExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
                         .msg_http_explanation_title, R.string
                         .msg_http_explanation);
@@ -289,8 +261,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         });
         rtspPortExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
                         .msg_rtsp_port_explanation_title, R.string
                         .msg_rtsp_port_explanation);
@@ -298,25 +269,19 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         });
         rtspUrlExplainationImageButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 CustomedDialog.showMessageDialogWithTitle(AddEditCameraActivity.this, R.string
                         .msg_rtsp_url_explanation_title, R.string
                         .msg_rtsp_url_explanation);
             }
         });
 
-        externalHttpEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        externalHttpEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View view, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View view, boolean hasFocus) {
+                if (hasFocus) {
                     externalHttpEdit.hideStatusViewsOnTextChange(mHttpStatusTextView);
-                }
-                else
-                {
+                } else {
                     checkPort(PortCheckTask.PortType.HTTP);
                 }
             }
@@ -324,31 +289,22 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         externalRtspEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     externalRtspEdit.hideStatusViewsOnTextChange(mRtspStatusTextView);
-                }
-                else
-                {
+                } else {
                     checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });
 
-        externalHostEdit.setOnFocusChangeListener(new View.OnFocusChangeListener()
-        {
+        externalHostEdit.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
-            public void onFocusChange(View v, boolean hasFocus)
-            {
-                if(hasFocus)
-                {
+            public void onFocusChange(View v, boolean hasFocus) {
+                if (hasFocus) {
                     externalHostEdit.hideStatusViewsOnTextChange(
                             mRtspStatusTextView, mHttpStatusTextView);
-                }
-                else
-                {
+                } else {
                     checkPort(PortCheckTask.PortType.HTTP);
                     checkPort(PortCheckTask.PortType.RTSP);
                 }
@@ -357,98 +313,70 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
         jpgUrlEdit.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
-                if(!jpgUrlEdit.isFocusable())
-                {
+            public void onClick(View v) {
+                if (!jpgUrlEdit.isFocusable()) {
                     CustomedDialog.getMessageDialog(AddEditCameraActivity.this, R.string.msg_url_ending_not_editable).show();
                 }
             }
         });
 
-        addEditButton.setOnClickListener(new OnClickListener()
-        {
+        addEditButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
 
                 String externalHost = externalHostEdit.getText().toString();
-                if(Commons.isLocalIp(externalHost))
-                {
-                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener()
-                    {
+                if (Commons.isLocalIp(externalHost)) {
+                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             performAddEdit();
                         }
                     }, R.string.msg_local_ip_warning).show();
-                }
-                else
-                {
+                } else {
                     performAddEdit();
                 }
             }
         });
 
-        testButton.setOnClickListener(new OnClickListener()
-        {
+        testButton.setOnClickListener(new OnClickListener() {
             @Override
-            public void onClick(View v)
-            {
+            public void onClick(View v) {
                 String externalHost = externalHostEdit.getText().toString();
-                if(Commons.isLocalIp(externalHost))
-                {
-                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener()
-                    {
+                if (Commons.isLocalIp(externalHost)) {
+                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener() {
                         @Override
-                        public void onClick(DialogInterface dialog, int which)
-                        {
+                        public void onClick(DialogInterface dialog, int which) {
                             launchTestSnapshot();
                         }
                     }, R.string.msg_local_ip_warning).show();
-                }
-                else
-                {
+                } else {
                     launchTestSnapshot();
                 }
             }
         });
     }
 
-    private void checkPort(PortCheckTask.PortType type)
-    {
-        if(type == PortCheckTask.PortType.HTTP)
-        {
-            checkPort(externalHostEdit,externalHttpEdit, mHttpStatusTextView, mHttpProgressBar);
-        }
-        else if(type == PortCheckTask.PortType.RTSP)
-        {
+    private void checkPort(PortCheckTask.PortType type) {
+        if (type == PortCheckTask.PortType.HTTP) {
+            checkPort(externalHostEdit, externalHttpEdit, mHttpStatusTextView, mHttpProgressBar);
+        } else if (type == PortCheckTask.PortType.RTSP) {
             checkPort(externalHostEdit, externalRtspEdit, mRtspStatusTextView, mRtspProgressBar);
         }
     }
 
-    private void performAddEdit()
-    {
-        if(addEditButton.getText().equals(getString(R.string.save_changes)))
-        {
+    private void performAddEdit() {
+        if (addEditButton.getText().equals(getString(R.string.save_changes))) {
             PatchCameraBuilder patchCameraBuilder = buildPatchCameraWithLocalCheck();
-            if(patchCameraBuilder != null)
-            {
+            if (patchCameraBuilder != null) {
                 new PatchCameraTask(patchCameraBuilder.build(),
                         AddEditCameraActivity.this).executeOnExecutor(AsyncTask
                         .THREAD_POOL_EXECUTOR);
-            }
-            else
-            {
+            } else {
                 Log.e(TAG, "Camera to patch is null");
             }
-        }
-        else
-        {
+        } else {
             CameraBuilder cameraBuilder = buildCameraWithLocalCheck();
-            if(cameraBuilder != null)
-            {
+            if (cameraBuilder != null) {
                 boolean isFromScan = discoveredCamera != null;
 
                 //Set camera status to be online as a temporary fix for #133
@@ -459,35 +387,26 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private void fillDiscoveredCameraDetails(DiscoveredCamera camera)
-    {
-        if(camera != null)
-        {
+    private void fillDiscoveredCameraDetails(DiscoveredCamera camera) {
+        if (camera != null) {
             Log.d(TAG, camera.toString());
-            if(camera.hasExternalIp())
-            {
+            if (camera.hasExternalIp()) {
                 externalHostEdit.setText(camera.getExternalIp());
             }
-            if(camera.hasExternalHttp())
-            {
+            if (camera.hasExternalHttp()) {
                 externalHttpEdit.setText(String.valueOf(camera.getExthttp()));
             }
-            if(camera.hasExternalRtsp())
-            {
+            if (camera.hasExternalRtsp()) {
                 externalRtspEdit.setText(String.valueOf(camera.getExtrtsp()));
             }
-            if(camera.hasName())
-            {
+            if (camera.hasName()) {
                 //The maximum camera name length is 24
                 String cameraName = camera.getName();
-                if(cameraName.length() > 24)
-                {
+                if (cameraName.length() > 24) {
                     cameraName = cameraName.substring(0, 23);
                 }
                 cameraNameEdit.setText(cameraName);
-            }
-            else
-            {
+            } else {
                 cameraNameEdit.setText((camera.getVendor() + " " + camera.getModel()).toUpperCase());
             }
         }
@@ -496,34 +415,26 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     /**
      * Auto populate camera name as 'Camera + number'
      */
-    private void autoPopulateCameraName()
-    {
-        if(cameraNameEdit.getText().toString().isEmpty())
-        {
+    private void autoPopulateCameraName() {
+        if (cameraNameEdit.getText().toString().isEmpty()) {
             int number = 1;
             boolean matches = true;
             String cameraName;
 
-            while(matches)
-            {
+            while (matches) {
                 boolean duplicate = false;
 
                 cameraName = "Camera " + number;
-                for(EvercamCamera evercamCamera : AppData.evercamCameraList)
-                {
-                    if(evercamCamera.getName().equals(cameraName))
-                    {
+                for (EvercamCamera evercamCamera : AppData.evercamCameraList) {
+                    if (evercamCamera.getName().equals(cameraName)) {
                         duplicate = true;
                         break;
                     }
                 }
 
-                if(duplicate)
-                {
-                    number ++;
-                }
-                else
-                {
+                if (duplicate) {
+                    number++;
+                } else {
                     matches = false;
                 }
             }
@@ -532,27 +443,21 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         }
     }
 
-    private void autoPopulateExternalIP(final EditText editText)
-    {
+    private void autoPopulateExternalIP(final EditText editText) {
         /**
          * Auto populate IP as external IP address if on WiFi
          */
-        if(new DataCollector(this).isConnectedWifi())
-        {
-            if(editText.getText().toString().isEmpty())
-            {
+        if (new DataCollector(this).isConnectedWifi()) {
+            if (editText.getText().toString().isEmpty()) {
 
-                new AsyncTask<Void, Void, String>()
-                {
+                new AsyncTask<Void, Void, String>() {
                     @Override
-                    protected String doInBackground(Void... params)
-                    {
+                    protected String doInBackground(Void... params) {
                         return io.evercam.network.discovery.NetworkInfo.getExternalIP();
                     }
 
                     @Override
-                    protected void onPostExecute(String externalIp)
-                    {
+                    protected void onPostExecute(String externalIp) {
                         editText.setText(externalIp);
                         autoPopulateDefaultPorts(externalHttpEdit, externalRtspEdit);
                     }
@@ -565,24 +470,19 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
      * Auto populate default port 80 and 554 and launch port check
      * Only when the port text field is empty
      */
-    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText)
-    {
-        if(httpEditText.getText().toString().isEmpty())
-        {
+    private void autoPopulateDefaultPorts(EditText httpEditText, EditText rtspEditText) {
+        if (httpEditText.getText().toString().isEmpty()) {
             httpEditText.setText("80");
             checkPort(PortCheckTask.PortType.HTTP);
         }
-        if(rtspEditText.getText().toString().isEmpty())
-        {
+        if (rtspEditText.getText().toString().isEmpty()) {
             rtspEditText.setText("554");
             checkPort(PortCheckTask.PortType.RTSP);
         }
     }
 
-    private void fillEditCameraDetails(EvercamCamera camera)
-    {
-        if(camera != null)
-        {
+    private void fillEditCameraDetails(EvercamCamera camera) {
+        if (camera != null) {
             showUrlEndings(!camera.hasModel());
 
             // Log.d(TAG, cameraEdit.toString());
@@ -595,19 +495,16 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             externalHostEdit.setText(camera.getExternalHost());
             int externalHttp = camera.getExternalHttp();
             int externalRtsp = camera.getExternalRtsp();
-            if(externalHttp != 0)
-            {
+            if (externalHttp != 0) {
                 externalHttpEdit.setText(String.valueOf(externalHttp));
             }
-            if(externalRtsp != 0)
-            {
+            if (externalRtsp != 0) {
                 externalRtspEdit.setText(String.valueOf(externalRtsp));
             }
         }
     }
 
-    public void showUrlEndings(boolean show)
-    {
+    public void showUrlEndings(boolean show) {
         jpgUrlLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         rtspUrlLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
@@ -615,20 +512,17 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     /**
      * Read and validate user input for add camera.
      */
-    private CameraBuilder buildCameraWithLocalCheck()
-    {
+    private CameraBuilder buildCameraWithLocalCheck() {
         String cameraName = cameraNameEdit.getText().toString();
 
-        if(cameraName.isEmpty())
-        {
+        if (cameraName.isEmpty()) {
             CustomToast.showInCenter(this, getString(R.string.name_required));
             return null;
         }
 
         CameraBuilder cameraBuilder = new CameraBuilder(cameraName, false);
 
-        if(mValidateHostInput.passed())
-        {
+        if (mValidateHostInput.passed()) {
             cameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
             cameraBuilder.setExternalHost(externalHostEdit.getText().toString());
             int externalRtspInt = externalRtspEdit.getPort();
@@ -636,64 +530,52 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             cameraBuilder.setExternalRtspPort(externalRtspInt);
 
             String vendorId = modelSelectorFragment.getVendorIdFromSpinner();
-            if(!vendorId.isEmpty())
-            {
+            if (!vendorId.isEmpty()) {
                 cameraBuilder.setVendor(vendorId);
             }
 
             String modelId = modelSelectorFragment.getModelIdFromSpinner();
-            if(!modelId.isEmpty())
-            {
+            if (!modelId.isEmpty()) {
                 cameraBuilder.setModel(modelId);
             }
 
             String username = usernameEdit.getText().toString();
-            if(!username.isEmpty())
-            {
+            if (!username.isEmpty()) {
                 cameraBuilder.setCameraUsername(username);
             }
 
             String password = passwordEdit.getText().toString();
-            if(!password.isEmpty())
-            {
+            if (!password.isEmpty()) {
                 cameraBuilder.setCameraPassword(password);
             }
 
             String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
-            if(!jpgUrl.isEmpty())
-            {
+            if (!jpgUrl.isEmpty()) {
                 cameraBuilder.setJpgUrl(jpgUrl);
             }
 
             String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
-            if(!rtspUrl.isEmpty())
-            {
+            if (!rtspUrl.isEmpty()) {
                 cameraBuilder.setH264Url(rtspUrl);
             }
 
             //Attach additional info for discovered camera as well
-            if(discoveredCamera != null)
-            {
+            if (discoveredCamera != null) {
                 cameraBuilder.setInternalHost(discoveredCamera.getIP());
 
-                if(discoveredCamera.hasMac())
-                {
+                if (discoveredCamera.hasMac()) {
                     cameraBuilder.setMacAddress(discoveredCamera.getMAC());
                 }
 
-                if(discoveredCamera.hasHTTP())
-                {
+                if (discoveredCamera.hasHTTP()) {
                     cameraBuilder.setInternalHttpPort(discoveredCamera.getHttp());
                 }
 
-                if(discoveredCamera.hasRTSP())
-                {
+                if (discoveredCamera.hasRTSP()) {
                     cameraBuilder.setInternalRtspPort(discoveredCamera.getRtsp());
                 }
             }
-        }
-        else
-        {
+        } else {
             return null;
         }
 
@@ -703,28 +585,22 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     /**
      * Read and validate user input for edit camera.
      */
-    private PatchCameraBuilder buildPatchCameraWithLocalCheck()
-    {
+    private PatchCameraBuilder buildPatchCameraWithLocalCheck() {
         PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
-        if(mValidateHostInput.passed())
-        {
+        if (mValidateHostInput.passed()) {
             patchCameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
             patchCameraBuilder.setExternalHost(externalHostEdit.getText().toString());
             int externalRtspInt = externalRtspEdit.getPort();
-            if(externalRtspInt != 0)
-            {
+            if (externalRtspInt != 0) {
                 patchCameraBuilder.setExternalRtspPort(externalRtspInt);
             }
 
             String cameraName = cameraNameEdit.getText().toString();
-            if(cameraName.isEmpty())
-            {
+            if (cameraName.isEmpty()) {
                 CustomToast.showInCenter(this, getString(R.string.name_required));
                 return null;
-            }
-            else if(!cameraName.equals(cameraEdit.getName()))
-            {
+            } else if (!cameraName.equals(cameraEdit.getName())) {
                 patchCameraBuilder.setName(cameraName);
             }
 
@@ -736,21 +612,18 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
 
             String username = usernameEdit.getText().toString();
             String password = passwordEdit.getText().toString();
-            if(!username.equals(cameraEdit.getUsername()) || !password.equals(cameraEdit.getPassword()))
-            {
+            if (!username.equals(cameraEdit.getUsername()) || !password.equals(cameraEdit.getPassword())) {
                 patchCameraBuilder.setCameraUsername(username);
                 patchCameraBuilder.setCameraPassword(password);
             }
 
             String jpgUrl = buildUrlEndingWithSlash(jpgUrlEdit.getText().toString());
-            if(!jpgUrl.equals(cameraEdit.getJpgPath()))
-            {
+            if (!jpgUrl.equals(cameraEdit.getJpgPath())) {
                 patchCameraBuilder.setJpgUrl(jpgUrl);
             }
 
             String rtspUrl = buildUrlEndingWithSlash(rtspUrlEdit.getText().toString());
-            if(!rtspUrl.equals(cameraEdit.getH264Path()))
-            {
+            if (!rtspUrl.equals(cameraEdit.getH264Path())) {
                 patchCameraBuilder.setH264Url(rtspUrl);
             }
         }
@@ -758,45 +631,37 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         return patchCameraBuilder;
     }
 
-    public void fillDefaults(Model model)
-    {
-        try
-        {
+    public void fillDefaults(Model model) {
+        try {
             // FIXME: Sometimes vendor with no default model, contains default
             // jpg url.
             // TODO: Consider if no default values associated, clear defaults
             // that has been filled.
             Defaults defaults = model.getDefaults();
             Auth basicAuth = defaults.getAuth(Auth.TYPE_BASIC);
-            if(basicAuth != null)
-            {
+            if (basicAuth != null) {
                 usernameEdit.setText(basicAuth.getUsername());
                 passwordEdit.setText(basicAuth.getPassword());
             }
             jpgUrlEdit.setText(defaults.getJpgURL());
             rtspUrlEdit.setText(defaults.getH264URL());
 
-            if(!model.getName().equals(Model.DEFAULT_MODEL_NAME) && !jpgUrlEdit.getText().toString().isEmpty())
-            {
+            if (!model.getName().equals(Model.DEFAULT_MODEL_NAME) && !jpgUrlEdit.getText().toString().isEmpty()) {
                 //If user specified a specific model, make it not editable
                 jpgUrlEdit.setFocusable(false);
                 jpgUrlEdit.setClickable(true);
-            }
-            else
-            {
+            } else {
                 //For default model or
                 jpgUrlEdit.setFocusable(true);
                 jpgUrlEdit.setClickable(true);
                 jpgUrlEdit.setFocusableInTouchMode(true);
             }
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             Log.e(TAG, "Fill defaults: " + e.toString());
         }
     }
-    public void clearDefaults()
-    {
+
+    public void clearDefaults() {
         usernameEdit.setText("");
         passwordEdit.setText("");
         jpgUrlEdit.setText("");
@@ -808,27 +673,20 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
         jpgUrlEdit.setFocusableInTouchMode(true);
     }
 
-    public static String buildUrlEndingWithSlash(String originalUrl)
-    {
+    public static String buildUrlEndingWithSlash(String originalUrl) {
         String jpgUrl = "";
-        if(originalUrl != null && !originalUrl.equals(""))
-        {
-            if(!originalUrl.startsWith("/"))
-            {
+        if (originalUrl != null && !originalUrl.equals("")) {
+            if (!originalUrl.startsWith("/")) {
                 jpgUrl = "/" + originalUrl;
-            }
-            else
-            {
+            } else {
                 jpgUrl = originalUrl;
             }
         }
         return jpgUrl;
     }
 
-    private void launchTestSnapshot()
-    {
-        if(mValidateHostInput.passed())
-        {
+    private void launchTestSnapshot() {
+        if (mValidateHostInput.passed()) {
             final String username = usernameEdit.getText().toString();
             final String password = passwordEdit.getText().toString();
             final String externalHost = externalHostEdit.getText().toString();
@@ -839,46 +697,34 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
             String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
             new TestSnapshotTask(externalUrl, jpgUrl, username, password,
-                        AddEditCameraActivity.this).executeOnExecutor(AsyncTask
-                        .THREAD_POOL_EXECUTOR);
+                    AddEditCameraActivity.this).executeOnExecutor(AsyncTask
+                    .THREAD_POOL_EXECUTOR);
         }
     }
 
-    public boolean isFromDiscoverAndHasVendor()
-    {
+    public boolean isFromDiscoverAndHasVendor() {
         return discoveredCamera != null && discoveredCamera.hasVendor();
     }
 
-    public DiscoveredCamera getDiscoveredCamera()
-    {
+    public DiscoveredCamera getDiscoveredCamera() {
         return discoveredCamera;
     }
 
-    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList)
-    {
-        if(cameraEdit != null && !cameraEdit.getModel().isEmpty())
-        {
+    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList) {
+        if (cameraEdit != null && !cameraEdit.getModel().isEmpty()) {
             modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModel());
-        }
-        else if(discoveredCamera != null && discoveredCamera.hasModel())
-        {
+        } else if (discoveredCamera != null && discoveredCamera.hasModel()) {
             modelSelectorFragment.buildModelSpinner(modelList, discoveredCamera.getModel());
-        }
-        else
-        {
+        } else {
             modelSelectorFragment.buildModelSpinner(modelList, null);
         }
     }
 
-    public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList)
-    {
+    public void buildSpinnerOnVendorListResult(@NonNull ArrayList<Vendor> vendorList) {
         // If the camera has vendor, show as selected in spinner
-        if(cameraEdit != null && !cameraEdit.getVendor().isEmpty())
-        {
+        if (cameraEdit != null && !cameraEdit.getVendor().isEmpty()) {
             modelSelectorFragment.buildVendorSpinner(vendorList, cameraEdit.getVendor());
-        }
-        else
-        {
+        } else {
             modelSelectorFragment.buildVendorSpinner(vendorList, null);
         }
     }

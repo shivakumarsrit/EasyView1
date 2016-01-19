@@ -11,66 +11,53 @@ import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.utils.Constants;
 
-public class TransferOwnershipTask extends AsyncTask<Void, Void, Boolean>
-{
+public class TransferOwnershipTask extends AsyncTask<Void, Void, Boolean> {
     private Activity activity;
     private CustomProgressDialog customProgressDialog;
     private String errorMessage;
     private String cameraId;
     private String userId;
 
-    public TransferOwnershipTask(Activity activity, String cameraId, String userId)
-    {
+    public TransferOwnershipTask(Activity activity, String cameraId, String userId) {
         this.activity = activity;
         this.cameraId = cameraId;
         this.userId = userId;
     }
 
     @Override
-    protected void onPreExecute()
-    {
+    protected void onPreExecute() {
         errorMessage = activity.getString(R.string.unknown_error);
         customProgressDialog = new CustomProgressDialog(activity);
         customProgressDialog.show(activity.getString(R.string.msg_transferring));
     }
 
     @Override
-    protected Boolean doInBackground(Void... params)
-    {
-        try
-        {
+    protected Boolean doInBackground(Void... params) {
+        try {
             Camera.transfer(cameraId, userId);
 
             return true;
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             errorMessage = e.getMessage();
         }
         return false;
     }
 
     @Override
-    protected void onPostExecute(Boolean success)
-    {
+    protected void onPostExecute(Boolean success) {
         customProgressDialog.dismiss();
 
-        if(success)
-        {
-            if(activity instanceof SharingActivity)
-            {
+        if (success) {
+            if (activity instanceof SharingActivity) {
                 activity.setResult(Constants.RESULT_TRANSFERRED);
                 activity.finish();
             }
-        }
-        else
-        {
+        } else {
             CustomToast.showInCenterLong(activity, errorMessage);
         }
     }
 
-    public static void launch(Activity activity, String cameraId, String userId)
-    {
+    public static void launch(Activity activity, String cameraId, String userId) {
         new TransferOwnershipTask(activity, cameraId, userId)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

@@ -8,20 +8,16 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
-public class PortCheckEditText extends EditText
-{
-    public PortCheckEditText(Context context)
-    {
+public class PortCheckEditText extends EditText {
+    public PortCheckEditText(Context context) {
         super(context);
     }
 
-    public PortCheckEditText(Context context, AttributeSet attrs)
-    {
+    public PortCheckEditText(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public PortCheckEditText(Context context, AttributeSet attrs, int defStyleAttr)
-    {
+    public PortCheckEditText(Context context, AttributeSet attrs, int defStyleAttr) {
         super(context, attrs, defStyleAttr);
     }
 
@@ -30,26 +26,23 @@ public class PortCheckEditText extends EditText
      *
      * @param textViews The status text view(s) list to clear after text changes
      */
-    public void hideStatusViewsOnTextChange(final TextView... textViews)
-    {
-        addTextChangedListener(new TextWatcher()
-        {
+    public void hideStatusViewsOnTextChange(final TextView... textViews) {
+        addTextChangedListener(new TextWatcher() {
 
             boolean isFirstTimeChange = true;
 
             @Override
-            public void beforeTextChanged(CharSequence s, int start, int count, int after) {}
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+            }
 
             @Override
-            public void onTextChanged(CharSequence s, int start, int before, int count) {}
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+            }
 
             @Override
-            public void afterTextChanged(Editable editable)
-            {
-                if(isFirstTimeChange)
-                {
-                    for(TextView textView : textViews)
-                    {
+            public void afterTextChanged(Editable editable) {
+                if (isFirstTimeChange) {
+                    for (TextView textView : textViews) {
                         hideView(textView);
                         isFirstTimeChange = false;
                     }
@@ -58,8 +51,7 @@ public class PortCheckEditText extends EditText
         });
     }
 
-    private void hideView(TextView textView)
-    {
+    private void hideView(TextView textView) {
         textView.setVisibility(View.GONE);
     }
 
@@ -68,24 +60,18 @@ public class PortCheckEditText extends EditText
      *
      * @return a number between 0 and 65535
      */
-    public int getPort()
-    {
+    public int getPort() {
         return isPortStringValid() ? Integer.valueOf(getText().toString()) : 0;
     }
 
-    public boolean isPortStringValid()
-    {
+    public boolean isPortStringValid() {
         String portString = getText().toString();
-        try
-        {
+        try {
             int portInt = Integer.valueOf(portString);
-            if(portInt > 0 && portInt <= 65535)
-            {
+            if (portInt > 0 && portInt <= 65535) {
                 return true;
             }
-        }
-        catch(NumberFormatException e)
-        {
+        } catch (NumberFormatException e) {
             //The exception is handled outside the catch
         }
         return false;

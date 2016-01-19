@@ -6,8 +6,7 @@ import io.evercam.Auth;
 import io.evercam.Defaults;
 import io.evercam.EvercamException;
 
-public class SelectedModel implements Serializable
-{
+public class SelectedModel implements Serializable {
     private String modelId = "";
     private String modelName = "";
     private String vendorId = "";
@@ -17,122 +16,98 @@ public class SelectedModel implements Serializable
     private String defaultUsername = "";
     private String defaultPassword = "";
 
-    public SelectedModel(String modelId, String modelName, String vendorId, String vendorName, Defaults defaults)
-    {
+    public SelectedModel(String modelId, String modelName, String vendorId, String vendorName, Defaults defaults) {
         setModelId(modelId);
         setModelName(modelName);
         setVendorId(vendorId);
         setVendorName(vendorName);
 
-        if(defaults != null)
-        {
-            try
-            {
+        if (defaults != null) {
+            try {
                 setDefaultJpgUrl(defaults.getJpgURL());
                 setDefaultRtspUrl(defaults.getH264URL());
 
                 Auth auth = defaults.getAuth(Auth.TYPE_BASIC);
-                if(auth != null)
-                {
+                if (auth != null) {
                     setDefaultUsername(auth.getUsername());
                     setDefaultPassword(auth.getPassword());
                 }
-            }
-            catch(EvercamException e)
-            {
+            } catch (EvercamException e) {
                 e.printStackTrace();
             }
         }
     }
 
-    public boolean isUnknown()
-    {
+    public boolean isUnknown() {
         return getVendorId().isEmpty() || getModelId().isEmpty();
     }
 
-    public String getModelId()
-    {
+    public String getModelId() {
         return modelId;
     }
 
-    private void setModelId(String modelId)
-    {
+    private void setModelId(String modelId) {
         this.modelId = modelId;
     }
 
-    public String getModelName()
-    {
+    public String getModelName() {
         return modelName;
     }
 
-    private void setModelName(String modelName)
-    {
+    private void setModelName(String modelName) {
         this.modelName = modelName;
     }
 
-    public String getVendorId()
-    {
+    public String getVendorId() {
         return vendorId;
     }
 
-    private void setVendorId(String vendorId)
-    {
+    private void setVendorId(String vendorId) {
         this.vendorId = vendorId;
     }
 
-    public String getVendorName()
-    {
+    public String getVendorName() {
         return vendorName;
     }
 
-    private void setVendorName(String vendorName)
-    {
+    private void setVendorName(String vendorName) {
         this.vendorName = vendorName;
     }
 
-    public String getDefaultJpgUrl()
-    {
+    public String getDefaultJpgUrl() {
         return defaultJpgUrl;
     }
 
-    private void setDefaultJpgUrl(String defaultJpgUrl)
-    {
+    private void setDefaultJpgUrl(String defaultJpgUrl) {
         this.defaultJpgUrl = defaultJpgUrl;
     }
 
-    public String getDefaultRtspUrl()
-    {
+    public String getDefaultRtspUrl() {
         return defaultRtspUrl;
     }
 
-    private void setDefaultRtspUrl(String defaultRtspUrl)
-    {
+    private void setDefaultRtspUrl(String defaultRtspUrl) {
         this.defaultRtspUrl = defaultRtspUrl;
     }
 
-    public String getDefaultUsername()
-    {
+    public String getDefaultUsername() {
         return defaultUsername;
     }
 
-    private void setDefaultUsername(String defaultUsername)
-    {
+    private void setDefaultUsername(String defaultUsername) {
         this.defaultUsername = defaultUsername;
     }
 
-    public String getDefaultPassword()
-    {
+    public String getDefaultPassword() {
         return defaultPassword;
     }
 
-    private void setDefaultPassword(String defaultPassword)
-    {
+    private void setDefaultPassword(String defaultPassword) {
         this.defaultPassword = defaultPassword;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "SelectedModel{" +
                 "modelId='" + modelId + '\'' +
                 ", modelName='" + modelName + '\'' +

@@ -7,8 +7,7 @@ import java.util.HashMap;
 import io.evercam.androidapp.utils.Constants;
 import io.keen.client.java.KeenClient;
 
-public class ShortcutFeedbackItem extends FeedbackItem
-{
+public class ShortcutFeedbackItem extends FeedbackItem {
     public static final String ACTION_TYPE_CREATE = "created";
     public static final String ACTION_TYPE_USE = "used";
 
@@ -20,8 +19,7 @@ public class ShortcutFeedbackItem extends FeedbackItem
     private String result = "";
 
     public ShortcutFeedbackItem(Context context, String username, String cameraId, String
-            actionType, String resultType)
-    {
+            actionType, String resultType) {
         super(context, username);
         this.camera_id = cameraId;
         this.action_type = actionType;
@@ -29,8 +27,7 @@ public class ShortcutFeedbackItem extends FeedbackItem
     }
 
     @Override
-    public HashMap<String, Object> toHashMap()
-    {
+    public HashMap<String, Object> toHashMap() {
         HashMap<String, Object> map = super.toHashMap();
         map.put("camera_id", camera_id);
         map.put("action_type", action_type);
@@ -39,17 +36,13 @@ public class ShortcutFeedbackItem extends FeedbackItem
     }
 
     @Override
-    public void sendToKeenIo(final KeenClient client)
-    {
-        if(client != null)
-        {
+    public void sendToKeenIo(final KeenClient client) {
+        if (client != null) {
             final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable()
-            {
+            new Thread(new Runnable() {
 
                 @Override
-                public void run()
-                {
+                public void run() {
                     client.addEvent(Constants.KEEN_COLLECTION_HOME_SHORTCUT, feedbackItem
                             .toHashMap());
 

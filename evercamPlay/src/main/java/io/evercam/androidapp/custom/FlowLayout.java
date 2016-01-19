@@ -9,12 +9,10 @@ import android.view.ViewGroup;
  * Container of views that it shows in a flow. If can not fit in a row, 
  * it will put the view in next line.
  */
-public class FlowLayout extends ViewGroup
-{
+public class FlowLayout extends ViewGroup {
     private int lineHeight;
 
-    public static class LayoutParams extends ViewGroup.LayoutParams
-    {
+    public static class LayoutParams extends ViewGroup.LayoutParams {
         public final int horizontal_spacing;
         public final int vertical_spacing;
 
@@ -22,27 +20,23 @@ public class FlowLayout extends ViewGroup
          * @param horizontal_spacing Pixels between items, horizontally
          * @param vertical_spacing   Pixels between items, vertically
          */
-        public LayoutParams(int horizontal_spacing, int vertical_spacing)
-        {
+        public LayoutParams(int horizontal_spacing, int vertical_spacing) {
             super(0, 0);
             this.horizontal_spacing = horizontal_spacing;
             this.vertical_spacing = vertical_spacing;
         }
     }
 
-    public FlowLayout(Context context)
-    {
+    public FlowLayout(Context context) {
         super(context);
     }
 
-    public FlowLayout(Context context, AttributeSet attrs)
-    {
+    public FlowLayout(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
     @Override
-    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec)
-    {
+    protected void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
         assert (MeasureSpec.getMode(widthMeasureSpec) != MeasureSpec.UNSPECIFIED);
 
         final int width = MeasureSpec.getSize(widthMeasureSpec) - getPaddingLeft() -
@@ -55,28 +49,22 @@ public class FlowLayout extends ViewGroup
         int ypos = getPaddingTop();
 
         int childHeightMeasureSpec;
-        if(MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST)
-        {
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST) {
             childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(height, MeasureSpec.AT_MOST);
-        }
-        else
-        {
+        } else {
             childHeightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED);
         }
 
-        for(int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
-            if(child.getVisibility() != GONE)
-            {
+            if (child.getVisibility() != GONE) {
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
                 child.measure(MeasureSpec.makeMeasureSpec(width, MeasureSpec.AT_MOST),
                         childHeightMeasureSpec);
                 final int childw = child.getMeasuredWidth();
                 lineHeight = Math.max(lineHeight, child.getMeasuredHeight() + lp.vertical_spacing);
 
-                if(xpos + childw > width)
-                {
+                if (xpos + childw > width) {
                     xpos = getPaddingLeft();
                     ypos += lineHeight;
                 }
@@ -86,15 +74,11 @@ public class FlowLayout extends ViewGroup
         }
         this.lineHeight = lineHeight;
 
-        if(MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED)
-        {
+        if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.UNSPECIFIED) {
             height = ypos + lineHeight;
 
-        }
-        else if(MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST)
-        {
-            if(ypos + lineHeight < height)
-            {
+        } else if (MeasureSpec.getMode(heightMeasureSpec) == MeasureSpec.AT_MOST) {
+            if (ypos + lineHeight < height) {
                 height = ypos + lineHeight;
             }
         }
@@ -102,39 +86,32 @@ public class FlowLayout extends ViewGroup
     }
 
     @Override
-    protected ViewGroup.LayoutParams generateDefaultLayoutParams()
-    {
+    protected ViewGroup.LayoutParams generateDefaultLayoutParams() {
         return new LayoutParams(1, 1); // default of 1px spacing
     }
 
     @Override
-    protected boolean checkLayoutParams(ViewGroup.LayoutParams p)
-    {
-        if(p instanceof LayoutParams)
-        {
+    protected boolean checkLayoutParams(ViewGroup.LayoutParams p) {
+        if (p instanceof LayoutParams) {
             return true;
         }
         return false;
     }
 
     @Override
-    protected void onLayout(boolean changed, int l, int t, int r, int b)
-    {
+    protected void onLayout(boolean changed, int l, int t, int r, int b) {
         final int count = getChildCount();
         final int width = r - l;
         int xpos = getPaddingLeft();
         int ypos = getPaddingTop();
 
-        for(int i = 0; i < count; i++)
-        {
+        for (int i = 0; i < count; i++) {
             final View child = getChildAt(i);
-            if(child.getVisibility() != GONE)
-            {
+            if (child.getVisibility() != GONE) {
                 final int childw = child.getMeasuredWidth();
                 final int childh = child.getMeasuredHeight();
                 final LayoutParams lp = (LayoutParams) child.getLayoutParams();
-                if(xpos + childw > width)
-                {
+                if (xpos + childw > width) {
                     xpos = getPaddingLeft();
                     ypos += lineHeight;
                 }

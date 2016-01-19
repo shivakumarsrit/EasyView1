@@ -1,14 +1,14 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              tools:context=".SignUpActivity"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent">
+    xmlns:tools="http://schemas.android.com/tools"
+    tools:context=".SignUpActivity"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent">
 
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="?attr/actionBarSize" />
 
     <!-- Sign Up progress -->
     <LinearLayout
@@ -21,14 +21,14 @@
 
         <ProgressBar
             android:layout_width="35dp"
-            android:layout_height="35dp"/>
+            android:layout_height="35dp" />
 
         <TextView
             android:id="@+id/signup_status_message"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginBottom="16dp"
-            android:text="@string/login_progress_signing_up"/>
+            android:text="@string/login_progress_signing_up" />
     </LinearLayout>
 
     <!-- Sign up form -->
@@ -52,7 +52,7 @@
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
                     android:text="@string/firstname_colon"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/forename_edit"
@@ -61,7 +61,7 @@
                     android:hint="@string/firstName"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -73,7 +73,7 @@
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
                     android:text="@string/lastname_colon"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/lastname_edit"
@@ -82,7 +82,7 @@
                     android:hint="@string/lastName"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -94,7 +94,7 @@
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
                     android:text="@string/username_colon"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/username_edit"
@@ -103,7 +103,7 @@
                     android:hint="@string/username"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -115,7 +115,7 @@
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
                     android:text="@string/email_colon"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/email_edit"
@@ -124,7 +124,7 @@
                     android:hint="@string/email"
                     android:inputType="textEmailAddress"
                     android:singleLine="true"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <LinearLayout
@@ -136,7 +136,7 @@
                     android:layout_width="90sp"
                     android:layout_height="wrap_content"
                     android:text="@string/password_colon"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
 
                 <EditText
                     android:id="@+id/password_edit"
@@ -146,7 +146,7 @@
                     android:hint="@string/password"
                     android:inputType="textPassword"
                     android:singleLine="true"
-                    android:textSize="17sp"/>
+                    android:textSize="17sp" />
             </LinearLayout>
 
             <EditText
@@ -158,7 +158,7 @@
                 android:inputType="textPassword"
                 android:hint="@string/re_password"
                 android:singleLine="true"
-                android:textSize="17sp"/>
+                android:textSize="17sp" />
 
             <Button
                 android:id="@+id/sign_up_button"
@@ -169,7 +169,7 @@
                 android:layout_marginBottom="20sp"
                 android:background="@drawable/signup_btn_selector"
                 android:text="@string/create_account"
-                android:textColor="@drawable/signup_btn_txt_selector"/>
+                android:textColor="@drawable/signup_btn_txt_selector" />
         </LinearLayout>
     </ScrollView>
 </RelativeLayout>

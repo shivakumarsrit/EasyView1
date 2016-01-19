@@ -5,16 +5,14 @@ import android.net.Uri;
 import java.util.ArrayList;
 import java.util.List;
 
-public class UserProfile
-{
+public class UserProfile {
     /**
      * Adds an email address to the list of possible email addresses for the
      * user
      *
      * @param email the possible email address
      */
-    public void addPossibleEmail(String email)
-    {
+    public void addPossibleEmail(String email) {
         addPossibleEmail(email, false);
     }
 
@@ -26,15 +24,12 @@ public class UserProfile
      * @param email      the possible email address
      * @param is_primary whether the email address is the primary email address
      */
-    public void addPossibleEmail(String email, boolean is_primary)
-    {
-        if(email == null) return;
-        if(is_primary)
-        {
+    public void addPossibleEmail(String email, boolean is_primary) {
+        if (email == null) return;
+        if (is_primary) {
             _primary_email = email;
             _possible_emails.add(email);
-        }
-        else _possible_emails.add(email);
+        } else _possible_emails.add(email);
     }
 
     /**
@@ -42,9 +37,8 @@ public class UserProfile
      *
      * @param name the possible name
      */
-    public void addPossibleName(String name)
-    {
-        if(name != null) _possible_names.add(name);
+    public void addPossibleName(String name) {
+        if (name != null) _possible_names.add(name);
     }
 
     /**
@@ -52,9 +46,8 @@ public class UserProfile
      *
      * @param phone_number the possible phone number
      */
-    public void addPossiblePhoneNumber(String phone_number)
-    {
-        if(phone_number != null) _possible_phone_numbers.add(phone_number);
+    public void addPossiblePhoneNumber(String phone_number) {
+        if (phone_number != null) _possible_phone_numbers.add(phone_number);
     }
 
     /**
@@ -65,15 +58,12 @@ public class UserProfile
      * @param phone_number the possible phone number
      * @param is_primary   whether the phone number is teh primary phone number
      */
-    public void addPossiblePhoneNumber(String phone_number, boolean is_primary)
-    {
-        if(phone_number == null) return;
-        if(is_primary)
-        {
+    public void addPossiblePhoneNumber(String phone_number, boolean is_primary) {
+        if (phone_number == null) return;
+        if (is_primary) {
             _primary_phone_number = phone_number;
             _possible_phone_numbers.add(phone_number);
-        }
-        else _possible_phone_numbers.add(phone_number);
+        } else _possible_phone_numbers.add(phone_number);
     }
 
     /**
@@ -81,9 +71,8 @@ public class UserProfile
      *
      * @param photo the possible photo
      */
-    public void addPossiblePhoto(Uri photo)
-    {
-        if(photo != null) _possible_photo = photo;
+    public void addPossiblePhoto(Uri photo) {
+        if (photo != null) _possible_photo = photo;
     }
 
     /**
@@ -91,8 +80,7 @@ public class UserProfile
      *
      * @return the list of possible email addresses
      */
-    public List<String> possibleEmails()
-    {
+    public List<String> possibleEmails() {
         return _possible_emails;
     }
 
@@ -101,8 +89,7 @@ public class UserProfile
      *
      * @return the list of possible names
      */
-    public List<String> possibleNames()
-    {
+    public List<String> possibleNames() {
         return _possible_names;
     }
 
@@ -111,8 +98,7 @@ public class UserProfile
      *
      * @return the list of possible phone numbers
      */
-    public List<String> possiblePhoneNumbers()
-    {
+    public List<String> possiblePhoneNumbers() {
         return _possible_phone_numbers;
     }
 
@@ -121,8 +107,7 @@ public class UserProfile
      *
      * @return the possible photo
      */
-    public Uri possiblePhoto()
-    {
+    public Uri possiblePhoto() {
         return _possible_photo;
     }
 
@@ -131,8 +116,7 @@ public class UserProfile
      *
      * @return the primary email address
      */
-    public String primaryEmail()
-    {
+    public String primaryEmail() {
         return _primary_email;
     }
 
@@ -141,8 +125,7 @@ public class UserProfile
      *
      * @return the primary phone number
      */
-    public String primaryPhoneNumber()
-    {
+    public String primaryPhoneNumber() {
         return _primary_phone_number;
     }
 

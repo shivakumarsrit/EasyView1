@@ -1,15 +1,15 @@
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              xmlns:tools="http://schemas.android.com/tools"
-              android:layout_width="fill_parent"
-              android:layout_height="fill_parent"
-              android:orientation="vertical"
-              tools:context=".ScanActivity">
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    android:orientation="vertical"
+    tools:context=".ScanActivity">
 
     <include
         android:id="@+id/tool_bar"
         layout="@layout/tool_bar"
         android:layout_width="match_parent"
-        android:layout_height="?attr/actionBarSize"/>
+        android:layout_height="?attr/actionBarSize" />
 
     <RelativeLayout
         android:layout_below="@+id/tool_bar"
@@ -28,8 +28,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:divider="@drawable/divider_with_margin"
-                android:footerDividersEnabled="false">
-            </ListView>
+                android:footerDividersEnabled="false"></ListView>
 
         </RelativeLayout>
 
@@ -39,7 +38,7 @@
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginTop="-8dp"
-            android:visibility="gone"/>
+            android:visibility="gone" />
     </RelativeLayout>
 
     <RelativeLayout
@@ -60,7 +59,7 @@
                 android:layout_marginBottom="16dp"
                 android:gravity="center"
                 android:text="@string/msg_scanning"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
         </LinearLayout>
 
@@ -82,7 +81,7 @@
                 android:text="@string/msg_no_camera_found"
                 android:layout_marginLeft="30dp"
                 android:layout_marginRight="30dp"
-                android:textAppearance="?android:attr/textAppearanceMedium"/>
+                android:textAppearance="?android:attr/textAppearanceMedium" />
 
             <Button
                 android:id="@+id/button_add_camera_manually"
@@ -94,7 +93,7 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:text="@string/btn_text_add_manually"
-                android:textColor="@drawable/button_text_selector"/>
+                android:textColor="@drawable/button_text_selector" />
 
             <Button
                 android:id="@+id/button_show_all_devices"
@@ -102,7 +101,7 @@
                 android:gravity="center"
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
-                android:text="@string/menu_show_all_device"/>
+                android:text="@string/menu_show_all_device" />
         </LinearLayout>
     </RelativeLayout>
 

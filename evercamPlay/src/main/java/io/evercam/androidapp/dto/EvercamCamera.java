@@ -11,8 +11,7 @@ import java.util.Locale;
 import io.evercam.Camera;
 import io.evercam.EvercamException;
 
-public class EvercamCamera
-{
+public class EvercamCamera {
     public ImageLoadingStatus loadingStatus = ImageLoadingStatus.not_started;
 
     private final String TAG = "EvercamCamera";
@@ -52,28 +51,23 @@ public class EvercamCamera
     private boolean isPublic;
     private boolean isDiscoverable;
 
-    public EvercamCamera()
-    {
+    public EvercamCamera() {
 
     }
 
-    public EvercamCamera convertFromEvercam(io.evercam.Camera camera)
-    {
+    public EvercamCamera convertFromEvercam(io.evercam.Camera camera) {
         this.camera = camera;
-        try
-        {
+        try {
             cameraId = camera.getId();
             name = camera.getName();
-            if(AppData.defaultUser != null)
-            {
+            if (AppData.defaultUser != null) {
                 username = AppData.defaultUser.getUsername();
             }
             realOwner = camera.getOwner();
             rights = camera.getRights().toString();
             canEdit = camera.getRights().canEdit();
             canDelete = camera.getRights().canDelete();
-            if(camera.hasCredentials())
-            {
+            if (camera.hasCredentials()) {
                 hasCredentials = true;
                 username = camera.getUsername();
                 password = camera.getPassword();
@@ -86,12 +80,9 @@ public class EvercamCamera
             internalSnapshotUrl = camera.getInternalJpgUrl();
             externalRtspUrl = camera.getExternalH264Url();
             internalRtspUrl = camera.getInternalH264Url();
-            if(camera.isOnline())
-            {
+            if (camera.isOnline()) {
                 status = CameraStatus.ACTIVE;
-            }
-            else
-            {
+            } else {
                 status = CameraStatus.OFFLINE;
             }
             internalHost = camera.getInternalHost();
@@ -104,436 +95,344 @@ public class EvercamCamera
 
             isDiscoverable = camera.isDiscoverable();
             isPublic = camera.isPublic();
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             Log.e(TAG, e.getMessage());
         }
         return this;
     }
 
-    public int getId()
-    {
+    public int getId() {
         return id;
     }
 
-    public void setId(int id)
-    {
+    public void setId(int id) {
         this.id = id;
     }
 
-    public String getStatus()
-    {
+    public String getStatus() {
         return status;
     }
 
-    public boolean isActive()
-    {
-        if(getStatus().equalsIgnoreCase(CameraStatus.ACTIVE))
-        {
+    public boolean isActive() {
+        if (getStatus().equalsIgnoreCase(CameraStatus.ACTIVE)) {
             return true;
         }
         return false;
     }
 
-    public boolean isOffline()
-    {
-        if(getStatus().equalsIgnoreCase(CameraStatus.OFFLINE))
-        {
+    public boolean isOffline() {
+        if (getStatus().equalsIgnoreCase(CameraStatus.OFFLINE)) {
             return true;
         }
         return false;
     }
 
-    public String getCameraId()
-    {
+    public String getCameraId() {
         return cameraId;
     }
 
-    public String getExternalSnapshotUrl()
-    {
+    public String getExternalSnapshotUrl() {
         return externalSnapshotUrl;
     }
 
-    public String getInternalSnapshotUrl()
-    {
+    public String getInternalSnapshotUrl() {
         return internalSnapshotUrl;
     }
 
-    public String getName()
-    {
+    public String getName() {
         return name;
     }
 
-    public String getUsername()
-    {
+    public String getUsername() {
         return username;
     }
 
-    public String getPassword()
-    {
+    public String getPassword() {
         return password;
     }
 
-    public String getTimezone()
-    {
+    public String getTimezone() {
         return timezone;
     }
 
-    public String getModel()
-    {
+    public String getModel() {
         return model;
     }
 
-    public String getVendor()
-    {
+    public String getVendor() {
         return vendor;
     }
 
-    public String getUser()
-    {
+    public String getUser() {
         return user;
     }
 
-    public String getRealOwner()
-    {
+    public String getRealOwner() {
         return realOwner;
     }
 
-    public boolean canEdit()
-    {
+    public boolean canEdit() {
         return canEdit;
     }
 
-    public boolean canDelete()
-    {
+    public boolean canDelete() {
         return canDelete;
     }
 
-    public int getCanEditInt()
-    {
+    public int getCanEditInt() {
         return canEdit() ? 1 : 0;
     }
 
-    public int getCanDeleteInt()
-    {
+    public int getCanDeleteInt() {
         return canDelete() ? 1 : 0;
     }
 
-    public boolean hasCredentials()
-    {
+    public boolean hasCredentials() {
         return hasCredentials;
     }
 
-    public int getHasCredentialsInt()
-    {
+    public int getHasCredentialsInt() {
         return hasCredentials() ? 1 : 0;
     }
 
-    public void setCameraId(String cameraId)
-    {
+    public void setCameraId(String cameraId) {
         this.cameraId = cameraId;
     }
 
-    public void setExternalSnapshotUrl(String externalSnapshotUrl)
-    {
+    public void setExternalSnapshotUrl(String externalSnapshotUrl) {
         this.externalSnapshotUrl = externalSnapshotUrl;
     }
 
-    public void setInternalSnapshotUrl(String internalSnapshotUrl)
-    {
+    public void setInternalSnapshotUrl(String internalSnapshotUrl) {
         this.internalSnapshotUrl = internalSnapshotUrl;
     }
 
-    public void setName(String name)
-    {
+    public void setName(String name) {
         this.name = name;
     }
 
-    public void setUsername(String username)
-    {
+    public void setUsername(String username) {
         this.username = username;
     }
 
-    public void setPassword(String password)
-    {
+    public void setPassword(String password) {
         this.password = password;
     }
 
-    public void setTimezone(String timezone)
-    {
+    public void setTimezone(String timezone) {
         this.timezone = timezone;
     }
 
-    public void setModel(String model)
-    {
+    public void setModel(String model) {
         this.model = model;
     }
 
-    public void setVendor(String vendor)
-    {
+    public void setVendor(String vendor) {
         this.vendor = vendor;
     }
 
-    public void setUser(String user)
-    {
+    public void setUser(String user) {
         this.user = user;
     }
 
-    public void setRealOwner(String realOwner)
-    {
+    public void setRealOwner(String realOwner) {
         this.realOwner = realOwner;
     }
 
-    public void setCanEdit(boolean canEdit)
-    {
+    public void setCanEdit(boolean canEdit) {
         this.canEdit = canEdit;
     }
 
-    public void setCanDelete(boolean canDelete)
-    {
+    public void setCanDelete(boolean canDelete) {
         this.canDelete = canDelete;
     }
 
-    public String getMac()
-    {
+    public String getMac() {
         return mac;
     }
 
-    public void setMac(String mac)
-    {
+    public void setMac(String mac) {
         this.mac = mac;
     }
 
-    public String getExternalRtspUrl()
-    {
+    public String getExternalRtspUrl() {
         return externalRtspUrl;
     }
 
-    public String getInternalRtspUrl()
-    {
+    public String getInternalRtspUrl() {
         return internalRtspUrl;
     }
 
-    public void setExternalRtspUrl(String externalRtspUrl)
-    {
+    public void setExternalRtspUrl(String externalRtspUrl) {
         this.externalRtspUrl = externalRtspUrl;
     }
 
-    public void setInternalRtspUrl(String internalRtspUrl)
-    {
+    public void setInternalRtspUrl(String internalRtspUrl) {
         this.internalRtspUrl = internalRtspUrl;
     }
 
-    public void setStatus(String status)
-    {
+    public void setStatus(String status) {
         this.status = status;
     }
 
-    public String getCode()
-    {
+    public String getCode() {
         return "";
     }
 
-    public boolean isLocal()
-    {
+    public boolean isLocal() {
         return isLocal;
     }
 
-    public void setLocal(boolean isLocal)
-    {
+    public void setLocal(boolean isLocal) {
         this.isLocal = isLocal;
     }
 
-    public void setHasCredentials(boolean hasCredentials)
-    {
+    public void setHasCredentials(boolean hasCredentials) {
         this.hasCredentials = hasCredentials;
     }
 
-    public String getInternalHost()
-    {
+    public String getInternalHost() {
         return internalHost;
     }
 
-    public String getExternalHost()
-    {
+    public String getExternalHost() {
         return externalHost;
     }
 
-    public int getInternalHttp()
-    {
+    public int getInternalHttp() {
         return internalHttp;
     }
 
-    public int getInternalRtsp()
-    {
+    public int getInternalRtsp() {
         return internalRtsp;
     }
 
-    public int getExternalHttp()
-    {
+    public int getExternalHttp() {
         return externalHttp;
     }
 
-    public int getExternalRtsp()
-    {
+    public int getExternalRtsp() {
         return externalRtsp;
     }
 
-    public String getRights()
-    {
+    public String getRights() {
         return rights;
     }
 
-    public void setRights(String rights)
-    {
+    public void setRights(String rights) {
         this.rights = rights;
     }
 
-    public String getJpgPath()
-    {
-        try
-        {
+    public String getJpgPath() {
+        try {
             // TODO: Wrap this in the wrapper or API response
-            if(!internalSnapshotUrl.isEmpty())
-            {
+            if (!internalSnapshotUrl.isEmpty()) {
                 return new URL(internalSnapshotUrl).getPath();
-            }
-            else if(!externalSnapshotUrl.isEmpty())
-            {
+            } else if (!externalSnapshotUrl.isEmpty()) {
                 return new URL(externalSnapshotUrl).getPath();
             }
-        }
-        catch(MalformedURLException e)
-        {
+        } catch (MalformedURLException e) {
             Log.e(TAG, e.toString());
         }
         return "";
     }
 
-    public String getH264Path()
-    {
-        try
-        {
-            if(!internalRtspUrl.isEmpty())
-            {
+    public String getH264Path() {
+        try {
+            if (!internalRtspUrl.isEmpty()) {
                 return new URI(internalRtspUrl).getPath();
-            }
-            else if(!externalRtspUrl.isEmpty())
-            {
+            } else if (!externalRtspUrl.isEmpty()) {
                 return new URI(externalRtspUrl).getPath();
             }
-        }
-        catch(URISyntaxException e)
-        {
+        } catch (URISyntaxException e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    public void setInternalHost(String internalHost)
-    {
+    public void setInternalHost(String internalHost) {
         this.internalHost = internalHost;
     }
 
-    public void setExternalHost(String externalHost)
-    {
+    public void setExternalHost(String externalHost) {
         this.externalHost = externalHost;
     }
 
-    public void setInternalHttp(int internalHttp)
-    {
+    public void setInternalHttp(int internalHttp) {
         this.internalHttp = internalHttp;
     }
 
-    public void setInternalRtsp(int internalRtsp)
-    {
+    public void setInternalRtsp(int internalRtsp) {
         this.internalRtsp = internalRtsp;
     }
 
-    public void setExternalHttp(int externalHttp)
-    {
+    public void setExternalHttp(int externalHttp) {
         this.externalHttp = externalHttp;
     }
 
-    public void setExternalRtsp(int externalRtsp)
-    {
+    public void setExternalRtsp(int externalRtsp) {
         this.externalRtsp = externalRtsp;
     }
 
-    public String getThumbnailUrl()
-    {
+    public String getThumbnailUrl() {
         return thumbnailUrl;
     }
 
-    public void setThumbnailUrl(String thumbnailUrl)
-    {
+    public void setThumbnailUrl(String thumbnailUrl) {
         this.thumbnailUrl = thumbnailUrl;
     }
 
-    public boolean isHikvision()
-    {
-        if(getVendor().toLowerCase(Locale.UK).contains("hikvision"))
-        {
+    public boolean isHikvision() {
+        if (getVendor().toLowerCase(Locale.UK).contains("hikvision")) {
             return true;
         }
         return false;
     }
 
-    public boolean hasRtspUrl()
-    {
+    public boolean hasRtspUrl() {
         return !getExternalRtspUrl().isEmpty();
     }
 
-    public boolean hasThumbnailUrl()
-    {
+    public boolean hasThumbnailUrl() {
         return getThumbnailUrl() != null && !getThumbnailUrl().isEmpty();
     }
 
-    public boolean hasModel()
-    {
+    public boolean hasModel() {
         return !getModel().isEmpty();
     }
 
 
-    public boolean isDiscoverable()
-    {
+    public boolean isDiscoverable() {
         return isDiscoverable;
     }
 
-    public void setIsDiscoverable(boolean isDiscoverable)
-    {
+    public void setIsDiscoverable(boolean isDiscoverable) {
         this.isDiscoverable = isDiscoverable;
     }
 
-    public int getDiscoverableInt()
-    {
+    public int getDiscoverableInt() {
         return isDiscoverable() ? 1 : 0;
     }
 
-    public boolean isPublic()
-    {
+    public boolean isPublic() {
         return isPublic;
     }
 
-    public void setIsPublic(boolean isPublic)
-    {
+    public void setIsPublic(boolean isPublic) {
         this.isPublic = isPublic;
     }
 
-    public  int getPublicInt()
-    {
+    public int getPublicInt() {
         return isPublic ? 1 : 0;
     }
 
     @Override
-    public boolean equals(Object obj)
-    {
-        if(this == obj) return true;
-        if(obj == null) return false;
-        if(getClass() != obj.getClass()) return false;
+    public boolean equals(Object obj) {
+        if (this == obj) return true;
+        if (obj == null) return false;
+        if (getClass() != obj.getClass()) return false;
         EvercamCamera other = (EvercamCamera) obj;
-        if(cameraId.equals(other.cameraId) && externalRtspUrl.equals(other.externalRtspUrl) &&
+        if (cameraId.equals(other.cameraId) && externalRtspUrl.equals(other.externalRtspUrl) &&
                 internalRtspUrl.equals(other.internalRtspUrl) && externalSnapshotUrl.equals(other
                 .externalSnapshotUrl) && internalSnapshotUrl.equals(other.internalSnapshotUrl) &&
                 mac.equals(other.mac) && model.equals(other.model) && name.equals(other.name) &&
@@ -544,16 +443,14 @@ public class EvercamCamera
                 .externalHttp && internalRtsp == other.internalRtsp && externalRtsp == other
                 .externalRtsp && realOwner.equals(other.realOwner) && canEdit == other.canEdit &&
                 canDelete == other.canDelete && status == other.status && rights == other.rights &&
-                isPublic == other.isPublic && isDiscoverable == other.isDiscoverable)
-        {
+                isPublic == other.isPublic && isDiscoverable == other.isDiscoverable) {
             return true;
         }
         return false;
     }
 
     @Override
-    public String toString()
-    {
+    public String toString() {
         return "EvercamCamera [loadingStatus=" + loadingStatus + ", id=" + id + ", " +
                 "cameraId=" + cameraId + ", name=" + name + ", user=" + user + ", " +
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +

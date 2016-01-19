@@ -13,14 +13,12 @@ import java.util.ArrayList;
 
 import io.evercam.androidapp.utils.PrefsManager;
 
-public class CameraPrefsActivity extends AppCompatActivity
-{
+public class CameraPrefsActivity extends AppCompatActivity {
     private static int screenWidth = 0;
     private static final String TAG = "CameraPrefsActivity";
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
         setContentView(R.layout.activity_settings);
@@ -38,18 +36,15 @@ public class CameraPrefsActivity extends AppCompatActivity
     }
 
     @Override
-    protected void onRestart()
-    {
+    protected void onRestart() {
         super.onRestart();
         finish();
     }
 
     @Override
-    public boolean onOptionsItemSelected(MenuItem item)
-    {
+    public boolean onOptionsItemSelected(MenuItem item) {
         // Handle item selection
-        switch(item.getItemId())
-        {
+        switch (item.getItemId()) {
             case android.R.id.home:
 
                 this.finish();
@@ -59,36 +54,29 @@ public class CameraPrefsActivity extends AppCompatActivity
         }
     }
 
-    public static class MyPreferenceFragment extends PreferenceFragment
-    {
-        public MyPreferenceFragment()
-        {
+    public static class MyPreferenceFragment extends PreferenceFragment {
+        public MyPreferenceFragment() {
             // super();
         }
 
         @Override
-        public void onCreate(final Bundle savedInstanceState)
-        {
+        public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
             addPreferencesFromResource(R.xml.main_preference);
             setCameraNumbersForScreen(screenWidth);
             setUpSleepTime();
         }
 
-        private void setCameraNumbersForScreen(int screenWidth)
-        {
+        private void setCameraNumbersForScreen(int screenWidth) {
             int maxCamerasPerRow = 3;
-            if(screenWidth != 0)
-            {
+            if (screenWidth != 0) {
                 maxCamerasPerRow = screenWidth / 350;
             }
-            if(maxCamerasPerRow == 0)
-            {
+            if (maxCamerasPerRow == 0) {
                 maxCamerasPerRow = 1;
             }
             ArrayList<String> cameraNumberArrayList = new ArrayList<String>();
-            for(int index = 1; index <= maxCamerasPerRow; index++)
-            {
+            for (int index = 1; index <= maxCamerasPerRow; index++) {
                 cameraNumberArrayList.add(String.valueOf(index));
             }
             CharSequence[] charNumberValues = cameraNumberArrayList.toArray(new
@@ -98,27 +86,22 @@ public class CameraPrefsActivity extends AppCompatActivity
             interfaceList.setEntries(charNumberValues);
             interfaceList.setEntryValues(charNumberValues);
             interfaceList.setSummary(interfaceList.getValue());
-            interfaceList.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-            {
+            interfaceList.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
                     interfaceList.setSummary(newValue.toString());
                     return true;
                 }
             });
         }
 
-        private void setUpSleepTime()
-        {
+        private void setUpSleepTime() {
             final ListPreference sleepListPrefs = (ListPreference)
                     getPreferenceManager().findPreference(PrefsManager.KEY_AWAKE_TIME);
             sleepListPrefs.setSummary(getSummary(sleepListPrefs.getEntry() + ""));
-            sleepListPrefs.setOnPreferenceChangeListener(new OnPreferenceChangeListener()
-            {
+            sleepListPrefs.setOnPreferenceChangeListener(new OnPreferenceChangeListener() {
                 @Override
-                public boolean onPreferenceChange(Preference preference, Object newValue)
-                {
+                public boolean onPreferenceChange(Preference preference, Object newValue) {
                     int index = sleepListPrefs.findIndexOfValue(newValue.toString());
                     String entry = sleepListPrefs.getEntries()[index].toString();
                     sleepListPrefs.setSummary(getSummary(entry));
@@ -127,14 +110,10 @@ public class CameraPrefsActivity extends AppCompatActivity
             });
         }
 
-        private String getSummary(String entry)
-        {
-            if(entry.equals(getString(R.string.prefs_never)))
-            {
+        private String getSummary(String entry) {
+            if (entry.equals(getString(R.string.prefs_never))) {
                 return entry;
-            }
-            else
-            {
+            } else {
                 return getString(R.string.summary_awake_time_prefix) + " " + entry + " " +
                         getString(R.string.summary_awake_time_suffix);
             }

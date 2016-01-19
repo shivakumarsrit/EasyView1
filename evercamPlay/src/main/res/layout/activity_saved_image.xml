@@ -1,6 +1,5 @@
 <?xml version="1.0" encoding="utf-8"?>
-<RelativeLayout
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -17,9 +16,10 @@
 
     </FrameLayout>
 
-    <include layout="@layout/tool_bar"
-             android:layout_width="match_parent"
-             android:layout_height="?attr/actionBarSize"/>
+    <include
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
 
     <RelativeLayout
         android:layout_width="match_parent"
@@ -34,23 +34,21 @@
             android:layout_marginLeft="30dp"
             android:layout_marginRight="30dp">
 
-            <FrameLayout
-                style="@style/ControlButtonLayout">
+            <FrameLayout style="@style/ControlButtonLayout">
 
                 <ImageButton
                     android:id="@+id/control_button_share"
                     style="@style/ControlButton"
-                    android:src="@drawable/ic_share"/>
+                    android:src="@drawable/ic_share" />
 
             </FrameLayout>
 
-            <FrameLayout
-                style="@style/ControlButtonLayout">
+            <FrameLayout style="@style/ControlButtonLayout">
 
                 <ImageButton
                     android:id="@+id/control_button_delete"
                     style="@style/ControlButton"
-                    android:src="@drawable/ic_delete"/>
+                    android:src="@drawable/ic_delete" />
 
             </FrameLayout>
 
@@ -61,8 +59,7 @@
             android:layout_width="match_parent"
             android:layout_height="48dp"
             android:layout_below="@+id/control_button_layout"
-            android:visibility="gone">
-        </FrameLayout>
+            android:visibility="gone"></FrameLayout>
     </RelativeLayout>
 
 </RelativeLayout>

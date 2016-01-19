@@ -13,8 +13,7 @@ import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.sharing.CreateShareActivity;
 import io.evercam.androidapp.utils.Constants;
 
-public class CreateShareTask extends AsyncTask<Void, Void, CameraShareInterface>
-{
+public class CreateShareTask extends AsyncTask<Void, Void, CameraShareInterface> {
     private Activity activity;
     private CustomProgressDialog customProgressDialog;
     private String errorMessage;
@@ -23,8 +22,7 @@ public class CreateShareTask extends AsyncTask<Void, Void, CameraShareInterface>
     private String rights;
     private String message;
 
-    public CreateShareTask(Activity activity, String userId, String camerId, String rights, String message)
-    {
+    public CreateShareTask(Activity activity, String userId, String camerId, String rights, String message) {
         this.activity = activity;
         this.userId = userId;
         this.cameraId = camerId;
@@ -33,56 +31,42 @@ public class CreateShareTask extends AsyncTask<Void, Void, CameraShareInterface>
     }
 
     @Override
-    protected void onPreExecute()
-    {
+    protected void onPreExecute() {
         errorMessage = activity.getString(R.string.unknown_error);
         customProgressDialog = new CustomProgressDialog(activity);
         customProgressDialog.show(activity.getString(R.string.msg_sharing));
     }
 
     @Override
-    protected CameraShareInterface doInBackground(Void... params)
-    {
-        try
-        {
+    protected CameraShareInterface doInBackground(Void... params) {
+        try {
             return CameraShare.create(cameraId, userId, rights, message);
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             errorMessage = e.getMessage();
         }
         return null;
     }
 
     @Override
-    protected void onPostExecute(CameraShareInterface shareInterface)
-    {
+    protected void onPostExecute(CameraShareInterface shareInterface) {
         customProgressDialog.dismiss();
 
-        if(shareInterface != null)
-        {
-            if(shareInterface instanceof CameraShare)
-            {
+        if (shareInterface != null) {
+            if (shareInterface instanceof CameraShare) {
                 activity.setResult(Constants.RESULT_SHARE_CREATED);
-            }
-            else if(shareInterface instanceof CameraShareRequest)
-            {
+            } else if (shareInterface instanceof CameraShareRequest) {
                 activity.setResult(Constants.RESULT_SHARE_REQUEST_CREATED);
             }
 
-            if(activity instanceof CreateShareActivity)
-            {
+            if (activity instanceof CreateShareActivity) {
                 activity.finish();
             }
-        }
-        else
-        {
+        } else {
             CustomToast.showInCenterLong(activity, errorMessage);
         }
     }
 
-    public static void launch(Activity activity, String userId, String cameraId, String rights, String message)
-    {
+    public static void launch(Activity activity, String userId, String cameraId, String rights, String message) {
         new CreateShareTask(activity, userId, cameraId, rights, message)
                 .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
     }

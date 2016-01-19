@@ -10,50 +10,39 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-public class IntercomApi
-{
+public class IntercomApi {
     private final static String TAG = "IntercomApi";
     public static String WEB_API_KEY = "";
     public static String ANDROID_API_KEY = "";
     public static String APP_ID = "";
 
-    public static boolean hasApiKey()
-    {
+    public static boolean hasApiKey() {
         return !WEB_API_KEY.isEmpty() && !APP_ID.isEmpty();
     }
 
-    public static String getIntercomIdByUsername(String username)
-    {
+    public static String getIntercomIdByUsername(String username) {
         final String URL_USERS = "https://api.intercom.io/users";
 
-        try
-        {
+        try {
             HttpResponse<JsonNode> response = Unirest.get(URL_USERS).queryString("user_id",
                     username).basicAuth(IntercomApi.APP_ID, IntercomApi.WEB_API_KEY)
                     .header("Accept", "application/json").asJson();
-            if(response.getStatus() == 200)
-            {
+            if (response.getStatus() == 200) {
                 JSONObject jsonObject = response.getBody().getObject();
                 return jsonObject.getString("id");
-            }
-            else
-            {
+            } else {
                 Log.e(TAG, response.getStatus() + " " + response.getBody().toString());
             }
-        }
-        catch(UnirestException | JSONException e)
-        {
+        } catch (UnirestException | JSONException e) {
             e.printStackTrace();
         }
         return "";
     }
 
-    public static boolean sendMessage(String intercomId, String message)
-    {
+    public static boolean sendMessage(String intercomId, String message) {
         final String URL_MESSAGES = "https://api.intercom.io/messages";
 
-        try
-        {
+        try {
             JSONObject fromJsonObject = new JSONObject();
             fromJsonObject.put("type", "user");
             fromJsonObject.put("id", intercomId);
@@ -62,21 +51,16 @@ public class IntercomApi
             bodyJsonObject.put("body", message);
 
             HttpResponse<JsonNode> response = Unirest.post(URL_MESSAGES).basicAuth(IntercomApi.APP_ID, IntercomApi.WEB_API_KEY)
-                .header("Accept", "application/json")
-                .header("Content-Type", "application/json")
-                .body(bodyJsonObject.toString()).asJson();
+                    .header("Accept", "application/json")
+                    .header("Content-Type", "application/json")
+                    .body(bodyJsonObject.toString()).asJson();
 
-            if(response.getStatus() == 200)
-            {
+            if (response.getStatus() == 200) {
                 return true;
-            }
-            else
-            {
+            } else {
                 Log.e(TAG, response.getStatus() + " " + response.getBody().toString());
             }
-        }
-        catch(UnirestException | JSONException e)
-        {
+        } catch (UnirestException | JSONException e) {
             e.printStackTrace();
         }
 

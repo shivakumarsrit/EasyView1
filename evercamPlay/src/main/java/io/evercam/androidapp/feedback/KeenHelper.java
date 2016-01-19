@@ -7,25 +7,19 @@ import io.keen.client.android.AndroidKeenClientBuilder;
 import io.keen.client.java.KeenClient;
 import io.keen.client.java.KeenProject;
 
-public class KeenHelper
-{
-    public static KeenClient getClient(Context context)
-    {
+public class KeenHelper {
+    public static KeenClient getClient(Context context) {
         PropertyReader propertyReader = new PropertyReader(context);
 
-        if(propertyReader.isPropertyExist(PropertyReader.KEY_KEEN_PROJECT_ID))
-        {
-            try
-            {
+        if (propertyReader.isPropertyExist(PropertyReader.KEY_KEEN_PROJECT_ID)) {
+            try {
                 KeenClient client = new AndroidKeenClientBuilder(context).build();
                 KeenProject keenProject = new KeenProject(propertyReader.getPropertyStr(PropertyReader.KEY_KEEN_PROJECT_ID),
                         propertyReader.getPropertyStr(PropertyReader.KEY_KEEN_WRITE_KEY), propertyReader.getPropertyStr(PropertyReader.KEY_KEEN_READ_KEY));
 
                 client.setDefaultProject(keenProject);
                 return client;
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 e.printStackTrace();
             }
         }

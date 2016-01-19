@@ -22,8 +22,7 @@ import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.dto.ImageLoadingStatus;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class CameraLayout extends LinearLayout
-{
+public class CameraLayout extends LinearLayout {
     private static final String TAG = "CameraLayout";
 
     public RelativeLayout cameraRelativeLayout;
@@ -48,13 +47,11 @@ public class CameraLayout extends LinearLayout
      */
     public final Handler handler = new Handler();
 
-    public CameraLayout(final Activity activity, EvercamCamera camera, boolean showThumbnails)
-    {
+    public CameraLayout(final Activity activity, EvercamCamera camera, boolean showThumbnails) {
         super(activity.getApplicationContext());
         this.context = activity.getApplicationContext();
 
-        try
-        {
+        try {
             evercamCamera = camera;
 
             this.setOrientation(LinearLayout.VERTICAL);
@@ -95,46 +92,36 @@ public class CameraLayout extends LinearLayout
             cameraRelativeLayout.setClickable(true);
 
             // Show thumbnail returned from Evercam
-            if(showThumbnails)
-            {
+            if (showThumbnails) {
                 showThumbnail();
             }
-            cameraRelativeLayout.setOnClickListener(new View.OnClickListener()
-            {
+            cameraRelativeLayout.setOnClickListener(new View.OnClickListener() {
                 @Override
-                public void onClick(View v)
-                {
+                public void onClick(View v) {
                     VideoActivity.startPlayingVideoForCamera(activity, evercamCamera.getCameraId());
                 }
             });
-        }
-        catch(OutOfMemoryError e)
-        {
+        } catch (OutOfMemoryError e) {
             Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
         }
     }
 
-    public Rect getOfflineIconBounds()
-    {
+    public Rect getOfflineIconBounds() {
         Rect bounds = new Rect();
         gradientLayout.getOfflineImageView().getHitRect(bounds);
         return bounds;
     }
 
-    public void updateTitleIfDifferent()
-    {
-        for(EvercamCamera camera : AppData.evercamCameraList)
-        {
-            if(evercamCamera.getCameraId().equals(camera.getCameraId()))
-            {
+    public void updateTitleIfDifferent() {
+        for (EvercamCamera camera : AppData.evercamCameraList) {
+            if (evercamCamera.getCameraId().equals(camera.getCameraId())) {
                 gradientLayout.setTitle(camera.getName());
             }
         }
     }
 
     // Stop the image loading process. May be need to end current activity
-    public boolean stopAllActivity()
-    {
+    public boolean stopAllActivity() {
         end = true;
 
         return true;
@@ -142,22 +129,18 @@ public class CameraLayout extends LinearLayout
 
     // Image loaded form camera and now set the controls appearance and text
     // accordingly
-    private void setLayoutForLiveImageReceived()
-    {
+    private void setLayoutForLiveImageReceived() {
         evercamCamera.setStatus(CameraStatus.ACTIVE);
         offlineImage.setVisibility(View.INVISIBLE);
 
         handler.removeCallbacks(LoadImageRunnable);
     }
 
-    public boolean showThumbnail()
-    {
-        if(evercamCamera.hasThumbnailUrl())
-        {
+    public boolean showThumbnail() {
+        if (evercamCamera.hasThumbnailUrl()) {
             Picasso.with(context).load(evercamCamera.getThumbnailUrl()).fit().into(snapshotImageView);
 
-            if(!evercamCamera.isActive())
-            {
+            if (!evercamCamera.isActive()) {
                 showGreyImage();
                 showOfflineIcon();
             }
@@ -168,9 +151,7 @@ public class CameraLayout extends LinearLayout
 //                    evercamCamera.getCameraId())).start();
 
             return true;
-        }
-        else
-        {
+        } else {
             showOfflineIcon();
             offlineImage.setVisibility(View.VISIBLE);
             snapshotImageView.setBackgroundColor(Color.GRAY);
@@ -181,12 +162,10 @@ public class CameraLayout extends LinearLayout
         return false;
     }
 
-    private void showOfflineIcon()
-    {
+    private void showOfflineIcon() {
         new Handler().postDelayed(new Runnable() {
             @Override
-            public void run()
-            {
+            public void run() {
                 gradientLayout.showOfflineIcon(true, showOfflineIconAsFloat);
             }
         }, 300);
@@ -194,10 +173,8 @@ public class CameraLayout extends LinearLayout
 
     // Image not received form cache, Evercam nor camera side. Set the controls
     // appearance and text accordingly
-    private void setLayoutForNoImageReceived()
-    {
-        if(!evercamCamera.isActive())
-        {
+    private void setLayoutForNoImageReceived() {
+        if (!evercamCamera.isActive()) {
             showGreyImage();
 
             showOfflineIcon();
@@ -207,50 +184,35 @@ public class CameraLayout extends LinearLayout
         handler.removeCallbacks(LoadImageRunnable);
     }
 
-    public Runnable LoadImageRunnable = new Runnable()
-    {
+    public Runnable LoadImageRunnable = new Runnable() {
         @Override
-        public void run()
-        {
-            try
-            {
-                if(end) return;
+        public void run() {
+            try {
+                if (end) return;
 
-                if(evercamCamera.loadingStatus == ImageLoadingStatus.not_started)
-                {
-                    if(evercamCamera.isActive())
-                    {
+                if (evercamCamera.loadingStatus == ImageLoadingStatus.not_started) {
+                    if (evercamCamera.isActive()) {
                         //showAndSaveLiveSnapshot();
                     }
-                }
-                else if(evercamCamera.loadingStatus == ImageLoadingStatus.live_received)
-                {
+                } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_received) {
                     setLayoutForLiveImageReceived();
-                }
-                else if(evercamCamera.loadingStatus == ImageLoadingStatus.live_not_received)
-                {
+                } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_not_received) {
                     setLayoutForNoImageReceived();
                 }
-            }
-            catch(OutOfMemoryError e)
-            {
+            } catch (OutOfMemoryError e) {
                 Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
 
                 handler.postDelayed(LoadImageRunnable, 5000);
-            }
-            catch(Exception e)
-            {
+            } catch (Exception e) {
                 Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-                if(!end)
-                {
+                if (!end) {
                     handler.postDelayed(LoadImageRunnable, 5000);
                 }
             }
         }
     };
 
-    private void showGreyImage()
-    {
+    private void showGreyImage() {
         snapshotImageView.setAlpha(0.5f);
     }
 }

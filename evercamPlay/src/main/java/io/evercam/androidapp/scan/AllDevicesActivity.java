@@ -13,32 +13,28 @@ import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.network.discovery.DeviceInterface;
 
-public class AllDevicesActivity extends ParentAppCompatActivity
-{
+public class AllDevicesActivity extends ParentAppCompatActivity {
     private static ArrayList<DeviceInterface> mAllDevices = new ArrayList<>();
 
     @Override
-    protected void onCreate(Bundle savedInstanceState)
-    {
+    protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
 
-            setContentView(R.layout.activity_all_devices);
+        setContentView(R.layout.activity_all_devices);
 
-            setUpDefaultToolbar();
-            setHomeIconAsCancel();
+        setUpDefaultToolbar();
+        setHomeIconAsCancel();
 
-            setActivityBackgroundColor(Color.WHITE);
+        setActivityBackgroundColor(Color.WHITE);
 
-            ListView deviceListView = (ListView) findViewById(R.id.all_device_list);
-            AllDeviceAdapter deviceAdapter = new AllDeviceAdapter(this, R.layout.item_scan_list, mAllDevices);
-            deviceListView.setAdapter(deviceAdapter);
-        }
+        ListView deviceListView = (ListView) findViewById(R.id.all_device_list);
+        AllDeviceAdapter deviceAdapter = new AllDeviceAdapter(this, R.layout.item_scan_list, mAllDevices);
+        deviceListView.setAdapter(deviceAdapter);
+    }
 
-        @Override
-        public boolean onOptionsItemSelected(MenuItem item)
-        {
-            switch(item.getItemId())
-            {
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        switch (item.getItemId()) {
             case android.R.id.home:
                 finish();
                 return true;
@@ -47,8 +43,7 @@ public class AllDevicesActivity extends ParentAppCompatActivity
         }
     }
 
-    public static void showAllDevices(Activity fromActivity, ArrayList<DeviceInterface> allDevices)
-    {
+    public static void showAllDevices(Activity fromActivity, ArrayList<DeviceInterface> allDevices) {
         mAllDevices = allDevices;
         fromActivity.startActivity(new Intent(fromActivity, AllDevicesActivity.class));
     }

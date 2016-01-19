@@ -10,23 +10,19 @@ import io.evercam.androidapp.BaseWebView;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.WebActivity;
 
-public class RecordingWebView extends BaseWebView
-{
+public class RecordingWebView extends BaseWebView {
     private final String TAG = "RecordingWebView";
     public WebActivity webActivity;
 
-    public RecordingWebView(Context context)
-    {
+    public RecordingWebView(Context context) {
         super(context);
     }
 
-    public RecordingWebView(Context context, AttributeSet attrs)
-    {
+    public RecordingWebView(Context context, AttributeSet attrs) {
         super(context, attrs);
     }
 
-    public void loadRecordingWidget(String cameraId)
-    {
+    public void loadRecordingWidget(String cameraId) {
         enableJavascript(true);
         enableChromeDebugging();
 
@@ -42,8 +38,7 @@ public class RecordingWebView extends BaseWebView
         setWebViewClient(webActivity.getWebViewClient());
 
         //Enable DevTool debugging
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT)
-        {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
             WebView.setWebContentsDebuggingEnabled(true);
         }
 

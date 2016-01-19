@@ -16,30 +16,25 @@ import io.evercam.EvercamObject;
 import io.evercam.Right;
 import io.evercam.androidapp.R;
 
-public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface>
-{
+public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface> {
     private List<CameraShareInterface> mCameraShareList;
 
     public ShareListArrayAdapter(Context context, int resource, List<CameraShareInterface>
-            objects)
-    {
+            objects) {
         super(context, resource, objects);
         mCameraShareList = objects;
     }
 
     @Override
-    public int getCount()
-    {
+    public int getCount() {
         return mCameraShareList.size();
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent)
-    {
+    public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
-        if (view == null)
-        {
-            LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
+        if (view == null) {
+            LayoutInflater layoutInflater = (LayoutInflater) getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
             view = layoutInflater.inflate(R.layout.item_share_list, null);
         }
@@ -51,35 +46,29 @@ public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface>
 
         CameraShareInterface cameraShareInterface = mCameraShareList.get(position);
 
-        if(cameraShareInterface != null)
-        {
+        if (cameraShareInterface != null) {
             Right rights = EvercamObject.getRightsFrom(cameraShareInterface);
 
-            if(cameraShareInterface instanceof CameraShare)
-            {
+            if (cameraShareInterface instanceof CameraShare) {
                 fullNameTextView.setText(((CameraShare) cameraShareInterface).getFullName());
                 emailTextView.setText(((CameraShare) cameraShareInterface).getUserEmail());
                 rights = ((CameraShare) cameraShareInterface).getRights();
-            }
-            else if(cameraShareInterface instanceof CameraShareRequest)
-            {
+            } else if (cameraShareInterface instanceof CameraShareRequest) {
                 fullNameTextView.setText(((CameraShareRequest) cameraShareInterface).getEmail());
                 emailTextView.setText(R.string.pending);
                 rights = ((CameraShareRequest) cameraShareInterface).getRights();
             }
 
-            if(rights != null)
-            {
-                if(rights.isFullRight()) statusTextView.setText(R.string.full_rights);
-                else if(rights.isReadOnly()) statusTextView.setText(R.string.read_only);
+            if (rights != null) {
+                if (rights.isFullRight()) statusTextView.setText(R.string.full_rights);
+                else if (rights.isReadOnly()) statusTextView.setText(R.string.read_only);
             }
         }
 
         return view;
     }
 
-    public List<CameraShareInterface> getShareList()
-    {
+    public List<CameraShareInterface> getShareList() {
         return mCameraShareList;
     }
 }

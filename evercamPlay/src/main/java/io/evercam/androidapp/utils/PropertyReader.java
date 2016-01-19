@@ -8,8 +8,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.util.Properties;
 
-public class PropertyReader
-{
+public class PropertyReader {
     private Context context;
     private Properties properties;
     private final String TAG = "PropertyReader";
@@ -28,50 +27,36 @@ public class PropertyReader
     public static final String KEY_INTERCOM_KEY = "IntercomApiKey";
     public static final String KEY_INTERCOM_APP_ID = "IntercomAppId";
 
-    public PropertyReader(Context context)
-    {
+    public PropertyReader(Context context) {
         this.context = context;
         properties = new Properties();
         properties = getProperties(LOCAL_PROPERTY_FILE);
     }
 
-    private Properties getProperties(String fileName)
-    {
-        try
-        {
+    private Properties getProperties(String fileName) {
+        try {
             AssetManager assetManager = context.getAssets();
             InputStream inputStream = assetManager.open(fileName);
             properties.load(inputStream);
-        }
-        catch(IOException e)
-        {
+        } catch (IOException e) {
             Log.e(TAG, e.toString());
-        }
-        catch(Exception e)
-        {
+        } catch (Exception e) {
             e.printStackTrace();
         }
         return properties;
     }
 
-    public String getPropertyStr(String propertyName)
-    {
-        if(properties != null && isPropertyExist(propertyName))
-        {
+    public String getPropertyStr(String propertyName) {
+        if (properties != null && isPropertyExist(propertyName)) {
             return properties.getProperty(propertyName);
-        }
-        else
-        {
+        } else {
             return "";
         }
     }
 
-    public boolean isPropertyExist(String key)
-    {
-        if(properties != null)
-        {
-            if(properties.containsKey(key))
-            {
+    public boolean isPropertyExist(String key) {
+        if (properties != null) {
+            if (properties.containsKey(key)) {
                 return true;
             }
         }

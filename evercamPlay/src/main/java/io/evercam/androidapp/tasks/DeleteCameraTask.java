@@ -14,73 +14,54 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.EnumConstants.DeleteType;
 
-public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean>
-{
+public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean> {
     private final String TAG = "DeleteCameraTask";
     private String cameraId;
     private CustomProgressDialog customProgressDialog;
     private Activity activity;
     private DeleteType deleteType;
 
-    public DeleteCameraTask(String cameraId, Activity activity, DeleteType type)
-    {
+    public DeleteCameraTask(String cameraId, Activity activity, DeleteType type) {
         this.cameraId = cameraId;
         this.activity = activity;
         this.deleteType = type;
     }
 
     @Override
-    protected void onPreExecute()
-    {
+    protected void onPreExecute() {
         customProgressDialog = new CustomProgressDialog(activity);
         customProgressDialog.show(activity.getString(R.string.deleting_camera));
     }
 
     @Override
-    protected Boolean doInBackground(Void... params)
-    {
-        try
-        {
-            if(deleteType == DeleteType.DELETE_OWNED)
-            {
-                if(Camera.delete(cameraId))
-                {
+    protected Boolean doInBackground(Void... params) {
+        try {
+            if (deleteType == DeleteType.DELETE_OWNED) {
+                if (Camera.delete(cameraId)) {
                     return true;
                 }
-            }
-            else
-            {
-                if(AppData.defaultUser != null)
-                {
-                    if(CameraShare.delete(cameraId, AppData.defaultUser.getUsername()))
-                    {
+            } else {
+                if (AppData.defaultUser != null) {
+                    if (CameraShare.delete(cameraId, AppData.defaultUser.getUsername())) {
                         return true;
                     }
-                }
-                else
-                {
+                } else {
                     //This should never happen
                 }
             }
-        }
-        catch(EvercamException e)
-        {
+        } catch (EvercamException e) {
             Log.e(TAG, e.toString());
         }
         return false;
     }
 
     @Override
-    protected void onPostExecute(Boolean success)
-    {
+    protected void onPostExecute(Boolean success) {
         customProgressDialog.dismiss();
-        if(success)
-        {
+        if (success) {
             activity.setResult(Constants.RESULT_DELETED);
             activity.finish();
-        }
-        else
-        {
+        } else {
             CustomToast.showInCenter(activity, R.string.msg_delete_failed);
         }
     }

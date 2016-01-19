@@ -1,12 +1,13 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
-              android:layout_width="match_parent"
-              android:layout_height="wrap_content"
-              android:orientation="vertical">
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
 
-    <include layout="@layout/tool_bar"
-             android:layout_width="match_parent"
-             android:layout_height="?attr/actionBarSize"/>
+    <include
+        layout="@layout/tool_bar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize" />
 
     <ScrollView
         android:layout_width="match_parent"
@@ -17,82 +18,76 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_id_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_evercam_id"/>
+                    android:text="@string/view_evercam_id" />
 
                 <TextView
                     android:id="@+id/view_id_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_name_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_friendly_name"/>
+                    android:text="@string/view_friendly_name" />
 
                 <TextView
                     android:id="@+id/view_name_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_owner_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_owner"/>
+                    android:text="@string/view_owner" />
 
                 <TextView
                     android:id="@+id/view_owner_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_timezone_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_timezone"/>
+                    android:text="@string/view_timezone" />
 
                 <TextView
                     android:id="@+id/view_timezone_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_vendor_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_vendor"/>
+                    android:text="@string/view_vendor" />
 
                 <TextView
                     android:id="@+id/view_vendor_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
-            <LinearLayout
-                style="@style/ViewCameraItemRowLayout">
+            <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                 <TextView
                     android:id="@+id/view_model_txt"
                     style="@style/ViewCameraItemRowItemText"
-                    android:text="@string/view_model"/>
+                    android:text="@string/view_model" />
 
                 <TextView
                     android:id="@+id/view_model_value"
-                    style="@style/ViewCameraItemRowItemValueText"/>
+                    style="@style/ViewCameraItemRowItemValueText" />
             </LinearLayout>
 
             <LinearLayout
@@ -102,64 +97,60 @@
                 android:orientation="vertical"
                 android:visibility="gone">
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_username_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_username"/>
+                        android:text="@string/view_username" />
 
                     <TextView
                         android:id="@+id/view_username_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_password_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_password"/>
+                        android:text="@string/view_password" />
 
                     <TextView
                         android:id="@+id/view_password_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
 
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_jpg_url_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_snapshot_url"/>
+                        android:text="@string/view_snapshot_url" />
 
                     <TextView
                         android:id="@+id/view_jpg_url_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_rtsp_url_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_rtsp_url"/>
+                        android:text="@string/view_rtsp_url" />
 
                     <TextView
                         android:id="@+id/view_rtsp_url_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/external_title_textview"
                     style="@style/ViewCameraTitleItemText"
-                    android:text="@string/external_title"/>
+                    android:text="@string/external_title" />
 
                 <View
                     android:layout_width="fill_parent"
@@ -167,51 +158,48 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:layout_marginTop="1dp"
-                    android:background="@color/orange_red"/>
+                    android:background="@color/orange_red" />
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_external_host_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_host"/>
+                        android:text="@string/view_host" />
 
                     <TextView
                         android:id="@+id/view_external_host_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_external_http_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_http"/>
+                        android:text="@string/view_http" />
 
                     <TextView
                         android:id="@+id/view_external_http_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_external_rtsp_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_rtsp"/>
+                        android:text="@string/view_rtsp" />
 
                     <TextView
                         android:id="@+id/view_external_rtsp_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
                 <TextView
                     android:id="@+id/internal_title_textview"
                     style="@style/ViewCameraTitleItemText"
-                    android:text="@string/internal_title"/>
+                    android:text="@string/internal_title" />
 
                 <View
                     android:layout_width="fill_parent"
@@ -219,32 +207,30 @@
                     android:layout_marginLeft="10sp"
                     android:layout_marginRight="10sp"
                     android:layout_marginTop="1dp"
-                    android:background="@color/orange_red"/>
+                    android:background="@color/orange_red" />
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_internal_host_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_host"/>
+                        android:text="@string/view_host" />
 
                     <TextView
                         android:id="@+id/view_internal_host_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
-                <LinearLayout
-                    style="@style/ViewCameraItemRowLayout">
+                <LinearLayout style="@style/ViewCameraItemRowLayout">
 
                     <TextView
                         android:id="@+id/view_internal_http_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_http"/>
+                        android:text="@string/view_http" />
 
                     <TextView
                         android:id="@+id/view_internal_http_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
 
                 <LinearLayout
@@ -254,11 +240,11 @@
                     <TextView
                         android:id="@+id/view_internal_rtsp_txt"
                         style="@style/ViewCameraItemRowItemText"
-                        android:text="@string/view_rtsp"/>
+                        android:text="@string/view_rtsp" />
 
                     <TextView
                         android:id="@+id/view_internal_rtsp_value"
-                        style="@style/ViewCameraItemRowItemValueText"/>
+                        style="@style/ViewCameraItemRowItemValueText" />
                 </LinearLayout>
             </LinearLayout>
 
@@ -279,7 +265,7 @@
                     android:text="@string/button_text_edit"
                     android:textColor="#ffffff"
                     android:textSize="17sp"
-                    android:visibility="gone"/>
+                    android:visibility="gone" />
             </LinearLayout>
         </LinearLayout>
     </ScrollView>
