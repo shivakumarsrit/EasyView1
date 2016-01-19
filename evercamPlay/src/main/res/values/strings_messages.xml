@@ -5,8 +5,6 @@
     <string name="msg_try_network_again">Check your settings and try again</string>
     <string name="msg_try_again">Please close the app and try again</string>
     <string name="msg_switch_to_jpg">Switching to jpeg view</string>
-    <string name="msg_camera_offline">Camera offline!</string>
-    <string name="msg_unable_to_connect">Unable to Connect</string>
     <string name="loading_cameras">Loading cameras&#8230;</string>
     <string name="deleting_camera">Deleting camera&#8230;</string>
     <string name="msg_delete_success">Camera deleted</string>
@@ -24,9 +22,7 @@
     <string name="msg_confirm_quit_feedback">Are you sure you want to leave this page? Hitting back will lose any feedback you have entered</string>
     <string name="msg_snapshot_saved">Snapshot saved</string>
     <string name="msg_snapshot_saved_failed">Failed to request snapshot</string>
-    <string name="msg_taking_snapshot">Taking snapshot&#8230;</string>
     <string name="msg_no_snapshot_saved_camera">No snapshot saved for this camera</string>
-    <string name="msg_no_snapshot_saved_main">No snapshot saved yet. You can take snapshots in camera live view</string>
     <string name="msg_confirm_cancel_add_camera">You\'ll lose everything you typed in. Are you sure you want to quit?</string>
     <string name="msg_shortcut_created">Shortcut created on homescreen</string>
     <string name="msg_can_not_access_camera">This camera is not accessible from account</string>

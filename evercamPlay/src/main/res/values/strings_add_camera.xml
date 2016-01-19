@@ -20,7 +20,6 @@
     <string name="save_changes">Save Changes</string>
     <string name="test">Test</string>
     <string name="title_edit_camera">Edit Camera</string>
-    <string name="hint_id">roof-cam</string>
     <string name="hint_name">Rooftop Camera</string>
     <string name="hint_username">Username</string>
     <string name="hint_camera_password">Password</string>
@@ -35,7 +34,6 @@
     <string name="port_is_closed">Port is closed</string>
 
     <!-- Messages -->
-    <string name="id_required">Please specify a unique ID for your camera</string>
     <string name="name_required">Please specify a friendly name for your camera</string>
     <string name="creating_camera">Creating camera&#8230;</string>
     <string name="testing_snapshot">Testing snapshot&#8230;</string>
@@ -54,10 +52,6 @@
     <!-- Option Items -->
     <string name="add_camera_manually">Add cameras manually</string>
     <string name="scan_for_cameras">Scan for cameras</string>
-
-    <!-- Test snapshot options -->
-    <string name="test_external_text">External</string>
-    <string name="test_snapshot_title">Please choose IP address</string>
 
     <!-- View Camera Details -->
     <string name="view_evercam_id">Evercam ID:</string>
@@ -105,5 +99,4 @@
     <string name="connect_camera_snapshot_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually, eg. snapshot.jpg</string>
     <string name="connect_camera_rtsp_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually, eg. h264/ch1/main/stream</string>
 
-    <string name="name_camera_title">Name your camera</string>
 </resources>

@@ -124,7 +124,7 @@
 
         <activity
             android:name=".ManageAccountsActivity"
-            android:label="@string/accounts">
+            android:label="@string/title_activity_accounts">
         </activity>
         <activity
             android:name=".CamerasActivity"
