@@ -38,7 +38,7 @@ The entire Evercam codebase is open source, see details: http://www.evercam.io/o
 
 If you have experience with Android SDK and IP cameras, we look forward to your pull requests!
 
-The code style should follow [the file naming convention](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md) and should be formatted using the default code style template in Android Studio.
+The code should follow [the naming convention](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md) and should be formatted using the default code style template in Android Studio.
 
 ## Contact
 
