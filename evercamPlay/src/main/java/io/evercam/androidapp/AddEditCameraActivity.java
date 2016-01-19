@@ -612,7 +612,8 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
 
             String username = usernameEdit.getText().toString();
             String password = passwordEdit.getText().toString();
-            if (!username.equals(cameraEdit.getUsername()) || !password.equals(cameraEdit.getPassword())) {
+            if (!username.equals(cameraEdit.getUsername())
+                    || !password.equals(cameraEdit.getPassword())) {
                 patchCameraBuilder.setCameraUsername(username);
                 patchCameraBuilder.setCameraPassword(password);
             }
@@ -639,14 +640,15 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
             // that has been filled.
             Defaults defaults = model.getDefaults();
             Auth basicAuth = defaults.getAuth(Auth.TYPE_BASIC);
-            if (basicAuth != null) {
+            if (basicAuth != null && cameraEdit == null) {
                 usernameEdit.setText(basicAuth.getUsername());
                 passwordEdit.setText(basicAuth.getPassword());
             }
             jpgUrlEdit.setText(defaults.getJpgURL());
             rtspUrlEdit.setText(defaults.getH264URL());
 
-            if (!model.getName().equals(Model.DEFAULT_MODEL_NAME) && !jpgUrlEdit.getText().toString().isEmpty()) {
+            if (!model.getName().equals(Model.DEFAULT_MODEL_NAME)
+                    && !jpgUrlEdit.getText().toString().isEmpty()) {
                 //If user specified a specific model, make it not editable
                 jpgUrlEdit.setFocusable(false);
                 jpgUrlEdit.setClickable(true);
@@ -662,8 +664,10 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
     }
 
     public void clearDefaults() {
-        usernameEdit.setText("");
-        passwordEdit.setText("");
+        if(cameraEdit == null) {
+            usernameEdit.setText("");
+            passwordEdit.setText("");
+        }
         jpgUrlEdit.setText("");
         rtspUrlEdit.setText("");
 
