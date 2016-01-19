@@ -6,7 +6,7 @@ Evercam allows connect your own IP cameras, public webcams and any Android devic
 | Name   | Evercam for Android|
 | --- | --- |
 | Owner   | [@liutingdu](https://github.com/liutingdu)   |
-| Version  | 1.6.5 |
+| Version  | 1.7.5 |
 | Evercam API Version  | 1.0  |
 | Licence | [AGPL](https://tldrlegal.com/license/gnu-affero-general-public-license-v3-%28agpl-3.0%29) |
 
@@ -37,6 +37,10 @@ Evercam allows connect your own IP cameras, public webcams and any Android devic
 The entire Evercam codebase is open source, see details: http://www.evercam.io/open-source
 
 If you have experience with Android SDK and IP cameras, we look forward to your pull requests!
+
+The code style should follow [the file naming convention](https://github.com/ribot/android-guidelines/blob/master/project_and_code_guidelines.md) and should be formatted using the default code style template in Android Studio.
+
+## Contact
 
 For any bugs and discussions, please use [Github Issues](https://github.com/evercam/evercam-play-android/issues).
 
