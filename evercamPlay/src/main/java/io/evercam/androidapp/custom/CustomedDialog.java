@@ -7,14 +7,11 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.drawable.ColorDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.provider.Settings;
 import android.view.LayoutInflater;
 import android.view.View;
-import android.view.Window;
-import android.view.WindowManager;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,7 +27,6 @@ import io.evercam.CameraShareInterface;
 import io.evercam.CameraShareRequest;
 import io.evercam.EvercamObject;
 import io.evercam.Right;
-import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.dto.AppData;
@@ -261,7 +257,7 @@ public class CustomedDialog
         snapshotDialog.getWindow().setBackgroundDrawableResource(android.R.color.transparent);
 
         LayoutInflater mInflater = LayoutInflater.from(activity);
-        final View snapshotView = mInflater.inflate(R.layout.test_snapshot_dialog, null);
+        final View snapshotView = mInflater.inflate(R.layout.dialog_test_snapshot, null);
         Button nextButton = (Button) snapshotView.findViewById(R.id.connect_camera_next_button);
 
         if(activity instanceof AddCameraActivity)
@@ -292,7 +288,7 @@ public class CustomedDialog
     {
         Builder snapshotDialogBuilder = new AlertDialog.Builder(activity);
         LayoutInflater mInflater = LayoutInflater.from(activity);
-        final View snapshotView = mInflater.inflate(R.layout.confirm_snapshot_dialog, null);
+        final View snapshotView = mInflater.inflate(R.layout.dialog_confirm_snapshot, null);
         ImageView snapshotImageView = (ImageView) snapshotView.findViewById(R.id
                 .confirm_snapshot_image);
         snapshotImageView.setImageBitmap(bitmap);
@@ -347,7 +343,7 @@ public class CustomedDialog
     {
         Builder dialogBuilder = new AlertDialog.Builder(videoActivity);
         LayoutInflater inflater = LayoutInflater.from(videoActivity);
-        final View view = inflater.inflate(R.layout.create_preset_dialog_layout, null);
+        final View view = inflater.inflate(R.layout.dialog_create_preset, null);
         final EditText editText = (EditText) view.findViewById(R.id.create_preset_edit_text);
         dialogBuilder.setView(view);
         dialogBuilder.setPositiveButton(R.string.add, new DialogInterface.OnClickListener() {

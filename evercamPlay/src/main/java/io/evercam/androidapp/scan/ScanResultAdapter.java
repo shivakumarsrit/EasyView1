@@ -40,7 +40,7 @@ public class ScanResultAdapter extends ArrayAdapter<DiscoveredCamera>
         {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.scan_list_layout, null);
+            view = layoutInflater.inflate(R.layout.item_scan_list, null);
         }
         DiscoveredCamera camera = cameras.get(position);
         if (camera != null)

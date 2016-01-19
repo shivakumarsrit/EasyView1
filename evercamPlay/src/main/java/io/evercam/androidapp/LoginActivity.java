@@ -51,7 +51,7 @@ public class LoginActivity extends ParentAppCompatActivity
 
         customProgressDialog = new CustomProgressDialog(this);
 
-        setContentView(R.layout.login);
+        setContentView(R.layout.activity_login);
 
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
 

@@ -126,13 +126,13 @@ public class AddEditCameraActivity extends ParentAppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_add_camera, menu);
+        inflater.inflate(R.menu.activity_add_edit_camera, menu);
 
         MenuItem supportMenuItem = menu.findItem(R.id.menu_action_support);
         if(supportMenuItem != null)
         {
             LinearLayout menuLayout = (LinearLayout) LayoutInflater.from(this)
-                    .inflate(R.layout.support_menu_lowercase, null);
+                    .inflate(R.layout.menu_support_lowercase, null);
             supportMenuItem.setActionView(menuLayout);
             supportMenuItem.setShowAsAction(MenuItem.SHOW_AS_ACTION_ALWAYS);
 

@@ -19,7 +19,7 @@ public class GradientTitleLayout extends RelativeLayout
         super(context);
         LayoutInflater inflater = (LayoutInflater) context.getSystemService(Context
                 .LAYOUT_INFLATER_SERVICE);
-        inflater.inflate(R.layout.gradient_layout, this);
+        inflater.inflate(R.layout.partial_gradient, this);
     }
 
     public void setTitle(String title)

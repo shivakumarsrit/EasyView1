@@ -36,7 +36,7 @@
 
                 <include
                     android:id="@+id/model_explain_text_layout"
-                    layout="@layout/explain_text_view"/>
+                    layout="@layout/partial_explain_text_view"/>
 
                 <fragment
                     android:id="@+id/add_camera_model_selector_fragment"
@@ -106,7 +106,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
                     android:layout_marginRight="10dp"
-                    layout="@layout/explain_text_view"/>
+                    layout="@layout/partial_explain_text_view"/>
 
                 <LinearLayout
                     android:id="@+id/connect_form_layout"

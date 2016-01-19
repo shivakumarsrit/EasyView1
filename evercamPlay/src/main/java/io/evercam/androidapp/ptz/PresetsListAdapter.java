@@ -30,7 +30,7 @@ public class PresetsListAdapter extends ArrayAdapter<PTZPreset>
         {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.preset_list_item_layout, null);
+            view = layoutInflater.inflate(R.layout.item_preset_list, null);
         }
 
         PTZPreset preset = presetList.get(position);

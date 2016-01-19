@@ -188,10 +188,7 @@
             android:value=".video.VideoActivity"
             android:label="Test Multi Camera View"/>
         </activity>
-        <activity
-            android:name=".video.MultiCameraActivity"
-            android:label="@string/title_activity_about_web">
-        </activity>
+
         <meta-data
             android:name="io.fabric.ApiKey"
             android:value="3076ee9439062b784cded123ab7344ffa3b1c872" />

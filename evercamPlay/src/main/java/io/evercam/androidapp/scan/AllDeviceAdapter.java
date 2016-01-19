@@ -33,7 +33,7 @@ public class AllDeviceAdapter extends ArrayAdapter<DeviceInterface>
         {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.device_list_item, null);
+            view = layoutInflater.inflate(R.layout.item_device_list, null);
         }
 
         DeviceInterface deviceInterface = deviceList.get(position);

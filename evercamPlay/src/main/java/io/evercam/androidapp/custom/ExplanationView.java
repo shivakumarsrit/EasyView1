@@ -9,7 +9,7 @@ import android.widget.TextView;
 import io.evercam.androidapp.R;
 
 /**
- * The view that inflates from explain_text_view.xml
+ * The view that inflates from partial_explain_text_view.xml
  * This class provides interfaces for updating the title and message text
  */
 public class ExplanationView extends LinearLayout

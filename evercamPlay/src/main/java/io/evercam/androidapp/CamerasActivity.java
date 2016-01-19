@@ -174,10 +174,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     {
         // draw the options defined in the following file
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.camera_list_menu, menu);
+        inflater.inflate(R.menu.activity_camera_list, menu);
 
         refresh = menu.findItem(R.id.menurefresh);
-        refresh.setActionView(R.layout.actionbar_indeterminate_progress);
+        refresh.setActionView(R.layout.partial_actionbar_progress);
 
         return true;
     }
@@ -192,7 +192,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_refresh, R.string.label_list_refresh);
 
-            if(refresh != null) refresh.setActionView(R.layout.actionbar_indeterminate_progress);
+            if(refresh != null) refresh.setActionView(R.layout.partial_actionbar_progress);
 
             startCameraLoadingTask();
 

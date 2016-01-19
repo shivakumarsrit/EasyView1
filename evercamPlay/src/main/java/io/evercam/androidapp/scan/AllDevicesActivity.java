@@ -30,7 +30,7 @@ public class AllDevicesActivity extends ParentAppCompatActivity
             setActivityBackgroundColor(Color.WHITE);
 
             ListView deviceListView = (ListView) findViewById(R.id.all_device_list);
-            AllDeviceAdapter deviceAdapter = new AllDeviceAdapter(this, R.layout.scan_list_layout, mAllDevices);
+            AllDeviceAdapter deviceAdapter = new AllDeviceAdapter(this, R.layout.item_scan_list, mAllDevices);
             deviceListView.setAdapter(deviceAdapter);
         }
 

@@ -240,7 +240,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             }
             nativeInit();
 
-            setContentView(R.layout.video_activity_layout);
+            setContentView(R.layout.activity_video);
 
             mToolbar = (Toolbar) findViewById(R.id.spinner_tool_bar);
             setOpaqueTitleBackground();
@@ -614,7 +614,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.video_menu, menu);
+        inflater.inflate(R.menu.activity_video, menu);
 
         return true;
     }
@@ -1171,13 +1171,13 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     final AlertDialog listDialog = new AlertDialog.Builder(VideoActivity.this)
                             .setNegativeButton(R.string.cancel, null).create();
                     LayoutInflater mInflater = LayoutInflater.from(getApplicationContext());
-                    final View view = mInflater.inflate(R.layout.list_dialog_layout, null);
+                    final View view = mInflater.inflate(R.layout.dialog_preset_list, null);
                     ListView listView = (ListView) view.findViewById(R.id.presets_list_view);
-                    View header = getLayoutInflater().inflate(R.layout.preset_list_header, null);
+                    View header = getLayoutInflater().inflate(R.layout.header_preset_list, null);
                     listView.addHeaderView(header);
                     listDialog.setView(view);
                     listView.setAdapter(new PresetsListAdapter(getApplicationContext(), R.layout
-                            .preset_list_item_layout, presetList));
+                            .item_preset_list, presetList));
                     listView.setOnItemClickListener(new AdapterView.OnItemClickListener()
                     {
                         @Override
@@ -1835,7 +1835,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         cameraNames = getCameraNameArray(cameraList);
 
         CameraListAdapter adapter = new CameraListAdapter(VideoActivity.this,
-                R.layout.live_view_spinner, R.id.spinner_camera_name_text, cameraNames, cameraList);
+                R.layout.item_spinner_live_view, R.id.spinner_camera_name_text, cameraNames, cameraList);
         mCameraListSpinner.setAdapter(adapter);
         mCameraListSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override

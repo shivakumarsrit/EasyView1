@@ -63,7 +63,7 @@ public class ViewCameraActivity extends ParentAppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
 
-        getMenuInflater().inflate(R.menu.menu_camera_settings, menu);
+        getMenuInflater().inflate(R.menu.activity_camera_details, menu);
         return true;
     }
 

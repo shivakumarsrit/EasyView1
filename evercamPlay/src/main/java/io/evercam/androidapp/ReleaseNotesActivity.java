@@ -24,7 +24,7 @@ public class ReleaseNotesActivity extends ParentAppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.release_notes_activity_layout);
+        setContentView(R.layout.activity_release_notes);
 
         setUpBasicToolbar();
 

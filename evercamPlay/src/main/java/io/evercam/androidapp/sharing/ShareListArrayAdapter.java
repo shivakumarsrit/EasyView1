@@ -41,7 +41,7 @@ public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface>
         {
             LayoutInflater layoutInflater = (LayoutInflater)getContext().getSystemService(Context
                     .LAYOUT_INFLATER_SERVICE);
-            view = layoutInflater.inflate(R.layout.share_list_item, null);
+            view = layoutInflater.inflate(R.layout.item_share_list, null);
         }
 
         TextView fullNameTextView = (TextView) view.findViewById(R.id.sharing_fullname_text_view);

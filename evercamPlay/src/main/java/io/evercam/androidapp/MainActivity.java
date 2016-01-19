@@ -69,7 +69,7 @@ public class MainActivity extends ParentAppCompatActivity
 
         Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
 
-        setContentView(R.layout.main_activity_layout);
+        setContentView(R.layout.activity_main);
 
         launch();
     }

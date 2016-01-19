@@ -54,7 +54,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     {
         super.onCreate(savedInstanceState);
 
-        setContentView(R.layout.manage_account_activity);
+        setContentView(R.layout.activity_manage_account);
 
         setUpDefaultToolbar();
 
@@ -87,7 +87,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
                 }
 
                 final View optionListView = getLayoutInflater().inflate(R.layout
-                        .manage_account_option_list, null);
+                        .dialog_manage_account_options, null);
 
                 final AlertDialog dialog = CustomedDialog.getAlertDialogNoTitle
                         (ManageAccountsActivity.this, optionListView );
@@ -223,7 +223,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
     private void showAddUserDialogue(String username, String password, boolean isdefault)
     {
         final View dialog_layout = getLayoutInflater().inflate(R.layout
-                .manage_account_adduser_dialogue, null);
+                .dialog_add_user, null);
 
         alertDialog = new AlertDialog.Builder(this).setView(dialog_layout).setCancelable(false)
                 .setNegativeButton(R.string.cancel, null).setPositiveButton((getString(R.string
@@ -339,7 +339,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity
         ArrayList<AppUser> appUsers = new EvercamAccount(this).retrieveUserList();
 
         ListAdapter listAdapter = new CustomAdapter(ManageAccountsActivity.this,
-                R.layout.manage_account_list_item, R.layout.manage_account_list_item_new_user,
+                R.layout.item_list_user, R.layout.item_list_new_user,
                 R.id.account_item_email, appUsers);
         ListView listview = (ListView) findViewById(R.id.email_list);
         listview.setAdapter(null);

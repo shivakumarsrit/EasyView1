@@ -91,11 +91,11 @@ public class ScanActivity extends ParentAppCompatActivity
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);
         Button showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
 
-        View footerView = getLayoutInflater().inflate(R.layout.scan_list_footer, cameraListView, false);
+        View footerView = getLayoutInflater().inflate(R.layout.footer_scan_list, cameraListView, false);
         Button showAllDeviceFooterButton = (Button) footerView.findViewById(R.id.button_all_devices_in_list);
         cameraListView.addFooterView(footerView);
 
-        deviceAdapter = new ScanResultAdapter(this, R.layout.scan_list_layout, discoveredCameras,
+        deviceAdapter = new ScanResultAdapter(this, R.layout.item_scan_list, discoveredCameras,
                 drawableArray);
         cameraListView.setAdapter(deviceAdapter);
 
@@ -164,7 +164,7 @@ public class ScanActivity extends ParentAppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.menu_scan, menu);
+        inflater.inflate(R.menu.activity_scan, menu);
 
         cancelMenuItem = menu.findItem(R.id.action_cancel_scan);
         showAllDeviceMenu = menu.findItem(R.id.action_show_all_devices);

@@ -34,7 +34,7 @@ public class SlideActivity extends ParentAppCompatActivity implements OnPageChan
     public void onCreate(Bundle savedInstanceState)
     {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.indexslide);
+        setContentView(R.layout.activity_slide);
 
         initSlideView();
         initDots();

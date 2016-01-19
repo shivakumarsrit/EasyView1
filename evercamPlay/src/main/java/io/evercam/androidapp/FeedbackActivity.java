@@ -59,7 +59,7 @@ public class FeedbackActivity extends ParentAppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
 
-        getMenuInflater().inflate(R.menu.menu_feedback, menu);
+        getMenuInflater().inflate(R.menu.activity_feedback, menu);
         return true;
     }
 

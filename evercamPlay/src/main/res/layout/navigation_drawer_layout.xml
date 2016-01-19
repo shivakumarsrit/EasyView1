@@ -11,7 +11,7 @@
         android:id="@+id/content_frame"
         android:layout_width="match_parent"
         android:layout_height="match_parent">
-        <include layout="@layout/cameras_list_layout"/>
+        <include layout="@layout/activity_cameras_list"/>
     </FrameLayout>
 
     <LinearLayout
@@ -156,7 +156,7 @@
 
                 </FrameLayout>
 
-                <include layout="@layout/navigation_drawer_divider"/>
+                <include layout="@layout/divider_navigation_drawer"/>
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_settings_layout"

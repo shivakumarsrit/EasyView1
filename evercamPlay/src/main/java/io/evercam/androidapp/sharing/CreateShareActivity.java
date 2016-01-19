@@ -33,7 +33,7 @@ public class CreateShareActivity extends ParentAppCompatActivity
     public boolean onCreateOptionsMenu(Menu menu)
     {
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.create_share_menu, menu);
+        inflater.inflate(R.menu.activity_create_share, menu);
 
         return true;
     }

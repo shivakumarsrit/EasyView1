@@ -65,10 +65,10 @@ public class SharingListFragment extends ListFragment
     {
         super.onActivityCreated(savedInstanceState);
 
-        View headerView = getActivity().getLayoutInflater().inflate(R.layout.share_list_header,getListView(),false);
+        View headerView = getActivity().getLayoutInflater().inflate(R.layout.header_share_list,getListView(),false);
 
         mShareAdapter = new ShareListArrayAdapter(getActivity(),
-                R.layout.share_list_item, mShareList);
+                R.layout.item_share_list, mShareList);
 
         //Add header for the sharing status
         getListView().addHeaderView(headerView);

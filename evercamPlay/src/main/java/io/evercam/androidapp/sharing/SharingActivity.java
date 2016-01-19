@@ -59,7 +59,7 @@ public class SharingActivity extends ParentAppCompatActivity
     {
         super.onPrepareOptionsMenu(menu);
         MenuInflater inflater = getMenuInflater();
-        inflater.inflate(R.menu.sharing_menu, menu);
+        inflater.inflate(R.menu.activity_sharing, menu);
 
         transferMenu = menu.findItem(R.id.menu_transfer);
 
