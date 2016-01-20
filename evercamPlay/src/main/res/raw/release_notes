@@ -1,8 +1,14 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.7.6</h5>
+<h5>1.7.7 Alpha</h5>
 <ul>
-	<li>- Fixed the live view scale issue for landscape<br/></li>
+	<li>- New design for adding camera<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.7.6</b>
+<ul>
+	<li><br/>- Fixed the live view scale issue for landscape<br/></li>
 </ul>
 <br/>
 
