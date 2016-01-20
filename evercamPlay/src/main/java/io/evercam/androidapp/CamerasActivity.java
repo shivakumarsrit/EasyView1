@@ -406,7 +406,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                         .category_menu, R.string.action_add_camera, R.string
                         .label_add_camera_manually);
 
-                startActivityForResult(new Intent(CamerasActivity.this, AddCameraActivity
+                //TODO: Enable new add camera design
+//                startActivityForResult(new Intent(CamerasActivity.this, AddCameraActivity
+//                        .class), Constants.REQUEST_CODE_ADD_CAMERA);
+                startActivityForResult(new Intent(CamerasActivity.this, AddEditCameraActivity
                         .class), Constants.REQUEST_CODE_ADD_CAMERA);
 
                 actionMenu.collapse();
