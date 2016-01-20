@@ -42,6 +42,7 @@ public:
     void setSampleReadyHandler(SampleReadyHandler handler);
     void setSampleFailedHandler(SampleFailedHandler handler);
     void setSurface(ANativeWindow *window);
+    void updateSurface(ANativeWindow *window);
     void expose();
     void releaseSurface();
     bool isInitialized() const;

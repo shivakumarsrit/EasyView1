@@ -150,6 +150,10 @@ struct FrameFlipper::FrameFlipperPriv
         }
     }
 
+    void setSize(size_t width, size_t height){
+        m_target->setSize(width, height);
+    }
+
     void start() {
         std::lock_guard<std::mutex> lock(m_mutex);
         m_statusRunning = true;
@@ -442,6 +446,10 @@ Orientation FrameFlipper::orientation() const
 void FrameFlipper::setOrientation(Orientation orientation)
 {
     m_impl->setOrientation(orientation);
+}
+
+void FrameFlipper::setSize(size_t width, size_t height) {
+    m_impl->setSize(width, height);
 }
 
 FillMode FrameFlipper::fillMode() const

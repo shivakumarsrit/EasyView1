@@ -96,6 +96,7 @@ public:
     size_t scaleY() const;
     float scaleFactor() const;
     void setScale(size_t x, size_t y, float scale);
+    void setSize(size_t width, size_t height);
 
     // Set & get background color
     void color(float *r, float *g, float *b, float *a);
@@ -128,8 +129,9 @@ public:
                            size_t crWidth, size_t crHeight) = 0;
     virtual void setFrame(FrameFlipper::frame_data_t data,
                           size_t width, size_t height,
-                          FrameFlipper::FrameFormat format) = 0;;
+                          FrameFlipper::FrameFormat format) = 0;
 
+    virtual void setSize(size_t width, size_t height) = 0;
     static RenderTarget *create(void* window,
                                 RenderTarget::Format format);
 };

@@ -188,6 +188,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private native void nativeFinalize(); // Destroy pipeline and shutdown native code
 
+    private native void nativeSurfaceUpdate(Object surface);
+
     private native void nativePlay();     // Set pipeline to PLAYING
 
     private native void nativePause();    // Set pipeline to PAUSED
@@ -781,6 +783,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     @Override
     public void surfaceCreated(SurfaceHolder surfaceHolder) {
         Log.d("GStreamer", "Surface created: " + surfaceHolder.getSurface());
+        nativeSurfaceInit(surfaceHolder.getSurface());
     }
 
     @Override
@@ -789,7 +792,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 + height);
         onMediaSizeChanged(width, height);
 
-        nativeSurfaceInit(surfaceholder.getSurface());
+        nativeSurfaceUpdate(surfaceHolder.getSurface());
         nativeExpose();
     }
 

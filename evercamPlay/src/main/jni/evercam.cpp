@@ -287,6 +287,13 @@ static void gst_native_surface_finalize (JNIEnv *env, jobject thiz) {
     data->player->stop();
 }
 
+static void gst_native_update_surface(JNIEnv *env, jobject thiz, jobject surface) {
+    CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
+    if (!data) return;
+    ANativeWindow *new_native_window = ANativeWindow_fromSurface(env, surface);
+    data->player->updateSurface(new_native_window);
+}
+
 static void gst_native_expose(JNIEnv *env, jobject thiz) {
     CustomData *data = GET_CUSTOM_DATA (env, thiz, custom_data_field_id);
     if (!data) return;
@@ -304,6 +311,7 @@ static JNINativeMethod native_methods[] = {
     { "nativeRequestSample", "(Ljava/lang/String;)V", (void *) gst_native_request_sample},
     { "nativeSetUri", "(Ljava/lang/String;I)V", (void *) gst_native_set_uri},
     { "nativeSurfaceInit", "(Ljava/lang/Object;)V", (void *) gst_native_surface_init},
+    { "nativeSurfaceUpdate", "(Ljava/lang/Object;)V", (void *) gst_native_update_surface},
     { "nativeSurfaceFinalize", "()V", (void *) gst_native_surface_finalize},
     { "nativeClassInit", "()Z", (void *) gst_native_class_init}
 

@@ -215,6 +215,12 @@ void MediaPlayer::setSurface(ANativeWindow *window)
     m_initialized = true;
 }
 
+void MediaPlayer::updateSurface(ANativeWindow *window)
+{
+    m_window = window;
+    m_renderer->setSize(ANativeWindow_getWidth(window), ANativeWindow_getHeight(window));
+}
+
 void MediaPlayer::expose()
 {
     drawFrame(msp_last_sample.get());

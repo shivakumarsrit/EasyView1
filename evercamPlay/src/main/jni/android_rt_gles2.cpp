@@ -251,6 +251,8 @@ public:
                         RenderTarget::Format format);
     virtual ~AndroidRenderTarget();
 
+    virtual void setSize(size_t width, size_t height);
+
 private:
     virtual bool hasNPOT() const;
     virtual bool initialize();
@@ -412,6 +414,11 @@ AndroidRenderTarget::AndroidRenderTarget(ANativeWindow* window,
 AndroidRenderTarget::~AndroidRenderTarget()
 {
     destroy();
+}
+
+void AndroidRenderTarget::setSize(size_t width, size_t height) {
+    m_windowWidth = width;
+    m_windowHeight = height;
 }
 
 bool AndroidRenderTarget::hasNPOT() const
