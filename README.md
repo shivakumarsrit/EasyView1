@@ -27,8 +27,8 @@ Evercam allows connect your own IP cameras, public webcams and any Android devic
 
 1. Checkout from Git:
     ```git clone https://github.com/evercam/evercam-play-android.git```
-2. Download [GStreamer 1.6.1 for Android](http://gstreamer.freedesktop.org/data/pkg/android/1.6.1/gstreamer-1.0-android-arm-1.6.1.tar.bz2) and extract it.
-3. Edit evercamPlay/src/main/jni/Android.mk with the Gstreamer path: ```GSTREAMER_ROOT_ANDROID := /path/to/GStreamer/gstreamer-1.0-android-arm-1.6.1```
+2. Download [GStreamer 1.7.1 for Android](http://gstreamer.freedesktop.org/data/pkg/android/1.7.1/gstreamer-1.0-android-arm-1.7.1.tar.bz2) and extract it.
+3. Edit evercamPlay/src/main/jni/Android.mk with the Gstreamer path: ```GSTREAMER_ROOT_ANDROID := /path/to/GStreamer/gstreamer-1.0-android-arm-1.7.1```
 4. Compile GStreamer - ```cd evercamPlay/src/main``` and then ```/path/to/ndk/android-ndk-r10e/ndk-build```
 5. Open the project in Android Studio and run
 

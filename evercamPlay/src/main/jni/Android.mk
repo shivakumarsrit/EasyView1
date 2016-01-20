@@ -2,7 +2,7 @@ LOCAL_PATH := $(call my-dir)
 
 include $(CLEAR_VARS)
 
-GSTREAMER_ROOT_ANDROID := /Users/liutingdu/Android3rdParty/gstreamer-1.0-android-arm-1.6.1
+GSTREAMER_ROOT_ANDROID := /Users/liutingdu/Android3rdParty/gstreamer-1.0-android-arm-1.7.1
 
 SHELL := PATH=/usr/bin:/bin:/usr/sbin:/sbin:/usr/local/bin /bin/bash
 
@@ -26,6 +26,4 @@ include $(GSTREAMER_NDK_BUILD_PATH)/plugins.mk
 GSTREAMER_PLUGINS         := $(GSTREAMER_PLUGINS_CORE) $(GSTREAMER_PLUGINS_PLAYBACK) $(GSTREAMER_PLUGINS_CODECS) $(GSTREAMER_PLUGINS_NET) $(GSTREAMER_PLUGINS_SYS) $(GSTREAMER_PLUGINS_CODECS_RESTRICTED) $(GSTREAMER_PLUGINS_CODECS_GPL) $(GSTREAMER_PLUGINS_ENCODING)
 GSTREAMER_EXTRA_DEPS      := gstreamer-video-1.0
 
-# TODO: Remove TARGET_LDFLAGS after upgrading to GStreamer 1.6.2
-TARGET_LDFLAGS := -Wl,-soname,libgstreamer_android.so
 include $(GSTREAMER_NDK_BUILD_PATH)/gstreamer-1.0.mk
