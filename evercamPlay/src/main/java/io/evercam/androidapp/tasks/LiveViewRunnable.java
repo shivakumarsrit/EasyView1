@@ -4,10 +4,8 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.Handler;
 import android.os.Looper;
-import android.provider.MediaStore;
 import android.util.Base64;
 import android.util.Log;
-import android.widget.ImageView;
 
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
@@ -133,10 +131,12 @@ public class LiveViewRunnable implements Runnable {
             @Override
             public void run() {
                 try {
-                    mSocket.remove(mChannel);
+                    if(mSocket != null) {
+                        mSocket.remove(mChannel);
+                        mSocket.disconnect();
+                        mSocket = null;
+                    }
                     mChannel = null;
-                    mSocket.disconnect();
-                    mSocket = null;
                 } catch (IOException e) {
                     e.printStackTrace();
                 }

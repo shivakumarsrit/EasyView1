@@ -99,12 +99,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private String liveViewCameraId = "";
     public ArrayList<PTZPreset> presetList = new ArrayList<>();
 
-    private boolean showJpgView = false;
-
     private Bitmap mBitmap = null; /* The temp snapshot data while asking for permission */
 
     /** JPG live view using WebSocket */
     private LiveViewRunnable mLiveViewRunnable;
+    private boolean showJpgView = false;
 
     /**
      * UI elements
@@ -118,13 +117,10 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private ImageView imageView;
     private ImageView playPauseImageView;
     private ImageView snapshotMenuView;
-    private ImageView ptzSwitchImageView;
     private Animation fadeInAnimation = null;
     private RelativeLayout ptzZoomLayout;
     private RelativeLayout ptzMoveLayout;
     private Spinner mCameraListSpinner;
-
-    private boolean isProgressShowing = true;
 
     private Boolean optionsActivityStarted = false;
 
@@ -576,9 +572,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     startActivityForResult(recordingIntent, Constants.REQUEST_CODE_RECORDING);
                 }
             }
-        } catch (OutOfMemoryError e) {
-            Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-        } catch (Exception e) {
+        } catch (JSONException e) {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
         }
         return true;
@@ -643,8 +637,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         showJpgView = false;
 
-        isProgressShowing = false;
-
         optionsActivityStarted = false;
 
         showAllControlMenus(false);
@@ -661,8 +653,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         showProgressView(true);
     }
 
-    // Loads image from cache. First image gets loaded correctly and hence we
-    // can start making requests concurrently as well
     public void loadImageThumbnail(EvercamCamera camera) {
         imageView.setImageDrawable(null);
 
@@ -704,11 +694,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     if (surfaceView.getVisibility() != View.VISIBLE) {
                         snapshotMenuView.setVisibility(View.VISIBLE);
                     }
-                    //TODO: Enable PTZ switch
-//                    if(isPtz)
-//                    {
-//                        ptzSwitchImageView.setVisibility(View.VISIBLE);
-//                    }
                 }
 
                 int orientation = VideoActivity.this.getResources().getConfiguration().orientation;
@@ -720,7 +705,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         playPauseImageView.startAnimation(fadeInAnimation);
         snapshotMenuView.startAnimation(fadeInAnimation);
-        ptzSwitchImageView.startAnimation(fadeInAnimation);
     }
 
     /**
@@ -773,7 +757,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         } else {
             //If no RTSP URL exists, start JPG view straight away
             showJpgView = true;
-            createBrowseJpgTask();
+            launchJpgRunnable();
         }
     }
 
@@ -811,11 +795,16 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     .LayoutParams.FLAG_FULLSCREEN);
 
             setGradientTitleBackground();
-            if (!paused && !end && !isProgressShowing) hideToolbar();
+            if (!paused && !end && !isProgressViewVisible()) hideToolbar();
             else showToolbar();
         }
 
         this.invalidateOptionsMenu();
+    }
+
+    private boolean isProgressViewVisible()
+    {
+        return progressView.getVisibility() == View.VISIBLE;
     }
 
     private void setDisplayOrientation() {
@@ -853,7 +842,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         imageView = (ImageView) this.findViewById(R.id.jpg_image_view);
         playPauseImageView = (ImageView) this.findViewById(R.id.play_pause_image_view);
         snapshotMenuView = (ImageView) this.findViewById(R.id.player_savesnapshot);
-        ptzSwitchImageView = (ImageView) findViewById(R.id.player_ptz_switch);
 
         surfaceView = (SurfaceView) findViewById(R.id.surface_view);
         surfaceHolder = surfaceView.getHolder();
@@ -865,7 +853,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         progressView.setMinimumHeight(playPauseImageView.getHeight());
         progressView.canvasColor = Color.TRANSPARENT;
 
-        isProgressShowing = true;
         progressView.setVisibility(View.VISIBLE);
 
         offlineTextView = (TextView) findViewById(R.id.offline_text_view);
@@ -979,7 +966,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (isProgressShowing) return;
+                if (isProgressViewVisible()) return;
                 if (paused) // video is currently paused. Now we need to
                 // resume it.
                 {
@@ -1040,7 +1027,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                             Toast.LENGTH_SHORT).show();
                     return;
                 }
-                if (isProgressShowing) return;
+                if (isProgressViewVisible()) return;
 
                 if (!paused && !end) // video is currently playing. Show pause button
                 {
@@ -1079,25 +1066,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 }
             }
         });
-
-        //TODO: Enable PTZ switch
-//        ptzSwitchImageView.setOnClickListener(new OnClickListener() {
-//            @Override
-//            public void onClick(View v)
-//            {
-//                if(ptzMoveLayout.getVisibility() != View.VISIBLE)
-//                {
-//                    showPtzControl(true);
-//                }
-//                else
-//                {
-//                    showPtzControl(false);
-//                }
-//
-//                showAllControlMenus(false);
-//                clearControlMenuAnimation();
-//            }
-//        });
     }
 
     public void setTempSnapshotBitmap(Bitmap bitmap) {
@@ -1124,14 +1092,12 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         if(show) {
             progressView.canvasColor = Color.TRANSPARENT;
             progressView.setVisibility(View.VISIBLE);
-            isProgressShowing = true;
         } else {
             imageViewLayout.findViewById(R.id.live_progress_view).setVisibility(View.GONE);
-            isProgressShowing = false;
         }
     }
 
-    private void createBrowseJpgTask() {
+    private void launchJpgRunnable() {
         mLiveViewRunnable = new LiveViewRunnable(this, evercamCamera.getCameraId());
         loadJpgView();
     }
@@ -1231,7 +1197,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
                 showJpgView = true;
-                createBrowseJpgTask();
+                launchJpgRunnable();
             }
         });
     }
@@ -1381,22 +1347,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     public void showAllControlMenus(boolean show) {
         playPauseImageView.setVisibility(show ? View.VISIBLE : View.GONE);
         snapshotMenuView.setVisibility(show ? View.VISIBLE : View.GONE);
-
-        //TODO: Enable PTZ switch
-//        if(show && isPtz)
-//        {
-//            ptzSwitchImageView.setVisibility(View.VISIBLE);
-//        }
-//        else
-//        {
-//            ptzSwitchImageView.setVisibility(View.GONE);
-//        }
     }
 
     public void clearControlMenuAnimation() {
         snapshotMenuView.clearAnimation();
         playPauseImageView.clearAnimation();
-        ptzSwitchImageView.clearAnimation();
     }
 
     public void showPtzControl(boolean show) {
@@ -1432,4 +1387,3 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         successItem.sendToKeenIo(client);
     }
 }
-
