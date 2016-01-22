@@ -85,6 +85,7 @@ import io.evercam.androidapp.recordings.RecordingWebActivity;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.tasks.CaptureSnapshotRunnable;
 import io.evercam.androidapp.tasks.CheckOnvifTask;
+import io.evercam.androidapp.tasks.LiveViewRunnable;
 import io.evercam.androidapp.tasks.PTZMoveTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
@@ -98,9 +99,12 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private String liveViewCameraId = "";
     public ArrayList<PTZPreset> presetList = new ArrayList<>();
 
-    private boolean showImagesVideo = false;
+    private boolean showJpgView = false;
 
     private Bitmap mBitmap = null; /* The temp snapshot data while asking for permission */
+
+    /** JPG live view using WebSocket */
+    private LiveViewRunnable mLiveViewRunnable;
 
     /**
      * UI elements
@@ -120,38 +124,14 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private RelativeLayout ptzMoveLayout;
     private Spinner mCameraListSpinner;
 
-    private long downloadStartCount = 0;
-    private long downloadEndCount = 0;
-    private BrowseJpgTask browseJpgTask;
     private boolean isProgressShowing = true;
-    static boolean enableLogs = true;
 
-    private final int MIN_SLEEP_INTERVAL = 800; // interval between two requests of
-    // images
-    private final int ADJUSTMENT_INTERVAL = 100; // how much milli seconds to increment
-    // or decrement on image failure or
-    // success
-    private int sleepInterval = MIN_SLEEP_INTERVAL + 290; // starting image
-    // interval
-    private boolean startDownloading = false; // start making requests soon
-    // after the image is received
-    // first time. Until first image
-    // is not received, do not make
-    // requests
-    private static long latestStartImageTime = 0; // time of the latest request
-    // that has been made
-    private int successiveFailureCount = 0; // how much successive image
-    // requests have failed
-    private Boolean isShowingFailureMessage = false;
     private Boolean optionsActivityStarted = false;
 
     public static String startingCameraID;
     private int defaultCameraIndex;
 
     private boolean paused = false;
-
-    private boolean isJpgSuccessful = false; //Whether or not the JPG view ever
-    //got successfully played
 
     public boolean isPtz = false; //Whether or a PTZ camera model
 
@@ -173,7 +153,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private Date startTime;
     private KeenClient client;
-    private String username = "";
 
     /**
      * Gstreamer
@@ -332,60 +311,40 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     @Override
     public void onResume() {
-        try {
-            super.onResume();
+        super.onResume();
+        this.paused = false;
+        editStarted = false;
+        feedbackStarted = false;
+        recordingsStarted = false;
+        sharingStarted = false;
+        snapshotStarted = false;
+
+        if (optionsActivityStarted) {
+            optionsActivityStarted = false;
+
+            showProgressView(true);
+
             this.paused = false;
-            editStarted = false;
-            feedbackStarted = false;
-            recordingsStarted = false;
-            sharingStarted = false;
-            snapshotStarted = false;
-
-            if (optionsActivityStarted) {
-                optionsActivityStarted = false;
-
-                showProgressView();
-
-                startDownloading = false;
-                this.paused = false;
-                this.end = false;
-                this.isShowingFailureMessage = false;
-
-                latestStartImageTime = SystemClock.uptimeMillis();
-
-                if (browseJpgTask == null) {
-                    // ignore if image thread is null
-                } else if (browseJpgTask.getStatus() != AsyncTask.Status.RUNNING) {
-                    browseJpgTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                } else if (browseJpgTask.getStatus() == AsyncTask.Status.FINISHED) {
-                    createBrowseJpgTask();
-                }
-            }
-        } catch (OutOfMemoryError e) {
-            Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
+            this.end = false;
         }
     }
 
     // When activity gets focused again
     @Override
     public void onRestart() {
-        try {
-            super.onRestart();
-            paused = false;
-            end = false;
-            editStarted = false;
-            feedbackStarted = false;
-            recordingsStarted = false;
-            sharingStarted = false;
-            snapshotStarted = false;
+        super.onRestart();
+        paused = false;
+        end = false;
+        editStarted = false;
+        feedbackStarted = false;
+        recordingsStarted = false;
+        sharingStarted = false;
+        snapshotStarted = false;
 
-            if (optionsActivityStarted) {
-                setCameraForPlaying(evercamCamera);
+        if (optionsActivityStarted) {
+            setCameraForPlaying(evercamCamera);
 
-                createPlayer(evercamCamera);
-            }
-        } catch (OutOfMemoryError e) {
-            Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
+            createPlayer(evercamCamera);
         }
     }
 
@@ -404,8 +363,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         releasePlayer();
         end = true;
         if (!optionsActivityStarted) {
-            if (browseJpgTask != null) {
+            if (showJpgView) {
                 this.paused = true;
+                disconnectJpgView();
             }
             // Do not finish if user get into edit camera screen,
             // feedback screen recording, sharing, or view snapshot
@@ -436,6 +396,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private void checkIsShortcutCameraExists() {
         //It will refill global camera list in isUserLogged()
         if (MainActivity.isUserLogged(this)) {
+            String username;
             username = AppData.defaultUser.getUsername();
             if (AppData.evercamCameraList.size() > 0) {
                 boolean cameraIsAccessible = false;
@@ -480,7 +441,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
                             ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS)
                             .sendToKeenIo(client);
-                    ;
                 }
             }
         } else {
@@ -681,16 +641,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private void setCameraForPlaying(EvercamCamera evercamCamera) {
         VideoActivity.evercamCamera = evercamCamera;
 
-        showImagesVideo = false;
+        showJpgView = false;
 
-        downloadStartCount = 0;
-        downloadEndCount = 0;
         isProgressShowing = false;
-
-        startDownloading = false;
-        latestStartImageTime = 0;
-        successiveFailureCount = 0;
-        isShowingFailureMessage = false;
 
         optionsActivityStarted = false;
 
@@ -701,20 +654,16 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         surfaceView.setVisibility(View.GONE);
         imageView.setVisibility(View.VISIBLE);
-        showProgressView();
+        showProgressView(true);
 
-        loadImageFromCache(VideoActivity.evercamCamera);
+        loadImageThumbnail(VideoActivity.evercamCamera);
 
-        if (!evercamCamera.isOffline()) {
-            startDownloading = true;
-        }
-
-        showProgressView();
+        showProgressView(true);
     }
 
     // Loads image from cache. First image gets loaded correctly and hence we
     // can start making requests concurrently as well
-    public void loadImageFromCache(EvercamCamera camera) {
+    public void loadImageThumbnail(EvercamCamera camera) {
         imageView.setImageDrawable(null);
 
         if (camera.hasThumbnailUrl()) {
@@ -823,7 +772,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             play();
         } else {
             //If no RTSP URL exists, start JPG view straight away
-            showImagesVideo = true;
+            showJpgView = true;
             createBrowseJpgTask();
         }
     }
@@ -869,24 +818,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         this.invalidateOptionsMenu();
     }
 
-    private void showMediaFailureDialog() {
-        CustomedDialog.getCanNotPlayDialog(this, new DialogInterface.OnClickListener() {
-
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-
-                showToolbar();
-                paused = true;
-                isShowingFailureMessage = false;
-                dialog.dismiss();
-                hideProgressView();
-                //	timeCounter.stop();
-            }
-        }).show();
-        isShowingFailureMessage = true;
-        showImagesVideo = false;
-    }
-
     private void setDisplayOrientation() {
         /** Force landscape if it's enabled in settings */
         boolean forceLandscape = PrefsManager.isForceLandscape(this);
@@ -911,7 +842,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 public void onClick(DialogInterface dialog, int which) {
                     paused = true;
                     dialog.dismiss();
-                    hideProgressView();
+                    showProgressView(false);
                 }
             }).show();
         }
@@ -1053,7 +984,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 // resume it.
                 {
                     timeCountTextView.setVisibility(View.VISIBLE);
-                    showProgressView();
+                    showProgressView(true);
 
                     playPauseImageView.setImageBitmap(null);
                     showAllControlMenus(true);
@@ -1067,7 +998,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     }
                     //Otherwise restart jpg view
                     else {
-                        //Don't need to do anything because image thread is listening
+                        showJpgView = true;
+                        loadJpgView();
                     }
                     paused = false;
                 } else
@@ -1090,6 +1022,8 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     paused = true; // mark the images as paused. Do not stop
                     // threads, but do not show the images
                     // showing up
+
+                    disconnectJpgView();
                 }
             }
         });
@@ -1186,21 +1120,32 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         return bitmap;
     }
 
-    // Hide progress view
-    void hideProgressView() {
-        imageViewLayout.findViewById(R.id.live_progress_view).setVisibility(View.GONE);
-        isProgressShowing = false;
-    }
-
-    void showProgressView() {
-        progressView.canvasColor = Color.TRANSPARENT;
-        progressView.setVisibility(View.VISIBLE);
-        isProgressShowing = true;
+    void showProgressView(boolean show) {
+        if(show) {
+            progressView.canvasColor = Color.TRANSPARENT;
+            progressView.setVisibility(View.VISIBLE);
+            isProgressShowing = true;
+        } else {
+            imageViewLayout.findViewById(R.id.live_progress_view).setVisibility(View.GONE);
+            isProgressShowing = false;
+        }
     }
 
     private void createBrowseJpgTask() {
-        browseJpgTask = new BrowseJpgTask();
-        browseJpgTask.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+        mLiveViewRunnable = new LiveViewRunnable(this, evercamCamera.getCameraId());
+        loadJpgView();
+    }
+
+    private void loadJpgView() {
+        if(mLiveViewRunnable != null) {
+            new Thread(mLiveViewRunnable).start();
+        }
+    }
+
+    private void disconnectJpgView() {
+        if(mLiveViewRunnable != null) {
+            mLiveViewRunnable.disconnect();
+        }
     }
 
     private void startTimeCounter() {
@@ -1238,7 +1183,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         runOnUiThread(new Runnable() {
             public void run() {
                 //View gets played, show time count, and start buffering
-                hideProgressView();
+                showProgressView(false);
                 surfaceView.setVisibility(View.VISIBLE);
                 imageView.setVisibility(View.GONE);
                 startTimeCounter();
@@ -1285,7 +1230,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 failedItem.sendToKeenIo(client);
 
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
-                showImagesVideo = true;
+                showJpgView = true;
                 createBrowseJpgTask();
             }
         });
@@ -1310,193 +1255,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 CustomToast.showInCenterLong(VideoActivity.this, R.string.msg_snapshot_saved_failed);
             }
         });
-    }
-
-    public class BrowseJpgTask extends AsyncTask<String, String, String> {
-        @Override
-        protected String doInBackground(String... params) {
-            while (!end && !isCancelled() && showImagesVideo) {
-                try {
-                    // wait for starting
-                    while (!startDownloading) {
-                        Thread.sleep(500);
-                    }
-
-                    if (!paused) // if application is paused, do not send the
-                    // requests. Rather wait for the play
-                    // command
-                    {
-                        final DownloadImageTask downloadImageTask = new DownloadImageTask(evercamCamera
-                                .getCameraId());
-
-                        if (downloadStartCount - downloadEndCount < 5) {
-                            VideoActivity.this.runOnUiThread(new Runnable() {
-                                @Override
-                                public void run() {
-                                    downloadImageTask.executeOnExecutor(AsyncTask
-                                            .THREAD_POOL_EXECUTOR);
-                                }
-                            });
-                        }
-
-                        if (downloadStartCount - downloadEndCount > 5 && sleepInterval < 2000) {
-                            sleepInterval += ADJUSTMENT_INTERVAL;
-                            Log.d(TAG, "Sleep interval adjusted to: " + sleepInterval);
-                        } else if (sleepInterval >= MIN_SLEEP_INTERVAL) {
-                            sleepInterval -= ADJUSTMENT_INTERVAL;
-                            Log.d(TAG, "Sleep interval adjusted to: " + sleepInterval);
-                        }
-                    }
-                } catch (RejectedExecutionException ree) {
-                    Log.e(TAG, ree.toString() + "-::REE::-" + Log.getStackTraceString(ree));
-
-                } catch (OutOfMemoryError e) {
-                    Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-                } catch (Exception ex) {
-                    downloadStartCount--;
-                    Log.e(TAG, ex.toString() + "-::::-" + Log.getStackTraceString(ex));
-                }
-                try {
-                    Thread.currentThread();
-                    Thread.sleep(sleepInterval, 50);
-                } catch (Exception e) {
-                    EvercamPlayApplication.sendCaughtException(VideoActivity.this, e);
-                    Log.e(TAG, e.toString() + "-::::-" + Log.getStackTraceString(e));
-                }
-            }
-            return null;
-        }
-    }
-
-    private class DownloadImageTask extends AsyncTask<Void, Void, Drawable> {
-        private long myStartImageTime;
-        private String successUrl = "";//Only used for data collection
-        private String cameraId = "";
-
-        public DownloadImageTask(String cameraId) {
-            this.cameraId = cameraId;
-        }
-
-        @Override
-        protected Drawable doInBackground(Void... params) {
-            if (!showImagesVideo) {
-                return null;
-            }
-            Drawable response = null;
-            if (!paused && !end) {
-                try {
-                    myStartImageTime = SystemClock.uptimeMillis();
-                    downloadStartCount++;
-                    Camera camera = Camera.getById(cameraId, false);
-                    InputStream stream = camera.getSnapshotFromEvercam();
-                    response = Drawable.createFromStream(stream, "src");
-                    if (response != null) {
-                        successiveFailureCount = 0;
-                    }
-                } catch (Exception e) {
-                    Log.e(TAG, "Request snapshot from Evercam error: " + e.toString());
-                    successiveFailureCount++;
-                } catch (OutOfMemoryError e) {
-                    Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-                    successiveFailureCount++;
-                } finally {
-                    downloadEndCount++;
-                }
-            } else {
-                Log.d(TAG, "Paused or ended");
-            }
-            return response;
-        }
-
-        @Override
-        protected void onPostExecute(Drawable result) {
-            try {
-                if (!showImagesVideo) return;
-
-                Log.d(TAG, "Failure count:" + successiveFailureCount);
-
-                if (!paused && !end) {
-                    if (result != null) {
-                        Log.d(TAG, "result not null");
-                        if (result.getIntrinsicWidth() > 0 && result.getIntrinsicHeight() > 0) {
-                            if (myStartImageTime >= latestStartImageTime) {
-                                latestStartImageTime = myStartImageTime;
-
-                                if (playPauseImageView.getVisibility() != View.VISIBLE &&
-                                        VideoActivity.this.getResources().getConfiguration()
-                                                .orientation == Configuration.ORIENTATION_LANDSCAPE)
-                                    hideToolbar();
-
-                                if (showImagesVideo && cameraId.equals(evercamCamera.getCameraId())) {
-                                    //Only update JPG when the image belongs to the current camera
-                                    imageView.setImageDrawable(result);
-                                } else if (!cameraId.equals(evercamCamera.getCameraId())) {
-                                    Log.e(TAG, "Image received but not to show");
-                                }
-
-                                hideProgressView();
-
-                                //Image received, start time counter, need more tests
-                                startTimeCounter();
-
-                                if (!isJpgSuccessful) {
-                                    //Successfully played JPG view, send Google Analytics event
-                                    isJpgSuccessful = true;
-                                    EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
-                                            R.string.category_streaming_jpg,
-                                            R.string.action_streaming_jpg_success,
-                                            R.string.label_streaming_jpg_success);
-                                    StreamFeedbackItem successItem = new StreamFeedbackItem
-                                            (VideoActivity.this, AppData.defaultUser.getUsername
-                                                    (), true);
-                                    successItem.setCameraId(evercamCamera.getCameraId());
-                                    successItem.setUrl(successUrl);
-                                    successItem.setType(StreamFeedbackItem.TYPE_JPG);
-                                    successItem.sendToKeenIo(client);
-                                } else {
-                                    //Log.d(TAG, "Jpg success but already reported");
-                                }
-                            } else {
-                                if (enableLogs) Log.i(TAG, "downloaded image discarded. ");
-                            }
-                        }
-                    } else {
-                        Log.d(TAG, "result is null");
-                        if (successiveFailureCount > 10 && !isShowingFailureMessage) {
-                            Log.d(TAG, "successiveFailureCount > 5 && !isShowingFailureMessage");
-                            if (myStartImageTime >= latestStartImageTime) {
-                                Log.d(TAG, "myStartImageTime >= latestStartImageTime");
-                                showMediaFailureDialog();
-                                browseJpgTask.cancel(true);
-
-                                //Failed to play JPG view, send Google Analytics event
-                                EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
-                                        R.string.category_streaming_jpg,
-                                        R.string.action_streaming_jpg_failed,
-                                        R.string.label_streaming_jpg_failed);
-
-                                //Send Feedback
-                                StreamFeedbackItem failedItem = new StreamFeedbackItem
-                                        (VideoActivity.this, AppData.defaultUser.getUsername(),
-                                                false);
-                                failedItem.setCameraId(evercamCamera.getCameraId());
-                                failedItem.setUrl(evercamCamera.getExternalSnapshotUrl());
-                                failedItem.setType(StreamFeedbackItem.TYPE_JPG);
-                                failedItem.sendToKeenIo(client);
-                            }
-                        }
-                    }
-                } else {
-                    Log.d(TAG, "paused or ended");
-                }
-            } catch (OutOfMemoryError e) {
-                if (enableLogs) Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-            } catch (Exception e) {
-                if (enableLogs) Log.e(TAG, e.toString());
-            }
-
-            startDownloading = true;
-        }
     }
 
     private String[] getCameraNameArray(ArrayList<EvercamCamera> cameraList) {
@@ -1564,11 +1322,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     timeCounter = null;
                 }
 
-                if (browseJpgTask != null && browseJpgTask.getStatus() != AsyncTask.Status.RUNNING) {
-                    browseJpgTask.cancel(true);
+                if(showJpgView)
+                {
+                    disconnectJpgView();
+                    showJpgView = false;
                 }
-                browseJpgTask = null;
-                showImagesVideo = false;
 
                 evercamCamera = cameraList.get(position);
 
@@ -1644,6 +1402,34 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     public void showPtzControl(boolean show) {
         ptzMoveLayout.setVisibility(show ? View.VISIBLE : View.GONE);
         ptzZoomLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    public void updateImage(Bitmap bitmap, String cameraId)
+    {
+        if(cameraId.equals(evercamCamera.getCameraId())) {
+            if(!paused && !end && showJpgView) {
+                imageView.setImageBitmap(bitmap);
+            }
+        }
+    }
+
+    //TODO: If failed to load JPG view, how to handle it?
+    public void onFirstJpgLoaded()
+    {
+        showProgressView(false);
+
+        startTimeCounter();
+
+        EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
+                R.string.category_streaming_jpg,
+                R.string.action_streaming_jpg_success,
+                R.string.label_streaming_jpg_success);
+        StreamFeedbackItem successItem = new StreamFeedbackItem
+                (VideoActivity.this, AppData.defaultUser.getUsername
+                        (), true);
+        successItem.setCameraId(evercamCamera.getCameraId());
+        successItem.setType(StreamFeedbackItem.TYPE_JPG);
+        successItem.sendToKeenIo(client);
     }
 }
 
