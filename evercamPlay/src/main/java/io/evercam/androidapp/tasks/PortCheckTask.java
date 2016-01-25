@@ -43,8 +43,8 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     public void showProgressBar(boolean show) {
-        if (mProgressViewReference != null) {
-            mProgressViewReference.get().setVisibility(show ? View.VISIBLE : View.GONE);
+        if (getProgressBar() != null) {
+            getProgressBar().setVisibility(show ? View.VISIBLE : View.GONE);
         }
     }
 
@@ -52,6 +52,13 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
         if (mStatusViewReference != null) {
             mStatusViewReference.get().setVisibility(show ? View.VISIBLE : View.GONE);
         }
+    }
+
+    private ProgressBar getProgressBar() {
+        if(mProgressViewReference != null) {
+            return mProgressViewReference.get();
+        }
+        return null;
     }
 
     private void updatePortStatus(boolean isPortOpen) {
