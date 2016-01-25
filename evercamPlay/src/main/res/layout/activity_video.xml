@@ -58,13 +58,6 @@
                 android:layout_alignTop="@+id/play_pause_image_view"
                 android:layout_alignBottom="@+id/play_pause_image_view" />
 
-            <ImageView
-                android:id="@+id/player_ptz_switch"
-                android:background="@drawable/play_button_background_selector"
-                android:layout_toRightOf="@+id/player_savesnapshot"
-                android:src="@drawable/ic_ptz"
-                style="@style/PlayControlImageButtonStyle"
-                android:visibility="gone" />
         </RelativeLayout>
 
         <TextView

@@ -5,6 +5,7 @@
 -dontwarn org.simpleframework.xml.**
 -dontwarn com.mixpanel.android.**
 -dontwarn com.google.android.gms.**
+-dontwarn org.w3c.dom.bootstrap.DOMImplementationRegistry
 
 # Keep JNI methods
 -keepclassmembers class **.VideoActivity {

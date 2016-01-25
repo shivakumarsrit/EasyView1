@@ -137,6 +137,9 @@ dependencies {
     compile ('io.intercom.android:intercom-sdk:1.+@aar') {
         transitive = true
     }
+
+    //WebSocket for JPG live view
+    compile 'com.github.bryanjos:JavaPhoenixChannels:-SNAPSHOT'
 }
 
 crashlytics {
