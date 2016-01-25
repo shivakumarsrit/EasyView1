@@ -21,8 +21,7 @@ Evercam allows connect your own IP cameras, public webcams and any Android devic
 * Homescreen shortcut for single camera live view
 
 ## Published App
-[![Google Play](http://developer.android.com/images/brand/en_generic_rgb_wo_45.png)](https://play.google.com/store/apps/details?id=io.evercam.androidapp&hl=en)
-
+<a href="https://play.google.com/store/apps/details?id=io.evercam.androidapp&hl=en&utm_source=global_co&utm_medium=prtnr&utm_content=Mar2515&utm_campaign=PartBadge&pcampaignid=MKT-AC-global-none-all-co-pr-py-PartBadges-Oct1515-1"><img alt="Get it on Google Play" src="https://play.google.com/intl/en_us/badges/images/apps/en-play-badge-border.png" width="200"/></a>
 ## Build
 
 1. Checkout from Git:
