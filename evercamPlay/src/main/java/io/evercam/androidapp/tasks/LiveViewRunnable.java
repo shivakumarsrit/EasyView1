@@ -7,6 +7,10 @@ import android.os.Looper;
 import android.util.Base64;
 import android.util.Log;
 
+import com.fasterxml.jackson.databind.JsonNode;
+import com.fasterxml.jackson.databind.ObjectMapper;
+
+import org.json.JSONObject;
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
@@ -16,6 +20,8 @@ import org.phoenixframework.channels.Socket;
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import io.evercam.API;
+import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.video.VideoActivity;
 
 public class LiveViewRunnable implements Runnable {
@@ -44,15 +50,18 @@ public class LiveViewRunnable implements Runnable {
 
     @Override
     public void run() {
-        connectWebsocket();
+        if(API.hasUserKeyPair()) {
+            connectWebSocket();
+        }
     }
 
     private VideoActivity getActivity() {
         return mVideoActivityReference.get();
     }
 
-    private void connectWebsocket() {
+    private void connectWebSocket() {
         try {
+
             mSocket = new Socket(HOST);
             mSocket.connect();
 
@@ -63,7 +72,9 @@ public class LiveViewRunnable implements Runnable {
                 }
             });
 
-            mChannel = mSocket.chan("cameras:" + mCameraId, null);
+            JsonNode jsonNode = new ObjectMapper().valueToTree(API.userKeyPairMap());
+            Log.e(TAG, jsonNode.toString());
+            mChannel = mSocket.chan("cameras:" + mCameraId, jsonNode);
 
             mChannel.join()
                     .receive("ignore", new IMessageCallback() {
