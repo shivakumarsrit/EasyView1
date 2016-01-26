@@ -73,7 +73,6 @@ public class LiveViewRunnable implements Runnable {
             });
 
             JsonNode jsonNode = new ObjectMapper().valueToTree(API.userKeyPairMap());
-            Log.e(TAG, jsonNode.toString());
             mChannel = mSocket.chan("cameras:" + mCameraId, jsonNode);
 
             mChannel.join()

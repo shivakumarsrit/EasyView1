@@ -429,7 +429,7 @@ public class AddCameraActivity extends ParentAppCompatActivity {
         mModelSelectorFragment.buildVendorSpinner(vendorList, null);
     }
 
-    public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList) {
+    public void buildSpinnerOnModelListResult(ArrayList<Model> modelList) {
         mModelSelectorFragment.buildModelSpinner(modelList, null);
     }
 

@@ -341,6 +341,12 @@ public class ModelSelectorFragment extends Fragment {
         }
 
         @Override
+        protected void onPreExecute() {
+            super.onPreExecute();
+            buildModelList(null);
+        }
+
+        @Override
         protected ArrayList<Model> doInBackground(Void... params) {
             try {
                 return Model.getAllByVendorId(vendorId);
@@ -355,11 +361,7 @@ public class ModelSelectorFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Model> modelList) {
             if (modelList != null) {
-                if (isAddEditActivity()) {
-                    getAddEditActivity().buildSpinnerOnModelListResult(modelList);
-                } else if (isAddActivity()) {
-                    getAddActivity().buildSpinnerOnModelListResult(modelList);
-                }
+                buildModelList(modelList);
             }
         }
     }
@@ -428,6 +430,14 @@ public class ModelSelectorFragment extends Fragment {
                     getAddActivity().onDefaultsLoaded(model);
                 }
             }
+        }
+    }
+
+    private void buildModelList(ArrayList<Model> modelList) {
+        if (isAddEditActivity()) {
+            getAddEditActivity().buildSpinnerOnModelListResult(modelList);
+        } else if (isAddActivity()) {
+            getAddActivity().buildSpinnerOnModelListResult(modelList);
         }
     }
 }
