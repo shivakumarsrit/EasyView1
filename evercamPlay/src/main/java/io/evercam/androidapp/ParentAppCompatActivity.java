@@ -178,22 +178,6 @@ public class ParentAppCompatActivity extends AppCompatActivity {
         Intercom.client().setupGCM(regId, R.drawable.icon_evercam_trans);
     }
 
-    protected void checkPort(EditText ipEditText, EditText portEditText, TextView statusView, ProgressBar progressBar) {
-        String ipText = ipEditText.getText().toString();
-
-        if (!ipText.isEmpty()) {
-            String httpText = portEditText.getText().toString();
-            if (!httpText.isEmpty()) {
-                launchPortCheckTask(ipText, httpText, statusView, progressBar);
-            }
-        }
-    }
-
-    protected void launchPortCheckTask(String ip, String port, TextView statusView, ProgressBar progressBar) {
-        new PortCheckTask(ip, port, getApplicationContext()).bindStatusView(statusView).bindProgressView(progressBar)
-                .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-    }
-
     protected void hideSoftKeyboard() {
         InputMethodManager inputMethodManager = (InputMethodManager) getSystemService(Context
                 .INPUT_METHOD_SERVICE);

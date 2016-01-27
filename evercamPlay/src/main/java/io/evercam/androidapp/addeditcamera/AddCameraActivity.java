@@ -37,10 +37,11 @@ import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
+import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.DataCollector;
 import io.intercom.android.sdk.Intercom;
 
-public class AddCameraActivity extends ParentAppCompatActivity {
+public class AddCameraActivity extends AddCameraParentActivity {
     private final String TAG = "AddCameraActivity";
     private final String KEY_FLIPPER_POSITION = "flipperPosition";
     private final String KEY_SELECTED_MODEL = "selectedModel";
@@ -338,6 +339,12 @@ public class AddCameraActivity extends ParentAppCompatActivity {
 
         mValidateHostInput = new ValidateHostInput(mPublicIpEditText,
                 mHttpEditText, mRtspEditText) {
+            @Override
+            public void onLocalIp() {
+                mPublicIpEditText.requestFocus();
+                showLocalIpWarning();
+            }
+
             @Override
             public void onHostEmpty() {
                 mPublicIpEditText.requestFocus();

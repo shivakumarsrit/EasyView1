@@ -46,7 +46,7 @@
                     android:layout_below="@id/model_explain_text_layout"
                     android:layout_marginBottom="40dp"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="20dp"></fragment>
+                    android:layout_marginTop="20dp"/>
 
                 <Button
                     android:id="@+id/model_selector_view_next_button"

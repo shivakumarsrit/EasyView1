@@ -64,10 +64,12 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
     private void updatePortStatus(boolean isPortOpen) {
         if (mStatusViewReference != null) {
             TextView statusView = mStatusViewReference.get();
-            statusView.setVisibility(View.VISIBLE);
-            statusView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
-            statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.mint_green) :
-                    mContext.getResources().getColor(R.color.orange_red));
+            if (statusView != null) {
+                statusView.setVisibility(View.VISIBLE);
+                statusView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
+                statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.mint_green) :
+                        mContext.getResources().getColor(R.color.orange_red));
+            }
         }
     }
 

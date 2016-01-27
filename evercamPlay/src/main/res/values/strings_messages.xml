@@ -23,7 +23,7 @@
     <string name="msg_snapshot_saved">Snapshot saved</string>
     <string name="msg_snapshot_saved_failed">Failed to request snapshot</string>
     <string name="msg_no_snapshot_saved_camera">No snapshot saved for this camera</string>
-    <string name="msg_confirm_cancel_add_camera">You\'ll lose everything you typed in. Are you sure you want to quit?</string>
+    <string name="msg_confirm_cancel_add_camera">Discard your changes?</string>
     <string name="msg_shortcut_created">Shortcut created on homescreen</string>
     <string name="msg_can_not_access_camera">This camera is not accessible from account</string>
     <string name="msg_switch_account">Switching to account</string>
@@ -43,7 +43,7 @@
         \n\nFrom the Vendor &amp; Model we will try to work out the Snapshot URL ending. \n\nIf you want to report a new vendor/model, please send us feedback from the main menu.</string>
     <string name="msg_model_explanation_title">Vendor and Model</string>
     <string name="msg_url_ending_not_editable">The URL ending is not editable for the selected model. \n\n If you want to modify the URL ending, please select \'Unknown/Other\' as vendor name or select \'Default\' as model name. </string>
-    <string name="msg_local_ip_warning">The IP address you provided is a local IP address, we support external IP addresses only.\n\nDo you still want to precede?</string>
+    <string name="msg_local_ip_warning">The IP address you provided is a local IP address, we support external IP addresses only.</string>
     <string name="msg_creating_preset">Creating preset&#8230;</string>
     <string name="msg_preset_created">Preset created</string>
     <string name="msg_must_wifi_for_scan">You must connect to a WiFi network before scanning</string>

@@ -87,8 +87,9 @@
     <ImageView
         android:id="@+id/vendor_logo_image_view"
         android:layout_width="wrap_content"
-        android:layout_height="15sp"
+        android:layout_height="wrap_content"
+        android:maxHeight="15dp"
         android:adjustViewBounds="true"
-        android:paddingLeft="2sp"
-        android:paddingTop="2sp" />
+        android:paddingLeft="2dp"
+        android:paddingTop="2dp" />
 </RelativeLayout>

@@ -1,6 +1,7 @@
 package io.evercam.androidapp.addeditcamera;
 
 import io.evercam.androidapp.custom.PortCheckEditText;
+import io.evercam.androidapp.utils.Commons;
 
 public abstract class ValidateHostInput {
     final private PortCheckEditText mIpEditText;
@@ -12,7 +13,6 @@ public abstract class ValidateHostInput {
         mIpEditText = ipEditText;
         mHttpPortEditText = httpPortEditText;
         mRtspPortEditText = rtspPortEditText;
-
     }
 
     public boolean passed() {
@@ -22,27 +22,35 @@ public abstract class ValidateHostInput {
             onHostEmpty();
             return false;
         } else {
-            String httpPort = mHttpPortEditText.getText().toString();
-            String rtspPort = mRtspPortEditText.getText().toString();
-
-            if (httpPort.isEmpty()) {
-                onHttpEmpty();
+            if(Commons.isLocalIp(externalHost)) {
+                onLocalIp();
                 return false;
-            } else {
-                if (!mHttpPortEditText.isPortStringValid()) {
-                    onInvalidHttpPort();
+            }
+            else {
+                String httpPort = mHttpPortEditText.getText().toString();
+                String rtspPort = mRtspPortEditText.getText().toString();
+
+                if (httpPort.isEmpty()) {
+                    onHttpEmpty();
+                    return false;
+                } else {
+                    if (!mHttpPortEditText.isPortStringValid()) {
+                        onInvalidHttpPort();
+                        return false;
+                    }
+                }
+
+                if (!rtspPort.isEmpty() && !mRtspPortEditText.isPortStringValid()) {
+                    onInvalidRtspPort();
                     return false;
                 }
-            }
-
-            if (!rtspPort.isEmpty() && !mRtspPortEditText.isPortStringValid()) {
-                onInvalidRtspPort();
-                return false;
             }
         }
 
         return true;
     }
+
+    public abstract void onLocalIp();
 
     public abstract void onHostEmpty();
 

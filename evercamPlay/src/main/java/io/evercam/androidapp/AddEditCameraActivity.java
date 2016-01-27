@@ -28,6 +28,7 @@ import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.Vendor;
+import io.evercam.androidapp.addeditcamera.AddCameraParentActivity;
 import io.evercam.androidapp.addeditcamera.ModelSelectorFragment;
 import io.evercam.androidapp.addeditcamera.ValidateHostInput;
 import io.evercam.androidapp.custom.CustomToast;
@@ -46,7 +47,7 @@ import io.evercam.androidapp.video.VideoActivity;
 import io.evercam.network.discovery.DiscoveredCamera;
 import io.intercom.android.sdk.Intercom;
 
-public class AddEditCameraActivity extends ParentAppCompatActivity {
+public class AddEditCameraActivity extends AddCameraParentActivity {
     private final String TAG = "AddEditCameraActivity";
 
     private LinearLayout cameraIdLayout;
@@ -207,6 +208,12 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
         mValidateHostInput = new ValidateHostInput(externalHostEdit,
                 externalHttpEdit, externalRtspEdit) {
             @Override
+            public void onLocalIp() {
+                externalHostEdit.requestFocus();
+                showLocalIpWarning();
+            }
+
+            @Override
             public void onHostEmpty() {
                 CustomToast.showInCenter(AddEditCameraActivity.this, getString(R.string.host_required));
             }
@@ -326,12 +333,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
 
                 String externalHost = externalHostEdit.getText().toString();
                 if (Commons.isLocalIp(externalHost)) {
-                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            performAddEdit();
-                        }
-                    }, R.string.msg_local_ip_warning).show();
+                    showLocalIpWarning();
                 } else {
                     performAddEdit();
                 }
@@ -343,12 +345,7 @@ public class AddEditCameraActivity extends ParentAppCompatActivity {
             public void onClick(View v) {
                 String externalHost = externalHostEdit.getText().toString();
                 if (Commons.isLocalIp(externalHost)) {
-                    CustomedDialog.getStandardAlertDialog(AddEditCameraActivity.this, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            launchTestSnapshot();
-                        }
-                    }, R.string.msg_local_ip_warning).show();
+                    showLocalIpWarning();
                 } else {
                     launchTestSnapshot();
                 }
