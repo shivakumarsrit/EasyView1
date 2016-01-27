@@ -99,7 +99,11 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable> {
             }
 
             if (errorMessage == null) {
-                CustomToast.showInCenterLong(activity, R.string.snapshot_test_failed);
+                int messageResourceId = R.string.msg_snapshot_test_failed;
+                if(activity instanceof AddCameraActivity) {
+                    messageResourceId = R.string.msg_snapshot_test_failed_new;
+                }
+                CustomToast.showInCenterLong(activity, messageResourceId);
                 new TestSnapshotFeedbackItem(activity, username, false, true)
                         .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
             } else {

@@ -9,6 +9,7 @@ import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.widget.Button;
 import android.widget.CheckBox;
 import android.widget.CompoundButton;
@@ -28,7 +29,6 @@ import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.Vendor;
 import io.evercam.androidapp.AddEditCameraActivity;
-import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -81,6 +81,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
     private LinearLayout mRtspPathLayout;
     private EditText mSnapshotPathEditText;
     private EditText mRtspPathEditText;
+    private TextView mLiveSupportLink;
 
     /**
      * Camera name view
@@ -148,7 +149,12 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
     @Override
     public void onBackPressed() {
-        quitAddCamera();
+        int selectedPage = mViewFlipper.getDisplayedChild();
+        if(selectedPage == 0) {
+            quitAddCamera();
+        } else {
+            mViewFlipper.setDisplayedChild(selectedPage - 1);
+        }
     }
 
     private void initModelSelectorUI() {
@@ -195,7 +201,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
         mCamUsernameEditText = (EditText) findViewById(R.id.cam_username_float_edit_text);
         mCamPasswordEditText = (EditText) findViewById(R.id.cam_password_float_edit_text);
         mCheckSnapshotButton = (Button) findViewById(R.id.check_snapshot_button);
-        TextView liveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
+        mLiveSupportLink = (TextView) findViewById(R.id.live_support_text_link);
         ImageView editModelImageButton = (ImageView) findViewById(R.id.edit_model_image_view);
         mSelectedModelTextView = (TextView) findViewById(R.id.selected_model_text);
         ImageView clearHostImageButton = (ImageView) findViewById(R.id.clear_host_image_button);
@@ -221,7 +227,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
             }
         });
 
-        liveSupportLink.setOnClickListener(new View.OnClickListener() {
+        mLiveSupportLink.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 Intercom.client().displayConversationsList();
@@ -409,7 +415,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
         /** Adjust form margin */
         RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) mConnectFormLayout.getLayoutParams();
         if (show) {
-            layoutParams.setMargins(dpInPixels(10), dpInPixels(5), dpInPixels(10), 0);
+            layoutParams.setMargins(dpInPixels(12), dpInPixels(5), dpInPixels(12), 0);
         } else {
             layoutParams.setMargins(dpInPixels(50), dpInPixels(5), dpInPixels(50), 0);
         }
@@ -447,9 +453,11 @@ public class AddCameraActivity extends AddCameraParentActivity {
             mCamUsernameEditText.requestFocus();
             showAuthExplanation();
             populateDefaultAuth();
+            expandSupportLink(false);
         } else {
             mCamUsernameEditText.setText("");
             mCamUsernameEditText.setText("");
+            expandSupportLink(true);
         }
     }
 
@@ -590,10 +598,13 @@ public class AddCameraActivity extends AddCameraParentActivity {
         String modelName = selectedModel.getModelName();
         String vendorName = selectedModel.getVendorName();
 
-        if (modelName.isEmpty()) modelName = getString(R.string.unknown);
-        if (vendorName.isEmpty()) vendorName = getString(R.string.unknown);
-
-        textView.setText(vendorName + " - " + modelName);
+        if(modelName.isEmpty() && vendorName.isEmpty()) {
+            textView.setText(R.string.unknown);
+        } else {
+            if (modelName.isEmpty()) modelName = getString(R.string.unknown);
+            if (vendorName.isEmpty()) vendorName = getString(R.string.unknown);
+            textView.setText(vendorName + " - " + modelName);
+        }
 
         showUnknownModelForm(mSelectedModel.isUnknown());
 
@@ -635,6 +646,16 @@ public class AddCameraActivity extends AddCameraParentActivity {
         if (rtspEditText.getText().toString().isEmpty()) {
             rtspEditText.setText("554");
             checkPort(PortCheckTask.PortType.RTSP);
+        }
+    }
+
+    private void expandSupportLink(boolean expand) {
+        if(mLiveSupportLink != null) {
+            ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mLiveSupportLink
+                    .getLayoutParams();
+            int marginTop = dpInPixels(50);
+            if (!expand) marginTop = dpInPixels(20);
+            layoutParams.setMargins(0, marginTop, 0, 0);
         }
     }
 }

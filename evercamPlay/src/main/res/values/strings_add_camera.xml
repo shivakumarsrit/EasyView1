@@ -45,7 +45,8 @@
     <string name="external_http_required">Please specify HTTP port</string>
     <string name="msg_port_range_error">Port range must between 1 and 65535</string>
     <string name="snapshot_test_port_closed">The IP address provided is not reachable at the port provided.</string>
-    <string name="snapshot_test_failed">The port and URL are open but we can\'t seem to connect.  Check that the username and password are correct and the snapshot ending</string>
+    <string name="msg_snapshot_test_failed">The port is open but we can\'t seem to connect. Check that the username and password are correct and the snapshot ending</string>
+    <string name="msg_snapshot_test_failed_new">The port is open but we can\'t seem to connect. Check that the camera model and credentials are correct.</string>
     <string name="retrieving_snapshot">Retrieving snapshot&#8230;</string>
     <string name="msg_confirm_create">We can\'t connect to your camera, are you sure you want to add it?</string>
 
@@ -76,9 +77,9 @@
     <string name="report_model">Report New Model</string>
     <string name="public_ip">External IP (or URL)</string>
     <string name="add_camera_http_port">HTTP Port</string>
-    <string name="add_camera_rtsp_port">RTSP Port (Optional)</string>
+    <string name="add_camera_rtsp_port">RTSP Port(Optional)</string>
     <string name="add_camera_snapshot_path">Snapshot Path</string>
-    <string name="add_camera_stream_path">RTSP Path (Optional)</string>
+    <string name="add_camera_stream_path">RTSP Path(Optional)</string>
     <string name="live_support">Live Support</string>
     <string name="check_for_snapshot">Check For Snapshot</string>
     <string name="requires_auth">Requires Authentication</string>
@@ -93,10 +94,10 @@
     <string name="choose_model_explain_text">If you don\'t know the vendor and model of the camera you can leave it as \'Unknown/Other\'. If you know the vendor but not the model - choose the model \'Default\'.</string>
     <string name="connect_camera_explain_message">Enter your camera details then we will try connecting to your camera.</string>
     <string name="connect_camera_ip_message">Put the public URL or IP address of your camera. You will need to have setup port forwarding for your camera.</string>
-    <string name="connect_camera_http_message">The port should be a 2&#8211;5 digit number. The default HTTP port is 80.</string>
-    <string name="connect_camera_rtsp_message">The port should be a 2&#8211;5 digit number. The default RTSP port is 554.</string>
-    <string name="connect_camera_auth_message">Put your camera\'s username and password. It\'s NOT the credentials for your Evercam account.</string>
-    <string name="connect_camera_snapshot_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually, eg. snapshot.jpg</string>
-    <string name="connect_camera_rtsp_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually, eg. h264/ch1/main/stream</string>
+    <string name="connect_camera_http_message">The port should be a 2&#8211;5 digit number.\nThe default HTTP port is 80.</string>
+    <string name="connect_camera_rtsp_message">The port should be a 2&#8211;5 digit number.\nThe default RTSP port is 554.</string>
+    <string name="connect_camera_auth_message">Put your camera\'s username and password.\nIt\'s NOT the credentials for your Evercam account.</string>
+    <string name="connect_camera_snapshot_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually.\neg. snapshot.jpg</string>
+    <string name="connect_camera_rtsp_path_message">If you know your camera model we can work this out for you. Otherwise you have to enter it manually.\neg. h264/ch1/main/stream</string>
 
 </resources>
