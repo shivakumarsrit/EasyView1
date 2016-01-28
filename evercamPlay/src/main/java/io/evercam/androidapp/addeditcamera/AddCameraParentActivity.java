@@ -10,7 +10,7 @@ import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.tasks.PortCheckTask;
 
-public class AddCameraParentActivity extends ParentAppCompatActivity{
+public class AddCameraParentActivity extends ParentAppCompatActivity {
 
     protected void checkPort(EditText ipEditText, EditText portEditText, TextView statusView, ProgressBar progressBar) {
         String ipText = ipEditText.getText().toString();

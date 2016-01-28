@@ -1,6 +1,5 @@
 package io.evercam.androidapp;
 
-import android.content.DialogInterface;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.annotation.NonNull;
@@ -661,7 +660,7 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
     }
 
     public void clearDefaults() {
-        if(cameraEdit == null) {
+        if (cameraEdit == null) {
             usernameEdit.setText("");
             passwordEdit.setText("");
         }

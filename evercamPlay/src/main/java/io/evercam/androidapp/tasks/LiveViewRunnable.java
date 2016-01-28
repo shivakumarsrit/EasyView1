@@ -10,7 +10,6 @@ import android.util.Log;
 import com.fasterxml.jackson.databind.JsonNode;
 import com.fasterxml.jackson.databind.ObjectMapper;
 
-import org.json.JSONObject;
 import org.phoenixframework.channels.Channel;
 import org.phoenixframework.channels.Envelope;
 import org.phoenixframework.channels.IMessageCallback;
@@ -21,7 +20,6 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import io.evercam.API;
-import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.video.VideoActivity;
 
 public class LiveViewRunnable implements Runnable {
@@ -50,7 +48,7 @@ public class LiveViewRunnable implements Runnable {
 
     @Override
     public void run() {
-        if(API.hasUserKeyPair()) {
+        if (API.hasUserKeyPair()) {
             connectWebSocket();
         }
     }
@@ -93,13 +91,12 @@ public class LiveViewRunnable implements Runnable {
                 @Override
                 public void onMessage(Envelope envelope) {
 
-                    if(isFirstImage)
-                    {
+                    if (isFirstImage) {
                         isFirstImage = false;
                         runOnUiThread(new Runnable() {
                             @Override
                             public void run() {
-                                if(getActivity() != null) {
+                                if (getActivity() != null) {
                                     getActivity().onFirstJpgLoaded();
                                 }
                             }
@@ -116,7 +113,7 @@ public class LiveViewRunnable implements Runnable {
                     runOnUiThread(new Runnable() {
                         @Override
                         public void run() {
-                            if(getActivity() != null) {
+                            if (getActivity() != null) {
                                 getActivity().updateImage(bitmap, mCameraId);
                             }
                         }
@@ -141,7 +138,7 @@ public class LiveViewRunnable implements Runnable {
             @Override
             public void run() {
                 try {
-                    if(mSocket != null) {
+                    if (mSocket != null) {
                         mSocket.remove(mChannel);
                         mSocket.disconnect();
                         mSocket = null;

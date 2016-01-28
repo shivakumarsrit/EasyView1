@@ -17,7 +17,6 @@ import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
-import android.os.SystemClock;
 import android.support.v4.app.NavUtils;
 import android.support.v7.widget.Toolbar;
 import android.util.Log;
@@ -47,12 +46,9 @@ import org.freedesktop.gstreamer.GStreamer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
-import java.io.InputStream;
 import java.util.ArrayList;
 import java.util.Date;
-import java.util.concurrent.RejectedExecutionException;
 
-import io.evercam.Camera;
 import io.evercam.PTZHome;
 import io.evercam.PTZPreset;
 import io.evercam.PTZPresetControl;
@@ -101,7 +97,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     private Bitmap mBitmap = null; /* The temp snapshot data while asking for permission */
 
-    /** JPG live view using WebSocket */
+    /**
+     * JPG live view using WebSocket
+     */
     private LiveViewRunnable mLiveViewRunnable;
     private boolean showJpgView = false;
 
@@ -802,8 +800,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         this.invalidateOptionsMenu();
     }
 
-    private boolean isProgressViewVisible()
-    {
+    private boolean isProgressViewVisible() {
         return progressView.getVisibility() == View.VISIBLE;
     }
 
@@ -1089,7 +1086,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     void showProgressView(boolean show) {
-        if(show) {
+        if (show) {
             progressView.canvasColor = Color.TRANSPARENT;
             progressView.setVisibility(View.VISIBLE);
         } else {
@@ -1103,13 +1100,13 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     }
 
     private void loadJpgView() {
-        if(mLiveViewRunnable != null) {
+        if (mLiveViewRunnable != null) {
             new Thread(mLiveViewRunnable).start();
         }
     }
 
     private void disconnectJpgView() {
-        if(mLiveViewRunnable != null) {
+        if (mLiveViewRunnable != null) {
             mLiveViewRunnable.disconnect();
         }
     }
@@ -1288,8 +1285,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     timeCounter = null;
                 }
 
-                if(showJpgView)
-                {
+                if (showJpgView) {
                     disconnectJpgView();
                     showJpgView = false;
                 }
@@ -1359,18 +1355,16 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         ptzZoomLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    public void updateImage(Bitmap bitmap, String cameraId)
-    {
-        if(cameraId.equals(evercamCamera.getCameraId())) {
-            if(!paused && !end && showJpgView) {
+    public void updateImage(Bitmap bitmap, String cameraId) {
+        if (cameraId.equals(evercamCamera.getCameraId())) {
+            if (!paused && !end && showJpgView) {
                 imageView.setImageBitmap(bitmap);
             }
         }
     }
 
     //TODO: If failed to load JPG view, how to handle it?
-    public void onFirstJpgLoaded()
-    {
+    public void onFirstJpgLoaded() {
         showProgressView(false);
 
         startTimeCounter();

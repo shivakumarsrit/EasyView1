@@ -55,7 +55,7 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private ProgressBar getProgressBar() {
-        if(mProgressViewReference != null) {
+        if (mProgressViewReference != null) {
             return mProgressViewReference.get();
         }
         return null;

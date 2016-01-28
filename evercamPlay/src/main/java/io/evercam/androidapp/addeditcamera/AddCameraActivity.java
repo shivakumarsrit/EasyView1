@@ -37,7 +37,6 @@ import io.evercam.androidapp.custom.PortCheckEditText;
 import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
-import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.DataCollector;
 import io.intercom.android.sdk.Intercom;
 
@@ -150,7 +149,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
     @Override
     public void onBackPressed() {
         int selectedPage = mViewFlipper.getDisplayedChild();
-        if(selectedPage == 0) {
+        if (selectedPage == 0) {
             quitAddCamera();
         } else {
             mViewFlipper.setDisplayedChild(selectedPage - 1);
@@ -598,7 +597,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
         String modelName = selectedModel.getModelName();
         String vendorName = selectedModel.getVendorName();
 
-        if(modelName.isEmpty() && vendorName.isEmpty()) {
+        if (modelName.isEmpty() && vendorName.isEmpty()) {
             textView.setText(R.string.unknown);
         } else {
             if (modelName.isEmpty()) modelName = getString(R.string.unknown);
@@ -650,7 +649,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
     }
 
     private void expandSupportLink(boolean expand) {
-        if(mLiveSupportLink != null) {
+        if (mLiveSupportLink != null) {
             ViewGroup.MarginLayoutParams layoutParams = (ViewGroup.MarginLayoutParams) mLiveSupportLink
                     .getLayoutParams();
             int marginTop = dpInPixels(50);

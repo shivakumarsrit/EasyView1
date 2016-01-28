@@ -22,11 +22,10 @@ public abstract class ValidateHostInput {
             onHostEmpty();
             return false;
         } else {
-            if(Commons.isLocalIp(externalHost)) {
+            if (Commons.isLocalIp(externalHost)) {
                 onLocalIp();
                 return false;
-            }
-            else {
+            } else {
                 String httpPort = mHttpPortEditText.getText().toString();
                 String rtspPort = mRtspPortEditText.getText().toString();
 

@@ -100,7 +100,7 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Drawable> {
 
             if (errorMessage == null) {
                 int messageResourceId = R.string.msg_snapshot_test_failed;
-                if(activity instanceof AddCameraActivity) {
+                if (activity instanceof AddCameraActivity) {
                     messageResourceId = R.string.msg_snapshot_test_failed_new;
                 }
                 CustomToast.showInCenterLong(activity, messageResourceId);

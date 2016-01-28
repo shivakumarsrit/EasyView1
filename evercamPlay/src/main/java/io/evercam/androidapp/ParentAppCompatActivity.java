@@ -2,16 +2,12 @@ package io.evercam.androidapp;
 
 import android.animation.ValueAnimator;
 import android.content.Context;
-import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.View;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.EditText;
-import android.widget.ProgressBar;
-import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesUtil;
@@ -19,7 +15,6 @@ import com.nineoldandroids.view.ViewHelper;
 
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.MixpanelHelper;
-import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.android.sdk.identity.Registration;
