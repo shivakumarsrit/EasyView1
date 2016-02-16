@@ -268,22 +268,27 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getVendorIdFromSpinner() {
-        String vendorName = vendorSpinner.getSelectedItem().toString();
-        if (vendorName.equals(getString(R.string.select_vendor))) {
-            return "";
-        } else {
-            return vendorMap.get(vendorName).toLowerCase(Locale.UK);
+        if(vendorSpinner != null) {
+            String vendorName = vendorSpinner.getSelectedItem().toString();
+            if (vendorName.equals(getString(R.string.select_vendor))) {
+                return "";
+            } else {
+                return vendorMap.get(vendorName).toLowerCase(Locale.UK);
+            }
         }
-
+        return "";
     }
 
     public String getVendorNameFromSpinner() {
-        String vendorName = vendorSpinner.getSelectedItem().toString();
-        if (vendorName.equals(getString(R.string.select_vendor))) {
-            return "";
-        } else {
-            return vendorName;
+        if(vendorSpinner != null) {
+            String vendorName = vendorSpinner.getSelectedItem().toString();
+            if (vendorName.equals(getString(R.string.select_vendor))) {
+                return "";
+            } else {
+                return vendorName;
+            }
         }
+        return "";
     }
 
     public String getModelIdFromSpinner() {
