@@ -98,15 +98,25 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
     public static boolean isPortOpen(String ip, String port) {
         OkHttpClient client = new OkHttpClient();
         Request request = new Request.Builder()
-                .url("http://tuq.in/tools/port.txt?ip=" + ip + "&port=" + port).build();
+                .url(getUrl(ip, port)).build();
 
         try {
             Response response = client.newCall(request).execute();
             String responseString = response.body().string();
-            return responseString.equalsIgnoreCase("true");
+            return isResponseIndicatePortOpen(responseString);
         } catch (IOException e) {
             e.printStackTrace();
         }
         return false;
+    }
+
+    private static String getUrl(String ip, String port) {
+        //return "http://tuq.in/tools/port.txt?ip=" + ip + "&port=" + port;
+        return "http://api.predator.wtf/pcheck/?arguments=" + ip + "&port=" + port;
+    }
+
+    private static boolean isResponseIndicatePortOpen(String responseString) {
+        //return responseString.equalsIgnoreCase("true");
+        return responseString.contains("is open on");
     }
 }
