@@ -796,6 +796,7 @@ public class VideoActivity extends ParentAppCompatActivity
             preparePlayer(true);
         } else {
             //If no RTSP URL exists, start JPG view straight away
+            releasePlayer();;
             showJpgView = true;
             launchJpgRunnable();
         }
@@ -812,6 +813,11 @@ public class VideoActivity extends ParentAppCompatActivity
             player.setInfoListener(eventLogger);
             player.setInternalErrorListener(eventLogger);
         }
+        else {
+            releasePlayer();
+            preparePlayer(playWhenReady);
+        }
+
         if (playerNeedsPrepare) {
             player.prepare();
             playerNeedsPrepare = false;
