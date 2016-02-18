@@ -208,6 +208,11 @@
             android:name=".scan.AllDevicesActivity"
             android:label="@string/title_all_devices">
         </activity>
+        <activity
+            android:name=".player.ExoPlayerActivity"
+            android:configChanges="keyboard|keyboardHidden|orientation|screenSize"
+            android:label="ExoPlayer">
+        </activity>
     </application>
 
 </manifest>

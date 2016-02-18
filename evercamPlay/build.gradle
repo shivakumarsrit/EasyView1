@@ -140,6 +140,8 @@ dependencies {
 
     //WebSocket for JPG live view
     compile 'com.github.bryanjos:JavaPhoenixChannels:-SNAPSHOT'
+
+    compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
 }
 
 crashlytics {

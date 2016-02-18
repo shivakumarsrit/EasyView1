@@ -50,6 +50,7 @@ import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.dto.ImageLoadingStatus;
 import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.LoadTimeFeedbackItem;
+import io.evercam.androidapp.player.ExoPlayerActivity;
 import io.evercam.androidapp.publiccameras.PublicCamerasWebActivity;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.tasks.LoadCameraListTask;
@@ -185,7 +186,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
             startCameraLoadingTask();
 
-        } else {
+        } else if (itemId == R.id.menutest) {
+            ExoPlayerActivity.url = "http://osmfhls.kutu.ru/static/vod/sl_vod.m3u8";
+            startActivity(new Intent(this, ExoPlayerActivity.class));
+        }else {
             return super.onOptionsItemSelected(item);
         }
 

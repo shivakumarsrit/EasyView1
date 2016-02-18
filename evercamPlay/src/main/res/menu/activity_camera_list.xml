@@ -6,7 +6,13 @@
         android:id="@+id/menurefresh"
         android:icon="@drawable/ic_action_refresh"
         android:orderInCategory="1"
-        app:showAsAction="always"
+        app:showAsAction="ifRoom"
         android:title="@string/menu_refresh" />
+
+    <item
+        android:id="@+id/menutest"
+        android:orderInCategory="2"
+        app:showAsAction="never"
+        android:title="Test ExoPlayer" />
 
 </menu>
