@@ -40,9 +40,15 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.google.android.exoplayer.AspectRatioFrameLayout;
+import com.google.android.exoplayer.ExoPlaybackException;
+import com.google.android.exoplayer.ExoPlayer;
+import com.google.android.exoplayer.MediaCodecTrackRenderer;
+import com.google.android.exoplayer.MediaCodecUtil;
+import com.google.android.exoplayer.drm.UnsupportedDrmException;
+import com.google.android.exoplayer.util.Util;
 import com.squareup.picasso.Picasso;
 
-import org.freedesktop.gstreamer.GStreamer;
 import org.json.JSONException;
 import org.json.JSONObject;
 
@@ -76,6 +82,10 @@ import io.evercam.androidapp.feedback.StreamFeedbackItem;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.photoview.SnapshotManager.FileType;
+import io.evercam.androidapp.player.EventLogger;
+import io.evercam.androidapp.player.ExoPlayerActivity;
+import io.evercam.androidapp.player.HlsRendererBuilder;
+import io.evercam.androidapp.player.MyExoPlayer;
 import io.evercam.androidapp.ptz.PresetsListAdapter;
 import io.evercam.androidapp.recordings.RecordingWebActivity;
 import io.evercam.androidapp.sharing.SharingActivity;
@@ -88,7 +98,8 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
 
-public class VideoActivity extends ParentAppCompatActivity implements SurfaceHolder.Callback {
+public class VideoActivity extends ParentAppCompatActivity
+        implements SurfaceHolder.Callback, MyExoPlayer.Listener {
     public static EvercamCamera evercamCamera;
 
     private final static String TAG = "VideoActivity";
@@ -104,10 +115,17 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private boolean showJpgView = false;
 
     /**
+     * ExoPlayer
+     */
+    private EventLogger eventLogger;
+    private AspectRatioFrameLayout videoFrame;
+    private SurfaceView exoSurfaceView;
+    private MyExoPlayer player;
+    private boolean playerNeedsPrepare;
+
+    /**
      * UI elements
      */
-    private SurfaceView surfaceView;
-    private SurfaceHolder surfaceHolder;
     private ProgressView progressView = null;
     private TextView offlineTextView;
     private TextView timeCountTextView;
@@ -148,43 +166,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
     private Date startTime;
     private KeenClient client;
 
-    /**
-     * Gstreamer
-     */
-    private long native_app_data;
-
-    private native void nativeRequestSample(String format); // supported values are png and jpeg
-
-    private native void nativeSetUri(String uri, int connectionTimeout);
-
-    private native void nativeInit();     // Initialize native code, build pipeline, etc
-
-    private native void nativeFinalize(); // Destroy pipeline and shutdown native code
-
-    private native void nativeSurfaceUpdate(Object surface);
-
-    private native void nativePlay();     // Set pipeline to PLAYING
-
-    private native void nativePause();    // Set pipeline to PAUSED
-
-    private static native boolean nativeClassInit(); // Initialize native class: cache Method IDs for callbacks
-
-    private native void nativeSurfaceInit(Object surface);
-
-    private native void nativeSurfaceFinalize();
-
-    private native void nativeExpose();
-
-    private long native_custom_data;      // Native code will use this to keep private data
-
-    private final int TCP_TIMEOUT = 10 * 1000000; // 10 seconds in micro seconds
-
-    static {
-        System.loadLibrary("gstreamer_android");
-        System.loadLibrary("evercam");
-        nativeClassInit();
-    }
-
     @Override
     public void onCreate(Bundle savedInstanceState) {
         try {
@@ -204,19 +185,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             launchSleepTimer();
 
             setDisplayOrientation();
-
-            /**
-             * Init Gstreamer
-             */
-            try {
-                GStreamer.init(this);
-            } catch (Exception e) {
-                Log.e(TAG, e.getLocalizedMessage());
-                EvercamPlayApplication.sendCaughtException(this, e);
-                finish();
-                return;
-            }
-            nativeInit();
 
             setContentView(R.layout.activity_video);
 
@@ -376,7 +344,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
     @Override
     protected void onDestroy() {
-        nativeFinalize();
+        releasePlayer();
         super.onDestroy();
     }
 
@@ -581,6 +549,107 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         navigateBackToCameraList();
     }
 
+    /************************
+     * MyExoPlayer.Listener
+     ************************/
+    @Override
+    public void onStateChanged(boolean playWhenReady, int playbackState) {
+
+        String text = "playWhenReady=" + playWhenReady + ", playbackState=";
+        switch (playbackState) {
+            case ExoPlayer.STATE_BUFFERING:
+                text += "buffering";
+                break;
+            case ExoPlayer.STATE_ENDED:
+                text += "ended";
+                break;
+            case ExoPlayer.STATE_IDLE:
+                text += "idle";
+                break;
+            case ExoPlayer.STATE_PREPARING:
+                text += "preparing";
+                break;
+            case ExoPlayer.STATE_READY:
+                onVideoLoaded();
+                text += "ready";
+                break;
+            default:
+                text += "unknown";
+                break;
+        }
+        Log.d(TAG, "onStateChanged: " + text);
+    }
+
+    @Override
+    public void onError(Exception e) {
+        Log.e(TAG, "onError");
+        onVideoLoadFailed();
+
+        String errorString = null;
+        if (e instanceof UnsupportedDrmException) {
+            // Special case DRM failures.
+            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
+            errorString = getString(Util.SDK_INT < 18 ? R.string.error_drm_not_supported
+                    : unsupportedDrmException.reason == UnsupportedDrmException.REASON_UNSUPPORTED_SCHEME
+                    ? R.string.error_drm_unsupported_scheme : R.string.error_drm_unknown);
+        } else if (e instanceof ExoPlaybackException
+                && e.getCause() instanceof MediaCodecTrackRenderer.DecoderInitializationException) {
+            // Special case for decoder initialization failures.
+            MediaCodecTrackRenderer.DecoderInitializationException decoderInitializationException =
+                    (MediaCodecTrackRenderer.DecoderInitializationException) e.getCause();
+            if (decoderInitializationException.decoderName == null) {
+                if (decoderInitializationException.getCause() instanceof MediaCodecUtil.DecoderQueryException) {
+                    errorString = getString(R.string.error_querying_decoders);
+                } else if (decoderInitializationException.secureDecoderRequired) {
+                    errorString = getString(R.string.error_no_secure_decoder,
+                            decoderInitializationException.mimeType);
+                } else {
+                    errorString = getString(R.string.error_no_decoder,
+                            decoderInitializationException.mimeType);
+                }
+            } else {
+                errorString = getString(R.string.error_instantiating_decoder,
+                        decoderInitializationException.decoderName);
+            }
+        }
+        if (errorString != null) {
+            Log.e(TAG, errorString);
+        }
+        playerNeedsPrepare = true;
+    }
+
+    @Override
+    public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthAspectRatio) {
+        videoFrame.setAspectRatio(
+                height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
+    }
+
+    /************************
+     * SurfaceHolder.Callback
+     ************************/
+    @Override
+    public void surfaceCreated(SurfaceHolder holder) {
+        if (player != null) {
+            player.setSurface(holder.getSurface());
+        }
+    }
+
+    @Override
+    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+        // Do nothing.
+    }
+
+    @Override
+    public void surfaceDestroyed(SurfaceHolder holder) {
+        if (player != null) {
+            player.blockingClearSurface();
+        }
+    }
+
+    /************************
+     * Private Methods
+     ************************/
+
     private void navigateBackToCameraList() {
         if (CamerasActivity.activity == null) {
             if (android.os.Build.VERSION.SDK_INT >= 16) {
@@ -642,7 +711,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         paused = false;
         end = false;
 
-        surfaceView.setVisibility(View.GONE);
+        exoSurfaceView.setVisibility(View.GONE);
         imageView.setVisibility(View.VISIBLE);
         showProgressView(true);
 
@@ -689,7 +758,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     showAllControlMenus(false);
                 } else {
                     playPauseImageView.setVisibility(View.VISIBLE);
-                    if (surfaceView.getVisibility() != View.VISIBLE) {
+                    if (exoSurfaceView.getVisibility() != View.VISIBLE) {
                         snapshotMenuView.setVisibility(View.VISIBLE);
                     }
                 }
@@ -703,34 +772,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
         playPauseImageView.startAnimation(fadeInAnimation);
         snapshotMenuView.startAnimation(fadeInAnimation);
-    }
-
-    /**
-     * **********
-     * Surface
-     * ***********
-     */
-
-    @Override
-    public void surfaceCreated(SurfaceHolder surfaceHolder) {
-        Log.d("GStreamer", "Surface created: " + surfaceHolder.getSurface());
-        nativeSurfaceInit(surfaceHolder.getSurface());
-    }
-
-    @Override
-    public void surfaceChanged(SurfaceHolder surfaceholder, int format, int width, int height) {
-        Log.d("GStreamer", "Surface changed to format " + format + " width " + width + " height "
-                + height);
-        onMediaSizeChanged(width, height);
-
-        nativeSurfaceUpdate(surfaceHolder.getSurface());
-        nativeExpose();
-    }
-
-    @Override
-    public void surfaceDestroyed(SurfaceHolder surfaceholder) {
-        Log.d("GStreamer", "Surface destroyed");
-        nativeSurfaceFinalize();
     }
 
     /**
@@ -749,9 +790,10 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         startTime = new Date();
 
         if (camera.hasRtspUrl()) {
-            Log.e(TAG, "uri " + createUri(camera));
-            nativeSetUri(createUri(camera), TCP_TIMEOUT);
-            play();
+//            Log.e(TAG, "uri " + createUri(camera));
+//            nativeSetUri(createUri(camera), TCP_TIMEOUT);
+//            play();
+            preparePlayer(true);
         } else {
             //If no RTSP URL exists, start JPG view straight away
             showJpgView = true;
@@ -759,20 +801,38 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         }
     }
 
-    private void play() {
-        nativePlay();
+    private void preparePlayer(boolean playWhenReady) {
+        if (player == null) {
+            player = new MyExoPlayer(getRendererBuilder());
+            player.addListener(this);
+            playerNeedsPrepare = true;
+            eventLogger = new EventLogger();
+            eventLogger.startSession();
+            player.addListener(eventLogger);
+            player.setInfoListener(eventLogger);
+            player.setInternalErrorListener(eventLogger);
+        }
+        if (playerNeedsPrepare) {
+            player.prepare();
+            playerNeedsPrepare = false;
+        }
+        player.setSurface(exoSurfaceView.getHolder().getSurface());
+        player.setPlayWhenReady(playWhenReady);
     }
 
     private void releasePlayer() {
-        nativePause();
-    }
-
-    private void restartPlay() {
-        nativePlay();
+        if (player != null) {
+            player.release();
+            player = null;
+            eventLogger.endSession();
+            eventLogger = null;
+        }
     }
 
     private void pausePlayer() {
-        nativePause();
+        if(player != null) {
+            player.setPlayWhenReady(false);
+        }
     }
 
     // when screen gets rotated
@@ -840,9 +900,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         playPauseImageView = (ImageView) this.findViewById(R.id.play_pause_image_view);
         snapshotMenuView = (ImageView) this.findViewById(R.id.player_savesnapshot);
 
-        surfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        surfaceHolder = surfaceView.getHolder();
-        surfaceHolder.addCallback(this);
+        videoFrame = (AspectRatioFrameLayout) findViewById(R.id.video_frame);
+        exoSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
+        exoSurfaceView.getHolder().addCallback(this);
 
         progressView = ((ProgressView) imageViewLayout.findViewById(R.id.live_progress_view));
 
@@ -978,7 +1038,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
 
                     //If playing url is not null, resume rtsp stream
                     if (evercamCamera != null && !evercamCamera.getExternalRtspUrl().isEmpty()) {
-                        restartPlay();
+                        preparePlayer(true);
                     }
                     //Otherwise restart jpg view
                     else {
@@ -1058,8 +1118,9 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     Bitmap bitmap = getBitmapFromImageView(imageView);
 
                     processSnapshot(bitmap, FileType.JPG);
-                } else if (surfaceView.getVisibility() == View.VISIBLE) {
-                    nativeRequestSample("jpeg");
+                } else if (exoSurfaceView.getVisibility() == View.VISIBLE) {
+                    //TODO: Take snapshot from HLS stream
+                    //nativeRequestSample("jpeg");
                 }
             }
         });
@@ -1147,7 +1208,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
             public void run() {
                 //View gets played, show time count, and start buffering
                 showProgressView(false);
-                surfaceView.setVisibility(View.VISIBLE);
+                exoSurfaceView.setVisibility(View.VISIBLE);
                 imageView.setVisibility(View.GONE);
                 startTimeCounter();
 
@@ -1304,7 +1365,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                     progressView.setVisibility(View.GONE);
 
                     // Hide video elements if switch to an offline camera.
-                    surfaceView.setVisibility(View.GONE);
+                    exoSurfaceView.setVisibility(View.GONE);
                     imageView.setVisibility(View.GONE);
                 } else {
                     offlineTextView.setVisibility(View.GONE);
@@ -1326,18 +1387,6 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         });
 
         mCameraListSpinner.setSelection(defaultCameraIndex);
-    }
-
-    private void onMediaSizeChanged(int width, int height) {
-        Log.i("GStreamer", "Media size changed to " + width + "x" + height);
-        final GStreamerSurfaceView gstreamerSurfaceView = (GStreamerSurfaceView) this.findViewById(R.id.surface_view);
-        gstreamerSurfaceView.media_width = width;
-        gstreamerSurfaceView.media_height = height;
-        runOnUiThread(new Runnable() {
-            public void run() {
-                gstreamerSurfaceView.requestLayout();
-            }
-        });
     }
 
     public void showAllControlMenus(boolean show) {
@@ -1379,5 +1428,11 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
         successItem.setCameraId(evercamCamera.getCameraId());
         successItem.setType(StreamFeedbackItem.TYPE_JPG);
         successItem.sendToKeenIo(client);
+    }
+
+    private MyExoPlayer.RendererBuilder getRendererBuilder() {
+        String userAgent = Util.getUserAgent(this, "ExoPlayer");
+
+        return new HlsRendererBuilder(this, userAgent, ExoPlayerActivity.url);
     }
 }

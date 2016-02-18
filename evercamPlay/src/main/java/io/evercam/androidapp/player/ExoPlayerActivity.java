@@ -25,7 +25,7 @@ public class ExoPlayerActivity extends ParentAppCompatActivity implements Surfac
     private SurfaceView surfaceView;
     private MyExoPlayer player;
     private boolean playerNeedsPrepare;
-    public static String url;
+    public static String url = "http://osmfhls.kutu.ru/static/vod/sl_vod.m3u8";
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
