@@ -21,7 +21,6 @@
     <string name="action_streaming_rtsp_success">Successfully played RTSP stream</string>
     <string name="action_streaming_rtsp_failed">Failed to play RTSP stream</string>
     <string name="action_streaming_jpg_success">Successfully played JPG stream</string>
-    <string name="action_streaming_jpg_failed">Failed to play JPG stream</string>
     <string name="action_shortcut_create">Create a shortcut</string>
     <string name="action_shortcut_use">Use shortcut</string>
 
@@ -38,7 +37,6 @@
     <string name="label_streaming_rtsp_success">Successfully played RTSP stream</string>
     <string name="label_streaming_rtsp_failed">Failed to play RTSP stream while the camera is online and has a valid RTSP URL.</string>
     <string name="label_streaming_jpg_success">Successfully played JPG stream</string>
-    <string name="label_streaming_jpg_failed">Failed to play JPG stream while the camera is online</string>
     <string name="label_shortcut_create">Create a single camera shortcut on home screen</string>
     <string name="label_shortcut_use">Use shortcut from desktop</string>
 

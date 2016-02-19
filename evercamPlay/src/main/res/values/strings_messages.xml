@@ -21,7 +21,6 @@
     <string name="msg_feedback_sent">Thanks for your feedback</string>
     <string name="msg_confirm_quit_feedback">Are you sure you want to leave this page? Hitting back will lose any feedback you have entered</string>
     <string name="msg_snapshot_saved">Snapshot saved</string>
-    <string name="msg_snapshot_saved_failed">Failed to request snapshot</string>
     <string name="msg_no_snapshot_saved_camera">No snapshot saved for this camera</string>
     <string name="msg_confirm_cancel_add_camera">Discard your changes?</string>
     <string name="msg_shortcut_created">Shortcut created on homescreen</string>

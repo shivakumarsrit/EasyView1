@@ -86,7 +86,6 @@ import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.photoview.SnapshotManager.FileType;
 import io.evercam.androidapp.player.EventLogger;
-import io.evercam.androidapp.player.ExoPlayerActivity;
 import io.evercam.androidapp.player.HlsRendererBuilder;
 import io.evercam.androidapp.player.MyExoPlayer;
 import io.evercam.androidapp.ptz.PresetsListAdapter;

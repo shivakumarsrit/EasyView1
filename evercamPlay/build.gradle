@@ -21,10 +21,6 @@ android {
 
         //Enable multiDex, but the better solution is to reduce method number
         multiDexEnabled = true
-
-        ndk {
-            moduleName "android_launch"
-        }
     }
 
     //Increase memory to avoid build error 'OutOfMemoryError: GC overhead limit exceeded'
@@ -47,11 +43,6 @@ android {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android.txt'), 'proguard-rules.pro'
         }
-    }
-
-    sourceSets.main {
-        jniLibs.srcDir 'src/main/libs'
-        jni.srcDirs = ['jni'] //disable automatic ndk-build call
     }
 
     //Exclude files that causes duplicate files error when packaging
@@ -128,9 +119,7 @@ dependencies {
     compile('com.crashlytics.sdk.android:crashlytics:2.5.2@aar') {
         transitive = true;
     }
-    compile('com.crashlytics.sdk.android:crashlytics-ndk:1.1.2@aar') {
-        transitive = true;
-    }
+
     compile('com.github.afollestad.material-dialogs:core:0.8.5.1@aar') {
         transitive = true
     }
@@ -142,12 +131,6 @@ dependencies {
     compile 'com.github.bryanjos:JavaPhoenixChannels:-SNAPSHOT'
 
     compile 'com.google.android.exoplayer:exoplayer:r1.5.5'
-}
-
-crashlytics {
-    enableNdk true
-    androidNdkOut 'src/main/obj'
-    androidNdkLibsOut 'src/main/libs'
 }
 
 def props = new Properties()

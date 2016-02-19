@@ -8,7 +8,6 @@ import android.os.Handler;
 import android.util.Log;
 
 import com.crashlytics.android.Crashlytics;
-import com.crashlytics.android.ndk.CrashlyticsNdk;
 import com.google.android.gms.gcm.GoogleCloudMessaging;
 
 import java.io.IOException;
@@ -60,7 +59,7 @@ public class MainActivity extends ParentAppCompatActivity {
             Log.i(TAG, "Google Play Services is not available");
         }
 
-        Fabric.with(this, new Crashlytics(), new CrashlyticsNdk());
+        Fabric.with(this, new Crashlytics());
 
         setContentView(R.layout.activity_main);
 

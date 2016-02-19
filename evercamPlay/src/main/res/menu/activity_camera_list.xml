@@ -9,10 +9,4 @@
         app:showAsAction="ifRoom"
         android:title="@string/menu_refresh" />
 
-    <item
-        android:id="@+id/menutest"
-        android:orderInCategory="2"
-        app:showAsAction="never"
-        android:title="Test ExoPlayer" />
-
 </menu>
