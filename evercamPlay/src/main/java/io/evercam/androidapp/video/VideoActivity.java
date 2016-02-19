@@ -12,6 +12,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
@@ -25,8 +26,10 @@ import android.view.Menu;
 import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
+import android.view.Surface;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.view.WindowManager;
@@ -99,7 +102,7 @@ import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
 
 public class VideoActivity extends ParentAppCompatActivity
-        implements SurfaceHolder.Callback, MyExoPlayer.Listener {
+        implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
     public static EvercamCamera evercamCamera;
 
     private final static String TAG = "VideoActivity";
@@ -119,7 +122,8 @@ public class VideoActivity extends ParentAppCompatActivity
      */
     private EventLogger eventLogger;
     private AspectRatioFrameLayout videoFrame;
-    private SurfaceView exoSurfaceView;
+    private TextureView textureView;
+    private Surface surface;
     private MyExoPlayer player;
     private boolean playerNeedsPrepare;
 
@@ -624,26 +628,34 @@ public class VideoActivity extends ParentAppCompatActivity
                 height == 0 ? 1 : (width * pixelWidthAspectRatio) / height);
     }
 
-    /************************
-     * SurfaceHolder.Callback
-     ************************/
+    /*************************************
+     * TextureView.SurfaceTextureListener
+     ************************************/
+
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
+        this.surface = new Surface(surface);
         if (player != null) {
-            player.setSurface(holder.getSurface());
+            player.setSurface(new Surface(surface));
         }
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
-        // Do nothing.
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
+
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         if (player != null) {
             player.blockingClearSurface();
         }
+        return false;
+    }
+
+    @Override
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+        //Do nothing.
     }
 
     /************************
@@ -711,7 +723,7 @@ public class VideoActivity extends ParentAppCompatActivity
         paused = false;
         end = false;
 
-        exoSurfaceView.setVisibility(View.GONE);
+        textureView.setVisibility(View.GONE);
         imageView.setVisibility(View.VISIBLE);
         showProgressView(true);
 
@@ -758,7 +770,7 @@ public class VideoActivity extends ParentAppCompatActivity
                     showAllControlMenus(false);
                 } else {
                     playPauseImageView.setVisibility(View.VISIBLE);
-                    if (exoSurfaceView.getVisibility() != View.VISIBLE) {
+                    if (textureView.getVisibility() != View.VISIBLE) {
                         snapshotMenuView.setVisibility(View.VISIBLE);
                     }
                 }
@@ -787,7 +799,7 @@ public class VideoActivity extends ParentAppCompatActivity
             Log.d(TAG, "HLS url: " + camera.getHlsUrl());
             preparePlayer(true);
         } else {
-            //If no RTSP URL exists, start JPG view straight away
+            //If no HLS URL exists, start JPG view straight away
             releasePlayer();
             showJpgView = true;
             launchJpgRunnable();
@@ -814,7 +826,7 @@ public class VideoActivity extends ParentAppCompatActivity
             player.prepare();
             playerNeedsPrepare = false;
         }
-        player.setSurface(exoSurfaceView.getHolder().getSurface());
+        player.setSurface(surface);
         player.setPlayWhenReady(playWhenReady);
     }
 
@@ -834,9 +846,11 @@ public class VideoActivity extends ParentAppCompatActivity
     }
 
     private void resumePlayer() {
-        if(player != null) {
-            player.setPlayWhenReady(true);
-        }
+        /**
+         * Restart the player for replay instead of calling setPlayWhenReady(true)
+         * to make sure the resumed video is up to date.
+         */
+        preparePlayer(true);
     }
 
     // when screen gets rotated
@@ -905,8 +919,8 @@ public class VideoActivity extends ParentAppCompatActivity
         snapshotMenuView = (ImageView) this.findViewById(R.id.player_savesnapshot);
 
         videoFrame = (AspectRatioFrameLayout) findViewById(R.id.video_frame);
-        exoSurfaceView = (SurfaceView) findViewById(R.id.surface_view);
-        exoSurfaceView.getHolder().addCallback(this);
+        textureView = (TextureView) findViewById(R.id.texture_view);
+        textureView.setSurfaceTextureListener(this);
 
         progressView = ((ProgressView) imageViewLayout.findViewById(R.id.live_progress_view));
 
@@ -1077,7 +1091,7 @@ public class VideoActivity extends ParentAppCompatActivity
         });
 
         /**
-         * The click listener of camera live view layout, including both RTSP and JPG view
+         * The click listener of camera live view layout, including both stream and JPG view
          *  Once clicked, if camera view is playing, show the pause menu, otherwise do nothing.
          */
         imageViewLayout.setOnClickListener(new OnClickListener() {
@@ -1122,9 +1136,9 @@ public class VideoActivity extends ParentAppCompatActivity
                     Bitmap bitmap = getBitmapFromImageView(imageView);
 
                     processSnapshot(bitmap, FileType.JPG);
-                } else if (exoSurfaceView.getVisibility() == View.VISIBLE) {
-                    //TODO: Take snapshot from HLS stream
-                    //nativeRequestSample("jpeg");
+                } else if (textureView.getVisibility() == View.VISIBLE) {
+                    Bitmap bitmap = textureView.getBitmap();
+                    processSnapshot(bitmap, FileType.JPG);
                 }
             }
         });
@@ -1212,7 +1226,7 @@ public class VideoActivity extends ParentAppCompatActivity
             public void run() {
                 //View gets played, show time count, and start buffering
                 showProgressView(false);
-                exoSurfaceView.setVisibility(View.VISIBLE);
+                textureView.setVisibility(View.VISIBLE);
                 imageView.setVisibility(View.GONE);
                 startTimeCounter();
 
@@ -1260,27 +1274,6 @@ public class VideoActivity extends ParentAppCompatActivity
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
                 showJpgView = true;
                 launchJpgRunnable();
-            }
-        });
-    }
-
-    private void onSampleRequestSuccess(byte[] data, int size) {
-        final byte[] imageData = data;
-        final int imageSize = size;
-
-        runOnUiThread(new Runnable() {
-            public void run() {
-                final Bitmap bitmap = BitmapFactory.decodeByteArray(imageData, 0, imageSize);
-                processSnapshot(bitmap, FileType.JPG);
-            }
-        });
-    }
-
-    private void onSampleRequestFailed() {
-        runOnUiThread(new Runnable() {
-            public void run() {
-                Log.d(TAG, "onSampleRequestFailed");
-                CustomToast.showInCenterLong(VideoActivity.this, R.string.msg_snapshot_saved_failed);
             }
         });
     }
@@ -1369,7 +1362,7 @@ public class VideoActivity extends ParentAppCompatActivity
                     progressView.setVisibility(View.GONE);
 
                     // Hide video elements if switch to an offline camera.
-                    exoSurfaceView.setVisibility(View.GONE);
+                    textureView.setVisibility(View.GONE);
                     imageView.setVisibility(View.GONE);
                 } else {
                     offlineTextView.setVisibility(View.GONE);
