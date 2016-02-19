@@ -39,6 +39,7 @@ public class EvercamCamera {
     private String status = "";
     private boolean hasCredentials = false;
     private String thumbnailUrl = "";
+    private String hlsUrl = "";
 
     // Fields for edit camera
     private String internalHost = "";
@@ -92,6 +93,7 @@ public class EvercamCamera {
             externalHttp = camera.getExternalHttpPort();
             externalRtsp = camera.getExternalRtspPort();
             thumbnailUrl = camera.getThumbnailUrl();
+            hlsUrl = camera.getProxyUrl().getHls();
 
             isDiscoverable = camera.isDiscoverable();
             isPublic = camera.isPublic();
@@ -397,10 +399,21 @@ public class EvercamCamera {
         return getThumbnailUrl() != null && !getThumbnailUrl().isEmpty();
     }
 
+    public void setHlsUrl(String hlsUrl) {
+        this.hlsUrl = hlsUrl;
+    }
+
+    public String getHlsUrl() {
+        return hlsUrl;
+    }
+
+    public boolean hasHlsUrl() {
+        return !hlsUrl.isEmpty();
+    }
+
     public boolean hasModel() {
         return !getModel().isEmpty();
     }
-
 
     public boolean isDiscoverable() {
         return isDiscoverable;
@@ -443,7 +456,8 @@ public class EvercamCamera {
                 .externalHttp && internalRtsp == other.internalRtsp && externalRtsp == other
                 .externalRtsp && realOwner.equals(other.realOwner) && canEdit == other.canEdit &&
                 canDelete == other.canDelete && status == other.status && rights == other.rights &&
-                isPublic == other.isPublic && isDiscoverable == other.isDiscoverable) {
+                isPublic == other.isPublic && isDiscoverable == other.isDiscoverable &&
+                hlsUrl == other.hlsUrl) {
             return true;
         }
         return false;
@@ -463,6 +477,6 @@ public class EvercamCamera {
                 "internalHost=" + internalHost + ", externalHost=" + externalHost + ", " +
                 "internalHttp=" + internalHttp + ", internalRtsp=" + internalRtsp + ", " +
                 "externalHttp=" + externalHttp + ", externalRtsp=" + externalRtsp + ", " +
-                "thumbnailUrl=" + thumbnailUrl + "]";
+                "thumbnailUrl=" + thumbnailUrl + ", hlsUrl=" + hlsUrl + "]";
     }
 }

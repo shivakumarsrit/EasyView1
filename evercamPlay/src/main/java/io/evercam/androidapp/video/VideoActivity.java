@@ -780,23 +780,15 @@ public class VideoActivity extends ParentAppCompatActivity
      * ***********
      */
 
-    private String createUri(EvercamCamera camera) {
-        String uri = "rtsp://" + camera.getUsername() + ":" + camera.getPassword() + "@"
-                + camera.getExternalRtspUrl().replaceFirst("rtsp://", "");
-        return uri;
-    }
-
     private void createPlayer(EvercamCamera camera) {
         startTime = new Date();
 
-        if (camera.hasRtspUrl()) {
-//            Log.e(TAG, "uri " + createUri(camera));
-//            nativeSetUri(createUri(camera), TCP_TIMEOUT);
-//            play();
+        if (camera.hasHlsUrl()) {
+            Log.d(TAG, "HLS url: " + camera.getHlsUrl());
             preparePlayer(true);
         } else {
             //If no RTSP URL exists, start JPG view straight away
-            releasePlayer();;
+            releasePlayer();
             showJpgView = true;
             launchJpgRunnable();
         }
@@ -838,6 +830,12 @@ public class VideoActivity extends ParentAppCompatActivity
     private void pausePlayer() {
         if(player != null) {
             player.setPlayWhenReady(false);
+        }
+    }
+
+    private void resumePlayer() {
+        if(player != null) {
+            player.setPlayWhenReady(true);
         }
     }
 
@@ -1043,8 +1041,8 @@ public class VideoActivity extends ParentAppCompatActivity
                     startMediaPlayerAnimation();
 
                     //If playing url is not null, resume rtsp stream
-                    if (evercamCamera != null && !evercamCamera.getExternalRtspUrl().isEmpty()) {
-                        preparePlayer(true);
+                    if (evercamCamera != null && evercamCamera.hasHlsUrl()) {
+                        resumePlayer();
                     }
                     //Otherwise restart jpg view
                     else {
@@ -1227,7 +1225,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 StreamFeedbackItem successItem = new StreamFeedbackItem(VideoActivity
                         .this, AppData.defaultUser.getUsername(), true);
                 successItem.setCameraId(evercamCamera.getCameraId());
-                successItem.setUrl(createUri(evercamCamera));
+                successItem.setUrl(evercamCamera.getHlsUrl());
                 successItem.setType(StreamFeedbackItem.TYPE_RTSP);
                 if (startTime != null) {
                     float timeDifferenceFloat = Commons.calculateTimeDifferenceFrom
@@ -1254,7 +1252,7 @@ public class VideoActivity extends ParentAppCompatActivity
                         (VideoActivity.this, AppData.defaultUser.getUsername(),
                                 false);
                 failedItem.setCameraId(evercamCamera.getCameraId());
-                failedItem.setUrl(createUri(evercamCamera));
+                failedItem.setUrl(evercamCamera.getHlsUrl());
                 failedItem.setType(StreamFeedbackItem.TYPE_RTSP);
 
                 failedItem.sendToKeenIo(client);
@@ -1439,6 +1437,6 @@ public class VideoActivity extends ParentAppCompatActivity
     private MyExoPlayer.RendererBuilder getRendererBuilder() {
         String userAgent = Util.getUserAgent(this, "ExoPlayer");
 
-        return new HlsRendererBuilder(this, userAgent, ExoPlayerActivity.url);
+        return new HlsRendererBuilder(this, userAgent, evercamCamera.getHlsUrl());
     }
 }
