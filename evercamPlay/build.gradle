@@ -28,7 +28,6 @@ android {
         javaMaxHeapSize "2048M"
     }
 
-    // ./gradlew crashlyticsUploadSymbolsRelease
     signingConfigs {
         release
     }
@@ -61,15 +60,6 @@ android {
 
     lintOptions {
         abortOnError false
-    }
-
-    splits {
-        abi {
-            enable true
-            reset()
-            include 'armeabi'
-            universalApk false
-        }
     }
 }
 

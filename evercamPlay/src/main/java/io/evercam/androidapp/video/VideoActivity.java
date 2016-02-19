@@ -9,7 +9,6 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.SurfaceTexture;
@@ -27,8 +26,6 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.MotionEvent;
 import android.view.Surface;
-import android.view.SurfaceHolder;
-import android.view.SurfaceView;
 import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -815,8 +812,7 @@ public class VideoActivity extends ParentAppCompatActivity
             player.addListener(eventLogger);
             player.setInfoListener(eventLogger);
             player.setInternalErrorListener(eventLogger);
-        }
-        else {
+        } else {
             releasePlayer();
             preparePlayer(playWhenReady);
         }
@@ -839,7 +835,7 @@ public class VideoActivity extends ParentAppCompatActivity
     }
 
     private void pausePlayer() {
-        if(player != null) {
+        if (player != null) {
             player.setPlayWhenReady(false);
         }
     }
@@ -1053,7 +1049,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
                     startMediaPlayerAnimation();
 
-                    //If playing url is not null, resume rtsp stream
+                    //If playing url is not null, resume HLS stream
                     if (evercamCamera != null && evercamCamera.hasHlsUrl()) {
                         resumePlayer();
                     }
@@ -1239,7 +1235,7 @@ public class VideoActivity extends ParentAppCompatActivity
                         .this, AppData.defaultUser.getUsername(), true);
                 successItem.setCameraId(evercamCamera.getCameraId());
                 successItem.setUrl(evercamCamera.getHlsUrl());
-                successItem.setType(StreamFeedbackItem.TYPE_RTSP);
+                successItem.setType(StreamFeedbackItem.TYPE_HLS);
                 if (startTime != null) {
                     float timeDifferenceFloat = Commons.calculateTimeDifferenceFrom
                             (startTime);
@@ -1266,7 +1262,7 @@ public class VideoActivity extends ParentAppCompatActivity
                                 false);
                 failedItem.setCameraId(evercamCamera.getCameraId());
                 failedItem.setUrl(evercamCamera.getHlsUrl());
-                failedItem.setType(StreamFeedbackItem.TYPE_RTSP);
+                failedItem.setType(StreamFeedbackItem.TYPE_HLS);
 
                 failedItem.sendToKeenIo(client);
 

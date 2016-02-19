@@ -268,7 +268,7 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getVendorIdFromSpinner() {
-        if(vendorSpinner != null) {
+        if (vendorSpinner != null) {
             String vendorName = vendorSpinner.getSelectedItem().toString();
             if (vendorName.equals(getString(R.string.select_vendor))) {
                 return "";
@@ -280,7 +280,7 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getVendorNameFromSpinner() {
-        if(vendorSpinner != null) {
+        if (vendorSpinner != null) {
             String vendorName = vendorSpinner.getSelectedItem().toString();
             if (vendorName.equals(getString(R.string.select_vendor))) {
                 return "";

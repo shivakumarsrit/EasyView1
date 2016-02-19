@@ -14,7 +14,7 @@ import io.keen.client.java.KeenClient;
 public class StreamFeedbackItem extends FeedbackItem {
     private final static String TAG = "StreamFeedbackItem";
     public final static String TYPE_JPG = "jpg";
-    public final static String TYPE_RTSP = "rtsp";
+    public final static String TYPE_HLS = "hls";
 
     //Camera stream details;
     private String url = "";

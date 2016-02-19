@@ -1,8 +1,14 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.7.8</h5>
+<h5>1.7.9 Alpha 19/02</h5>
 <ul>
-	<li>- Fixed the bug of always showing 'Port is closed' while adding camera<br/></li>
+	<li>- Reduced app size<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.7.8</b>
+<ul>
+	<li><br/>- Fixed the bug of always showing 'Port is closed' while adding camera<br/></li>
 </ul>
 <br/>
 
