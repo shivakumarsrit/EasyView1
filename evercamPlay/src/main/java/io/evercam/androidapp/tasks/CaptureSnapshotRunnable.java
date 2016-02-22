@@ -8,7 +8,6 @@ import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 
-import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.video.VideoActivity;
@@ -69,12 +68,9 @@ public class CaptureSnapshotRunnable implements Runnable {
             final String savedPath = capture(bitmap);
 
             if (!savedPath.isEmpty()) {
-                activity.runOnUiThread(new Runnable() {
-                    @Override
-                    public void run() {
-                        CustomSnackbar.showSnapshotSaved(activity, cameraId);
-                    }
-                });
+
+                SnapshotManager.updateGallery(savedPath, cameraId, activity);
+
             }
         }
     }
