@@ -13,6 +13,7 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
+import com.squareup.picasso.Callback;
 import com.squareup.picasso.Picasso;
 
 import io.evercam.androidapp.R;
@@ -138,7 +139,21 @@ public class CameraLayout extends LinearLayout {
 
     public boolean showThumbnail() {
         if (evercamCamera.hasThumbnailUrl()) {
-            Picasso.with(context).load(evercamCamera.getThumbnailUrl()).fit().into(snapshotImageView);
+            Picasso.with(context).load(evercamCamera.getThumbnailUrl()).fit().into(snapshotImageView, new Callback() {
+                @Override
+                public void onSuccess() {
+                }
+
+                @Override
+                public void onError() {
+                    showOfflineIcon();
+                    offlineImage.setVisibility(View.VISIBLE);
+                    snapshotImageView.setBackgroundColor(Color.GRAY);
+                    gradientLayout.removeGradientShadow();
+                    CameraLayout.this.evercamCamera.loadingStatus = ImageLoadingStatus.live_not_received;
+                    handler.postDelayed(LoadImageRunnable, 0);
+                }
+            });
 
             if (!evercamCamera.isActive()) {
                 showGreyImage();
@@ -152,12 +167,7 @@ public class CameraLayout extends LinearLayout {
 
             return true;
         } else {
-            showOfflineIcon();
-            offlineImage.setVisibility(View.VISIBLE);
-            snapshotImageView.setBackgroundColor(Color.GRAY);
-            gradientLayout.removeGradientShadow();
-            CameraLayout.this.evercamCamera.loadingStatus = ImageLoadingStatus.live_not_received;
-            handler.postDelayed(LoadImageRunnable, 0);
+            //Moved to Picasso error callback. The thumbnail is impossible to be empty
         }
         return false;
     }
