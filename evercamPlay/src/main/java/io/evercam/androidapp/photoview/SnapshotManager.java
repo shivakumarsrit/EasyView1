@@ -1,6 +1,10 @@
 package io.evercam.androidapp.photoview;
 
 import android.app.Activity;
+import android.content.Intent;
+import android.media.MediaScannerConnection;
+import android.net.Uri;
+import android.os.Build;
 import android.os.Environment;
 
 import java.io.File;
@@ -10,6 +14,7 @@ import java.util.Calendar;
 import java.util.Collections;
 
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 
 public class SnapshotManager {
@@ -79,6 +84,61 @@ public class SnapshotManager {
             return ".png";
         } else {
             return ".jpg";
+        }
+    }
+
+    /**
+     * Notify Gallery about the snapshot that got saved, otherwise the image
+     * won't show in Gallery
+     *
+     * @param path full snapshot path
+     */
+    public static void updateGallery(String path, String cameraId, Activity activity) {
+        if (Build.VERSION.SDK_INT < Build.VERSION_CODES.KITKAT) {
+            activity.sendBroadcast(new Intent(Intent.ACTION_MEDIA_MOUNTED,
+                    Uri.parse("file://" + Environment.getExternalStoragePublicDirectory
+                            (Environment.DIRECTORY_PICTURES))));
+        } else {
+            new SingleMediaScanner(activity).startScan(path, cameraId);
+        }
+    }
+
+    static class SingleMediaScanner implements MediaScannerConnection.MediaScannerConnectionClient {
+        MediaScannerConnection connection;
+        Activity activity;
+        private String imagePath;
+        private String cameraId = "";
+
+        public SingleMediaScanner(Activity activity) {
+            this.activity = activity;
+        }
+
+        public void startScan(String url, String cameraId) {
+            imagePath = url;
+            this.cameraId = cameraId;
+            if (connection != null) connection.disconnect();
+            connection = new MediaScannerConnection(activity, this);
+            connection.connect();
+        }
+
+        @Override
+        public void onMediaScannerConnected() {
+            try {
+                connection.scanFile(imagePath, null);
+            } catch (java.lang.IllegalStateException e) {
+            }
+        }
+
+        @Override
+        public void onScanCompleted(String path, Uri uri) {
+            activity.runOnUiThread(new Runnable() {
+                @Override
+                public void run() {
+                    CustomSnackbar.showSnapshotSaved(activity, cameraId);
+                }
+            });
+
+            connection.disconnect();
         }
     }
 }
