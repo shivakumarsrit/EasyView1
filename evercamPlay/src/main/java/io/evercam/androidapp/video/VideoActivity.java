@@ -1026,7 +1026,7 @@ public class VideoActivity extends ParentAppCompatActivity implements SurfaceHol
                 }
                 if (isProgressViewVisible()) return;
 
-                if (!paused && !end) // video is currently playing. Show pause button
+                if (!paused && !end && offlineTextView.getVisibility() != View.VISIBLE) // video is currently playing. Show pause button
                 {
                     if (playPauseImageView.getVisibility() == View.VISIBLE) {
                         showAllControlMenus(false);
