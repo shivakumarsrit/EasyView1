@@ -292,16 +292,19 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getModelIdFromSpinner() {
-        String modelName = modelSpinner.getSelectedItem().toString();
-        if (modelName.equals(getString(R.string.select_model))) {
-            return "";
-        } else {
-            for (Map.Entry<String, String> entry : modelMap.entrySet()) {
-                if (entry.getValue().equals(modelName)) {
-                    return entry.getKey();
+        if(modelSpinner.getSelectedItem() != null) {
+            String modelName = modelSpinner.getSelectedItem().toString();
+            if (modelName.equals(getString(R.string.select_model))) {
+                return "";
+            } else {
+                for (Map.Entry<String, String> entry : modelMap.entrySet()) {
+                    if (entry.getValue().equals(modelName)) {
+                        return entry.getKey();
+                    }
                 }
             }
         }
+
         return "";
     }
 
