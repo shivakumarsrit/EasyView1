@@ -17,6 +17,7 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
     private long time = 0;
     private int screenHeight;
     private int screenWidth;
+    private boolean isLandscape = false;
 
     public OnSwipeTouchListener(Activity activity) {
         scaleListener = new ScaleListener();
@@ -59,7 +60,7 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
                 if (scaleListener != null) {
                     if (scaleListener.zoom) {
                         //Stop zooming when live view reach screen top/bottom while zooming in
-                        if (scaleListener.getOriginalScaleFactor() < 1.0 || view.getHeight() < screenHeight) {
+                        if (scaleListener.getOriginalScaleFactor() < 1.0 || view.getHeight() < getScreenHeight()) {
                             onActionZoom(view);
                         }
                     } else {
@@ -93,8 +94,8 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
             if (view.getX() >= 0) {
                 view.setX(0);
             }
-            if (view.getX() + view.getWidth() <= screenWidth) {
-                view.setX(screenWidth - view.getWidth());
+            if (view.getX() + view.getWidth() <= getScreenWidth()) {
+                view.setX(getScreenWidth() - view.getWidth());
             }
         }
 
@@ -125,8 +126,8 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
             //If moving left, stop if image's right reach screen right
             else if (xDiffInt < 0) {
                 if (layoutParams.rightMargin < 0) {
-                    if (view.getX() + view.getWidth() <= screenWidth) {
-                        view.setX(screenWidth - view.getWidth());
+                    if (view.getX() + view.getWidth() <= getScreenWidth()) {
+                        view.setX(getScreenWidth() - view.getWidth());
                     } else {
                         view.setX(view.getX() + xDiffInt);
                     }
@@ -138,6 +139,17 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
         }
     }
 
+    public void isLandscape(boolean landscape) {
+        this.isLandscape = landscape;
+    }
+
+    private int getScreenHeight() {
+        return isLandscape ? screenWidth : screenHeight;
+    }
+
+    private int getScreenWidth() {
+        return isLandscape ? screenHeight : screenWidth;
+    }
     class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         public static final float MIN_ZOOM = 1.0f;
         public static final float MAX_ZOOM = 1.5f;

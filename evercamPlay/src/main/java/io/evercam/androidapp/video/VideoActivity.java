@@ -193,7 +193,7 @@ public class VideoActivity extends ParentAppCompatActivity
             setContentView(R.layout.activity_video);
 
             mToolbar = (Toolbar) findViewById(R.id.spinner_tool_bar);
-            setOpaqueTitleBackground();
+            setGradientTitleBackground();
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mCameraListSpinner = (Spinner) findViewById(R.id.spinner_camera_list);
@@ -864,17 +864,22 @@ public class VideoActivity extends ParentAppCompatActivity
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN,
                     WindowManager.LayoutParams.FLAG_FORCE_NOT_FULLSCREEN);
             showToolbar();
-            setOpaqueTitleBackground();
+            adoptSwipeListenerToLandscape(false);
         } else {
             getWindow().setFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN, WindowManager
                     .LayoutParams.FLAG_FULLSCREEN);
 
             setGradientTitleBackground();
+            adoptSwipeListenerToLandscape(true);
             if (!paused && !end && !isProgressViewVisible()) hideToolbar();
             else showToolbar();
         }
 
         this.invalidateOptionsMenu();
+    }
+
+    private void adoptSwipeListenerToLandscape(boolean adoptLandscape) {
+        swipeTouchListener.isLandscape(adoptLandscape);
     }
 
     private boolean isProgressViewVisible() {
