@@ -85,6 +85,7 @@ import io.evercam.androidapp.photoview.SnapshotManager.FileType;
 import io.evercam.androidapp.player.EventLogger;
 import io.evercam.androidapp.player.HlsRendererBuilder;
 import io.evercam.androidapp.player.MyExoPlayer;
+import io.evercam.androidapp.player.OnSwipeTouchListener;
 import io.evercam.androidapp.ptz.PresetsListAdapter;
 import io.evercam.androidapp.recordings.RecordingWebActivity;
 import io.evercam.androidapp.sharing.SharingActivity;
@@ -96,6 +97,7 @@ import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
+import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class VideoActivity extends ParentAppCompatActivity
         implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
@@ -165,6 +167,8 @@ public class VideoActivity extends ParentAppCompatActivity
 
     private Date startTime;
     private KeenClient client;
+
+    private OnSwipeTouchListener swipeTouchListener;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -1086,12 +1090,17 @@ public class VideoActivity extends ParentAppCompatActivity
         });
 
         /**
+         * Moved live view click listener to gesture single click listener
+         *
          * The click listener of camera live view layout, including both stream and JPG view
          *  Once clicked, if camera view is playing, show the pause menu, otherwise do nothing.
+         *
+         *  OnSwipeTouchListener will also handle the pinch zoom & swipe for JPG/HLS live view
          */
-        imageViewLayout.setOnClickListener(new OnClickListener() {
+        swipeTouchListener = new OnSwipeTouchListener(this) {
+
             @Override
-            public void onClick(View v) {
+            public void onClick() {
                 if (end) {
                     Toast.makeText(VideoActivity.this, R.string.msg_try_again,
                             Toast.LENGTH_SHORT).show();
@@ -1115,7 +1124,9 @@ public class VideoActivity extends ParentAppCompatActivity
                     }
                 }
             }
-        });
+        };
+        videoFrame.setOnTouchListener(swipeTouchListener);
+        imageView.setOnTouchListener(swipeTouchListener);
 
         snapshotMenuView.setOnClickListener(new OnClickListener() {
             @Override
