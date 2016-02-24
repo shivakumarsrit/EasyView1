@@ -719,8 +719,8 @@ public class VideoActivity extends ParentAppCompatActivity
         paused = false;
         end = false;
 
-        textureView.setVisibility(View.GONE);
-        imageView.setVisibility(View.VISIBLE);
+        showVideoView(false);
+        showImageView(true);
         showProgressView(true);
 
         loadImageThumbnail(VideoActivity.evercamCamera);
@@ -1221,8 +1221,8 @@ public class VideoActivity extends ParentAppCompatActivity
             public void run() {
                 //View gets played, show time count, and start buffering
                 showProgressView(false);
-                textureView.setVisibility(View.VISIBLE);
-                imageView.setVisibility(View.GONE);
+                showVideoView(true);
+                showImageView(false);
                 startTimeCounter();
 
                 //And send to Google Analytics
@@ -1357,8 +1357,8 @@ public class VideoActivity extends ParentAppCompatActivity
                     progressView.setVisibility(View.GONE);
 
                     // Hide video elements if switch to an offline camera.
-                    textureView.setVisibility(View.GONE);
-                    imageView.setVisibility(View.GONE);
+                    showVideoView(false);
+                    showImageView(false);
                 } else {
                     offlineTextView.setVisibility(View.GONE);
 
@@ -1379,6 +1379,14 @@ public class VideoActivity extends ParentAppCompatActivity
         });
 
         mCameraListSpinner.setSelection(defaultCameraIndex);
+    }
+
+    private void showImageView(boolean show) {
+        imageView.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void showVideoView(boolean show) {
+        videoFrame.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     public void showAllControlMenus(boolean show) {
