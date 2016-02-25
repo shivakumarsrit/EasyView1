@@ -45,9 +45,6 @@
     <screenName name="io.evercam.androidapp.ManageAccountsActivity">
         Manage Accounts
     </screenName>
-    <screenName name="io.evercam.androidapp.FeedbackActivity">
-        Feedback Page
-    </screenName>
     <screenName name="io.evercam.androidapp.ViewCameraActivity">
         View Camera Detail
     </screenName>

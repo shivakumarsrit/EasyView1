@@ -162,10 +162,6 @@
             android:label="@string/title_release_notes">
         </activity>
         <activity
-            android:name=".FeedbackActivity"
-            android:label="@string/title_activity_feedback">
-        </activity>
-        <activity
             android:name=".recordings.RecordingWebActivity"
             android:label="@string/title_activity_recording_web"
             android:configChanges="keyboard|keyboardHidden|screenSize|orientation">
