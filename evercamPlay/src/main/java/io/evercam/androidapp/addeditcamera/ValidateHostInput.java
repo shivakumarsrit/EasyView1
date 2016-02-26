@@ -27,7 +27,6 @@ public abstract class ValidateHostInput {
                 return false;
             } else {
                 String httpPort = mHttpPortEditText.getText().toString();
-                String rtspPort = mRtspPortEditText.getText().toString();
 
                 if (httpPort.isEmpty()) {
                     onHttpEmpty();
@@ -39,7 +38,7 @@ public abstract class ValidateHostInput {
                     }
                 }
 
-                if (!rtspPort.isEmpty() && !mRtspPortEditText.isPortStringValid()) {
+                if (!mRtspPortEditText.isPortStringValid()) {
                     onInvalidRtspPort();
                     return false;
                 }
