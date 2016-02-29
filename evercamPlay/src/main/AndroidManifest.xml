@@ -100,7 +100,7 @@
                 android:value=".CamerasActivity"/>
         </activity>
         <activity
-            android:name=".SlideActivity"
+            android:name=".OnBoardingActivity"
             android:screenOrientation="portrait">
         </activity>
         <activity
@@ -119,7 +119,7 @@
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".SlideActivity">
+            android:parentActivityName=".OnBoardingActivity">
         </activity>
 
         <activity

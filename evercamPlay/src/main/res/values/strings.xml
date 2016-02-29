@@ -20,6 +20,7 @@
     <string name="prefix_http">http://</string>
     <string name="dialog_title_warning">Warning</string>
     <string name="view_capital">VIEW</string>
+    <string name="sign_in">Sign In</string>
 
     <!-- Preferences -->
     <string name="title_camera_per_row">Cameras per row</string>
