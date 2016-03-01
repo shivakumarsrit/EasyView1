@@ -2,11 +2,11 @@ package io.evercam.androidapp;
 
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.Matrix;
 import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
 import android.view.Surface;
-import android.view.SurfaceHolder;
 import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
@@ -17,11 +17,14 @@ import java.io.IOException;
 import io.evercam.androidapp.utils.Constants;
 
 public class OnBoardingActivity extends ParentAppCompatActivity implements
-        TextureView.SurfaceTextureListener,MediaPlayer.OnPreparedListener {
+        TextureView.SurfaceTextureListener, MediaPlayer.OnPreparedListener {
     private final String TAG = "OnBoardingActivity";
 
     private MediaPlayer player;
     private TextureView textureView;
+
+    private float mVideoHeight;
+    private float mVideoWidth;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -76,8 +79,22 @@ public class OnBoardingActivity extends ParentAppCompatActivity implements
             e.printStackTrace();
         }
 
+        player.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
+            @Override
+            public void onVideoSizeChanged(MediaPlayer mp, int width, int height) {
+                mVideoWidth = width;
+                mVideoHeight = height;
+                updateTextureViewSize();
+            }
+        });
+
         player.prepareAsync();
     }
+
+    /**
+     * MediaPlayer.OnPreparedListener
+     * Callback for player.prepareAsync();
+     */
 
     @Override
     public void onPrepared(MediaPlayer mp) {
@@ -85,6 +102,10 @@ public class OnBoardingActivity extends ParentAppCompatActivity implements
         mp.setLooping(true);
         mp.start();
     }
+
+    /**
+     * TextureView.SurfaceTextureListener
+     */
 
     @Override
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
@@ -105,5 +126,38 @@ public class OnBoardingActivity extends ParentAppCompatActivity implements
     @Override
     public void onSurfaceTextureUpdated(SurfaceTexture surface) {
 
+    }
+
+    /**
+     * Private methods
+     */
+
+    private void updateTextureViewSize() {
+        float viewWidth = textureView.getWidth();
+        float viewHeight = textureView.getHeight();
+
+        float scaleX = 1.0f;
+        float scaleY = 1.0f;
+
+        if (mVideoWidth > viewWidth && mVideoHeight > viewHeight) {
+            scaleX = mVideoWidth / viewWidth;
+            scaleY = mVideoHeight / viewHeight;
+        } else if (mVideoWidth < viewWidth && mVideoHeight < viewHeight) {
+            scaleY = viewWidth / mVideoWidth;
+            scaleX = viewHeight / mVideoHeight;
+        } else if (viewWidth > mVideoWidth) {
+            scaleY = (viewWidth / mVideoWidth) / (viewHeight / mVideoHeight);
+        } else if (viewHeight > mVideoHeight) {
+            scaleX = (viewHeight / mVideoHeight) / (viewWidth / mVideoWidth);
+        }
+
+        // Calculate pivot points, in our case crop from center
+        int pivotPointX = (int) (viewWidth / 2);
+        int pivotPointY = (int) (viewHeight / 2);
+
+        Matrix matrix = new Matrix();
+        matrix.setScale(scaleX, scaleY, pivotPointX, pivotPointY);
+
+        textureView.setTransform(matrix);
     }
 }

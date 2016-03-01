@@ -9,8 +9,6 @@
         android:id="@+id/intro_texture_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:layout_marginLeft="-150dp"
-        android:layout_marginRight="-300dp"
         />
 
     <LinearLayout
@@ -26,7 +24,7 @@
             android:text="@string/create_account"
             android:id="@+id/btn_welcome_signup"
             android:background="@drawable/signup_btn_selector"
-            android:textColor="@drawable/button_text_selector"
+            android:textColor="@drawable/signup_btn_txt_selector"
             />
         <Button
             android:text="@string/sign_in"
