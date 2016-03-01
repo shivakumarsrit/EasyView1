@@ -1,8 +1,16 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.7.9</h5>
+<h5>1.8.0</h5>
 <ul>
-	<li>- Bug fix of saved snapshot doesn't appear in Gallery<br/></li>
+	<li>- Fixed a few issues for editing camera, eg. unable to delete saved port<br/></li>
+	<li>- Improved memory usage for camera live view <br/></li>
+	<li>- New design for welcome screen <br/></li>
+</ul>
+<br/>
+
+<b>Version 1.7.9</b>
+<ul>
+	<li><br/>- Bug fix of saved snapshot doesn't appear in Gallery<br/></li>
 </ul>
 <br/>
 
