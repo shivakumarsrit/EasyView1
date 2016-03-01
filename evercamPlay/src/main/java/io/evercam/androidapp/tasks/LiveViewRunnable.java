@@ -20,6 +20,7 @@ import java.io.IOException;
 import java.lang.ref.WeakReference;
 
 import io.evercam.API;
+import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.video.VideoActivity;
 
 public class LiveViewRunnable implements Runnable {
@@ -108,7 +109,9 @@ public class LiveViewRunnable implements Runnable {
                     //Log.d(TAG, "Data: " + base64String);
 
                     byte[] decodedString = Base64.decode(base64String, Base64.DEFAULT);
-                    final Bitmap bitmap = BitmapFactory.decodeByteArray(decodedString, 0, decodedString.length);
+                    int screenWidth = getActivity().getResources().getDisplayMetrics().widthPixels;
+                    final Bitmap bitmap = Commons.decodeBitmapFromResource(decodedString, screenWidth);
+                    //Log.d(TAG, "Bitmap size: " +bitmap.getWidth() + " " +  bitmap.getHeight());
 
                     runOnUiThread(new Runnable() {
                         @Override
@@ -128,6 +131,10 @@ public class LiveViewRunnable implements Runnable {
                 }
             });
         } catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (Exception e) {
+            Log.e(TAG, "WebSocketError: " + e.toString());
             e.printStackTrace();
         }
     }

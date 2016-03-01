@@ -585,11 +585,18 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
         PatchCameraBuilder patchCameraBuilder = new PatchCameraBuilder(cameraEdit.getCameraId());
 
         if (mValidateHostInput.passed()) {
+            //HTTP port can't be empty
             patchCameraBuilder.setExternalHttpPort(externalHttpEdit.getPort());
             patchCameraBuilder.setExternalHost(externalHostEdit.getText().toString());
-            int externalRtspInt = externalRtspEdit.getPort();
-            if (externalRtspInt != 0) {
-                patchCameraBuilder.setExternalRtspPort(externalRtspInt);
+
+            //Allow RTSP port to be empty
+            if(externalRtspEdit.isEmpty()) {
+                patchCameraBuilder.setExternalRtspPort(null);
+            } else {
+                int externalRtspInt = externalRtspEdit.getPort();
+                if (externalRtspInt != 0) {
+                    patchCameraBuilder.setExternalRtspPort(externalRtspInt);
+                }
             }
 
             String cameraName = cameraNameEdit.getText().toString();
@@ -623,6 +630,8 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
             if (!rtspUrl.equals(cameraEdit.getH264Path())) {
                 patchCameraBuilder.setH264Url(rtspUrl);
             }
+        } else {
+            return null;
         }
 
         return patchCameraBuilder;

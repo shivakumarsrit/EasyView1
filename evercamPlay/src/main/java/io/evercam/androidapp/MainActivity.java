@@ -148,7 +148,7 @@ public class MainActivity extends ParentAppCompatActivity {
                             .executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 } else {
                     finish();
-                    Intent slideIntent = new Intent(MainActivity.this, SlideActivity.class);
+                    Intent slideIntent = new Intent(MainActivity.this, OnBoardingActivity.class);
                     startActivity(slideIntent);
                 }
             } else {
@@ -169,7 +169,7 @@ public class MainActivity extends ParentAppCompatActivity {
                 new EvercamAccount(MainActivity.this).remove(AppData.defaultUser.getEmail(), null);
 
                 finish();
-                Intent slideIntent = new Intent(MainActivity.this, SlideActivity.class);
+                Intent slideIntent = new Intent(MainActivity.this, OnBoardingActivity.class);
                 startActivity(slideIntent);
             } else {
                 registerUserWithIntercom(AppData.defaultUser);

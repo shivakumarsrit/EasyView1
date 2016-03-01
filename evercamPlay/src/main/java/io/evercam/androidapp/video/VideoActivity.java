@@ -500,22 +500,6 @@ public class VideoActivity extends ParentAppCompatActivity
                 Intent shareIntent = new Intent(VideoActivity.this, SharingActivity.class);
                 startActivityForResult(shareIntent, Constants.REQUEST_CODE_SHARE);
             }
-
-            /**
-             * TODO: Remove or enable feedback in camera live view.
-             * Currently it's disabled because we are replacing all feedbacks with Intercom and
-             * this menu item doesn't seems to be very useful.
-             */
-            //            else if(itemId == R.id.video_menu_feedback)
-//            {
-//                feedbackStarted = true;
-//                Intent feedbackIntent = new Intent(VideoActivity.this, FeedbackActivity.class);
-//                if(evercamCamera != null)
-//                {
-//                    feedbackIntent.putExtra(Constants.BUNDLE_KEY_CAMERA_ID, evercamCamera.getCameraId());
-//                }
-//                startActivityForResult(feedbackIntent, Constants.REQUEST_CODE_FEEDBACK);
-//            }
             else if (itemId == R.id.video_menu_view_snapshots) {
                 SnapshotManager.showSnapshotsForCamera(this, evercamCamera.getCameraId());
             } else if (itemId == R.id.video_menu_create_shortcut) {

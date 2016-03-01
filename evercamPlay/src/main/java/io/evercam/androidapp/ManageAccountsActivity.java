@@ -399,7 +399,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity {
                 new EvercamAccount(ManageAccountsActivity.this).remove(appUser.getEmail(), null);
 
                 finish();
-                Intent slideIntent = new Intent(ManageAccountsActivity.this, SlideActivity.class);
+                Intent slideIntent = new Intent(ManageAccountsActivity.this, OnBoardingActivity.class);
                 startActivity(slideIntent);
             } else {
                 progressDialog.show(ManageAccountsActivity.this.getString(R.string.switching_account));

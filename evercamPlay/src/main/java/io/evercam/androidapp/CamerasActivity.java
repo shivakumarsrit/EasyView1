@@ -210,7 +210,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }
             usernameOnStop = "";
         } else {
-            startActivity(new Intent(this, SlideActivity.class));
+            startActivity(new Intent(this, OnBoardingActivity.class));
             finish();
         }
     }
@@ -606,7 +606,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         AppData.reset();
 
         activity.finish();
-        activity.startActivity(new Intent(activity, SlideActivity.class));
+        activity.startActivity(new Intent(activity, OnBoardingActivity.class));
     }
 
     private void showSignOutDialog() {
