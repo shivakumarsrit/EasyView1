@@ -5,12 +5,12 @@
     android:layout_height="fill_parent"
     >
 
-    <SurfaceView
-        android:id="@+id/intro_surface_view"
+    <TextureView
+        android:id="@+id/intro_texture_view"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_marginLeft="-150dp"
-        android:layout_marginRight="-250dp"
+        android:layout_marginRight="-300dp"
         />
 
     <LinearLayout

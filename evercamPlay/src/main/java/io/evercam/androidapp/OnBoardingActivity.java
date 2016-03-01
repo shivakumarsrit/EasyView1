@@ -2,10 +2,12 @@ package io.evercam.androidapp;
 
 import android.content.Intent;
 import android.content.res.AssetFileDescriptor;
+import android.graphics.SurfaceTexture;
 import android.media.MediaPlayer;
 import android.os.Bundle;
+import android.view.Surface;
 import android.view.SurfaceHolder;
-import android.view.SurfaceView;
+import android.view.TextureView;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.Button;
@@ -15,18 +17,18 @@ import java.io.IOException;
 import io.evercam.androidapp.utils.Constants;
 
 public class OnBoardingActivity extends ParentAppCompatActivity implements
-        SurfaceHolder.Callback,MediaPlayer.OnPreparedListener {
+        TextureView.SurfaceTextureListener,MediaPlayer.OnPreparedListener {
     private final String TAG = "OnBoardingActivity";
 
     private MediaPlayer player;
-    private SurfaceView surfaceView;
+    private TextureView textureView;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_onboarding);
-        surfaceView = (SurfaceView) findViewById(R.id.intro_surface_view);
-        surfaceView.getHolder().addCallback(this);
+        textureView = (TextureView) findViewById(R.id.intro_texture_view);
+        textureView.setSurfaceTextureListener(this);
 
         Button signUpButton = (Button) findViewById(R.id.btn_welcome_signup);
         Button loginButton = (Button) findViewById(R.id.btn_welcome_login);
@@ -78,24 +80,30 @@ public class OnBoardingActivity extends ParentAppCompatActivity implements
     }
 
     @Override
-    public void surfaceCreated(SurfaceHolder holder) {
+    public void onPrepared(MediaPlayer mp) {
+        mp.setSurface(new Surface(textureView.getSurfaceTexture()));
+        mp.setLooping(true);
+        mp.start();
+    }
+
+    @Override
+    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         playIntro();
     }
 
     @Override
-    public void surfaceChanged(SurfaceHolder holder, int format, int width, int height) {
+    public void onSurfaceTextureSizeChanged(SurfaceTexture surface, int width, int height) {
 
     }
 
     @Override
-    public void surfaceDestroyed(SurfaceHolder holder) {
+    public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         player.stop();
+        return false;
     }
 
     @Override
-    public void onPrepared(MediaPlayer mp) {
-        mp.setDisplay(surfaceView.getHolder());
-        mp.setLooping(true);
-        mp.start();
+    public void onSurfaceTextureUpdated(SurfaceTexture surface) {
+
     }
 }
