@@ -21,13 +21,13 @@
         <Button
             style="@style/OnBoardingButton"
             android:layout_marginRight="15dp"
-            android:text="@string/create_account"
+            android:text="@string/welcome_create_account"
             android:id="@+id/btn_welcome_signup"
             android:background="@drawable/signup_btn_selector"
             android:textColor="@drawable/signup_btn_txt_selector"
             />
         <Button
-            android:text="@string/sign_in"
+            android:text="@string/welcome_sign_in"
             android:id="@+id/btn_welcome_login"
             android:background="@drawable/btn_selector"
             android:layout_marginLeft="15dp"
