@@ -3,8 +3,6 @@ package io.evercam.androidapp.tasks;
 import android.app.Activity;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
-import android.graphics.drawable.BitmapDrawable;
-import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.util.Log;
 
@@ -16,7 +14,6 @@ import io.evercam.androidapp.AddEditCameraActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
-import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.feedback.KeenHelper;
@@ -104,11 +101,11 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
                 if (activity instanceof AddCameraActivity) {
                     messageResourceId = R.string.msg_snapshot_test_failed_new;
                 }
-                CustomToast.showInCenterLong(activity, messageResourceId);
+                CustomedDialog.showMessageDialog(activity, messageResourceId);
                 new TestSnapshotFeedbackItem(activity, username, false, true)
                         .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
             } else {
-                CustomToast.showInCenterLong(activity, errorMessage);
+                CustomedDialog.showMessageDialog(activity, errorMessage);
                 new TestSnapshotFeedbackItem(activity, username, false, false)
                         .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
             }

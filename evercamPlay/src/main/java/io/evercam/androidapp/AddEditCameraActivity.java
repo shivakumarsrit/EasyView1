@@ -321,7 +321,7 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
             @Override
             public void onClick(View v) {
                 if (!jpgUrlEdit.isFocusable()) {
-                    CustomedDialog.getMessageDialog(AddEditCameraActivity.this, R.string.msg_url_ending_not_editable).show();
+                    CustomedDialog.showMessageDialog(AddEditCameraActivity.this, R.string.msg_url_ending_not_editable);
                 }
             }
         });
