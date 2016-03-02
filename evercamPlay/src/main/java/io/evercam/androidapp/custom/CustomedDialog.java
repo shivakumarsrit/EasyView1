@@ -222,7 +222,7 @@ public class CustomedDialog {
      *
      * @param drawable the image drawable returned to show in pop up dialog
      */
-    public static AlertDialog getSnapshotDialog(final Activity activity, Drawable drawable) {
+    public static AlertDialog getSnapshotDialog(final Activity activity, Bitmap bitmap) {
         Builder builder = new AlertDialog.Builder(activity);
         final AlertDialog snapshotDialog = builder.create();
 
@@ -244,7 +244,7 @@ public class CustomedDialog {
         }
         ImageView snapshotImageView = (ImageView) snapshotView.findViewById(R.id
                 .test_snapshot_image);
-        snapshotImageView.setImageDrawable(drawable);
+        snapshotImageView.setImageBitmap(bitmap);
         snapshotDialog.setView(snapshotView);
 
         return snapshotDialog;
