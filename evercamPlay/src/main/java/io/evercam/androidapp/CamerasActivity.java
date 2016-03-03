@@ -81,7 +81,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavAboutItemLayout;
     private FrameLayout mNavScanLayout;
     private FrameLayout mNavExploreLayout;
-    private FrameLayout mNavLogoutLayout;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
     private TextView mAppVersionTextView;
@@ -305,7 +304,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
         mNavScanLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_scan_layout);
         mNavExploreLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_explore_layout);
-        mNavLogoutLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_logout_layout);
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
@@ -336,7 +334,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavAboutItemLayout.setOnClickListener(this);
         mNavScanLayout.setOnClickListener(this);
         mNavExploreLayout.setOnClickListener(this);
-        mNavLogoutLayout.setOnClickListener(this);
         mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
     }
 
@@ -364,8 +361,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                     Constants.REQUEST_CODE_ADD_CAMERA);
         } else if (view == mNavExploreLayout) {
             startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
-        } else if (view == mNavLogoutLayout) {
-            showSignOutDialog();
         }
     }
 
@@ -609,29 +604,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         activity.startActivity(new Intent(activity, OnBoardingActivity.class));
     }
 
-    private void showSignOutDialog() {
-        CustomedDialog.getConfirmLogoutDialog(this, new DialogInterface.OnClickListener() {
-            @Override
-            public void onClick(DialogInterface dialog, int which) {
-                EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this,
-                        R.string.category_menu, R.string.action_logout, R.string.label_user_logout);
-                logOutDefaultUser(CamerasActivity.this);
-            }
-        }).show();
-    }
-
     public static int readScreenWidth(Activity activity) {
         Display display = activity.getWindowManager().getDefaultDisplay();
         Point size = new Point();
         display.getSize(size);
         return size.x;
-    }
-
-    public static int readScreenHeight(Activity activity) {
-        Display display = activity.getWindowManager().getDefaultDisplay();
-        Point size = new Point();
-        display.getSize(size);
-        return size.y;
     }
 
     /**

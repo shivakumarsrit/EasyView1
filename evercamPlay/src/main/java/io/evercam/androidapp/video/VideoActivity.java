@@ -1271,7 +1271,7 @@ public class VideoActivity extends ParentAppCompatActivity
             }
         }
         if (!matched && cameraExistsInListButOffline(startingCameraID)) {
-            CustomedDialog.getMessageDialog(this, R.string.msg_camera_is_hidden).show();
+            CustomedDialog.showMessageDialog(this, R.string.msg_camera_is_hidden);
         }
 
         String[] cameraNameArray = new String[cameraNames.size()];
