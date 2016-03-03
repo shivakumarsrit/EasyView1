@@ -590,7 +590,7 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
             patchCameraBuilder.setExternalHost(externalHostEdit.getText().toString());
 
             //Allow RTSP port to be empty
-            if(externalRtspEdit.isEmpty()) {
+            if (externalRtspEdit.isEmpty()) {
                 patchCameraBuilder.setExternalRtspPort(null);
             } else {
                 int externalRtspInt = externalRtspEdit.getPort();
