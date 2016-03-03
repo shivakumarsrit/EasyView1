@@ -45,7 +45,6 @@ public class IntroTextureView extends TextureView
 
     @Override
     public void onPrepared(MediaPlayer mp) {
-        mp.setSurface(new Surface(getSurfaceTexture()));
         mp.setLooping(true);
         mp.start();
     }
@@ -55,8 +54,8 @@ public class IntroTextureView extends TextureView
      */
 
     @Override
-    public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
-        playIntro();
+    public void onSurfaceTextureAvailable(SurfaceTexture surfaceTexture, int width, int height) {
+        playIntro(surfaceTexture);
     }
 
     @Override
@@ -113,7 +112,7 @@ public class IntroTextureView extends TextureView
         setTransform(matrix);
     }
 
-    private void playIntro() {
+    private void playIntro(SurfaceTexture surfaceTexture) {
         if (player != null) {
             player.release();
             player = null;
@@ -127,6 +126,8 @@ public class IntroTextureView extends TextureView
         } catch (IOException e) {
             e.printStackTrace();
         }
+
+        player.setSurface(new Surface(surfaceTexture));
 
         player.setOnVideoSizeChangedListener(new MediaPlayer.OnVideoSizeChangedListener() {
             @Override
