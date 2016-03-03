@@ -9,7 +9,7 @@ import android.content.Context;
 import android.content.Intent;
 import android.os.Bundle;
 
-import io.evercam.androidapp.SlideActivity;
+import io.evercam.androidapp.OnBoardingActivity;
 
 public class EvercamAuthenticator extends AbstractAccountAuthenticator {
     private final String TAG = "evercamplay-EvercamAuthenticator";
@@ -28,7 +28,7 @@ public class EvercamAuthenticator extends AbstractAccountAuthenticator {
     @Override
     public Bundle addAccount(AccountAuthenticatorResponse response, String accountType, String
             authTokenType, String[] requiredFeatures, Bundle options) throws NetworkErrorException {
-        final Intent intent = new Intent(mContext, SlideActivity.class);
+        final Intent intent = new Intent(mContext, OnBoardingActivity.class);
         final Bundle bundle = new Bundle();
         bundle.putParcelable(AccountManager.KEY_INTENT, intent);
         return bundle;

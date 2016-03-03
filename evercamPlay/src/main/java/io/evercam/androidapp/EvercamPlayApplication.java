@@ -80,9 +80,11 @@ public class EvercamPlayApplication extends MultiDexApplication {
     }
 
     public static void sendCaughtException(Activity activity, Exception e) {
-        Tracker tracker = getAppTracker(activity);
-        tracker.send(new HitBuilders.ExceptionBuilder().setDescription(e.getStackTrace()[0]
-                .toString().replace("io.evercam.androidapp", e.toString())).setFatal(true).build());
+        if (activity != null) {
+            Tracker tracker = getAppTracker(activity);
+            tracker.send(new HitBuilders.ExceptionBuilder().setDescription(e.getStackTrace()[0]
+                    .toString().replace("io.evercam.androidapp", e.toString())).setFatal(true).build());
+        }
     }
 
     public static void sendCaughtException(Activity activity, String message) {

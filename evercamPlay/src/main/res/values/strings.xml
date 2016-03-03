@@ -20,6 +20,9 @@
     <string name="prefix_http">http://</string>
     <string name="dialog_title_warning">Warning</string>
     <string name="view_capital">VIEW</string>
+    <string name="wifi">WiFi</string>
+    <string name="three_g">3G</string>
+    <string name="unknown">Unknown</string>
 
     <!-- Preferences -->
     <string name="title_camera_per_row">Cameras per row</string>
@@ -40,7 +43,6 @@
     <!-- Menu -->
     <string name="menu_live_support">Live support</string>
     <string name="menu_refresh">Refresh All</string>
-    <string name="menu_send">Send</string>
     <string name="title_activity_add_camera">Add Camera</string>
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_choose_model">Step 1 - Vendor &amp; Model</string>
@@ -64,16 +66,6 @@
     <string name="menu_transfer">Transfer</string>
     <string name="menu_action_share">Share</string>
 
-    <!-- Feedback -->
-    <string name="title_activity_feedback">How can we help?</string>
-    <string name="wifi">WiFi</string>
-    <string name="three_g">3G</string>
-    <string name="unknown">Unknown</string>
-    <string name="feedback_name">Your Name</string>
-    <string name="feedback_email">Your Email</string>
-    <string name="hint_full_name">Name</string>
-    <string name="feedback_hint">Your feedback</string>
-
     <!-- Intent action data-->
     <string name="data_scheme">evercam</string>
     <string name="data_host">cameras</string>
@@ -90,7 +82,6 @@
     <string name="nav_drawer_settings">Settings</string>
     <string name="nav_drawer_about">About</string>
     <string name="nav_drawer_scan">Scan for cameras</string>
-    <string name="nav_drawer_logout">Sign out</string>
     <string name="navigation_drawer_opened">The navigation drawer is opened</string>
     <string name="navigation_drawer_closed">The navigation drawer is closed</string>
 </resources>

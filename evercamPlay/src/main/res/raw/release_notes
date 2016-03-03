@@ -1,9 +1,24 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.8.0 Alpha 24/02</h5>
+<h5>1.8.2</h5>
 <ul>
 	<li>- Reduced app size<br/></li>
 	<li>- Pinch zoom and drag on camera live view<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.8.1</b>
+<ul>
+	<li><br/>- Fixed test snapshot<br/></li>
+	<li>- Removed 'Sign Out' option, you can manage multiple accounts in 'Accounts' <br/></li>
+</ul>
+<br/>
+
+<b>Version 1.8.0</b>
+<ul>
+	<li><br/>- Fixed a few issues for editing camera, eg. unable to delete saved port<br/></li>
+	<li>- Improved memory usage for camera live view <br/></li>
+    <li>- New design for welcome screen <br/></li>
 </ul>
 <br/>
 

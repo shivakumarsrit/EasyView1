@@ -61,11 +61,18 @@ public class PortCheckEditText extends EditText {
      * @return a number between 0 and 65535
      */
     public int getPort() {
-        return isPortStringValid() ? Integer.valueOf(getText().toString()) : 0;
+        return (isPortStringValid() && !isEmpty()) ? Integer.valueOf(getText().toString()) : 0;
     }
 
+    /**
+     * It returns true if port string is valid
+     * (A number between 0 - 65535 or empty)
+     * So the situation of empty string should be handled afterwards
+     */
     public boolean isPortStringValid() {
         String portString = getText().toString();
+        //Allow port be patched to empty
+        if(portString.isEmpty()) return true;
         try {
             int portInt = Integer.valueOf(portString);
             if (portInt > 0 && portInt <= 65535) {
@@ -75,5 +82,9 @@ public class PortCheckEditText extends EditText {
             //The exception is handled outside the catch
         }
         return false;
+    }
+
+    public boolean isEmpty() {
+        return  getText().toString().isEmpty();
     }
 }

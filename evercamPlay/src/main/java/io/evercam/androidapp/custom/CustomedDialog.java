@@ -220,9 +220,9 @@ public class CustomedDialog {
     /**
      * Return a pop up dialog that shows camera snapshot.
      *
-     * @param drawable the image drawable returned to show in pop up dialog
+     * @param bitmap the returned image Bitmap to show in pop up dialog
      */
-    public static AlertDialog getSnapshotDialog(final Activity activity, Drawable drawable) {
+    public static AlertDialog getSnapshotDialog(final Activity activity, Bitmap bitmap) {
         Builder builder = new AlertDialog.Builder(activity);
         final AlertDialog snapshotDialog = builder.create();
 
@@ -244,7 +244,7 @@ public class CustomedDialog {
         }
         ImageView snapshotImageView = (ImageView) snapshotView.findViewById(R.id
                 .test_snapshot_image);
-        snapshotImageView.setImageDrawable(drawable);
+        snapshotImageView.setImageBitmap(bitmap);
         snapshotDialog.setView(snapshotView);
 
         return snapshotDialog;
@@ -278,13 +278,22 @@ public class CustomedDialog {
     }
 
     /**
-     * A dialog without title, with a message and an 'OK' button
+     * Dialog without title, but with a message and an 'OK' button
      *
      * @param message Message to show in the dialog
      */
-    public static AlertDialog getMessageDialog(Activity activity, int message) {
-        return new AlertDialog.Builder(activity)
-                .setMessage(message).setNegativeButton(R.string.ok, null).create();
+    public static void showMessageDialog(Activity activity, int message) {
+        new MaterialDialog.Builder(activity)
+                .content(message)
+                .negativeText(R.string.ok)
+                .show();
+    }
+
+    public static void showMessageDialog(Activity activity, String message) {
+        new MaterialDialog.Builder(activity)
+                .content(message)
+                .negativeText(R.string.ok)
+                .show();
     }
 
     /**

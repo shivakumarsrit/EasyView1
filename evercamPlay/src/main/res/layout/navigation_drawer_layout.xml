@@ -211,23 +211,6 @@
                         android:text="@string/nav_drawer_about" />
 
                 </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/navigation_drawer_items_logout_layout"
-                    style="@style/NavDrawerRowLayout">
-
-                    <ImageView
-                        android:id="@+id/navigation_drawer_items_logout_image_view"
-                        style="@style/NavDrawerRowItemIcon"
-                        android:src="@drawable/ic_exit"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/navigation_drawer_items_logout_textView"
-                        style="@style/NavDrawerRowItemText"
-                        android:text="@string/nav_drawer_logout" />
-
-                </FrameLayout>
             </LinearLayout>
         </ScrollView>
     </LinearLayout>
