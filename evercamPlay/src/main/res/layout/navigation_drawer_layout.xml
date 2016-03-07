@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
-<android.support.v4.widget.DrawerLayout android:id="@+id/drawer_layout"
-    xmlns:android="http://schemas.android.com/apk/res/android"
+<android.support.v4.widget.DrawerLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/drawer_layout"
     android:layout_width="match_parent"
     android:layout_height="match_parent">
 
@@ -22,38 +22,36 @@
             android:id="@+id/navigation_drawer_title_layout"
             android:layout_width="match_parent"
             android:layout_height="@dimen/nav_drawer_account_section_default_height"
-            android:paddingBottom="@dimen/nav_drawer_vertical_spacing_listing"
-            android:paddingEnd="@dimen/nav_drawer_vertical_keyline_right"
-            android:paddingLeft="@dimen/nav_drawer_vertical_keyline_icon_left"
-            android:paddingRight="@dimen/nav_drawer_vertical_keyline_right"
-            android:paddingStart="@dimen/nav_drawer_vertical_keyline_icon_left"
+            android:background="@color/dark_gray_background"
             android:clickable="true"
-            android:background="@color/dark_gray_background">
+            android:paddingBottom="@dimen/nav_drawer_vertical_spacing_listing"
+            android:paddingLeft="@dimen/nav_drawer_vertical_keyline_icon_left"
+            android:paddingStart="@dimen/nav_drawer_vertical_keyline_icon_left">
 
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:orientation="horizontal"
-                android:layout_marginTop="12dp">
+                android:layout_marginTop="12dp"
+                android:orientation="horizontal">
                 <!-- The image view must be out of relative layout, otherwise width's
                         wrap_content doesn't take effect-->
                 <ImageView
                     android:id="@+id/navigation_drawer_title_image_view"
                     android:layout_width="wrap_content"
                     android:layout_height="@dimen/nav_drawer_logo_height"
-                    android:src="@drawable/logo"
-                    tools:ignore="ContentDescription"
                     android:layout_marginBottom="3dp"
-                    android:adjustViewBounds="true" />
+                    android:adjustViewBounds="true"
+                    android:src="@drawable/logo"
+                    tools:ignore="ContentDescription" />
 
                 <TextView
                     android:id="@+id/navigation_drawer_version_text_view"
+                    style="@style/TextAppearance.AppCompat.Body2"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    style="@style/TextAppearance.AppCompat.Body2"
+                    android:layout_gravity="bottom"
                     android:layout_marginLeft="10dp"
-                    android:textColor="@color/light_gray_600"
-                    android:layout_gravity="bottom" />
+                    android:textColor="@color/light_gray_600" />
             </LinearLayout>
 
             <RelativeLayout
@@ -61,11 +59,21 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent">
 
-                <LinearLayout
-                    android:id="@+id/navigation_drawer_account_information"
-                    android:layout_width="wrap_content"
+                <ImageView
+                    android:id="@+id/image_view_triangle"
+                    android:layout_width="@dimen/nav_drawer_account_information_height"
                     android:layout_height="@dimen/nav_drawer_account_information_height"
                     android:layout_alignParentBottom="true"
+                    android:layout_alignParentRight="true"
+                    android:padding="15dp"
+                    android:src="@drawable/ic_triangle" />
+
+                <LinearLayout
+                    android:id="@+id/navigation_drawer_account_information"
+                    android:layout_width="match_parent"
+                    android:layout_height="@dimen/nav_drawer_account_information_height"
+                    android:layout_alignParentBottom="true"
+                    android:layout_toLeftOf="@+id/image_view_triangle"
                     android:gravity="center_vertical"
                     android:orientation="vertical">
 
@@ -89,12 +97,9 @@
 
         <!-- Drawer items -->
         <ScrollView
-            android:layout_width="match_parent"
-            android:layout_height="match_parent"
-            android:background="@color/navigation_drawer_background"
-            android:clipToPadding="false"
-            android:paddingBottom="@dimen/nav_drawer_vertical_spacing_listing"
-            android:paddingTop="@dimen/nav_drawer_vertical_spacing_listing">
+            android:id="@+id/drawer_body_scroll_view"
+            style="@style/NavDrawerBody"
+            android:clipToPadding="false">
 
             <LinearLayout
                 android:id="@+id/navigation_drawer_items_layout"
@@ -104,14 +109,14 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_account_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_account_image_view"
                         style="@style/NavDrawerRowItemIcon"
                         android:src="@drawable/ic_user"
-                        tools:ignore="ContentDescription"
-                        android:tint="@color/nav_drawer_item_icon_normal" />
+                        android:tint="@color/nav_drawer_item_icon_normal"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/navigation_drawer_items_textView_account"
@@ -122,14 +127,14 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_scan_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_scan_image_view"
                         style="@style/NavDrawerRowItemIcon"
                         android:src="@drawable/ic_scan"
-                        tools:ignore="ContentDescription"
-                        android:tint="@color/nav_drawer_item_icon_normal" />
+                        android:tint="@color/nav_drawer_item_icon_normal"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/navigation_drawer_items_textView_scan"
@@ -141,14 +146,14 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_explore_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_list_icon_explore"
                         style="@style/NavDrawerRowItemIcon"
                         android:src="@drawable/ic_compass"
-                        tools:ignore="ContentDescription"
-                        android:tint="@color/nav_drawer_item_icon_normal" />
+                        android:tint="@color/nav_drawer_item_icon_normal"
+                        tools:ignore="ContentDescription" />
 
                     <TextView
                         android:id="@+id/navigation_drawer_items_textView_explore"
@@ -161,7 +166,7 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_settings_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_settings_image_view"
@@ -179,7 +184,7 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_feedback_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_feedback_image_view"
@@ -197,7 +202,7 @@
 
                 <FrameLayout
                     android:id="@+id/navigation_drawer_items_about_layout"
-                    style="@style/NavDrawerRowLayout">
+                    style="@style/NavDrawerRowLayout.Main">
 
                     <ImageView
                         android:id="@+id/navigation_drawer_items_about_image_view"
@@ -213,5 +218,57 @@
                 </FrameLayout>
             </LinearLayout>
         </ScrollView>
+
+        <FrameLayout
+            android:id="@+id/drawer_body_account_view"
+            style="@style/NavDrawerBody"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:id="@+id/drawer_account_items_layout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:orientation="vertical">
+
+                <FrameLayout
+                    android:id="@+id/drawer_account_items_add_layout"
+                    style="@style/NavDrawerRowLayout.Accounts">
+
+                    <ImageView
+                        android:id="@+id/drawer_account_items_add_image_view"
+                        style="@style/NavDrawerRowItemIcon"
+                        android:src="@drawable/ic_add_user"
+                        android:tint="@color/nav_drawer_item_icon_normal"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/drawer_account_items_add_textView"
+                        style="@style/NavDrawerRowItemText"
+                        android:text="@string/nav_drawer_add_account" />
+
+                </FrameLayout>
+
+                <FrameLayout
+                    android:id="@+id/drawer_account_items_manage_layout"
+                    style="@style/NavDrawerRowLayout.Accounts">
+
+                    <ImageView
+                        android:id="@+id/drawer_account_items_manage_image_view"
+                        style="@style/NavDrawerRowItemIcon"
+                        android:src="@drawable/ic_settings"
+                        android:tint="@color/nav_drawer_item_icon_normal"
+                        tools:ignore="ContentDescription" />
+
+                    <TextView
+                        android:id="@+id/drawer_account_items_manage_textView"
+                        style="@style/NavDrawerRowItemText"
+                        android:text="@string/nav_drawer_manage_accounts" />
+
+                </FrameLayout>
+
+            </LinearLayout>
+
+        </FrameLayout>
+
     </LinearLayout>
 </android.support.v4.widget.DrawerLayout>

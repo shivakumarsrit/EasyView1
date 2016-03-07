@@ -22,8 +22,10 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.FrameLayout;
+import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
+import android.widget.ScrollView;
 import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
@@ -80,9 +82,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavAboutItemLayout;
     private FrameLayout mNavScanLayout;
     private FrameLayout mNavExploreLayout;
+    private FrameLayout mNavTitleLayout;
+    private ScrollView mNavBodyScrollView;
+    private FrameLayout mNavBodyAccountView;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
     private TextView mAppVersionTextView;
+    private ImageView mTriangleImageView;
 
     /**
      * For user data collection, calculate how long it takes to load camera list
@@ -303,10 +309,14 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
         mNavScanLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_scan_layout);
         mNavExploreLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_explore_layout);
+        mNavTitleLayout = (FrameLayout) findViewById(R.id.navigation_drawer_title_layout);
+        mNavBodyScrollView = (ScrollView) findViewById(R.id.drawer_body_scroll_view);
+        mNavBodyAccountView = (FrameLayout) findViewById(R.id.drawer_body_account_view);
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
         mAppVersionTextView = (TextView) findViewById(R.id.navigation_drawer_version_text_view);
+        mTriangleImageView = (ImageView) findViewById(R.id.image_view_triangle);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -334,6 +344,19 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavScanLayout.setOnClickListener(this);
         mNavExploreLayout.setOnClickListener(this);
         mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
+
+        mNavTitleLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (mTriangleImageView.getRotation() == 0) {
+                    mTriangleImageView.setRotation(180);
+                    showAccountView(true);
+                } else if (mTriangleImageView.getRotation() == 180) {
+                    mTriangleImageView.setRotation(0);
+                    showAccountView(false);
+                }
+            }
+        });
     }
 
     @Override
@@ -681,6 +704,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
             feedbackItem.sendToKeenIo(client);
         }
+    }
+
+    private void showAccountView(boolean show) {
+        mNavBodyScrollView.setVisibility(show ? View.GONE : View.VISIBLE);
+        mNavBodyAccountView.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
     class CamerasCheckInternetTask extends CheckInternetTask {
