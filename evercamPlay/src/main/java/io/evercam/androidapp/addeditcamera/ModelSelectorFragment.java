@@ -309,12 +309,16 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getModelNameFromSpinner() {
-        String modelName = modelSpinner.getSelectedItem().toString();
-        if (modelName.equals(getString(R.string.select_model))) {
-            return "";
-        } else {
-            return modelName;
+        if (modelSpinner != null && modelSpinner.getSelectedItem() != null) {
+            String modelName = modelSpinner.getSelectedItem().toString();
+            if (modelName.equals(getString(R.string.select_model))) {
+                return "";
+            } else {
+                return modelName;
+            }
         }
+
+        return "";
     }
 
     public void loadVendors() {
