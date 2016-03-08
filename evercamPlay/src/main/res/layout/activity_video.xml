@@ -17,7 +17,7 @@
             android:layout_height="wrap_content"
             android:layout_centerInParent="true"
             android:adjustViewBounds="true"
-            android:scaleType="fitCenter"/>
+            android:scaleType="fitCenter" />
 
         <com.google.android.exoplayer.AspectRatioFrameLayout
             android:id="@+id/video_frame"
@@ -30,7 +30,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="match_parent"
                 android:layout_centerInParent="true"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center" />
 
         </com.google.android.exoplayer.AspectRatioFrameLayout>
 
