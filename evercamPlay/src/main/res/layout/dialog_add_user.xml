@@ -17,9 +17,9 @@
             android:layout_marginBottom="14dp"
             android:layout_marginLeft="20dp"
             android:layout_marginTop="17dp"
-            android:text="@string/add_account"
+            android:text="@string/dialog_title_add_account"
             android:textColor="#ccc"
-            android:textSize="20sp"></TextView>
+            android:textSize="20sp" />
 
         <ProgressBar
             android:id="@+id/pb_loadinguser"

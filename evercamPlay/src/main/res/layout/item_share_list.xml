@@ -13,11 +13,11 @@
 
         <TextView
             android:id="@+id/sharing_fullname_text_view"
-            style="@style/SharingListItemTextTitle" />
+            style="@style/TextTitle" />
 
         <TextView
             android:id="@+id/sharing_email_text_view"
-            style="@style/SharingListItemTextSubTitle" />
+            style="@style/TextSubTitle" />
 
     </LinearLayout>
 

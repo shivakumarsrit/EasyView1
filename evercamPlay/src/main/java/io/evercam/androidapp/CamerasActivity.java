@@ -76,7 +76,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private int lastScrollY;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
-    private FrameLayout mNavAccountItemLayout;
     private FrameLayout mNavSettingsItemLayout;
     private FrameLayout mNavFeedbackItemLayout;
     private FrameLayout mNavAboutItemLayout;
@@ -89,6 +88,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private TextView mUserEmailTextView;
     private TextView mAppVersionTextView;
     private ImageView mTriangleImageView;
+    private FrameLayout mNavAddAccountLayout;
+    private FrameLayout mNavManageAccountLayout;
 
     /**
      * For user data collection, calculate how long it takes to load camera list
@@ -303,7 +304,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     private void initNavigationDrawer() {
-        mNavAccountItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_account_layout);
         mNavSettingsItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_settings_layout);
         mNavFeedbackItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_feedback_layout);
         mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
@@ -312,6 +312,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavTitleLayout = (FrameLayout) findViewById(R.id.navigation_drawer_title_layout);
         mNavBodyScrollView = (ScrollView) findViewById(R.id.drawer_body_scroll_view);
         mNavBodyAccountView = (FrameLayout) findViewById(R.id.drawer_body_account_view);
+        mNavAddAccountLayout = (FrameLayout) findViewById(R.id.drawer_account_items_add_layout);
+        mNavManageAccountLayout = (FrameLayout) findViewById(R.id.drawer_account_items_manage_layout);
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
@@ -337,12 +339,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mDrawerToggle.syncState();
 
         // Nav Drawer item click listener
-        mNavAccountItemLayout.setOnClickListener(this);
         mNavSettingsItemLayout.setOnClickListener(this);
         mNavFeedbackItemLayout.setOnClickListener(this);
         mNavAboutItemLayout.setOnClickListener(this);
         mNavScanLayout.setOnClickListener(this);
         mNavExploreLayout.setOnClickListener(this);
+        mNavAddAccountLayout.setOnClickListener(this);
+        mNavManageAccountLayout.setOnClickListener(this);
         mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
 
         mNavTitleLayout.setOnClickListener(new OnClickListener() {
@@ -364,13 +367,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         //Close the navigation drawer, currently all click listeners are drawer items
         mDrawerLayout.closeDrawer(GravityCompat.START);
 
-        if (view == mNavAccountItemLayout) {
-            EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
-
-            startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
-        } else if (view == mNavSettingsItemLayout) {
+        if (view == mNavSettingsItemLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_settings, R.string.label_settings);
-
             startActivity(new Intent(CamerasActivity.this, CameraPrefsActivity.class));
         } else if (view == mNavFeedbackItemLayout) {
             Intercom.client().displayConversationsList();
@@ -383,6 +381,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                     Constants.REQUEST_CODE_ADD_CAMERA);
         } else if (view == mNavExploreLayout) {
             startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
+        } else if (view == mNavAddAccountLayout) {
+            startActivity(new Intent(this, OnBoardingActivity.class));
+        } else if (view == mNavManageAccountLayout) {
+            EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
+            startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
         }
     }
 

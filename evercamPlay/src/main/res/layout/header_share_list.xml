@@ -17,12 +17,12 @@
 
             <TextView
                 android:id="@+id/sharing_status_text_view"
-                style="@style/SharingListItemTextTitle"
+                style="@style/TextTitle"
                 android:text="@string/sharing_status_specific_user" />
 
             <TextView
                 android:id="@+id/sharing_status_detail_text_view"
-                style="@style/SharingListItemTextSubTitle"
+                style="@style/TextSubTitle"
                 android:text="@string/sharing_status_detail_specific_user" />
         </LinearLayout>
     </RelativeLayout>

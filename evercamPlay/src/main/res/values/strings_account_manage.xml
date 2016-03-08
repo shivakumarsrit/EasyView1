@@ -3,9 +3,10 @@
 
     <string name="open_account">Use Account</string>
     <string name="remove_account">Remove Account</string>
-    <string name="add_new_account">Add New Account</string>
-    <string name="add_account">Add Account</string>
+    <string name="add_account">Add account</string>
+    <string name="dialog_title_add_account">Add Account</string>
     <string name="switching_account">Switching account&#8230;</string>
+    <string name="str_default">Default</string>
 
     <string name="account_name">Evercam</string>
     <string name="account_type">io.evercam.android.account</string>

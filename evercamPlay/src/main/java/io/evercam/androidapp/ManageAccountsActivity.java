@@ -30,7 +30,7 @@ import io.evercam.ApiKeyPair;
 import io.evercam.EvercamException;
 import io.evercam.User;
 import io.evercam.androidapp.authentication.EvercamAccount;
-import io.evercam.androidapp.custom.CustomAdapter;
+import io.evercam.androidapp.custom.AccountItemAdapter;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -77,7 +77,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity {
 
                 if (user.getId() < 0) // add new user item
                 {
-                    showAddUserDialogue(null, null, false);
+                    startActivity(new Intent(ManageAccountsActivity.this, OnBoardingActivity.class));
                     return;
                 }
 
@@ -187,20 +187,13 @@ public class ManageAccountsActivity extends ParentAppCompatActivity {
         }
     }
 
-    private void showAddUserDialogue(String username, String password, boolean isdefault) {
+    private void showAddUserDialogue() {
         final View dialog_layout = getLayoutInflater().inflate(R.layout
                 .dialog_add_user, null);
 
         alertDialog = new AlertDialog.Builder(this).setView(dialog_layout).setCancelable(false)
                 .setNegativeButton(R.string.cancel, null).setPositiveButton((getString(R.string
                         .add)), null).create();
-
-        if (username != null) {
-            ((EditText) dialog_layout.findViewById(R.id.username_edit)).setText(username);
-        }
-        if (password != null) {
-            ((EditText) dialog_layout.findViewById(R.id.user_password)).setText(password);
-        }
 
         alertDialog.setCanceledOnTouchOutside(false);
         alertDialog.setOnShowListener(new DialogInterface.OnShowListener() {
@@ -284,7 +277,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity {
     private void showAllAccounts() {
         ArrayList<AppUser> appUsers = new EvercamAccount(this).retrieveUserList();
 
-        ListAdapter listAdapter = new CustomAdapter(ManageAccountsActivity.this,
+        ListAdapter listAdapter = new AccountItemAdapter(ManageAccountsActivity.this,
                 R.layout.item_list_user, R.layout.item_list_new_user,
                 R.id.account_item_email, appUsers);
         ListView listview = (ListView) findViewById(R.id.email_list);

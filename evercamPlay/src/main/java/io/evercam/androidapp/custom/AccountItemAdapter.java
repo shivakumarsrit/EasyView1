@@ -2,7 +2,9 @@ package io.evercam.androidapp.custom;
 
 import android.app.Activity;
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.TextureView;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
@@ -13,7 +15,10 @@ import java.util.ArrayList;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppUser;
 
-public class CustomAdapter extends ArrayAdapter<AppUser> {
+public class AccountItemAdapter extends ArrayAdapter<AppUser> {
+
+    private final String TAG = "AccountItemAdapter";
+
     private ArrayList<AppUser> appUsers;
     private Activity activity;
     private int itemLayoutId = 0;
@@ -22,8 +27,8 @@ public class CustomAdapter extends ArrayAdapter<AppUser> {
 
     AppUser fakeUser = null;
 
-    public CustomAdapter(Activity activity, int itemLayoutId, int newItemLayoutResource,
-                         int itemTextViewIdToDislayNameOfUser, ArrayList<AppUser> appUsers) {
+    public AccountItemAdapter(Activity activity, int itemLayoutId, int newItemLayoutResource,
+                              int itemTextViewIdToDislayNameOfUser, ArrayList<AppUser> appUsers) {
         super(activity, itemLayoutId, itemTextViewIdToDislayNameOfUser, appUsers);
 
         this.appUsers = appUsers;
@@ -57,8 +62,12 @@ public class CustomAdapter extends ArrayAdapter<AppUser> {
         if (appUser != null && appUser != fakeUser) {
             ((TextView) view.findViewById(emailViewId)).setText(appUser.getEmail());
             TextView usernameTextView = (TextView) view.findViewById(R.id.account_item_username);
-            usernameTextView.setText(appUser.getUsername() + (appUser.getIsDefault() ? " - " +
-                    "Default" : ""));
+            TextView statusTextView = (TextView) view.findViewById(R.id.account_item_status);
+            TextView fullNameTextView = (TextView) view.findViewById(R.id.account_item_full_name);
+
+            statusTextView.setVisibility(appUser.getIsDefault() ? View.VISIBLE : View.GONE);
+            usernameTextView.setText('(' + appUser.getUsername() + ')');
+            fullNameTextView.setText(appUser.getFirstName() + " " + appUser.getLastName());
         }
 
         return view;
