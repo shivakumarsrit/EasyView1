@@ -10,6 +10,9 @@ import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
+import java.io.UnsupportedEncodingException;
+import java.security.MessageDigest;
+import java.security.NoSuchAlgorithmException;
 import java.util.Date;
 
 public class Commons {
@@ -106,5 +109,28 @@ public class Commons {
         // Decode bitmap with inSampleSize set
         options.inJustDecodeBounds = false;
         return BitmapFactory.decodeByteArray(byteArray, 0, byteArray.length, options);
+    }
+
+    public static String hex(byte[] array) {
+        StringBuffer sb = new StringBuffer();
+        for (int i = 0; i < array.length; ++i) {
+            sb.append(Integer.toHexString((array[i]
+                    & 0xFF) | 0x100).substring(1,3));
+        }
+        return sb.toString();
+    }
+    public static String md5Hex (String message) {
+        try {
+            MessageDigest md =
+                    MessageDigest.getInstance("MD5");
+            return hex (md.digest(message.getBytes("CP1252")));
+        } catch (NoSuchAlgorithmException e) {
+        } catch (UnsupportedEncodingException e) {
+        }
+        return null;
+    }
+
+    public static String getGravatarUrl(String email) {
+        return "http://www.gravatar.com/avatar/" + md5Hex(email) + "?d=404";
     }
 }

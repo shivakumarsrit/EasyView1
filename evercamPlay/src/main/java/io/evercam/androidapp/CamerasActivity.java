@@ -39,6 +39,7 @@ import java.util.Date;
 import java.util.UUID;
 import java.util.concurrent.RejectedExecutionException;
 
+import de.hdodenhof.circleimageview.CircleImageView;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CameraLayout;
@@ -59,6 +60,7 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.intercom.android.sdk.Intercom;
+import io.intercom.com.squareup.picasso.Picasso;
 import io.keen.client.java.KeenClient;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
@@ -86,7 +88,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavBodyAccountView;
     private TextView mUserNameTextView;
     private TextView mUserEmailTextView;
-    private TextView mAppVersionTextView;
+    private CircleImageView mCircleImageView;
     private ImageView mTriangleImageView;
     private FrameLayout mNavAddAccountLayout;
     private FrameLayout mNavManageAccountLayout;
@@ -298,8 +300,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private void updateNavDrawerUserInfo() {
         AppUser defaultUser = AppData.defaultUser;
         if (defaultUser != null) {
+            String gravatarUrl = Commons.getGravatarUrl(defaultUser.getEmail());
             mUserNameTextView.setText(defaultUser.getFirstName() + " " + defaultUser.getLastName());
             mUserEmailTextView.setText(defaultUser.getEmail());
+            Picasso.with(this).load(gravatarUrl)
+                    .noFade()
+                    .placeholder(R.drawable.ic_profile)
+                    .into(mCircleImageView);
         }
     }
 
@@ -317,8 +324,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         mUserNameTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_name);
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
-        mAppVersionTextView = (TextView) findViewById(R.id.navigation_drawer_version_text_view);
         mTriangleImageView = (ImageView) findViewById(R.id.image_view_triangle);
+        mCircleImageView = (CircleImageView) findViewById(R.id.navigation_drawer_account_profile_image);
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -346,7 +353,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mNavExploreLayout.setOnClickListener(this);
         mNavAddAccountLayout.setOnClickListener(this);
         mNavManageAccountLayout.setOnClickListener(this);
-        mAppVersionTextView.setText("v" + new DataCollector(this).getAppVersionName());
 
         mNavTitleLayout.setOnClickListener(new OnClickListener() {
             @Override
