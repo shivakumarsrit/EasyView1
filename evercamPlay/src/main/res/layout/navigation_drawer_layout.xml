@@ -163,22 +163,6 @@
 
                 </FrameLayout>
 
-                <FrameLayout
-                    android:id="@+id/navigation_drawer_items_about_layout"
-                    style="@style/NavDrawerRowLayout.Main">
-
-                    <ImageView
-                        android:id="@+id/navigation_drawer_items_about_image_view"
-                        style="@style/NavDrawerRowItemIcon"
-                        android:src="@drawable/ic_about"
-                        tools:ignore="ContentDescription" />
-
-                    <TextView
-                        android:id="@+id/navigation_drawer_items_about_textView"
-                        style="@style/NavDrawerRowItemText"
-                        android:text="@string/nav_drawer_about" />
-
-                </FrameLayout>
             </LinearLayout>
         </ScrollView>
 

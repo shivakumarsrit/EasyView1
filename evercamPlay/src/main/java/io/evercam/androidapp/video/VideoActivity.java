@@ -47,6 +47,7 @@ import com.google.android.exoplayer.MediaCodecTrackRenderer;
 import com.google.android.exoplayer.MediaCodecUtil;
 import com.google.android.exoplayer.drm.UnsupportedDrmException;
 import com.google.android.exoplayer.util.Util;
+import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
 import org.json.JSONException;
@@ -720,7 +721,9 @@ public class VideoActivity extends ParentAppCompatActivity
         imageView.setImageDrawable(null);
 
         if (camera.hasThumbnailUrl()) {
-            Picasso.with(this).load(camera.getThumbnailUrl()).into(imageView);
+            Picasso.with(this).load(camera.getThumbnailUrl())
+                    .memoryPolicy(MemoryPolicy.NO_CACHE)
+                    .into(imageView);
         } else {
             Log.e(TAG, camera.toString());
         }

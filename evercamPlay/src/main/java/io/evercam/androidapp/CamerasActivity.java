@@ -80,7 +80,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private DrawerLayout mDrawerLayout;
     private FrameLayout mNavSettingsItemLayout;
     private FrameLayout mNavFeedbackItemLayout;
-    private FrameLayout mNavAboutItemLayout;
     private FrameLayout mNavScanLayout;
     private FrameLayout mNavExploreLayout;
     private FrameLayout mNavTitleLayout;
@@ -313,7 +312,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private void initNavigationDrawer() {
         mNavSettingsItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_settings_layout);
         mNavFeedbackItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_feedback_layout);
-        mNavAboutItemLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_about_layout);
         mNavScanLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_scan_layout);
         mNavExploreLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_explore_layout);
         mNavTitleLayout = (FrameLayout) findViewById(R.id.navigation_drawer_title_layout);
@@ -348,7 +346,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         // Nav Drawer item click listener
         mNavSettingsItemLayout.setOnClickListener(this);
         mNavFeedbackItemLayout.setOnClickListener(this);
-        mNavAboutItemLayout.setOnClickListener(this);
         mNavScanLayout.setOnClickListener(this);
         mNavExploreLayout.setOnClickListener(this);
         mNavAddAccountLayout.setOnClickListener(this);
@@ -378,10 +375,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             startActivity(new Intent(CamerasActivity.this, CameraPrefsActivity.class));
         } else if (view == mNavFeedbackItemLayout) {
             Intercom.client().displayConversationsList();
-        } else if (view == mNavAboutItemLayout) {
-            Intent aboutIntent = new Intent(CamerasActivity.this, SimpleWebActivity.class);
-            aboutIntent.putExtra(Constants.BUNDLE_KEY_URL, getString(R.string.evercam_url));
-            startActivity(aboutIntent);
         } else if (view == mNavScanLayout) {
             startActivityForResult(new Intent(CamerasActivity.this, ScanActivity.class),
                     Constants.REQUEST_CODE_ADD_CAMERA);
