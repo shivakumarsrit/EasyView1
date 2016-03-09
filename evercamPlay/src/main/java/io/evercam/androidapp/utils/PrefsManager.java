@@ -11,6 +11,7 @@ public class PrefsManager {
     public static final String KEY_AWAKE_TIME = "prefsAwakeTime";
     public static final String KEY_FORCE_LANDSCAPE = "prefsForceLandscape";
     public static final String KEY_SHOW_OFFLINE_CAMERA = "prefsShowOfflineCameras";
+    public final static String KEY_VERSION = "prefsVersion";
 
     public final static String KEY_GCM_PREFS_ID = "gcmDetails";
     public final static String KEY_GCM_REGISTRATION_ID = "registrationId";

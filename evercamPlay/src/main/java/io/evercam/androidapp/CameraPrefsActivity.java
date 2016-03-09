@@ -11,6 +11,7 @@ import android.view.MenuItem;
 
 import java.util.ArrayList;
 
+import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 
 public class CameraPrefsActivity extends AppCompatActivity {
@@ -65,6 +66,7 @@ public class CameraPrefsActivity extends AppCompatActivity {
             addPreferencesFromResource(R.xml.main_preference);
             setCameraNumbersForScreen(screenWidth);
             setUpSleepTime();
+            showAppVersion();
         }
 
         private void setCameraNumbersForScreen(int screenWidth) {
@@ -117,6 +119,12 @@ public class CameraPrefsActivity extends AppCompatActivity {
                 return getString(R.string.summary_awake_time_prefix) + " " + entry + " " +
                         getString(R.string.summary_awake_time_suffix);
             }
+        }
+
+        private void showAppVersion() {
+            ListPreference aboutPrefs = (ListPreference)
+                    getPreferenceManager().findPreference(PrefsManager.KEY_VERSION);
+            aboutPrefs.setSummary("v" + new DataCollector(getActivity().getApplicationContext()).getAppVersionName());
         }
     }
 }

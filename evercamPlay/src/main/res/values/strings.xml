@@ -25,6 +25,9 @@
     <string name="unknown">Unknown</string>
 
     <!-- Preferences -->
+    <string name="title_general">GENERAL</string>
+    <string name="title_about">ABOUT</string>
+    <string name="title_version">Version</string>
     <string name="title_camera_per_row">Cameras per row</string>
     <string name="title_awake_time">Sleep</string>
     <string name="prefs_never">Never</string>
