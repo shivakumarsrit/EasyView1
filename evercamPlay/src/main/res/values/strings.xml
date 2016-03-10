@@ -78,6 +78,7 @@
     <string name="preset_name">Preset name</string>
 
     <!-- Navigation Drawer -->
+    <string name="nav_drawer_offline">Show offline cameras</string>
     <string name="nav_drawer_item_explore">Public cameras</string>
     <string name="nav_drawer_feedback">Live Support</string>
     <string name="nav_drawer_settings">Settings</string>

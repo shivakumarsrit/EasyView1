@@ -7,15 +7,20 @@
         <item name="android:background">@drawable/nav_drawer_row_item_background</item>
         <item name="android:gravity">start|center_vertical</item>
         <item name="android:orientation">horizontal</item>
-        <item name="android:clickable">true</item>
+
     </style>
 
     <style name="NavDrawerRowLayout.Main">
         <item name="android:layout_height">@dimen/nav_drawer_item_row_height_scroll</item>
     </style>
 
+    <style name="NavDrawerRowLayout.Main.Clickable">
+        <item name="android:clickable">true</item>
+    </style>
+
     <style name="NavDrawerRowLayout.Accounts">
         <item name="android:layout_height">@dimen/nav_drawer_item_row_height_account</item>
+        <item name="android:clickable">true</item>
     </style>
 
     <style name="NavDrawerRowItemIcon">
@@ -27,6 +32,13 @@
     </style>
 
     <style name="NavDrawerRowItemText" parent="TextAppearance.AppCompat.Body2">
+        <item name="android:layout_height">wrap_content</item>
+        <item name="android:layout_width">wrap_content</item>
+        <item name="android:textColor">@color/evercam_text_dark</item>
+        <item name="android:layout_gravity">start|center_vertical</item>
+    </style>
+
+    <style name="NavDrawerRowItemText.Margin" parent="TextAppearance.AppCompat.Body2">
         <item name="android:layout_height">wrap_content</item>
         <item name="android:layout_width">wrap_content</item>
         <item name="android:textColor">@color/evercam_text_dark</item>

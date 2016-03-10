@@ -44,6 +44,13 @@ public class PrefsManager {
         return sharedPrefs.getBoolean(KEY_SHOW_OFFLINE_CAMERA, true);
     }
 
+    public static void setShowOfflineCamera(Context context, boolean show) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(KEY_SHOW_OFFLINE_CAMERA, show);
+        editor.apply();
+    }
+
     public static boolean isReleaseNotesShown(Context context, int versionCode) {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 

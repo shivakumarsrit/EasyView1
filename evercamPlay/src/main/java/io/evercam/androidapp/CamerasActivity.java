@@ -14,6 +14,7 @@ import android.os.Handler;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
+import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -21,6 +22,7 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -324,6 +326,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
         mTriangleImageView = (ImageView) findViewById(R.id.image_view_triangle);
         mCircleImageView = (CircleImageView) findViewById(R.id.navigation_drawer_account_profile_image);
+        SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
+
+        offlineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
+            @Override
+            public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
+                PrefsManager.setShowOfflineCamera(getApplicationContext(), isChecked);
+                removeAllCameraViews();
+                addAllCameraViews(false, true);
+            }
+        });
 
         mDrawerLayout = (DrawerLayout) findViewById(R.id.drawer_layout);
         mDrawerToggle = new ActionBarDrawerToggle(
@@ -368,7 +380,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     @Override
     public void onClick(View view) {
         //Close the navigation drawer, currently all click listeners are drawer items
-        mDrawerLayout.closeDrawer(GravityCompat.START);
+        closeDrawer();
 
         if (view == mNavSettingsItemLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_settings, R.string.label_settings);
@@ -386,6 +398,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
             startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
         }
+    }
+
+    private void closeDrawer() {
+        mDrawerLayout.closeDrawer(GravityCompat.START);
     }
 
     private void setUpActionButtons() {
