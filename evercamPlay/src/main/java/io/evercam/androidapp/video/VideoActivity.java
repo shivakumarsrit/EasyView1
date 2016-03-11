@@ -98,7 +98,6 @@ import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
-import uk.co.senab.photoview.PhotoViewAttacher;
 
 public class VideoActivity extends ParentAppCompatActivity
         implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
@@ -504,8 +503,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 sharingStarted = true;
                 Intent shareIntent = new Intent(VideoActivity.this, SharingActivity.class);
                 startActivityForResult(shareIntent, Constants.REQUEST_CODE_SHARE);
-            }
-            else if (itemId == R.id.video_menu_view_snapshots) {
+            } else if (itemId == R.id.video_menu_view_snapshots) {
                 SnapshotManager.showSnapshotsForCamera(this, evercamCamera.getCameraId());
             } else if (itemId == R.id.video_menu_create_shortcut) {
                 if (evercamCamera != null) {

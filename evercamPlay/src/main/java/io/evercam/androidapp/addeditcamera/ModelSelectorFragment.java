@@ -268,7 +268,7 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getVendorIdFromSpinner() {
-        if(vendorSpinner != null && vendorSpinner.getSelectedItem() != null) {
+        if (vendorSpinner != null && vendorSpinner.getSelectedItem() != null) {
             String vendorName = vendorSpinner.getSelectedItem().toString();
             if (vendorName.equals(getString(R.string.select_vendor))) {
                 return "";
@@ -292,7 +292,7 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public String getModelIdFromSpinner() {
-        if(modelSpinner.getSelectedItem() != null) {
+        if (modelSpinner.getSelectedItem() != null) {
             String modelName = modelSpinner.getSelectedItem().toString();
             if (modelName.equals(getString(R.string.select_model))) {
                 return "";

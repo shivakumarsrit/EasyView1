@@ -150,6 +150,7 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
     private int getScreenWidth() {
         return isLandscape ? screenHeight : screenWidth;
     }
+
     class ScaleListener extends ScaleGestureDetector.SimpleOnScaleGestureListener {
         public static final float MIN_ZOOM = 1.0f;
         public static final float MAX_ZOOM = 1.5f;

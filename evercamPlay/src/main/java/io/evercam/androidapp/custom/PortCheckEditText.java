@@ -72,7 +72,7 @@ public class PortCheckEditText extends EditText {
     public boolean isPortStringValid() {
         String portString = getText().toString();
         //Allow port be patched to empty
-        if(portString.isEmpty()) return true;
+        if (portString.isEmpty()) return true;
         try {
             int portInt = Integer.valueOf(portString);
             if (portInt > 0 && portInt <= 65535) {
@@ -85,6 +85,6 @@ public class PortCheckEditText extends EditText {
     }
 
     public boolean isEmpty() {
-        return  getText().toString().isEmpty();
+        return getText().toString().isEmpty();
     }
 }

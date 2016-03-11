@@ -131,8 +131,7 @@ public class LiveViewRunnable implements Runnable {
             });
         } catch (IOException e) {
             e.printStackTrace();
-        }
-        catch (Exception e) {
+        } catch (Exception e) {
             Log.e(TAG, "WebSocketError: " + e.toString());
             e.printStackTrace();
         }

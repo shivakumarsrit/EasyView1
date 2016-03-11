@@ -359,7 +359,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 // Disables the burger/arrow animation by default
                 super.onDrawerSlide(drawerView, 0);
 
-                if(slideOffset != 0) {
+                if (slideOffset != 0) {
                     // Always hide the account menu by default
                     showAccountView(false);
 
