@@ -22,10 +22,12 @@ import android.view.MenuInflater;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
+import android.widget.AdapterView;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
@@ -44,6 +46,7 @@ import java.util.concurrent.RejectedExecutionException;
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.authentication.EvercamAccount;
+import io.evercam.androidapp.custom.AccountNavAdapter;
 import io.evercam.androidapp.custom.CameraLayout;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomSnackbar;
@@ -56,10 +59,10 @@ import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.LoadTimeFeedbackItem;
 import io.evercam.androidapp.publiccameras.PublicCamerasWebActivity;
 import io.evercam.androidapp.tasks.CheckInternetTask;
+import io.evercam.androidapp.tasks.CheckKeyExpirationTask;
 import io.evercam.androidapp.tasks.LoadCameraListTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
-import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.com.squareup.picasso.Picasso;
@@ -93,6 +96,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private ImageView mTriangleImageView;
     private FrameLayout mNavAddAccountLayout;
     private FrameLayout mNavManageAccountLayout;
+    private ListView mAccountListView;
+    private AccountNavAdapter mAccountNavAdapter;
 
     /**
      * For user data collection, calculate how long it takes to load camera list
@@ -309,6 +314,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                     .placeholder(R.drawable.ic_profile)
                     .into(mCircleImageView);
         }
+
+        mAccountNavAdapter.updateUserList(AppData.appUsers);
+        mAccountNavAdapter.notifyDataSetChanged();
     }
 
     private void initNavigationDrawer() {
@@ -326,6 +334,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mUserEmailTextView = (TextView) findViewById(R.id.navigation_drawer_title_user_email);
         mTriangleImageView = (ImageView) findViewById(R.id.image_view_triangle);
         mCircleImageView = (CircleImageView) findViewById(R.id.navigation_drawer_account_profile_image);
+        mAccountListView = (ListView) findViewById(R.id.list_view_account_email);
         SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
 
         offlineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
@@ -349,6 +358,15 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             public void onDrawerSlide(View drawerView, float slideOffset) {
                 // Disables the burger/arrow animation by default
                 super.onDrawerSlide(drawerView, 0);
+
+                if(slideOffset != 0) {
+                    // Always hide the account menu by default
+                    showAccountView(false);
+
+                    //And update account info
+                    updateNavDrawerUserInfo();
+
+                }
             }
         };
 
@@ -367,12 +385,21 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             @Override
             public void onClick(View v) {
                 if (mTriangleImageView.getRotation() == 0) {
-                    mTriangleImageView.setRotation(180);
                     showAccountView(true);
                 } else if (mTriangleImageView.getRotation() == 180) {
-                    mTriangleImageView.setRotation(0);
                     showAccountView(false);
                 }
+            }
+        });
+
+        mAccountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account, R.id.drawer_account_user_textView, AppData.appUsers);
+        mAccountListView.setAdapter(mAccountNavAdapter);
+
+        mAccountListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final AppUser appUser = (AppUser) mAccountListView.getItemAtPosition(position);
+                new CheckKeyExpirationTaskNavDrawer(appUser).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
             }
         });
     }
@@ -727,6 +754,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private void showAccountView(boolean show) {
         mNavBodyScrollView.setVisibility(show ? View.GONE : View.VISIBLE);
         mNavBodyAccountView.setVisibility(show ? View.VISIBLE : View.GONE);
+        mTriangleImageView.setRotation(show ? 180 : 0);
     }
 
     class CamerasCheckInternetTask extends CheckInternetTask {
@@ -802,6 +830,32 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             if (toolbarIsHidden()) {
                 showToolbar();
                 showActionButtons(true);
+            }
+        }
+    }
+
+    class CheckKeyExpirationTaskNavDrawer extends CheckKeyExpirationTask {
+
+        public CheckKeyExpirationTaskNavDrawer(AppUser appUser) {
+            super(appUser);
+        }
+
+        @Override
+        protected void onPostExecute(Boolean isExpired) {
+            if (isExpired) {
+                new EvercamAccount(CamerasActivity.this).remove(appUser.getEmail(), null);
+                finish();
+                startActivity(new Intent(CamerasActivity.this, OnBoardingActivity.class));
+            } else {
+                EvercamAccount evercamAccount = new EvercamAccount(getApplicationContext());
+                evercamAccount.updateDefaultUser(appUser.getEmail());
+                AppData.appUsers = evercamAccount.retrieveUserList();
+
+                getMixpanel().identifyUser(AppData.defaultUser.getUsername());
+                registerUserWithIntercom(AppData.defaultUser);
+
+                closeDrawer();
+                startLoadingCameras();
             }
         }
     }

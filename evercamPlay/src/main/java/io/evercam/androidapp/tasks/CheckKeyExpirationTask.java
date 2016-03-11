@@ -30,6 +30,13 @@ public class CheckKeyExpirationTask extends AsyncTask<Void, Void, Boolean> {
         this.dialogToDismiss = dialogToDismiss;
     }
 
+    public CheckKeyExpirationTask(AppUser appUser) {
+        this.appUser = appUser;
+        this.username = appUser.getUsername();
+        this.apiKey = appUser.getApiKey();
+        this.apiId = appUser.getApiId();
+    }
+
     @Override
     protected Boolean doInBackground(Void... params) {
         return MainActivity.isApiKeyExpired(username, apiKey, apiId);

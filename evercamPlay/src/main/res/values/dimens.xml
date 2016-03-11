@@ -17,5 +17,6 @@
     <dimen name="nav_drawer_item_row_height_account">60dp</dimen>
     <dimen name="divider_height">1dp</dimen>
     <dimen name="nav_drawer_profile_image_size">64dp</dimen>
+    <dimen name="nav_drawer_profile_image_size_small">40dp</dimen>
 
 </resources>

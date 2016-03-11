@@ -20,15 +20,26 @@
 
     <style name="NavDrawerRowLayout.Accounts">
         <item name="android:layout_height">@dimen/nav_drawer_item_row_height_account</item>
+    </style>
+
+    <style name="NavDrawerRowLayout.Accounts.Clickable">
         <item name="android:clickable">true</item>
     </style>
 
     <style name="NavDrawerRowItemIcon">
-        <item name="android:layout_width">@dimen/nav_drawer_item_row_icon_size</item>
-        <item name="android:layout_height">@dimen/nav_drawer_item_row_icon_size</item>
         <item name="android:layout_gravity">center_vertical</item>
         <item name="android:layout_marginLeft">@dimen/nav_drawer_vertical_keyline_icon_left</item>
+    </style>
+
+    <style name="NavDrawerRowItemIcon.Small">
+        <item name="android:layout_width">@dimen/nav_drawer_item_row_icon_size</item>
+        <item name="android:layout_height">@dimen/nav_drawer_item_row_icon_size</item>
         <item name="android:tint">@color/nav_drawer_item_icon_normal</item>
+    </style>
+
+    <style name="NavDrawerRowItemIcon.Large">
+        <item name="android:layout_width">@dimen/nav_drawer_profile_image_size_small</item>
+        <item name="android:layout_height">@dimen/nav_drawer_profile_image_size_small</item>
     </style>
 
     <style name="NavDrawerRowItemText" parent="TextAppearance.AppCompat.Body2">
