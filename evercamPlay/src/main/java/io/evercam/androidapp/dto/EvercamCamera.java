@@ -30,7 +30,8 @@ public class EvercamCamera {
     private String password = "";
     private String timezone = "";
     private String vendor = "";
-    private String model = "";
+    private String modelId = "";
+    private String modelName = "";
     private String mac = "";
     private String externalSnapshotUrl = "";
     private String internalSnapshotUrl = "";
@@ -75,7 +76,8 @@ public class EvercamCamera {
             }
             timezone = camera.getTimezone();
             vendor = camera.getVendorName();
-            model = camera.getModelName();
+            modelId = camera.getModelId();
+            modelName = camera.getModelName();
             mac = camera.getMacAddress();
             externalSnapshotUrl = camera.getExternalJpgUrl();
             internalSnapshotUrl = camera.getInternalJpgUrl();
@@ -157,8 +159,12 @@ public class EvercamCamera {
         return timezone;
     }
 
-    public String getModel() {
-        return model;
+    public String getModelId() {
+        return modelId;
+    }
+
+    public String getModelName() {
+        return modelName;
     }
 
     public String getVendor() {
@@ -225,8 +231,12 @@ public class EvercamCamera {
         this.timezone = timezone;
     }
 
-    public void setModel(String model) {
-        this.model = model;
+    public void setModelId(String modelId) {
+        this.modelId = modelId;
+    }
+
+    public void setModelName(String modelName) {
+        this.modelName = modelName;
     }
 
     public void setVendor(String vendor) {
@@ -412,7 +422,7 @@ public class EvercamCamera {
     }
 
     public boolean hasModel() {
-        return !getModel().isEmpty();
+        return !getModelId().isEmpty();
     }
 
     public boolean isDiscoverable() {
@@ -448,7 +458,8 @@ public class EvercamCamera {
         if (cameraId.equals(other.cameraId) && externalRtspUrl.equals(other.externalRtspUrl) &&
                 internalRtspUrl.equals(other.internalRtspUrl) && externalSnapshotUrl.equals(other
                 .externalSnapshotUrl) && internalSnapshotUrl.equals(other.internalSnapshotUrl) &&
-                mac.equals(other.mac) && model.equals(other.model) && name.equals(other.name) &&
+                mac.equals(other.mac) && modelId.equals(other.modelId) && modelName.equals(other.modelName)
+                && name.equals(other.name) &&
                 user.equals(other.user) && password.equals(other.password) && timezone.equals
                 (other.timezone) && username.equals(other.username) && vendor.equals(other
                 .vendor) && internalHost.equals(other.internalHost) && externalHost.equals(other
@@ -470,7 +481,8 @@ public class EvercamCamera {
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +
                 "canDelete=" + canDelete + ", rights=" + rights + ", username=" + username + ", " +
                 "password=" + password + ", timezone=" + timezone + ", vendor=" + vendor + ", " +
-                "model=" + model + ", mac=" + mac + ", externalSnapshotUrl=" +
+                "modelId=" + modelId  + ", " +
+                "modelName=" + modelName + ", mac=" + mac + ", externalSnapshotUrl=" +
                 externalSnapshotUrl + ", internalSnapshotUrl=" + internalSnapshotUrl + ", " +
                 "externalRtspUrl=" + externalRtspUrl + ", internalRtspUrl=" + internalRtspUrl +
                 ", status=" + status + ", hasCredentials=" + hasCredentials + ", " +

@@ -212,9 +212,6 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     public void buildModelSpinner(ArrayList<Model> modelList, String selectedModel) {
-        if (selectedModel != null && !selectedModel.isEmpty()) {
-            selectedModel = selectedModel.toLowerCase(Locale.UK);
-        }
         if (modelMap == null) {
             modelMap = new TreeMap<>();
         }

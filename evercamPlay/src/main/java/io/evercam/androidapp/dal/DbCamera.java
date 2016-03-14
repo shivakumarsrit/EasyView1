@@ -26,7 +26,8 @@ public class DbCamera extends DatabaseMaster {
     private final String KEY_PASSWORD = "password";
     private final String KEY_TIMEZONE = "timezone";
     private final String KEY_VENDOR = "vendor";
-    private final String KEY_MODEL = "model";
+    private final String KEY_MODEL_ID = "modelId";
+    private final String KEY_MODEL_NAME = "modelName";
     private final String KEY_MAC = "mac";
     private final String KEY_EXTERNAL_JPG_URL = "externalSnapshotUrl";
     private final String KEY_INTERNAL_JPG_URL = "internalSnapshotUrl";
@@ -60,7 +61,7 @@ public class DbCamera extends DatabaseMaster {
                 "" + KEY_CAMERA_NAME + " TEXT NULL" + "," + KEY_OWNER + " TEXT  NOT NULL" + "," +
                 "" + KEY_USERNAME + " TEXT NULL" + "," + KEY_PASSWORD + " TEXT NULL" + "," +
                 "" + KEY_TIMEZONE + " TEXT NULL" + "," + KEY_VENDOR + " TEXT NULL" + "," +
-                "" + KEY_MODEL + " TEXT NULL" + "," + KEY_MAC + " TEXT NULL " + "," +
+                "" + KEY_MODEL_ID + " TEXT NULL" + "," + KEY_MAC + " TEXT NULL " + "," +
                 "" + KEY_EXTERNAL_JPG_URL + " TEXT NULL " + "," + KEY_INTERNAL_JPG_URL + " TEXT " +
                 "NULL " + "," + KEY_EXTERNAL_RTSP_URL + " TEXT NULL" + "," +
                 "" + KEY_INTERNAL_RTSP_URL + " TEXT NULL" + "," + KEY_STATUS + " TEXT NULL" + "," +
@@ -72,7 +73,8 @@ public class DbCamera extends DatabaseMaster {
                 "," + KEY_HLS_URL + " TEXT NULL" +
                 "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" +
                 "," + KEY_CAN_DELETE + " TEXT NULL" + "," + KEY_RIGHTS + " TEXT NULL" +
-                "," + KEY_DISCOVERABLE + " INTEGER NULL" + "," + KEY_PUBLIC + " INTEGER NULL" + ")";
+                "," + KEY_DISCOVERABLE + " INTEGER NULL" + "," + KEY_PUBLIC + " INTEGER NULL" + "," +
+                "" + KEY_MODEL_NAME + " TEXT NULL"+ ")";
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
@@ -102,11 +104,11 @@ public class DbCamera extends DatabaseMaster {
 
         Cursor cursor = db.query(TABLE_CAMERA, new String[]{KEY_ID, KEY_CAMERA_ID,
                         KEY_CAMERA_NAME, KEY_OWNER, KEY_USERNAME, KEY_PASSWORD, KEY_TIMEZONE, KEY_VENDOR,
-                        KEY_MODEL, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
+                        KEY_MODEL_ID, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
                         KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_STATUS, KEY_HAS_CREDENTIAL,
                         KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                         KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
-                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC},
+                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME},
                 KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
         if (cursor != null) {
@@ -173,7 +175,7 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_USERNAME, evercamCamera.getUsername());
         values.put(KEY_PASSWORD, evercamCamera.getPassword());
         values.put(KEY_VENDOR, evercamCamera.getVendor());
-        values.put(KEY_MODEL, evercamCamera.getModel());
+        values.put(KEY_MODEL_ID, evercamCamera.getModelId());
         values.put(KEY_TIMEZONE, evercamCamera.getTimezone());
         values.put(KEY_MAC, evercamCamera.getMac());
         values.put(KEY_STATUS, evercamCamera.getStatus());
@@ -196,6 +198,7 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_RIGHTS, evercamCamera.getRights());
         values.put(KEY_DISCOVERABLE, evercamCamera.getDiscoverableInt());
         values.put(KEY_PUBLIC, evercamCamera.getPublicInt());
+        values.put(KEY_MODEL_NAME, evercamCamera.getModelName());
 
         return values;
     }
@@ -232,7 +235,7 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setPassword(cursor.getString(5));
         evercamCamera.setTimezone(cursor.getString(6));
         evercamCamera.setVendor(cursor.getString(7));
-        evercamCamera.setModel(cursor.getString(8));
+        evercamCamera.setModelId(cursor.getString(8));
         evercamCamera.setMac(cursor.getString(9));
         evercamCamera.setExternalSnapshotUrl(cursor.getString(10));
         evercamCamera.setInternalSnapshotUrl(cursor.getString(11));
@@ -254,6 +257,7 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setRights(cursor.getString(27));
         evercamCamera.setIsDiscoverable(cursor.getInt(28) == 1);
         evercamCamera.setIsPublic(cursor.getInt(29) == 1);
+        evercamCamera.setModelName(cursor.getString(30));
 
         return evercamCamera;
     }

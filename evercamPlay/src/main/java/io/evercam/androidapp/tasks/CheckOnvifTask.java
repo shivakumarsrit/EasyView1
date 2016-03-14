@@ -1,6 +1,7 @@
 package io.evercam.androidapp.tasks;
 
 import android.os.AsyncTask;
+import android.util.Log;
 
 import java.lang.ref.WeakReference;
 import java.util.Locale;
@@ -21,7 +22,7 @@ public class CheckOnvifTask extends AsyncTask<Void, Void, Boolean> {
     public CheckOnvifTask(VideoActivity videoActivity, EvercamCamera camera) {
         this.mEvercamCamera = camera;
         videoActivityWeakReference = new WeakReference<>(videoActivity);
-        this.modelId = camera.getModel().toLowerCase(Locale.UK);
+        this.modelId = camera.getModelId();
         this.cameraId = camera.getCameraId();
     }
 
@@ -33,10 +34,13 @@ public class CheckOnvifTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected Boolean doInBackground(Void... params) {
         try {
+            //Log.d(TAG, "Checking model id: " + modelId);
             Model model = Model.getById(modelId);
             if (model.isOnvif() && model.isPTZ()) {
+                //Log.d(TAG, modelId + " is ONVIF & is PTZ");
                 Camera camera = Camera.getById(cameraId, false);
                 if (camera.getRights().isFullRight()) {
+                    //Log.d(TAG, cameraId + " has full rights");
                     return true;
                 }
             }

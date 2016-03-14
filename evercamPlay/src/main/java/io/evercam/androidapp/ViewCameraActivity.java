@@ -158,10 +158,10 @@ public class ViewCameraActivity extends ParentAppCompatActivity {
             } else {
                 cameraVendorTextView.setText(camera.getVendor());
             }
-            if (camera.getModel().isEmpty()) {
+            if (!camera.hasModel()) {
                 setAsNotSpecified(cameraModelTextView);
             } else {
-                cameraModelTextView.setText(camera.getModel());
+                cameraModelTextView.setText(camera.getModelName());
             }
 
             //Show more details if user has the rights

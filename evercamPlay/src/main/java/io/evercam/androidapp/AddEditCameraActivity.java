@@ -720,8 +720,8 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
     }
 
     public void buildSpinnerOnModelListResult(@NonNull ArrayList<Model> modelList) {
-        if (cameraEdit != null && !cameraEdit.getModel().isEmpty()) {
-            modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModel());
+        if (cameraEdit != null && cameraEdit.hasModel()) {
+            modelSelectorFragment.buildModelSpinner(modelList, cameraEdit.getModelId());
         } else if (discoveredCamera != null && discoveredCamera.hasModel()) {
             modelSelectorFragment.buildModelSpinner(modelList, discoveredCamera.getModel());
         } else {
