@@ -81,13 +81,8 @@ public class SignUpActivity extends ParentAppCompatActivity {
         if (Permission.isGranted(this, Permission.CONTACTS)) {
             readFromAccount();
         } else {
-            CustomedDialog.getSingleButtonDialog(this, new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface dialog, int which) {
-                    Permission.request(SignUpActivity.this, new String[]{Permission.CONTACTS},
-                            Permission.REQUEST_CODE_CONTACTS);
-                }
-            }, R.string.msg_allow_contacts_permission, R.string.ok).show();
+            Permission.request(SignUpActivity.this, new String[]{Permission.CONTACTS},
+                    Permission.REQUEST_CODE_CONTACTS);
         }
     }
 

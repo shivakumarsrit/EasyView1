@@ -96,8 +96,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private ImageView mTriangleImageView;
     private FrameLayout mNavAddAccountLayout;
     private FrameLayout mNavManageAccountLayout;
-    private ListView mAccountListView;
-    private AccountNavAdapter mAccountNavAdapter;
+    private ListView mAccountListView;;
     // The list copy in nav drawer that excludes default user
     private ArrayList<AppUser> mUserListInNavDrawer;
     private boolean mIsDrawerUpdated = false;
@@ -338,7 +337,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mTriangleImageView = (ImageView) findViewById(R.id.image_view_triangle);
         mCircleImageView = (CircleImageView) findViewById(R.id.navigation_drawer_account_profile_image);
         mAccountListView = (ListView) findViewById(R.id.list_view_account_email);
-        SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
+        FrameLayout offlineLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_offline_layout);
+        final SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
 
         offlineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
@@ -346,6 +346,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 PrefsManager.setShowOfflineCamera(getApplicationContext(), isChecked);
                 removeAllCameraViews();
                 addAllCameraViews(false, true);
+            }
+        });
+
+        offlineLayout.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                offlineSwitch.setChecked(!offlineSwitch.isChecked());
             }
         });
 
@@ -435,10 +442,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private void bindAccountList(ArrayList<AppUser> appUsers) {
 
-        mAccountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account,
+        AccountNavAdapter accountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account,
                 R.id.drawer_account_user_textView,appUsers);
         mAccountListView.setAdapter(null);
-        mAccountListView.setAdapter(mAccountNavAdapter);
+        mAccountListView.setAdapter(accountNavAdapter);
 
         mAccountListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
             @Override
