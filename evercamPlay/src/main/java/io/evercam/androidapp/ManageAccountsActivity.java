@@ -65,7 +65,7 @@ public class ManageAccountsActivity extends ParentAppCompatActivity {
 
                 if (user.getId() < 0) // add new user item
                 {
-                    startActivity(new Intent(ManageAccountsActivity.this, OnBoardingActivity.class));
+                    startActivity(new Intent(ManageAccountsActivity.this, LoginActivity.class));
                     return;
                 }
 

@@ -1,6 +1,7 @@
 package io.evercam.androidapp.custom;
 
 import android.content.Context;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -18,26 +19,22 @@ import io.intercom.com.squareup.picasso.Picasso;
 
 public class AccountNavAdapter extends ArrayAdapter<AppUser> {
 
+    private final String TAG = "AccountNavAdapter";
     private ArrayList<AppUser> mAppUsers;
     private Context mContext;
     private int mLayoutId;
 
     public AccountNavAdapter(Context context, int resource, int textViewResourceId, ArrayList<AppUser> appUsers) {
         super(context, resource, textViewResourceId, appUsers);
-        updateUserList(appUsers);
+        this.mAppUsers = appUsers;
         this.mContext = context;
         this.mLayoutId = resource;
-    }
-
-    public void updateUserList(ArrayList<AppUser> appUsers) {
-        this.mAppUsers = appUsers;
-        //Default user shouldn't show in the list
-        mAppUsers.remove(AppData.defaultUser);
     }
 
     @Override
     public View getView(int position, View convertView, ViewGroup parent) {
         View view = convertView;
+
         final AppUser appUser = mAppUsers.get(position);
 
         if (view == null) {

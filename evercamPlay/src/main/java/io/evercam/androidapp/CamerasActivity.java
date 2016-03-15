@@ -98,6 +98,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private FrameLayout mNavManageAccountLayout;
     private ListView mAccountListView;
     private AccountNavAdapter mAccountNavAdapter;
+    // The list copy in nav drawer that excludes default user
+    private ArrayList<AppUser> mUserListInNavDrawer;
+    private boolean mIsDrawerUpdated = false;
 
     /**
      * For user data collection, calculate how long it takes to load camera list
@@ -315,8 +318,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                     .into(mCircleImageView);
         }
 
-        mAccountNavAdapter.updateUserList(AppData.appUsers);
-        mAccountNavAdapter.notifyDataSetChanged();
+        updateUserListInNavDrawer();
+        bindAccountList(mUserListInNavDrawer);
     }
 
     private void initNavigationDrawer() {
@@ -359,13 +362,19 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 // Disables the burger/arrow animation by default
                 super.onDrawerSlide(drawerView, 0);
 
-                if (slideOffset != 0) {
+                // Update user account info when it's completely open
+                if (slideOffset > 0 && !mIsDrawerUpdated) {
                     // Always hide the account menu by default
                     showAccountView(false);
 
                     //And update account info
                     updateNavDrawerUserInfo();
 
+                    mIsDrawerUpdated = true;
+                }
+
+                if (slideOffset == 0) {
+                    mIsDrawerUpdated = false;
                 }
             }
         };
@@ -392,16 +401,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }
         });
 
-        mAccountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account, R.id.drawer_account_user_textView, AppData.appUsers);
-        mAccountListView.setAdapter(mAccountNavAdapter);
-
-        mAccountListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-            @Override
-            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
-                final AppUser appUser = (AppUser) mAccountListView.getItemAtPosition(position);
-                new CheckKeyExpirationTaskNavDrawer(appUser).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-            }
-        });
+        updateUserListInNavDrawer();
+        bindAccountList(mUserListInNavDrawer);
     }
 
     @Override
@@ -420,11 +421,33 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         } else if (view == mNavExploreLayout) {
             startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
         } else if (view == mNavAddAccountLayout) {
-            startActivity(new Intent(this, OnBoardingActivity.class));
+            startActivity(new Intent(this,LoginActivity.class));
         } else if (view == mNavManageAccountLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
             startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
         }
+    }
+    
+    private void updateUserListInNavDrawer() {
+        mUserListInNavDrawer = new ArrayList<>(new EvercamAccount(this).retrieveUserList());
+        mUserListInNavDrawer.remove(AppData.defaultUser);
+    }
+
+    private void bindAccountList(ArrayList<AppUser> appUsers) {
+
+        mAccountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account,
+                R.id.drawer_account_user_textView,appUsers);
+        mAccountListView.setAdapter(null);
+        mAccountListView.setAdapter(mAccountNavAdapter);
+
+        mAccountListView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+            @Override
+            public void onItemClick(AdapterView<?> parent, View view, int position, long id) {
+                final AppUser appUser = mUserListInNavDrawer.get(position);
+                Log.d(TAG, appUser.toString());
+                new CheckKeyExpirationTaskNavDrawer(appUser).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            }
+        });
     }
 
     private void closeDrawer() {
