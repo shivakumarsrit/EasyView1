@@ -21,7 +21,7 @@
             android:layout_height="75dip"
             android:layout_alignParentLeft="true"
             android:background="@android:color/white"
-            android:visibility="invisible"/>
+            android:visibility="invisible" />
     </RelativeLayout>
 
     <LinearLayout

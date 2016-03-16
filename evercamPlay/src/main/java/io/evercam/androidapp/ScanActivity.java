@@ -489,7 +489,7 @@ public class ScanActivity extends ParentAppCompatActivity {
             //Check is Wifi connected or not first
             DataCollector dataCollector = new DataCollector(ScanActivity.this);
             if (dataCollector.isConnectedMobile() && !dataCollector.isConnectedWifi()) {
-            //if (true) {
+                //if (true) {
                 this.cancel(true);
                 showTextProgress(false);
                 showNoCameraView(true);

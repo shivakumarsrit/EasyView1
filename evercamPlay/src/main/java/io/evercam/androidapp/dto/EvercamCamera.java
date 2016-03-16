@@ -481,7 +481,7 @@ public class EvercamCamera {
                 "realOwner=" + realOwner + ", canEdit=" + canEdit + ", " +
                 "canDelete=" + canDelete + ", rights=" + rights + ", username=" + username + ", " +
                 "password=" + password + ", timezone=" + timezone + ", vendor=" + vendor + ", " +
-                "modelId=" + modelId  + ", " +
+                "modelId=" + modelId + ", " +
                 "modelName=" + modelName + ", mac=" + mac + ", externalSnapshotUrl=" +
                 externalSnapshotUrl + ", internalSnapshotUrl=" + internalSnapshotUrl + ", " +
                 "externalRtspUrl=" + externalRtspUrl + ", internalRtspUrl=" + internalRtspUrl +

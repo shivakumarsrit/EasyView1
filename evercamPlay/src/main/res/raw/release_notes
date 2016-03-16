@@ -1,9 +1,16 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.8.4</h5>
+<h5>1.8.5</h5>
 <ul>
-	<li>- Now you can switch accounts, show/hide offline cameras from the main menu<br/></li>
 	<li>- Bug fixes around account management<br/></li>
+	<li>- Fixed the issue of invisible PTZ control buttons<br/></li>
+	<li>- Added on boarding showcase<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.8.4</b>
+<ul>
+	<li><br/>- Now you can switch accounts, show/hide offline cameras from the main menu<br/></li>
 </ul>
 <br/>
 

@@ -1,7 +1,6 @@
 package io.evercam.androidapp.custom;
 
 import android.content.Context;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -12,7 +11,6 @@ import java.util.ArrayList;
 
 import de.hdodenhof.circleimageview.CircleImageView;
 import io.evercam.androidapp.R;
-import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.utils.Commons;
 import io.intercom.com.squareup.picasso.Picasso;

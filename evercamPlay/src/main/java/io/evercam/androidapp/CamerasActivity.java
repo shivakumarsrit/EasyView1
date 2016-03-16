@@ -99,7 +99,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private ImageView mTriangleImageView;
     private FrameLayout mNavAddAccountLayout;
     private FrameLayout mNavManageAccountLayout;
-    private ListView mAccountListView;;
+    private ListView mAccountListView;
+    ;
     // The list copy in nav drawer that excludes default user
     private ArrayList<AppUser> mUserListInNavDrawer;
     private boolean mIsDrawerUpdated = false;
@@ -119,6 +120,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private boolean showOfflineOnStop;
 
     private MaterialShowcaseView showcaseView = null;
+
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -432,13 +434,13 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         } else if (view == mNavExploreLayout) {
             startActivity(new Intent(CamerasActivity.this, PublicCamerasWebActivity.class));
         } else if (view == mNavAddAccountLayout) {
-            startActivity(new Intent(this,LoginActivity.class));
+            startActivity(new Intent(this, LoginActivity.class));
         } else if (view == mNavManageAccountLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
             startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
         }
     }
-    
+
     private void updateUserListInNavDrawer() {
         mUserListInNavDrawer = new ArrayList<>(new EvercamAccount(this).retrieveUserList());
         mUserListInNavDrawer.remove(AppData.defaultUser);
@@ -447,7 +449,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private void bindAccountList(ArrayList<AppUser> appUsers) {
 
         AccountNavAdapter accountNavAdapter = new AccountNavAdapter(this, R.layout.item_list_nav_account,
-                R.id.drawer_account_user_textView,appUsers);
+                R.id.drawer_account_user_textView, appUsers);
         mAccountListView.setAdapter(null);
         mAccountListView.setAdapter(accountNavAdapter);
 
@@ -609,7 +611,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         int index = 0;
 
-        if(AppData.evercamCameraList.size() <= 1 && showThumbnails) showShowcaseViewForFirstTimeUser();
+        if (AppData.evercamCameraList.size() <= 1 && showThumbnails)
+            showShowcaseViewForFirstTimeUser();
 
         for (final EvercamCamera evercamCamera : AppData.evercamCameraList) {
             //Don't show offline camera
@@ -839,7 +842,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     private void showShowcaseViewForFirstTimeUser() {
-        if(!PrefsManager.isShowcaseShown(this)) {
+        if (!PrefsManager.isShowcaseShown(this)) {
             showShowcaseView();
             PrefsManager.setShowcaseShown(this);
         }
@@ -847,7 +850,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private void showShowcaseView() {
 
-        if(showcaseView != null) {
+        if (showcaseView != null) {
             showcaseView.hide();
             showcaseView = null;
         }

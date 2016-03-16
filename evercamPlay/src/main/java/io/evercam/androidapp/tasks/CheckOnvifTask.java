@@ -1,10 +1,8 @@
 package io.evercam.androidapp.tasks;
 
 import android.os.AsyncTask;
-import android.util.Log;
 
 import java.lang.ref.WeakReference;
-import java.util.Locale;
 
 import io.evercam.Camera;
 import io.evercam.EvercamException;
