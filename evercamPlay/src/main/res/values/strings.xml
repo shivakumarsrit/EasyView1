@@ -87,5 +87,7 @@
     <string name="nav_drawer_manage_accounts">Manage accounts</string>
     <string name="navigation_drawer_opened">The navigation drawer is opened</string>
     <string name="navigation_drawer_closed">The navigation drawer is closed</string>
+
+    <string name="showcase_dismiss_text">GOT IT</string>
 </resources>
 

@@ -11,6 +11,7 @@ import android.graphics.Rect;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
+import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
@@ -34,10 +35,6 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
-import com.github.amlcurran.showcaseview.ShowcaseView;
-import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
-import com.github.amlcurran.showcaseview.targets.Target;
-import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -71,6 +68,7 @@ import io.evercam.androidapp.utils.PrefsManager;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.com.squareup.picasso.Picasso;
 import io.keen.client.java.KeenClient;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
         ObservableScrollViewCallbacks, OnClickListener {
@@ -120,6 +118,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     private String usernameOnStop = "";
     private boolean showOfflineOnStop;
 
+    private MaterialShowcaseView showcaseView = null;
     @Override
     public void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
@@ -172,16 +171,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         // Start loading camera list after menu created(because need the menu
         // showing as animation)
         new CamerasCheckInternetTask(CamerasActivity.this, InternetCheckType.START).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-
-        ViewTarget target = new ViewTarget(manuallyAddButton);
-
-        new ShowcaseView.Builder(this)
-                .withMaterialShowcase()
-                .setTarget(target)
-                .setContentTitle("ShowcaseView")
-                .setContentText("This is highlighting the Home button")
-                .hideOnTouchOutside()
-                .build();
     }
 
     @Override
@@ -538,8 +527,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     private void dimBackgroundAsAnimation(final View view) {
-        Integer colorFrom = getResources().getColor(android.R.color.transparent);
-        Integer colorTo = getResources().getColor(R.color.black_semi_transparent);
+        Integer colorFrom = ContextCompat.getColor(this, android.R.color.transparent);
+        Integer colorTo = ContextCompat.getColor(this, R.color.black_semi_transparent);
         ValueAnimator colorAnimation = ValueAnimator.ofObject(new ArgbEvaluator(), colorFrom, colorTo);
         colorAnimation.addUpdateListener(new ValueAnimator.AnimatorUpdateListener() {
             @Override
@@ -620,6 +609,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         int index = 0;
 
+        if(AppData.evercamCameraList.size() <= 1 && showThumbnails) showShowcaseViewForFirstTimeUser();
+
         for (final EvercamCamera evercamCamera : AppData.evercamCameraList) {
             //Don't show offline camera
             if (!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive()) {
@@ -689,6 +680,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
         resizeCameras();
+        showShowcaseView();
     }
 
     @Override
@@ -844,6 +836,32 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private void showActionButtons(boolean show) {
         actionButtonLayout.setVisibility(show ? View.VISIBLE : View.GONE);
+    }
+
+    private void showShowcaseViewForFirstTimeUser() {
+        if(!PrefsManager.isShowcaseShown(this)) {
+            showShowcaseView();
+            PrefsManager.setShowcaseShown(this);
+        }
+    }
+
+    private void showShowcaseView() {
+
+        if(showcaseView != null) {
+            showcaseView.hide();
+            showcaseView = null;
+        }
+
+        showcaseView = new MaterialShowcaseView.Builder(this)
+                .setTarget(manuallyAddButton)
+                .setDismissText(R.string.showcase_dismiss_text)
+                .setDismissTextSize(15)
+                .setShapePadding(60)
+                .setContentTextColor(getResources().getColor(R.color.white))
+                .setMaskColour(getResources().getColor(R.color.black_semi_transparent))
+                .setContentText(R.string.confirmSignUp)
+                .setContentTextSize(15)
+                .show();
     }
 
     /**

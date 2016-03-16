@@ -266,7 +266,6 @@ public class SignUpActivity extends ParentAppCompatActivity {
                 new EvercamAccount(SignUpActivity.this).add(newUser);
                 AppData.defaultUser = newUser;
 
-                CustomToast.showInCenterExtraLong(SignUpActivity.this, R.string.confirmSignUp);
                 showProgress(false);
                 setResult(Constants.RESULT_TRUE);
                 finish();

@@ -12,6 +12,7 @@ public class PrefsManager {
     public static final String KEY_FORCE_LANDSCAPE = "prefsForceLandscape";
     public static final String KEY_SHOW_OFFLINE_CAMERA = "prefsShowOfflineCameras";
     public final static String KEY_VERSION = "prefsVersion";
+    public final static String KEY_SHOWCASE_SHOWN = "isShowcaseShown";
 
     public final static String KEY_GCM_PREFS_ID = "gcmDetails";
     public final static String KEY_GCM_REGISTRATION_ID = "registrationId";
@@ -55,6 +56,18 @@ public class PrefsManager {
         SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
 
         return sharedPrefs.getBoolean(KEY_RELEASE_NOTES_SHOWN + versionCode, false);
+    }
+
+    public static boolean isShowcaseShown(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        return sharedPrefs.getBoolean(KEY_SHOWCASE_SHOWN, false);
+    }
+
+    public static void setShowcaseShown(Context context) {
+        SharedPreferences sharedPrefs = PreferenceManager.getDefaultSharedPreferences(context);
+        SharedPreferences.Editor editor = sharedPrefs.edit();
+        editor.putBoolean(KEY_SHOWCASE_SHOWN, true);
+        editor.apply();
     }
 
     public static void setReleaseNotesShown(Context context, int versionCode) {
