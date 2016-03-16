@@ -10,6 +10,7 @@ import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.provider.Settings;
 import android.util.Log;
 import android.util.SparseArray;
 import android.view.Menu;
@@ -57,6 +58,8 @@ public class ScanActivity extends ParentAppCompatActivity {
     private ListView cameraListView;
     private MenuItem cancelMenuItem;
     private MenuItem showAllDeviceMenu;
+    private Button showAllDeviceButton;
+    private Button connectWifiButton;
 
     private ScanResultAdapter deviceAdapter;
     public ArrayList<DiscoveredCamera> discoveredCameras = new ArrayList<>();
@@ -87,7 +90,15 @@ public class ScanActivity extends ParentAppCompatActivity {
 
         cameraListView = (ListView) findViewById(R.id.scan_result_list);
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);
-        Button showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
+        showAllDeviceButton = (Button) findViewById(R.id.button_show_all_devices);
+        connectWifiButton = (Button) findViewById(R.id.button_connect_wifi);
+
+        connectWifiButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                startActivity(new Intent(Settings.ACTION_WIFI_SETTINGS));
+            }
+        });
 
         View footerView = getLayoutInflater().inflate(R.layout.footer_scan_list, cameraListView, false);
         Button showAllDeviceFooterButton = (Button) footerView.findViewById(R.id.button_all_devices_in_list);
@@ -287,6 +298,14 @@ public class ScanActivity extends ParentAppCompatActivity {
         }
     }
 
+    public void showAllDeviceButton(final boolean show) {
+        showAllDeviceButton.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+    }
+
+    public void showConnectWifiButton(final boolean show) {
+        connectWifiButton.setVisibility(show ? View.VISIBLE : View.INVISIBLE);
+    }
+
     public void showConfirmCancelScanDialog() {
         CustomedDialog.getConfirmCancelScanDialog(ScanActivity.this, new DialogInterface
                 .OnClickListener() {
@@ -470,11 +489,17 @@ public class ScanActivity extends ParentAppCompatActivity {
             //Check is Wifi connected or not first
             DataCollector dataCollector = new DataCollector(ScanActivity.this);
             if (dataCollector.isConnectedMobile() && !dataCollector.isConnectedWifi()) {
+            //if (true) {
                 this.cancel(true);
                 showTextProgress(false);
                 showNoCameraView(true);
                 showCancelMenuItem(false);
+                showAllDeviceButton(false);
+                showConnectWifiButton(true);
                 updateScanResultMessage(R.string.msg_must_wifi_for_scan);
+            } else {
+                showConnectWifiButton(false);
+                showAllDeviceButton(true);
             }
         }
 

@@ -6,6 +6,7 @@
     <string name="msg_report_camera_model">Send us the camera model name and we will work on it :)</string>
     <string name="hint_camera_model">Hikvision DS-2CD2332-I</string>
     <string name="btn_text_add_manually">Add camera manually</string>
+    <string name="btn_text_connect_wifi">WiFi Settings</string>
     <string name="report_camera">This is a Camera</string>
 
     <!-- Scan result labels-->
