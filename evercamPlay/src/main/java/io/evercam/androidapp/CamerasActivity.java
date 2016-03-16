@@ -34,6 +34,10 @@ import android.widget.TextView;
 
 import com.getbase.floatingactionbutton.FloatingActionButton;
 import com.getbase.floatingactionbutton.FloatingActionsMenu;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ActionViewTarget;
+import com.github.amlcurran.showcaseview.targets.Target;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollView;
 import com.github.ksoichiro.android.observablescrollview.ObservableScrollViewCallbacks;
 import com.github.ksoichiro.android.observablescrollview.ScrollState;
@@ -80,6 +84,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     public CustomProgressDialog reloadProgressDialog;
     private RelativeLayout actionButtonLayout;
+    private FloatingActionButton manuallyAddButton;
     private int lastScrollY;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -167,6 +172,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         // Start loading camera list after menu created(because need the menu
         // showing as animation)
         new CamerasCheckInternetTask(CamerasActivity.this, InternetCheckType.START).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+
+        ViewTarget target = new ViewTarget(manuallyAddButton);
+
+        new ShowcaseView.Builder(this)
+                .withMaterialShowcase()
+                .setTarget(target)
+                .setContentTitle("ShowcaseView")
+                .setContentText("This is highlighting the Home button")
+                .hideOnTouchOutside()
+                .build();
     }
 
     @Override
@@ -465,7 +480,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         actionButtonLayout = (RelativeLayout) findViewById(R.id
                 .action_button_layout);
         final FloatingActionsMenu actionMenu = (FloatingActionsMenu) findViewById(R.id.add_action_menu);
-        final FloatingActionButton manuallyAddButton = (FloatingActionButton) findViewById(R.id.add_action_button_manually);
+        manuallyAddButton = (FloatingActionButton) findViewById(R.id.add_action_button_manually);
         final FloatingActionButton scanButton = (FloatingActionButton) findViewById(R.id.add_action_button_scan);
 
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu
