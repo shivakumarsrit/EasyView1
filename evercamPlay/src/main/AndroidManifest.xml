@@ -102,7 +102,7 @@
         </activity>
         <activity
             android:name=".OnBoardingActivity"
-            android:configChanges="orientation|screenSize"></activity>
+            android:configChanges="orientation|screenSize"/>
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -112,44 +112,44 @@
         </activity>
         <activity
             android:name=".LoginActivity"
-            android:windowSoftInputMode="adjustResize|stateHidden"></activity>
+            android:windowSoftInputMode="adjustResize|stateHidden" />
         <activity
             android:name=".SignUpActivity"
             android:label="@string/title_activity_sign_up"
             android:windowSoftInputMode="stateHidden"
-            android:parentActivityName=".OnBoardingActivity"></activity>
+            android:parentActivityName=".OnBoardingActivity" />
 
         <activity
             android:name=".ManageAccountsActivity"
-            android:label="@string/title_activity_accounts"></activity>
+            android:label="@string/title_activity_accounts" />
         <activity
             android:name=".CamerasActivity"
             android:configChanges="keyboardHidden|orientation|screenSize"
             android:label=""
-            android:launchMode="singleTop"></activity>
+            android:launchMode="singleTop" />
         <activity
             android:name=".CameraPrefsActivity"
-            android:label="@string/title_settings"></activity>
+            android:label="@string/title_settings" />
 
         <activity
             android:name=".AddEditCameraActivity"
             android:label="@string/title_activity_add_camera"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".addeditcamera.AddCameraActivity"
             android:label="@string/title_choose_model"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ViewCameraActivity"
             android:label="@string/title_activity_view_camera"
-            android:windowSoftInputMode="stateHidden"></activity>
+            android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".ScanActivity"
             android:configChanges="orientation|keyboardHidden|screenSize"
-            android:label=""></activity>
+            android:label="" />
         <activity
             android:name=".ReleaseNotesActivity"
-            android:label="@string/title_release_notes"></activity>
+            android:label="@string/title_release_notes" />
         <activity
             android:name=".recordings.RecordingWebActivity"
             android:label="@string/title_activity_recording_web"
@@ -162,7 +162,7 @@
             android:name=".publiccameras.PublicCamerasWebActivity"
             android:icon="@drawable/icon_evercam"
             android:label="@string/title_activity_public_cameras"
-            android:configChanges="keyboard|keyboardHidden|screenSize|orientation"></activity>
+            android:configChanges="keyboard|keyboardHidden|screenSize|orientation" />
         <activity
             android:name=".SimpleWebActivity"
             android:label="@string/title_activity_about_web"
@@ -179,16 +179,16 @@
 
         <activity
             android:name=".photoview.ViewPagerActivity"
-            android:label="@string/title_saved_images"></activity>
+            android:label="@string/title_saved_images" />
         <activity
             android:name=".sharing.SharingActivity"
-            android:label="@string/title_sharing"></activity>
+            android:label="@string/title_sharing" />
         <activity
             android:name=".sharing.CreateShareActivity"
-            android:label="@string/title_create_sharing"></activity>
+            android:label="@string/title_create_sharing" />
         <activity
             android:name=".scan.AllDevicesActivity"
-            android:label="@string/title_all_devices"></activity>
+            android:label="@string/title_all_devices" />
     </application>
 
 </manifest>
