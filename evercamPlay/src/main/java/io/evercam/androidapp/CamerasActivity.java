@@ -70,10 +70,7 @@ import io.intercom.android.sdk.Intercom;
 import io.intercom.com.squareup.picasso.Picasso;
 import io.keen.client.java.KeenClient;
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
-import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
-import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
-import uk.co.deanwild.materialshowcaseview.shape.Shape;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
         ObservableScrollViewCallbacks, OnClickListener {
