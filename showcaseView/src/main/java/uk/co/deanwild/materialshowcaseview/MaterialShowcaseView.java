@@ -77,6 +77,7 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     private IDetachedListener mDetachedListener;
     private boolean mTargetTouchable = false;
     private boolean mDismissOnTargetTouch = true;
+    private boolean mIsDemoCamera = false;
 
     public MaterialShowcaseView(Context context) {
         super(context);
@@ -353,6 +354,10 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     void setPosition(int x, int y) {
         mXPosition = x;
         mYPosition = y;
+    }
+
+    public void setIsDemoCamera(boolean isDemoCamera) {
+        mIsDemoCamera = isDemoCamera;
     }
 
     private void setTitleText(CharSequence contentText) {

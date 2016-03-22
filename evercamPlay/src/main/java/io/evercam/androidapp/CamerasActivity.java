@@ -5,6 +5,7 @@ import android.animation.ValueAnimator;
 import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
+import android.content.pm.ActivityInfo;
 import android.content.res.Configuration;
 import android.graphics.Point;
 import android.graphics.Rect;
@@ -68,7 +69,11 @@ import io.evercam.androidapp.utils.PrefsManager;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.com.squareup.picasso.Picasso;
 import io.keen.client.java.KeenClient;
+import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
+import uk.co.deanwild.materialshowcaseview.MaterialShowcaseSequence;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
+import uk.co.deanwild.materialshowcaseview.ShowcaseConfig;
+import uk.co.deanwild.materialshowcaseview.shape.Shape;
 
 public class CamerasActivity extends ParentAppCompatActivity implements
         ObservableScrollViewCallbacks, OnClickListener {
@@ -119,8 +124,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private String usernameOnStop = "";
     private boolean showOfflineOnStop;
-
-    private MaterialShowcaseView showcaseView = null;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -612,9 +615,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         int index = 0;
 
-        if (AppData.evercamCameraList.size() <= 1 && showThumbnails)
-            showShowcaseViewForFirstTimeUser();
-
         for (final EvercamCamera evercamCamera : AppData.evercamCameraList) {
             //Don't show offline camera
             if (!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive()) {
@@ -669,6 +669,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }, 200);
         }
 
+        if (AppData.evercamCameraList.size() <= 1 && showThumbnails)
+            showShowcaseViewForFirstTimeUser();
+
         if (refresh != null) refresh.setActionView(null);
     }
 
@@ -684,7 +687,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         super.onConfigurationChanged(newConfig);
         mDrawerToggle.onConfigurationChanged(newConfig);
         resizeCameras();
-        showShowcaseView();
     }
 
     @Override
@@ -850,14 +852,14 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     }
 
     private void showShowcaseView() {
-
-        if (showcaseView != null) {
-            showcaseView.hide();
-            showcaseView = null;
-        }
-
-        showcaseView = new MaterialShowcaseView.Builder(this)
-                .setTarget(scanButton)
+//        io.evercam.androidapp.custom.FlowLayout cameraLineLayout =
+//                (io.evercam.androidapp.custom.FlowLayout)findViewById(R.id.cameras_flow_layout);
+//        if(cameraLineLayout.getChildCount() > 0) {
+//            View view = cameraLineLayout.getChildAt(0);
+//
+//        }
+        new MaterialShowcaseView.Builder(this)
+                .setTarget(manuallyAddButton)
                 .setDismissText(R.string.showcase_dismiss_text)
                 .setDismissTextSize(17)
                 .setShapePadding(30)
@@ -866,7 +868,22 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 .setContentText(R.string.confirmSignUp)
                 .setContentTextSize(17)
                 .setDismissOnTargetTouch(true)
+                .setListener(new IShowcaseListener() {
+                    @Override
+                    public void onShowcaseDisplayed(MaterialShowcaseView showcaseView) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+                    }
+
+                    @Override
+                    public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
+                        setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                    }
+                })
                 .show();
+    }
+
+    private void showSecondShowcaseView() {
+
     }
 
     /**
