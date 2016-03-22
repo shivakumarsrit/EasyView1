@@ -1,1 +1,1 @@
-include ':evercamPlay'
+include ':evercamPlay', ':showcaseView'

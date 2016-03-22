@@ -38,6 +38,6 @@
     <!-- Sign Up Message -->
     <string name="invalidEmail">Invalid Email address</string>
     <string name="passwordNotMatch">Please re-enter the same password again</string>
-    <string name="confirmSignUp">Congratulations, you\'re now logged in with your Evercam account. \n\nWe\'ve added a demo camera for you - add your own from the menu.</string>
+    <string name="confirmSignUp">Add your own cameras</string>
 
 </resources>

@@ -83,6 +83,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     public CustomProgressDialog reloadProgressDialog;
     private RelativeLayout actionButtonLayout;
     private FloatingActionButton manuallyAddButton;
+    private FloatingActionButton scanButton;
     private int lastScrollY;
     private ActionBarDrawerToggle mDrawerToggle;
     private DrawerLayout mDrawerLayout;
@@ -472,7 +473,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 .action_button_layout);
         final FloatingActionsMenu actionMenu = (FloatingActionsMenu) findViewById(R.id.add_action_menu);
         manuallyAddButton = (FloatingActionButton) findViewById(R.id.add_action_button_manually);
-        final FloatingActionButton scanButton = (FloatingActionButton) findViewById(R.id.add_action_button_scan);
+        scanButton = (FloatingActionButton) findViewById(R.id.add_action_button_scan);
 
         actionMenu.setOnFloatingActionsMenuUpdateListener(new FloatingActionsMenu
                 .OnFloatingActionsMenuUpdateListener() {
@@ -856,14 +857,15 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
 
         showcaseView = new MaterialShowcaseView.Builder(this)
-                .setTarget(manuallyAddButton)
+                .setTarget(scanButton)
                 .setDismissText(R.string.showcase_dismiss_text)
-                .setDismissTextSize(15)
-                .setShapePadding(60)
+                .setDismissTextSize(17)
+                .setShapePadding(30)
                 .setContentTextColor(getResources().getColor(R.color.white))
                 .setMaskColour(getResources().getColor(R.color.black_semi_transparent))
                 .setContentText(R.string.confirmSignUp)
-                .setContentTextSize(15)
+                .setContentTextSize(17)
+                .setDismissOnTargetTouch(true)
                 .show();
     }
 
