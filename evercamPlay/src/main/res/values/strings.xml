@@ -61,6 +61,7 @@
     <string name="menu_share">Sharing</string>
     <string name="menu_view_snapshot">Saved Images</string>
     <string name="menu_create_shortcut">Add to homescreen</string>
+    <string name="menu_remove_camera">Remove Camera</string>
     <string name="menu_view_recordings">Cloud Recordings</string>
     <string name="menu_cancel_scan">Cancel</string>
     <string name="menu_show_all_device">Show other devices</string>

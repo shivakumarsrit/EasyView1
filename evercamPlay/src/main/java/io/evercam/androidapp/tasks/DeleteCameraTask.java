@@ -12,6 +12,7 @@ import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.utils.Constants;
+import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.utils.EnumConstants.DeleteType;
 
 public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean> {
@@ -30,7 +31,11 @@ public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         customProgressDialog = new CustomProgressDialog(activity);
-        customProgressDialog.show(activity.getString(R.string.deleting_camera));
+        if(deleteType == DeleteType.DELETE_OWNED) {
+            customProgressDialog.show(activity.getString(R.string.deleting_camera));
+        } else if (deleteType == DeleteType.DELETE_SHARE) {
+            customProgressDialog.show(activity.getString(R.string.removing_camera));
+        }
     }
 
     @Override
@@ -42,9 +47,7 @@ public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean> {
                 }
             } else {
                 if (AppData.defaultUser != null) {
-                    if (CameraShare.delete(cameraId, AppData.defaultUser.getUsername())) {
-                        return true;
-                    }
+                    return CameraShare.delete(cameraId, AppData.defaultUser.getUsername());
                 } else {
                     //This should never happen
                 }

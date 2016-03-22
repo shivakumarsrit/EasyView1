@@ -92,10 +92,12 @@ import io.evercam.androidapp.recordings.RecordingWebActivity;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.tasks.CaptureSnapshotRunnable;
 import io.evercam.androidapp.tasks.CheckOnvifTask;
+import io.evercam.androidapp.tasks.DeleteCameraTask;
 import io.evercam.androidapp.tasks.LiveViewRunnable;
 import io.evercam.androidapp.tasks.PTZMoveTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
+import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.keen.client.java.KeenClient;
 
@@ -474,6 +476,7 @@ public class VideoActivity extends ParentAppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem shortcutItem = menu.findItem(R.id.video_menu_create_shortcut);
         MenuItem sharingItem = menu.findItem(R.id.video_menu_share);
+        MenuItem removeItem = menu.findItem(R.id.video_menu_remove_camera);
 
         if (evercamCamera != null) {
             //Only show the shortcut menu if camera is online
@@ -482,6 +485,9 @@ public class VideoActivity extends ParentAppCompatActivity
             //Only show the sharing menu if the user has full rights
             Right right = new Right(evercamCamera.getRights());
             sharingItem.setVisible(right.isFullRight());
+
+            //Only show item 'Remove Camera' when it's a shared camera
+            removeItem.setVisible(!evercamCamera.isOwned());
         } else {
             Log.e(TAG, "EvercamCamera is null");
         }
@@ -512,7 +518,8 @@ public class VideoActivity extends ParentAppCompatActivity
                     CustomSnackbar.showShort(this, R.string.msg_shortcut_created);
                     EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut, R.string.action_shortcut_create, R.string.label_shortcut_create);
 
-                    new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), evercamCamera.getCameraId(), ShortcutFeedbackItem.ACTION_TYPE_CREATE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS).sendToKeenIo(client);
+                    new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), evercamCamera.getCameraId(),
+                            ShortcutFeedbackItem.ACTION_TYPE_CREATE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS).sendToKeenIo(client);
                     getMixpanel().sendEvent(R.string.mixpanel_event_create_shortcut, new
                             JSONObject().put("Camera ID", evercamCamera.getCameraId()));
                 }
@@ -523,6 +530,16 @@ public class VideoActivity extends ParentAppCompatActivity
                     recordingIntent.putExtra(Constants.BUNDLE_KEY_CAMERA_ID, evercamCamera.getCameraId());
 
                     startActivityForResult(recordingIntent, Constants.REQUEST_CODE_RECORDING);
+                }
+            } else if (itemId == R.id.video_menu_remove_camera) {
+                if(evercamCamera != null) {
+                    CustomedDialog.getConfirmDialog(VideoActivity.this, new DialogInterface.OnClickListener() {
+                        @Override
+                        public void onClick(DialogInterface dialog, int which) {
+                            new DeleteCameraTask(evercamCamera.getCameraId(), VideoActivity.this,
+                                    EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                        }
+                    }, R.string.msg_confirm_remove_camera, R.string.remove).show();
                 }
             }
         } catch (JSONException e) {

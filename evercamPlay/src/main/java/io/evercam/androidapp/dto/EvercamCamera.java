@@ -449,6 +449,10 @@ public class EvercamCamera {
         return isPublic ? 1 : 0;
     }
 
+    public boolean isOwned() {
+        return getRealOwner().equals(getUser());
+    }
+
     @Override
     public boolean equals(Object obj) {
         if (this == obj) return true;

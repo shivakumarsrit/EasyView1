@@ -99,7 +99,7 @@ public class ViewCameraActivity extends ParentAppCompatActivity {
                         }
                     }
                 }
-            }, R.string.msg_confirm_remove_camera).show();
+            }, R.string.msg_confirm_delete_camera).show();
         }
 
         return true;

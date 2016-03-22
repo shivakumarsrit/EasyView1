@@ -32,4 +32,10 @@
         app:showAsAction="never"
         android:title="@string/menu_create_shortcut" />
 
+    <item
+        android:id="@+id/video_menu_remove_camera"
+        android:orderInCategory="4"
+        app:showAsAction="never"
+        android:title="@string/menu_remove_camera" />
+
 </menu>

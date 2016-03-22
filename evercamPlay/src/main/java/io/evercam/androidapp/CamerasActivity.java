@@ -252,7 +252,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         } else if (requestCode == Constants.REQUEST_CODE_DELETE_CAMERA) {
             // Don't reset reload variable to false because it's possible set to TRUE when
             // return from shortcut live view
-            if (resultCode == Constants.RESULT_TRUE) {
+            if (resultCode == Constants.RESULT_TRUE || resultCode == Constants.RESULT_DELETED) {
                 reloadCameraList = true;
                 CustomSnackbar.showLong(activity, R.string.msg_delete_success);
             }
