@@ -72,6 +72,7 @@ import io.evercam.androidapp.custom.CameraListAdapter;
 import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
+import io.evercam.androidapp.custom.OfflineLayoutView;
 import io.evercam.androidapp.custom.ProgressView;
 import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
@@ -131,7 +132,7 @@ public class VideoActivity extends ParentAppCompatActivity
      * UI elements
      */
     private ProgressView progressView = null;
-    private TextView offlineTextView;
+    private OfflineLayoutView offlineTextLayout;
     private TextView timeCountTextView;
     private RelativeLayout imageViewLayout;
     private ImageView imageView;
@@ -936,7 +937,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
         progressView.setVisibility(View.VISIBLE);
 
-        offlineTextView = (TextView) findViewById(R.id.offline_text_view);
+        offlineTextLayout = (OfflineLayoutView) findViewById(R.id.offline_view_layout);
         timeCountTextView = (TextView) findViewById(R.id.time_text_view);
 
         ImageView ptzLeftImageView = (ImageView) findViewById(R.id.arrow_left);
@@ -1115,7 +1116,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 }
                 if (isProgressViewVisible()) return;
 
-                if (!paused && !end && offlineTextView.getVisibility() != View.VISIBLE) // video is currently playing. Show pause button
+                if (!paused && !end && offlineTextLayout.getVisibility() != View.VISIBLE) // video is currently playing. Show pause button
                 {
                     if (playPauseImageView.getVisibility() == View.VISIBLE) {
                         showAllControlMenus(false);
@@ -1371,14 +1372,14 @@ public class VideoActivity extends ParentAppCompatActivity
                 if (evercamCamera.isOffline()) {
                     // If camera is offline, show offline msg and stop video
                     // playing.
-                    offlineTextView.setVisibility(View.VISIBLE);
+                    offlineTextLayout.show();
                     progressView.setVisibility(View.GONE);
 
                     // Hide video elements if switch to an offline camera.
                     showVideoView(false);
                     showImageView(false);
                 } else {
-                    offlineTextView.setVisibility(View.GONE);
+                    offlineTextLayout.hide();
 
                     setCameraForPlaying(cameraList.get(position));
                     createPlayer(evercamCamera);
