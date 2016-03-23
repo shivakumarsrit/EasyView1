@@ -1,6 +1,7 @@
 package io.evercam.androidapp.tasks;
 
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.os.Handler;
 import android.os.Looper;
 import android.util.Base64;
@@ -60,7 +61,7 @@ public class LiveViewRunnable implements Runnable {
     private void connectWebSocket() {
         try {
 
-            mSocket = new Socket(HOST);
+            mSocket = new Socket(getHostWithAuth(HOST));
             mSocket.connect();
 
             mSocket.onClose(new ISocketCloseCallback() {
@@ -70,8 +71,7 @@ public class LiveViewRunnable implements Runnable {
                 }
             });
 
-            JsonNode jsonNode = new ObjectMapper().valueToTree(API.userKeyPairMap());
-            mChannel = mSocket.chan("cameras:" + mCameraId, jsonNode);
+            mChannel = mSocket.chan("cameras:" + mCameraId, null);
 
             mChannel.join()
                     .receive("ignore", new IMessageCallback() {
@@ -158,5 +158,12 @@ public class LiveViewRunnable implements Runnable {
 
     private void runOnUiThread(Runnable runnable) {
         mHandler.post(runnable);
+    }
+
+    private String getHostWithAuth(String host) {
+        Uri.Builder url = Uri.parse(HOST).buildUpon();
+        url.appendQueryParameter( "api_key", API.getUserKeyPair()[0]);
+        url.appendQueryParameter( "api_id", API.getUserKeyPair()[1]);
+        return url.build().toString();
     }
 }
