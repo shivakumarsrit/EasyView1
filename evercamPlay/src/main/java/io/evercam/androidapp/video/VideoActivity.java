@@ -110,9 +110,7 @@ import rx.Observer;
 import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
-import rx.functions.Func1;
 import rx.schedulers.Schedulers;
-import rx.subscriptions.Subscriptions;
 
 public class VideoActivity extends ParentAppCompatActivity
         implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {

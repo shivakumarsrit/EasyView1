@@ -23,7 +23,6 @@ import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
-import io.evercam.androidapp.dto.CameraStatus;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.NewCameraFeedbackItem;
