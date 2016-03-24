@@ -66,15 +66,7 @@
 
         </RelativeLayout>
 
-        <TextView
-            android:id="@+id/offline_text_view"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:text="@string/msg_offline"
-            android:textColor="@color/orange_red"
-            android:textSize="17sp"
-            android:visibility="gone" />
+        <include layout="@layout/partial_offline"/>
 
         <RelativeLayout
             android:id="@+id/video_gradient_layout"

@@ -81,6 +81,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     public static int camerasPerRow = 2;
     public boolean reloadCameraList = false;
+    public static boolean reloadFromDatabase = false;
 
     public CustomProgressDialog reloadProgressDialog;
     private RelativeLayout actionButtonLayout;
@@ -234,6 +235,16 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         } else {
             startActivity(new Intent(this, OnBoardingActivity.class));
             finish();
+        }
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if(reloadFromDatabase) {
+            removeAllCameraViews();
+            addAllCameraViews(true, true);
+            reloadFromDatabase = false;
         }
     }
 
@@ -614,7 +625,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         for (final EvercamCamera evercamCamera : AppData.evercamCameraList) {
             //Don't show offline camera
-            if (!PrefsManager.showOfflineCameras(this) && !evercamCamera.isActive()) {
+            if (!PrefsManager.showOfflineCameras(this) && !evercamCamera.isOnline()) {
                 continue;
             }
 

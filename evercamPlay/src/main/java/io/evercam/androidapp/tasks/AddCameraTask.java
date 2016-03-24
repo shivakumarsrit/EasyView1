@@ -201,7 +201,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
             Camera camera = Camera.create(detail);
             EvercamCamera evercamCamera = new EvercamCamera().convertFromEvercam(camera);
             if (isReachableExternally) {
-                evercamCamera.setStatus(CameraStatus.ACTIVE);
+                evercamCamera.setIsOnline(true);
             }
             DbCamera dbCamera = new DbCamera(activity);
             dbCamera.addCamera(evercamCamera);

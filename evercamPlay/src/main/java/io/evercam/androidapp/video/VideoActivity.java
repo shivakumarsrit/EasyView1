@@ -9,6 +9,7 @@ import android.content.pm.ActivityInfo;
 import android.content.pm.PackageManager;
 import android.content.res.Configuration;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.SurfaceTexture;
@@ -56,11 +57,13 @@ import org.json.JSONObject;
 import java.util.ArrayList;
 import java.util.Date;
 
+import io.evercam.EvercamException;
 import io.evercam.PTZHome;
 import io.evercam.PTZPreset;
 import io.evercam.PTZPresetControl;
 import io.evercam.PTZRelativeBuilder;
 import io.evercam.Right;
+import io.evercam.Snapshot;
 import io.evercam.androidapp.CamerasActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.MainActivity;
@@ -72,6 +75,7 @@ import io.evercam.androidapp.custom.CameraListAdapter;
 import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
+import io.evercam.androidapp.custom.OfflineLayoutView;
 import io.evercam.androidapp.custom.ProgressView;
 import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
@@ -99,7 +103,16 @@ import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.utils.PrefsManager;
+import io.evercam.androidapp.utils.RxUtils;
 import io.keen.client.java.KeenClient;
+import rx.Observable;
+import rx.Observer;
+import rx.Subscriber;
+import rx.Subscription;
+import rx.android.schedulers.AndroidSchedulers;
+import rx.functions.Func1;
+import rx.schedulers.Schedulers;
+import rx.subscriptions.Subscriptions;
 
 public class VideoActivity extends ParentAppCompatActivity
         implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
@@ -131,7 +144,7 @@ public class VideoActivity extends ParentAppCompatActivity
      * UI elements
      */
     private ProgressView progressView = null;
-    private TextView offlineTextView;
+    private OfflineLayoutView offlineTextLayout;
     private TextView timeCountTextView;
     private RelativeLayout imageViewLayout;
     private ImageView imageView;
@@ -171,6 +184,8 @@ public class VideoActivity extends ParentAppCompatActivity
     private KeenClient client;
 
     private OnSwipeTouchListener swipeTouchListener;
+
+    private Subscription mSubscription;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -352,6 +367,7 @@ public class VideoActivity extends ParentAppCompatActivity
     protected void onDestroy() {
         releasePlayer();
         super.onDestroy();
+        RxUtils.unsubscribeIfNotNull(mSubscription);
     }
 
     @Override
@@ -480,7 +496,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
         if (evercamCamera != null) {
             //Only show the shortcut menu if camera is online
-            shortcutItem.setVisible(!evercamCamera.isOffline());
+            shortcutItem.setVisible(evercamCamera.isOnline());
 
             //Only show the sharing menu if the user has full rights
             Right right = new Right(evercamCamera.getRights());
@@ -936,7 +952,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
         progressView.setVisibility(View.VISIBLE);
 
-        offlineTextView = (TextView) findViewById(R.id.offline_text_view);
+        offlineTextLayout = (OfflineLayoutView) findViewById(R.id.offline_view_layout);
         timeCountTextView = (TextView) findViewById(R.id.time_text_view);
 
         ImageView ptzLeftImageView = (ImageView) findViewById(R.id.arrow_left);
@@ -950,6 +966,18 @@ public class VideoActivity extends ParentAppCompatActivity
 
         ptzZoomLayout = (RelativeLayout) findViewById(R.id.ptz_zoom_control_layout);
         ptzMoveLayout = (RelativeLayout) findViewById(R.id.ptz_move_control_layout);
+
+        offlineTextLayout.setOnRefreshClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+                offlineTextLayout.startProgress();
+                mSubscription = getRefreshOfflineObservable()
+                        .subscribeOn(Schedulers.io())
+                        .observeOn(AndroidSchedulers.mainThread())
+                        .subscribe(getRefreshOfflineObserver());
+            }
+        });
 
         /** The click listeners for PTZ control - move, zoom and preset */
         ptzLeftImageView.setOnClickListener(new OnClickListener() {
@@ -1115,7 +1143,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 }
                 if (isProgressViewVisible()) return;
 
-                if (!paused && !end && offlineTextView.getVisibility() != View.VISIBLE) // video is currently playing. Show pause button
+                if (!paused && !end && offlineTextLayout.getVisibility() != View.VISIBLE) // video is currently playing. Show pause button
                 {
                     if (playPauseImageView.getVisibility() == View.VISIBLE) {
                         showAllControlMenus(false);
@@ -1155,6 +1183,65 @@ public class VideoActivity extends ParentAppCompatActivity
                 }
             }
         });
+    }
+
+    /**
+     * Observable and Observer for refreshing offline camera using RxJava
+     */
+
+    private Observable<Bitmap> getRefreshOfflineObservable() {
+        return Observable.create(new Observable.OnSubscribe<Bitmap>() {
+            @Override
+            public void call(Subscriber<? super Bitmap> subscriber) {
+                try {
+                    subscriber.onNext(reloadSnaopshot(evercamCamera.getCameraId()));
+                    subscriber.onCompleted();
+                } catch (Exception e) {
+                    subscriber.onError(e);
+                }
+            }
+        });
+    }
+
+    private Observer<Bitmap> getRefreshOfflineObserver() {
+
+        return new Observer<Bitmap>() {
+            Bitmap bitmap = null;
+
+            @Override
+            public void onCompleted() {
+                Log.d(TAG, "On complete");
+                offlineTextLayout.stopProgress();
+
+                if(bitmap != null) {
+                    imageView.setImageBitmap(bitmap);
+                    evercamCamera.setIsOnline(true);
+                    new DbCamera(getApplicationContext()).updateCamera(evercamCamera);
+                    CamerasActivity.reloadFromDatabase = true;
+
+                    startPlay();
+                }
+            }
+
+            @Override
+            public void onError(Throwable e) {
+                Log.e(TAG, "Error: " + e.getMessage());
+                e.printStackTrace();
+                offlineTextLayout.stopProgress();
+                CustomToast.showInCenter(getApplicationContext(), e.getMessage());
+            }
+
+            @Override
+            public void onNext(Bitmap bitmap) {
+                Log.d(TAG, "On next");
+                this.bitmap = bitmap;
+            }
+        };
+    }
+
+    private Bitmap reloadSnaopshot(String cameraId) throws EvercamException {
+        Snapshot snapshot = Snapshot.record(cameraId, "Android client");
+        return BitmapFactory.decodeByteArray(snapshot.getData(), 0, snapshot.getData().length);
     }
 
     public void setTempSnapshotBitmap(Bitmap bitmap) {
@@ -1316,7 +1403,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
     private boolean cameraExistsInListButOffline(String cameraId) {
         for (EvercamCamera camera : AppData.evercamCameraList) {
-            if (camera.getCameraId().equals(cameraId) && camera.isOffline()) {
+            if (camera.getCameraId().equals(cameraId) && !camera.isOnline()) {
                 return true;
             }
         }
@@ -1334,7 +1421,7 @@ public class VideoActivity extends ParentAppCompatActivity
             cameraList = AppData.evercamCameraList;
         } else {
             for (EvercamCamera evercamCamera : AppData.evercamCameraList) {
-                if (!evercamCamera.isOffline()) {
+                if (evercamCamera.isOnline()) {
                     onlineCameraList.add(evercamCamera);
                 }
             }
@@ -1368,17 +1455,17 @@ public class VideoActivity extends ParentAppCompatActivity
                 //Hide the PTZ control panel when switch to another camera
                 showPtzControl(false);
 
-                if (evercamCamera.isOffline()) {
+                if (!evercamCamera.isOnline()) {
                     // If camera is offline, show offline msg and stop video
                     // playing.
-                    offlineTextView.setVisibility(View.VISIBLE);
+                    offlineTextLayout.show();
                     progressView.setVisibility(View.GONE);
 
                     // Hide video elements if switch to an offline camera.
                     showVideoView(false);
                     showImageView(false);
                 } else {
-                    offlineTextView.setVisibility(View.GONE);
+                    offlineTextLayout.hide();
 
                     setCameraForPlaying(cameraList.get(position));
                     createPlayer(evercamCamera);

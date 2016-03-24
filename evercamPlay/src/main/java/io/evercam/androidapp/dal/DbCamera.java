@@ -34,7 +34,7 @@ public class DbCamera extends DatabaseMaster {
     private final String KEY_EXTERNAL_RTSP_URL = "externalRtspUrl";
     private final String KEY_INTERNAL_RTSP_URL = "internalRtspUrl";
     private final String KEY_HLS_URL = "hlsUrl";
-    private final String KEY_STATUS = "status";
+    private final String KEY_IS_ONLINE = "isOnline";
     private final String KEY_HAS_CREDENTIAL = "hasCredential";
 
     // Fields for edit camera
@@ -64,7 +64,7 @@ public class DbCamera extends DatabaseMaster {
                 "" + KEY_MODEL_ID + " TEXT NULL" + "," + KEY_MAC + " TEXT NULL " + "," +
                 "" + KEY_EXTERNAL_JPG_URL + " TEXT NULL " + "," + KEY_INTERNAL_JPG_URL + " TEXT " +
                 "NULL " + "," + KEY_EXTERNAL_RTSP_URL + " TEXT NULL" + "," +
-                "" + KEY_INTERNAL_RTSP_URL + " TEXT NULL" + "," + KEY_STATUS + " TEXT NULL" + "," +
+                "" + KEY_INTERNAL_RTSP_URL + " TEXT NULL" + "," + KEY_IS_ONLINE + " TEXT NULL" + "," +
                 "" + KEY_HAS_CREDENTIAL + " INTEGER NULL" + "," + KEY_INTERNAL_HOST + " TEXT " +
                 "NULL" + "," + KEY_EXTERNAL_HOST + " TEXT NULL" + "," +
                 "" + KEY_INTERNAL_HTTP + " INTEGER NULL" + "," + KEY_EXTERNAL_HTTP + " INTEGER " +
@@ -105,7 +105,7 @@ public class DbCamera extends DatabaseMaster {
         Cursor cursor = db.query(TABLE_CAMERA, new String[]{KEY_ID, KEY_CAMERA_ID,
                         KEY_CAMERA_NAME, KEY_OWNER, KEY_USERNAME, KEY_PASSWORD, KEY_TIMEZONE, KEY_VENDOR,
                         KEY_MODEL_ID, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
-                        KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_STATUS, KEY_HAS_CREDENTIAL,
+                        KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_IS_ONLINE, KEY_HAS_CREDENTIAL,
                         KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                         KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
                         KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME},
@@ -121,11 +121,6 @@ public class DbCamera extends DatabaseMaster {
         db.close();
 
         return evercamCamera;
-    }
-
-    public ArrayList<EvercamCamera> getAllCameras(int maxRecords) {
-        String selectQuery = "SELECT  * FROM " + TABLE_CAMERA + " order by " + KEY_ID + " asc";
-        return selectCameraListByQuery(selectQuery, maxRecords);
     }
 
     public ArrayList<EvercamCamera> getCamerasByOwner(String ownerUsername, int maxRecords) {
@@ -178,7 +173,7 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_MODEL_ID, evercamCamera.getModelId());
         values.put(KEY_TIMEZONE, evercamCamera.getTimezone());
         values.put(KEY_MAC, evercamCamera.getMac());
-        values.put(KEY_STATUS, evercamCamera.getStatus());
+        values.put(KEY_IS_ONLINE, evercamCamera.getIsOnlineInt());
         values.put(KEY_INTERNAL_JPG_URL, evercamCamera.getInternalSnapshotUrl());
         values.put(KEY_EXTERNAL_JPG_URL, evercamCamera.getExternalSnapshotUrl());
         values.put(KEY_EXTERNAL_RTSP_URL, evercamCamera.getExternalRtspUrl());
@@ -241,7 +236,7 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setInternalSnapshotUrl(cursor.getString(11));
         evercamCamera.setExternalRtspUrl(cursor.getString(12));
         evercamCamera.setInternalRtspUrl(cursor.getString(13));
-        evercamCamera.setStatus(cursor.getString(14));
+        evercamCamera.setIsOnline(cursor.getInt(14) == 1);
         evercamCamera.setHasCredentials(cursor.getInt(15) == 1);
         evercamCamera.setInternalHost(cursor.getString(16));
         evercamCamera.setExternalHost(cursor.getString(17));

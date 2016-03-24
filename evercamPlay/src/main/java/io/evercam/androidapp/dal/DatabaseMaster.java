@@ -16,9 +16,10 @@ public class DatabaseMaster extends SQLiteOpenHelper {
     // Version 10: Added rights string in camera object
     // Version 11: Added public & discoverable in camera object
     // Version 12: Added HLS URL in camera object
-    // Vesion 13: Added model ID
+    // Version 13: Added model ID
+    // Version 14: Replaced camera status with isOnline
     private static final String TAG = "DatabaseMaster";
-    private static final int DATABASE_VERSION = 13;
+    private static final int DATABASE_VERSION = 14;
     private static final String DATABASE_NAME = "evercamdata";
     private Context context = null;
 
