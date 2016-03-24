@@ -71,7 +71,8 @@ public class LiveViewRunnable implements Runnable {
                 }
             });
 
-            mChannel = mSocket.chan("cameras:" + mCameraId, null);
+            JsonNode jsonNode = new ObjectMapper().valueToTree(API.userKeyPairMap());
+            mChannel = mSocket.chan("cameras:" + mCameraId, jsonNode);
 
             mChannel.join()
                     .receive("ignore", new IMessageCallback() {
