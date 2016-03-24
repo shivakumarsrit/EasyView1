@@ -19,7 +19,7 @@
             android:layout_height="35dp"
             android:layout_centerInParent="true"
             android:src="@drawable/ic_action_refresh"
-            android:tint="@color/light_gray_400" />
+            android:tint="@color/offline_text" />
 
         <ProgressBar
             android:id="@+id/offline_refresh_progress_bar"
@@ -27,6 +27,7 @@
             android:layout_width="35dp"
             android:layout_height="35dp"
             android:layout_centerInParent="true"
+            android:visibility="invisible"
             android:padding="5dp" />
 
     </RelativeLayout>
@@ -38,7 +39,7 @@
         android:layout_below="@id/offline_refresh_layout"
         android:layout_marginTop="10dp"
         android:text="@string/msg_offline"
-        android:textColor="@color/light_gray_400"
-        android:textSize="17sp" />
+        android:textColor="@color/offline_text"
+        android:textSize="16sp" />
 
 </io.evercam.androidapp.custom.OfflineLayoutView>

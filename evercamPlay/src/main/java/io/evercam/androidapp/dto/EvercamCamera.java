@@ -37,7 +37,7 @@ public class EvercamCamera {
     private String internalSnapshotUrl = "";
     private String externalRtspUrl = "";
     private String internalRtspUrl = "";
-    private String status = "";
+    private boolean isOnline = false;
     private boolean hasCredentials = false;
     private String thumbnailUrl = "";
     private String hlsUrl = "";
@@ -83,11 +83,7 @@ public class EvercamCamera {
             internalSnapshotUrl = camera.getInternalJpgUrl();
             externalRtspUrl = camera.getExternalH264Url();
             internalRtspUrl = camera.getInternalH264Url();
-            if (camera.isOnline()) {
-                status = CameraStatus.ACTIVE;
-            } else {
-                status = CameraStatus.OFFLINE;
-            }
+            isOnline = camera.isOnline();
             internalHost = camera.getInternalHost();
             externalHost = camera.getExternalHost();
             internalHttp = camera.getInternalHttpPort();
@@ -113,22 +109,8 @@ public class EvercamCamera {
         this.id = id;
     }
 
-    public String getStatus() {
-        return status;
-    }
-
-    public boolean isActive() {
-        if (getStatus().equalsIgnoreCase(CameraStatus.ACTIVE)) {
-            return true;
-        }
-        return false;
-    }
-
-    public boolean isOffline() {
-        if (getStatus().equalsIgnoreCase(CameraStatus.OFFLINE)) {
-            return true;
-        }
-        return false;
+    public boolean isOnline () {
+        return isOnline;
     }
 
     public String getCameraId() {
@@ -283,8 +265,8 @@ public class EvercamCamera {
         this.internalRtspUrl = internalRtspUrl;
     }
 
-    public void setStatus(String status) {
-        this.status = status;
+    public void setIsOnline(boolean isOnline) {
+        this.isOnline = isOnline;
     }
 
     public String getCode() {
@@ -437,6 +419,10 @@ public class EvercamCamera {
         return isDiscoverable() ? 1 : 0;
     }
 
+    public int getIsOnlineInt() {
+        return isOnline ? 1: 0;
+    }
+
     public boolean isPublic() {
         return isPublic;
     }
@@ -470,7 +456,7 @@ public class EvercamCamera {
                 .externalHost) && internalHttp == other.internalHttp && externalHttp == other
                 .externalHttp && internalRtsp == other.internalRtsp && externalRtsp == other
                 .externalRtsp && realOwner.equals(other.realOwner) && canEdit == other.canEdit &&
-                canDelete == other.canDelete && status == other.status && rights == other.rights &&
+                canDelete == other.canDelete && isOnline == other.isOnline() && rights == other.rights &&
                 isPublic == other.isPublic && isDiscoverable == other.isDiscoverable &&
                 hlsUrl == other.hlsUrl) {
             return true;
@@ -489,7 +475,7 @@ public class EvercamCamera {
                 "modelName=" + modelName + ", mac=" + mac + ", externalSnapshotUrl=" +
                 externalSnapshotUrl + ", internalSnapshotUrl=" + internalSnapshotUrl + ", " +
                 "externalRtspUrl=" + externalRtspUrl + ", internalRtspUrl=" + internalRtspUrl +
-                ", status=" + status + ", hasCredentials=" + hasCredentials + ", " +
+                ", isOnline=" + isOnline + ", hasCredentials=" + hasCredentials + ", " +
                 "internalHost=" + internalHost + ", externalHost=" + externalHost + ", " +
                 "internalHttp=" + internalHttp + ", internalRtsp=" + internalRtsp + ", " +
                 "externalHttp=" + externalHttp + ", externalRtsp=" + externalRtsp + ", " +

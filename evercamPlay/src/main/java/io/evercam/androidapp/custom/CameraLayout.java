@@ -132,7 +132,7 @@ public class CameraLayout extends LinearLayout {
     // Image loaded form camera and now set the controls appearance and text
     // accordingly
     private void setLayoutForLiveImageReceived() {
-        evercamCamera.setStatus(CameraStatus.ACTIVE);
+        evercamCamera.setIsOnline(true);
         offlineImage.setVisibility(View.INVISIBLE);
 
         handler.removeCallbacks(LoadImageRunnable);
@@ -159,7 +159,7 @@ public class CameraLayout extends LinearLayout {
                         }
                     });
 
-            if (!evercamCamera.isActive()) {
+            if (!evercamCamera.isOnline()) {
                 showGreyImage();
                 showOfflineIcon();
             }
@@ -188,7 +188,7 @@ public class CameraLayout extends LinearLayout {
     // Image not received form cache, Evercam nor camera side. Set the controls
     // appearance and text accordingly
     private void setLayoutForNoImageReceived() {
-        if (!evercamCamera.isActive()) {
+        if (!evercamCamera.isOnline()) {
             showGreyImage();
 
             showOfflineIcon();
@@ -205,7 +205,7 @@ public class CameraLayout extends LinearLayout {
                 if (end) return;
 
                 if (evercamCamera.loadingStatus == ImageLoadingStatus.not_started) {
-                    if (evercamCamera.isActive()) {
+                    if (evercamCamera.isOnline()) {
                         //showAndSaveLiveSnapshot();
                     }
                 } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_received) {

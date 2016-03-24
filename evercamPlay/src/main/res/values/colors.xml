@@ -14,6 +14,7 @@
     <color name="mint_green">#80CBC4</color>
     <!--<color name="evercam_blue">#428bca</color> -->
 
+    <color name="offline_text">@color/light_gray_400</color>
     <!-- Navigation Drawer -->
     <color name="navigation_drawer_background">@color/white</color>
     <color name="nav_drawer_item_icon_normal">@color/light_gray_600</color>
