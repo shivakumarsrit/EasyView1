@@ -8,9 +8,12 @@ import android.preference.PreferenceFragment;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.ListView;
 
 import java.util.ArrayList;
 
+import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
 import io.evercam.androidapp.utils.PrefsManager;
 
@@ -63,10 +66,31 @@ public class CameraPrefsActivity extends AppCompatActivity {
         @Override
         public void onCreate(final Bundle savedInstanceState) {
             super.onCreate(savedInstanceState);
+
             addPreferencesFromResource(R.xml.main_preference);
             setCameraNumbersForScreen(screenWidth);
             setUpSleepTime();
             showAppVersion();
+
+            Preference showGuidePreference = getPreferenceManager().findPreference(PrefsManager.KEY_GUIDE);
+            showGuidePreference.setOnPreferenceClickListener(new Preference.OnPreferenceClickListener() {
+                @Override
+                public boolean onPreferenceClick(Preference preference) {
+                    getActivity().setResult(Constants.RESULT_TRUE);
+                    getActivity().finish();
+                    return false;
+                }
+            });
+        }
+
+        @Override
+        public void onActivityCreated(Bundle savedInstanceState) {
+            super.onActivityCreated(savedInstanceState);
+
+            // remove dividers
+            View rootView = getView();
+            ListView list = (ListView) rootView.findViewById(android.R.id.list);
+            list.setDivider(null);
         }
 
         private void setCameraNumbersForScreen(int screenWidth) {

@@ -26,6 +26,7 @@ public final class Constants {
     public static final int REQUEST_CODE_CREATE_SHARE = 10;
     public static final int REQUEST_CODE_SHARE = 11;
     public static final int REQUEST_CODE_SNAPSHOT = 12;
+    public static final int REQUEST_CODE_SHOW_GUIDE = 13;
     public static final int RESULT_TRUE = 1;
     public static final int RESULT_FALSE = 0;
     public static final int RESULT_DELETED = 2;

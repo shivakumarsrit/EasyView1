@@ -13,6 +13,7 @@ public class PrefsManager {
     public static final String KEY_SHOW_OFFLINE_CAMERA = "prefsShowOfflineCameras";
     public final static String KEY_VERSION = "prefsVersion";
     public final static String KEY_SHOWCASE_SHOWN = "isShowcaseShown";
+    public final static String KEY_GUIDE = "prefsGuide";
 
     public final static String KEY_GCM_PREFS_ID = "gcmDetails";
     public final static String KEY_GCM_REGISTRATION_ID = "registrationId";

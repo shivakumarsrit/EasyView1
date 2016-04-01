@@ -270,6 +270,8 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }
         } else if (requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT) {
             reloadCameraList = (resultCode == Constants.RESULT_ACCOUNT_CHANGED);
+        } else if (requestCode == Constants.REQUEST_CODE_SHOW_GUIDE && resultCode == Constants.RESULT_TRUE) {
+            showShowcaseView();
         }
 
         if (resultCode == Constants.RESULT_TRANSFERRED) {
@@ -437,7 +439,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
         if (view == mNavSettingsItemLayout) {
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_settings, R.string.label_settings);
-            startActivity(new Intent(CamerasActivity.this, CameraPrefsActivity.class));
+
+            startActivityForResult(new Intent(CamerasActivity.this, CameraPrefsActivity.class),
+                    Constants.REQUEST_CODE_SHOW_GUIDE);
         } else if (view == mNavFeedbackItemLayout) {
             Intercom.client().displayConversationsList();
         } else if (view == mNavScanLayout) {

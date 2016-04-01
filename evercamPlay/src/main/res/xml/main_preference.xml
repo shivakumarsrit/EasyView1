@@ -1,7 +1,9 @@
 <?xml version="1.0" encoding="utf-8"?>
 <PreferenceScreen xmlns:android="http://schemas.android.com/apk/res/android">
 
-    <PreferenceCategory android:title="@string/title_general">
+    <PreferenceCategory
+        android:title="@string/title_general">
+
         <ListPreference
             android:defaultValue="2"
             android:key="lstgridcamerasperrow"
@@ -23,12 +25,18 @@
             android:defaultValue="true"
             android:key="prefsShowOfflineCameras"
             android:title="@string/show_offline_camera" />
+
     </PreferenceCategory>
 
     <PreferenceCategory android:title="@string/title_about">
+
         <ListPreference
             android:key="prefsVersion"
             android:title="@string/title_version" />
+        <Preference
+            android:key="prefsGuide"
+            android:title="@string/prefs_show_guide" />
+
     </PreferenceCategory>
 
 </PreferenceScreen>

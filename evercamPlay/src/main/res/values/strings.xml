@@ -35,6 +35,7 @@
     <string name="summary_awake_time_suffix">of inactivity</string>
     <string name="title_force_landscape">Force landscape for live view</string>
     <string name="show_offline_camera">Show offline cameras</string>
+    <string name="prefs_show_guide">Show app guide</string>
     <string name="title_activity_public_cameras">Public Cameras</string>
     <string name="forget_password_url">https://dash.evercam.io/v1/users/password-reset</string>
     <string name="title_activity_recording_web">Cloud Recordings</string>
