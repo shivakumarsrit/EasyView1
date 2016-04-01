@@ -74,9 +74,11 @@ public class EvercamPlayApplication extends MultiDexApplication {
     }
 
     public static void sendEventAnalytics(Activity activity, int cateory, int action, int label) {
-        Tracker tracker = getAppTracker(activity);
-        tracker.send(new HitBuilders.EventBuilder().setCategory(activity.getString(cateory))
-                .setAction(activity.getString(action)).setLabel(activity.getString(label)).build());
+        if (activity != null) {
+            Tracker tracker = getAppTracker(activity);
+            tracker.send(new HitBuilders.EventBuilder().setCategory(activity.getString(cateory))
+                    .setAction(activity.getString(action)).setLabel(activity.getString(label)).build());
+        }
     }
 
     public static void sendCaughtException(Activity activity, Exception e) {
@@ -88,15 +90,19 @@ public class EvercamPlayApplication extends MultiDexApplication {
     }
 
     public static void sendCaughtException(Activity activity, String message) {
-        Tracker tracker = getAppTracker(activity);
-        tracker.send(new HitBuilders.ExceptionBuilder().setDescription(message).setFatal(true)
-                .build());
+        if (activity != null) {
+            Tracker tracker = getAppTracker(activity);
+            tracker.send(new HitBuilders.ExceptionBuilder().setDescription(message).setFatal(true)
+                    .build());
+        }
     }
 
     public static void sendCaughtExceptionNotImportant(Activity activity, Exception e) {
-        Tracker tracker = getAppTracker(activity);
-        tracker.send(new HitBuilders.ExceptionBuilder().setDescription(e.getStackTrace()[0]
-                .toString().replace("io.evercam.androidapp", e.toString())).setFatal(false).build
-                ());
+        if (activity != null) {
+            Tracker tracker = getAppTracker(activity);
+            tracker.send(new HitBuilders.ExceptionBuilder().setDescription(e.getStackTrace()[0]
+                    .toString().replace("io.evercam.androidapp", e.toString())).setFatal(false).build
+                    ());
+        }
     }
 }
