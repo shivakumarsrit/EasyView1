@@ -192,7 +192,9 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
         passwordEdit = (EditText) findViewById(R.id.add_password_edit);
         externalHostEdit = (PortCheckEditText) findViewById(R.id.add_external_host_edit);
         externalHttpEdit = (PortCheckEditText) findViewById(R.id.add_external_http_edit);
+        externalHttpEdit.setPortType(PortCheckTask.PortType.HTTP);
         externalRtspEdit = (PortCheckEditText) findViewById(R.id.add_external_rtsp_edit);
+        externalRtspEdit.setPortType(PortCheckTask.PortType.RTSP);
         jpgUrlEdit = (EditText) findViewById(R.id.add_jpg_edit);
         rtspUrlEdit = (EditText) findViewById(R.id.add_rtsp_edit);
         mHttpStatusTextView = (TextView) findViewById(R.id.port_status_text_http);
@@ -350,14 +352,6 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
                 }
             }
         });
-    }
-
-    private void checkPort(PortCheckTask.PortType type) {
-        if (type == PortCheckTask.PortType.HTTP) {
-            checkPort(externalHostEdit, externalHttpEdit, mHttpStatusTextView, mHttpProgressBar);
-        } else if (type == PortCheckTask.PortType.RTSP) {
-            checkPort(externalHostEdit, externalRtspEdit, mRtspStatusTextView, mRtspProgressBar);
-        }
     }
 
     private void performAddEdit() {
@@ -736,5 +730,40 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
         } else {
             modelSelectorFragment.buildVendorSpinner(vendorList, null);
         }
+    }
+
+    @Override
+    public EditText getPublicIpEditText() {
+        return externalHostEdit;
+    }
+
+    @Override
+    public EditText getHttpEditText() {
+        return externalHttpEdit;
+    }
+
+    @Override
+    public EditText getRtspEditText() {
+        return externalRtspEdit;
+    }
+
+    @Override
+    public TextView getHttpStatusText() {
+        return mHttpStatusTextView;
+    }
+
+    @Override
+    public TextView getRtspStatusText() {
+        return mRtspStatusTextView;
+    }
+
+    @Override
+    public ProgressBar getHttpProgressBar() {
+        return mHttpProgressBar;
+    }
+
+    @Override
+    public ProgressBar getRtspProgressBar() {
+        return mRtspProgressBar;
     }
 }

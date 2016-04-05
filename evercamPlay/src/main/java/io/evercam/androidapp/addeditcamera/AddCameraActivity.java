@@ -188,7 +188,9 @@ public class AddCameraActivity extends AddCameraParentActivity {
     private void initConnectCameraUI() {
         mPublicIpEditText = (PortCheckEditText) findViewById(R.id.external_ip_float_edit_text);
         mHttpEditText = (PortCheckEditText) findViewById(R.id.http_float_edit_text);
+        mHttpEditText.setPortType(PortCheckTask.PortType.HTTP);
         mRtspEditText = (PortCheckEditText) findViewById(R.id.rtsp_float_edit_text);
+        mRtspEditText.setPortType(PortCheckTask.PortType.RTSP);
         mHttpStatusText = (TextView) findViewById(R.id.port_status_text_http);
         mRtspStatusText = (TextView) findViewById(R.id.port_status_text_rtsp);
         mHttpProgressBar = (ProgressBar) findViewById(R.id.progress_bar_http);
@@ -523,14 +525,6 @@ public class AddCameraActivity extends AddCameraParentActivity {
         updateMessage(mConnectExplainView, 0, R.string.connect_camera_auth_message);
     }
 
-    private void checkPort(PortCheckTask.PortType type) {
-        if (type == PortCheckTask.PortType.HTTP) {
-            checkPort(mPublicIpEditText, mHttpEditText, mHttpStatusText, mHttpProgressBar);
-        } else if (type == PortCheckTask.PortType.RTSP) {
-            checkPort(mPublicIpEditText, mRtspEditText, mRtspStatusText, mRtspProgressBar);
-        }
-    }
-
     private CameraBuilder buildCamera(SelectedModel selectedModel) {
         String cameraName = mCameraNameEditText.getText().toString();
 
@@ -656,5 +650,40 @@ public class AddCameraActivity extends AddCameraParentActivity {
             if (!expand) marginTop = dpInPixels(20);
             layoutParams.setMargins(0, marginTop, 0, 0);
         }
+    }
+
+    @Override
+    public EditText getPublicIpEditText() {
+        return mPublicIpEditText;
+    }
+
+    @Override
+    public EditText getHttpEditText() {
+        return mHttpEditText;
+    }
+
+    @Override
+    public EditText getRtspEditText() {
+        return mRtspEditText;
+    }
+
+    @Override
+    public TextView getHttpStatusText() {
+        return mHttpStatusText;
+    }
+
+    @Override
+    public TextView getRtspStatusText() {
+        return mRtspStatusText;
+    }
+
+    @Override
+    public ProgressBar getHttpProgressBar() {
+        return mHttpProgressBar;
+    }
+
+    @Override
+    public ProgressBar getRtspProgressBar() {
+        return mRtspProgressBar;
     }
 }

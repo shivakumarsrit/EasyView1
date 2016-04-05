@@ -1,14 +1,35 @@
 package io.evercam.androidapp.custom;
 
 import android.content.Context;
+import android.os.Handler;
+import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
+import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import io.evercam.androidapp.addeditcamera.AddCameraParentActivity;
+import io.evercam.androidapp.tasks.PortCheckTask;
+
 public class PortCheckEditText extends EditText {
+
+    private final static String TAG = "PortCheckEditText";
+    private final int TRIGGER_PORT_CHECK = 1;
+    private final long TRIGGER_DELAY_IN_MS = 800;
+    private PortCheckTask.PortType portType = null;
+
+    private Handler handler = new Handler() {
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == TRIGGER_PORT_CHECK) {
+                triggerPortCheck();
+            }
+        }
+    };
+
     public PortCheckEditText(Context context) {
         super(context);
     }
@@ -41,12 +62,18 @@ public class PortCheckEditText extends EditText {
 
             @Override
             public void afterTextChanged(Editable editable) {
+
+                // Clear the post status text that already exists
                 if (isFirstTimeChange) {
                     for (TextView textView : textViews) {
                         hideView(textView);
                         isFirstTimeChange = false;
                     }
                 }
+
+                // Trigger port check when user finishes typing
+                handler.removeMessages(TRIGGER_PORT_CHECK);
+                handler.sendEmptyMessageDelayed(TRIGGER_PORT_CHECK, TRIGGER_DELAY_IN_MS);
             }
         });
     }
@@ -86,5 +113,31 @@ public class PortCheckEditText extends EditText {
 
     public boolean isEmpty() {
         return getText().toString().isEmpty();
+    }
+
+    public void triggerPortCheck() {
+        AddCameraParentActivity activity = (AddCameraParentActivity)getContext();
+        if(activity != null) {
+            if(portType != null) {
+                activity.checkPort(portType);
+            } else {
+                activity.checkPort(PortCheckTask.PortType.HTTP);
+                activity.checkPort(PortCheckTask.PortType.RTSP);
+            }
+        }
+    }
+
+    /**
+     * Must be called after init view.
+     * Otherwise the auto trigger won't work because the port type is not specified.
+     *
+     * @param portType HTTP or RTSP. null if it's an IP address view
+     */
+    public void setPortType(PortCheckTask.PortType portType) {
+        this.portType = portType;
+    }
+
+    public PortCheckTask.PortType getPortType() {
+        return portType;
     }
 }
