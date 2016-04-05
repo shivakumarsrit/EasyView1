@@ -11,24 +11,19 @@ import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
 
+import java.lang.ref.WeakReference;
+
 import io.evercam.androidapp.addeditcamera.AddCameraParentActivity;
 import io.evercam.androidapp.tasks.PortCheckTask;
 
 public class PortCheckEditText extends EditText {
 
     private final static String TAG = "PortCheckEditText";
-    private final int TRIGGER_PORT_CHECK = 1;
-    private final long TRIGGER_DELAY_IN_MS = 800;
+    private final static int TRIGGER_PORT_CHECK = 1;
+    private final long TRIGGER_DELAY_IN_MS = 700;
     private PortCheckTask.PortType portType = null;
 
-    private Handler handler = new Handler() {
-        @Override
-        public void handleMessage(Message msg) {
-            if (msg.what == TRIGGER_PORT_CHECK) {
-                triggerPortCheck();
-            }
-        }
-    };
+    private PortCheckHandler handler = new PortCheckHandler(this);
 
     public PortCheckEditText(Context context) {
         super(context);
@@ -137,7 +132,18 @@ public class PortCheckEditText extends EditText {
         this.portType = portType;
     }
 
-    public PortCheckTask.PortType getPortType() {
-        return portType;
+    private static class PortCheckHandler extends Handler {
+        private final WeakReference<PortCheckEditText> editTextReference;
+
+        public PortCheckHandler(PortCheckEditText editText) {
+            editTextReference = new WeakReference<>(editText);
+        }
+
+        @Override
+        public void handleMessage(Message msg) {
+            if (msg.what == TRIGGER_PORT_CHECK) {
+                editTextReference.get().triggerPortCheck();
+            }
+        }
     }
 }

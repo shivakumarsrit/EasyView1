@@ -289,8 +289,6 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
             public void onFocusChange(View view, boolean hasFocus) {
                 if (hasFocus) {
                     externalHttpEdit.hideStatusViewsOnTextChange(mHttpStatusTextView);
-                } else {
-                    checkPort(PortCheckTask.PortType.HTTP);
                 }
             }
         });
@@ -300,8 +298,6 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
             public void onFocusChange(View v, boolean hasFocus) {
                 if (hasFocus) {
                     externalRtspEdit.hideStatusViewsOnTextChange(mRtspStatusTextView);
-                } else {
-                    checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });
@@ -312,9 +308,6 @@ public class AddEditCameraActivity extends AddCameraParentActivity {
                 if (hasFocus) {
                     externalHostEdit.hideStatusViewsOnTextChange(
                             mRtspStatusTextView, mHttpStatusTextView);
-                } else {
-                    checkPort(PortCheckTask.PortType.HTTP);
-                    checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });

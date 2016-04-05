@@ -294,8 +294,6 @@ public class AddCameraActivity extends AddCameraParentActivity {
                 if (hasFocus) {
                     mHttpEditText.hideStatusViewsOnTextChange(mHttpStatusText);
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_http_message);
-                } else {
-                    checkPort(PortCheckTask.PortType.HTTP);
                 }
             }
         });
@@ -306,8 +304,6 @@ public class AddCameraActivity extends AddCameraParentActivity {
                 if (hasFocus) {
                     mRtspEditText.hideStatusViewsOnTextChange(mRtspStatusText);
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_rtsp_message);
-                } else {
-                    checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });
@@ -319,9 +315,6 @@ public class AddCameraActivity extends AddCameraParentActivity {
                     mPublicIpEditText.hideStatusViewsOnTextChange(
                             mHttpStatusText, mRtspStatusText);
                     updateMessage(mConnectExplainView, 0, R.string.connect_camera_ip_message);
-                } else {
-                    checkPort(PortCheckTask.PortType.HTTP);
-                    checkPort(PortCheckTask.PortType.RTSP);
                 }
             }
         });
