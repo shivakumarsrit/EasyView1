@@ -37,8 +37,20 @@ public class CameraLayout extends LinearLayout {
      * processing should be done in any thread.
      */
     private boolean end = false;
+
+    /**
+     * The image view to show camera's thumbnail image
+     */
     private ImageView snapshotImageView;
+
+    /**
+     * The image view that holds the placeholder of the thumbnail image
+     */
     private ImageView offlineImage = null;
+
+    /**
+     *
+     */
     private GradientTitleLayout gradientLayout;
     public boolean showOfflineIconAsFloat = false;
 
@@ -149,7 +161,6 @@ public class CameraLayout extends LinearLayout {
 
                         @Override
                         public void onError() {
-                            showOfflineIcon();
                             offlineImage.setVisibility(View.VISIBLE);
                             snapshotImageView.setBackgroundColor(Color.GRAY);
                             gradientLayout.removeGradientShadow();
@@ -170,7 +181,8 @@ public class CameraLayout extends LinearLayout {
 
             return true;
         } else {
-            //Moved to Picasso error callback. The thumbnail is impossible to be empty
+            // Moved to Picasso error callback. The thumbnail URL is impossible to be empty
+            // because it's a REST API URL.
         }
         return false;
     }
@@ -200,27 +212,16 @@ public class CameraLayout extends LinearLayout {
     public Runnable LoadImageRunnable = new Runnable() {
         @Override
         public void run() {
-            try {
-                if (end) return;
+            if (end) return;
 
-                if (evercamCamera.loadingStatus == ImageLoadingStatus.not_started) {
-                    if (evercamCamera.isOnline()) {
-                        //showAndSaveLiveSnapshot();
-                    }
-                } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_received) {
-                    setLayoutForLiveImageReceived();
-                } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_not_received) {
-                    setLayoutForNoImageReceived();
+            if (evercamCamera.loadingStatus == ImageLoadingStatus.not_started) {
+                if (evercamCamera.isOnline()) {
+                    //showAndSaveLiveSnapshot();
                 }
-            } catch (OutOfMemoryError e) {
-                Log.e(TAG, e.toString() + "-::OOM::-" + Log.getStackTraceString(e));
-
-                handler.postDelayed(LoadImageRunnable, 5000);
-            } catch (Exception e) {
-                Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
-                if (!end) {
-                    handler.postDelayed(LoadImageRunnable, 5000);
-                }
+            } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_received) {
+                setLayoutForLiveImageReceived();
+            } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_not_received) {
+                setLayoutForNoImageReceived();
             }
         }
     };

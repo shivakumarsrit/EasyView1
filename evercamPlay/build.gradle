@@ -21,6 +21,8 @@ android {
 
         //Enable multiDex, but the better solution is to reduce method number
         multiDexEnabled = true
+
+        testInstrumentationRunner "android.test.InstrumentationTestRunner"
     }
 
     //Increase memory to avoid build error 'OutOfMemoryError: GC overhead limit exceeded'
