@@ -109,7 +109,7 @@ public class EvercamCamera {
         this.id = id;
     }
 
-    public boolean isOnline () {
+    public boolean isOnline() {
         return isOnline;
     }
 
@@ -420,7 +420,7 @@ public class EvercamCamera {
     }
 
     public int getIsOnlineInt() {
-        return isOnline ? 1: 0;
+        return isOnline ? 1 : 0;
     }
 
     public boolean isPublic() {

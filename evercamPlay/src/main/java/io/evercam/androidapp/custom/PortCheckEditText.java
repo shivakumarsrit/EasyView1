@@ -6,7 +6,6 @@ import android.os.Message;
 import android.text.Editable;
 import android.text.TextWatcher;
 import android.util.AttributeSet;
-import android.util.Log;
 import android.view.View;
 import android.widget.EditText;
 import android.widget.TextView;
@@ -111,9 +110,9 @@ public class PortCheckEditText extends EditText {
     }
 
     public void triggerPortCheck() {
-        AddCameraParentActivity activity = (AddCameraParentActivity)getContext();
-        if(activity != null) {
-            if(portType != null) {
+        AddCameraParentActivity activity = (AddCameraParentActivity) getContext();
+        if (activity != null) {
+            if (portType != null) {
                 activity.checkPort(portType);
             } else {
                 activity.checkPort(PortCheckTask.PortType.HTTP);

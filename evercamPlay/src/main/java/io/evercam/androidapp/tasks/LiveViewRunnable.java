@@ -163,8 +163,8 @@ public class LiveViewRunnable implements Runnable {
 
     private String getHostWithAuth(String host) {
         Uri.Builder url = Uri.parse(HOST).buildUpon();
-        url.appendQueryParameter( "api_key", API.getUserKeyPair()[0]);
-        url.appendQueryParameter( "api_id", API.getUserKeyPair()[1]);
+        url.appendQueryParameter("api_key", API.getUserKeyPair()[0]);
+        url.appendQueryParameter("api_id", API.getUserKeyPair()[1]);
         return url.build().toString();
     }
 }

@@ -546,7 +546,7 @@ public class VideoActivity extends ParentAppCompatActivity
                     startActivityForResult(recordingIntent, Constants.REQUEST_CODE_RECORDING);
                 }
             } else if (itemId == R.id.video_menu_remove_camera) {
-                if(evercamCamera != null) {
+                if (evercamCamera != null) {
                     CustomedDialog.getConfirmDialog(VideoActivity.this, new DialogInterface.OnClickListener() {
                         @Override
                         public void onClick(DialogInterface dialog, int which) {
@@ -1211,7 +1211,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 Log.d(TAG, "On complete");
                 offlineTextLayout.stopProgress();
 
-                if(bitmap != null) {
+                if (bitmap != null) {
                     imageView.setImageBitmap(bitmap);
                     evercamCamera.setIsOnline(true);
                     new DbCamera(getApplicationContext()).updateCamera(evercamCamera);

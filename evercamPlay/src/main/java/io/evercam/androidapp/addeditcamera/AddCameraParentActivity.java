@@ -5,8 +5,6 @@ import android.widget.EditText;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
-import org.w3c.dom.Text;
-
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
@@ -18,7 +16,7 @@ public abstract class AddCameraParentActivity extends ParentAppCompatActivity {
         String ipText = getPublicIpEditText().getText().toString();
 
         if (!ipText.isEmpty()) {
-            if(portType == PortCheckTask.PortType.HTTP) {
+            if (portType == PortCheckTask.PortType.HTTP) {
                 String httpText = getHttpEditText().getText().toString();
                 if (!httpText.isEmpty()) {
                     launchPortCheckTask(ipText, httpText, getHttpStatusText(), getHttpProgressBar());
@@ -42,10 +40,16 @@ public abstract class AddCameraParentActivity extends ParentAppCompatActivity {
     }
 
     public abstract EditText getPublicIpEditText();
+
     public abstract EditText getHttpEditText();
+
     public abstract EditText getRtspEditText();
+
     public abstract TextView getHttpStatusText();
+
     public abstract TextView getRtspStatusText();
+
     public abstract ProgressBar getHttpProgressBar();
+
     public abstract ProgressBar getRtspProgressBar();
 }

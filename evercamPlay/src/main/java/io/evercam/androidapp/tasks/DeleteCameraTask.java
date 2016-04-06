@@ -30,7 +30,7 @@ public class DeleteCameraTask extends AsyncTask<Void, Void, Boolean> {
     @Override
     protected void onPreExecute() {
         customProgressDialog = new CustomProgressDialog(activity);
-        if(deleteType == DeleteType.DELETE_OWNED) {
+        if (deleteType == DeleteType.DELETE_OWNED) {
             customProgressDialog.show(activity.getString(R.string.deleting_camera));
         } else if (deleteType == DeleteType.DELETE_SHARE) {
             customProgressDialog.show(activity.getString(R.string.removing_camera));

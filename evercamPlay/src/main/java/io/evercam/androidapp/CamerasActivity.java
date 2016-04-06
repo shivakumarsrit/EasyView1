@@ -241,7 +241,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
     @Override
     protected void onResume() {
         super.onResume();
-        if(reloadFromDatabase) {
+        if (reloadFromDatabase) {
             removeAllCameraViews();
             addAllCameraViews(true, true);
             reloadFromDatabase = false;
