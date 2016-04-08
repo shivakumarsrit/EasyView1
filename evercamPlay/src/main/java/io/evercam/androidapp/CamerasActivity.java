@@ -271,7 +271,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         } else if (requestCode == Constants.REQUEST_CODE_MANAGE_ACCOUNT) {
             reloadCameraList = (resultCode == Constants.RESULT_ACCOUNT_CHANGED);
         } else if (requestCode == Constants.REQUEST_CODE_SHOW_GUIDE && resultCode == Constants.RESULT_TRUE) {
-            showShowcaseView();
+            showShowcaseView(onlyHasDemoCamera());
         }
 
         if (resultCode == Constants.RESULT_TRANSFERRED) {
@@ -681,8 +681,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             }, 200);
         }
 
-        if (AppData.evercamCameraList.size() <= 1 && showThumbnails)
-            showShowcaseViewForFirstTimeUser();
+        if (showThumbnails) showShowcaseViewForFirstTimeUser(onlyHasDemoCamera());
 
         if (refresh != null) refresh.setActionView(null);
     }
@@ -710,6 +709,14 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         }
 
         showOfflineOnStop = PrefsManager.showOfflineCameras(this);
+    }
+
+    private boolean onlyHasDemoCamera() {
+        if (AppData.evercamCameraList.size() == 1) {
+            String demoCameraId = getResources().getString(R.string.demo_camera_id);
+            if (AppData.evercamCameraList.get(0).getCameraId().equals(demoCameraId)) return true;
+        }
+        return false;
     }
 
     public static void logOutDefaultUser(Activity activity) {
@@ -856,30 +863,35 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         actionButtonLayout.setVisibility(show ? View.VISIBLE : View.GONE);
     }
 
-    private void showShowcaseViewForFirstTimeUser() {
+    private void showShowcaseViewForFirstTimeUser(boolean onlyHasDemoCamera) {
         if (!PrefsManager.isShowcaseShown(this)) {
-            showShowcaseView();
+            showShowcaseView(onlyHasDemoCamera);
             PrefsManager.setShowcaseShown(this);
         }
     }
 
-    private void showShowcaseView() {
-//        io.evercam.androidapp.custom.FlowLayout cameraLineLayout =
-//                (io.evercam.androidapp.custom.FlowLayout)findViewById(R.id.cameras_flow_layout);
-//        if(cameraLineLayout.getChildCount() > 0) {
-//            View view = cameraLineLayout.getChildAt(0);
-//
-//        }
-        new MaterialShowcaseView.Builder(this)
-                .setTarget(manuallyAddButton)
+    private void showShowcaseView(boolean onlyHasDemoCamera) {
+        if (onlyHasDemoCamera) showDemoCamShowcaseView();
+        else showAddCameraShowcaseView();
+    }
+
+    private MaterialShowcaseView.Builder applyCommonConfigs(MaterialShowcaseView.Builder builder) {
+        builder.setDismissTextSize(17)
                 .setDismissText(R.string.showcase_dismiss_text)
-                .setDismissTextSize(17)
-                .setShapePadding(30)
-                .setContentTextColor(getResources().getColor(R.color.white))
-                .setMaskColour(getResources().getColor(R.color.black_semi_transparent))
-                .setContentText(R.string.confirmSignUp)
                 .setContentTextSize(17)
                 .setDismissOnTargetTouch(true)
+                .setContentTextColor(getResources().getColor(R.color.white))
+                .setMaskColour(getResources().getColor(R.color.black_semi_transparent));
+
+        return builder;
+    }
+
+    private void showAddCameraShowcaseView() {
+        MaterialShowcaseView.Builder builder = new MaterialShowcaseView.Builder(this, false);
+        applyCommonConfigs(builder);
+        builder.setTarget(manuallyAddButton)
+                .setShapePadding(30)
+                .setContentText(R.string.confirmSignUp)
                 .setListener(new IShowcaseListener() {
                     @Override
                     public void onShowcaseDisplayed(MaterialShowcaseView showcaseView) {
@@ -894,8 +906,32 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 .show();
     }
 
-    private void showSecondShowcaseView() {
+    private void showDemoCamShowcaseView() {
 
+        io.evercam.androidapp.custom.FlowLayout cameraLineLayout =
+                (io.evercam.androidapp.custom.FlowLayout) findViewById(R.id.cameras_flow_layout);
+        if (cameraLineLayout.getChildCount() > 0) {
+            View view = cameraLineLayout.getChildAt(0);
+
+            MaterialShowcaseView.Builder builder = new MaterialShowcaseView.Builder(this, true);
+            applyCommonConfigs(builder);
+            builder.setTarget(view)
+                    .withRectangleShape()
+                    .setContentText(R.string.showcase_demo_cam)
+                    .setListener(new IShowcaseListener() {
+                        @Override
+                        public void onShowcaseDisplayed(MaterialShowcaseView showcaseView) {
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_NOSENSOR);
+                        }
+
+                        @Override
+                        public void onShowcaseDismissed(MaterialShowcaseView showcaseView) {
+                            setRequestedOrientation(ActivityInfo.SCREEN_ORIENTATION_SENSOR);
+                            showAddCameraShowcaseView();
+                        }
+                    })
+                    .show();
+        }
     }
 
     /**

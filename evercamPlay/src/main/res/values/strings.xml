@@ -4,6 +4,7 @@
     <string name="app_name">Evercam</string>
     <string name="empty" />
     <string name="user_agent_suffix">io.evercam.androidapp/1.0</string>
+    <string name="demo_camera_id">evercam-remembrance-camera</string>
 
     <!-- General -->
     <string name="cancel">Cancel</string>
@@ -90,6 +91,7 @@
     <string name="navigation_drawer_opened">The navigation drawer is opened</string>
     <string name="navigation_drawer_closed">The navigation drawer is closed</string>
 
+    <string name="showcase_demo_cam">Your demo camera</string>
     <string name="showcase_dismiss_text">GOT IT</string>
 </resources>
 

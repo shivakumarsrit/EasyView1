@@ -77,31 +77,34 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
     private IDetachedListener mDetachedListener;
     private boolean mTargetTouchable = false;
     private boolean mDismissOnTargetTouch = true;
-    private boolean mIsDemoCamera = false;
+    protected boolean mIsDemoCamera = false;
 
-    public MaterialShowcaseView(Context context) {
+    public MaterialShowcaseView(Context context, boolean isDemo) {
         super(context);
+        mIsDemoCamera = isDemo;
         init(context);
     }
 
-    public MaterialShowcaseView(Context context, AttributeSet attrs) {
+    public MaterialShowcaseView(Context context, AttributeSet attrs, boolean isDemo) {
         super(context, attrs);
+        mIsDemoCamera = isDemo;
         init(context);
     }
 
-    public MaterialShowcaseView(Context context, AttributeSet attrs, int defStyleAttr) {
+    public MaterialShowcaseView(Context context, AttributeSet attrs, int defStyleAttr, boolean isDemo) {
         super(context, attrs, defStyleAttr);
+        mIsDemoCamera = isDemo;
         init(context);
     }
 
     @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    public MaterialShowcaseView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes) {
+    public MaterialShowcaseView(Context context, AttributeSet attrs, int defStyleAttr, int defStyleRes, boolean isDemo) {
         super(context, attrs, defStyleAttr, defStyleRes);
+        mIsDemoCamera = isDemo;
         init(context);
     }
 
-
-    private void init(Context context) {
+    protected void init(Context context) {
         setWillNotDraw(false);
 
         // create our animation factory
@@ -119,8 +122,13 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
         mMaskColour = Color.parseColor(ShowcaseConfig.DEFAULT_MASK_COLOUR);
         setVisibility(INVISIBLE);
 
+        View contentView;
+        if(mIsDemoCamera) {
+            contentView = LayoutInflater.from(getContext()).inflate(R.layout.showcase_content_demo, this, true);
+        } else {
+            contentView = LayoutInflater.from(getContext()).inflate(R.layout.showcase_content, this, true);
+        }
 
-        View contentView = LayoutInflater.from(getContext()).inflate(R.layout.showcase_content, this, true);
         mContentBox = contentView.findViewById(R.id.content_box);
         mTitleTextView = (TextView) contentView.findViewById(R.id.tv_title);
         mContentTextView = (TextView) contentView.findViewById(R.id.tv_content);
@@ -356,10 +364,6 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
         mYPosition = y;
     }
 
-    public void setIsDemoCamera(boolean isDemoCamera) {
-        mIsDemoCamera = isDemoCamera;
-    }
-
     private void setTitleText(CharSequence contentText) {
         if (mTitleTextView != null && !contentText.equals("")) {
             mContentTextView.setAlpha(0.5F);
@@ -525,10 +529,10 @@ public class MaterialShowcaseView extends FrameLayout implements View.OnTouchLis
 
         private final Activity activity;
 
-        public Builder(Activity activity) {
+        public Builder(Activity activity, boolean isDemo) {
             this.activity = activity;
 
-            showcaseView = new MaterialShowcaseView(activity);
+            showcaseView = new MaterialShowcaseView(activity, isDemo);
         }
 
         /**
