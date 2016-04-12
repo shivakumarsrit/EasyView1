@@ -2,6 +2,7 @@ package io.evercam.androidapp.custom;
 
 import android.app.Activity;
 import android.content.Context;
+import android.graphics.Bitmap;
 import android.graphics.Color;
 import android.graphics.Rect;
 import android.os.Handler;
@@ -13,17 +14,15 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 
-import com.squareup.picasso.Callback;
-import com.squareup.picasso.MemoryPolicy;
-import com.squareup.picasso.Picasso;
-
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.dto.ImageLoadingStatus;
+import io.evercam.androidapp.image.ImageResponseListener;
+import io.evercam.androidapp.image.VolleyRequest;
 import io.evercam.androidapp.video.VideoActivity;
 
-public class CameraLayout extends LinearLayout {
+public class CameraLayout extends LinearLayout implements ImageResponseListener {
     private static final String TAG = "CameraLayout";
 
     public RelativeLayout cameraRelativeLayout;
@@ -89,13 +88,13 @@ public class CameraLayout extends LinearLayout {
 
             offlineImage = new ImageView(context);
             RelativeLayout.LayoutParams offlineImageParams = new RelativeLayout.LayoutParams
-                    (android.view.ViewGroup.LayoutParams.WRAP_CONTENT,
-                            android.view.ViewGroup.LayoutParams.WRAP_CONTENT);
+                    (ViewGroup.LayoutParams.MATCH_PARENT,
+                            ViewGroup.LayoutParams.MATCH_PARENT);
             offlineImageParams.addRule(RelativeLayout.CENTER_HORIZONTAL);
             offlineImageParams.addRule(RelativeLayout.CENTER_VERTICAL);
             offlineImage.setLayoutParams(offlineImageParams);
+            offlineImage.setScaleType(ImageView.ScaleType.FIT_XY);
             cameraRelativeLayout.addView(offlineImage);
-            offlineImage.setImageResource(R.drawable.cam_unavailable);
             offlineImage.setVisibility(View.INVISIBLE);
 
             gradientLayout = new GradientTitleLayout(activity);
@@ -151,38 +150,21 @@ public class CameraLayout extends LinearLayout {
 
     public boolean showThumbnail() {
         if (evercamCamera.hasThumbnailUrl()) {
-            Picasso.with(context).load(evercamCamera.getThumbnailUrl())
-                    .memoryPolicy(MemoryPolicy.NO_CACHE)
-                    .fit()
-                    .into(snapshotImageView, new Callback() {
-                        @Override
-                        public void onSuccess() {
-                        }
 
-                        @Override
-                        public void onError() {
-                            offlineImage.setVisibility(View.VISIBLE);
-                            snapshotImageView.setBackgroundColor(Color.GRAY);
-                            gradientLayout.removeGradientShadow();
-                            CameraLayout.this.evercamCamera.loadingStatus = ImageLoadingStatus.live_not_received;
-                            handler.postDelayed(LoadImageRunnable, 0);
-                        }
-                    });
+            final String thumbnailUrl = evercamCamera.getThumbnailUrl();
+            VolleyRequest.loadImage(context, thumbnailUrl, this, this);
 
             if (!evercamCamera.isOnline()) {
                 showGreyImage();
                 showOfflineIcon();
             }
 
-            //TODO: Remove this (Disabled thumbnail saving because it uses too much memory)
-//            //Save the thumbnail, it will be showing before live view get loaded
-//            new Thread(new SaveImageRunnable(context, evercamCamera.getThumbnailUrl(),
-//                    evercamCamera.getCameraId())).start();
-
             return true;
         } else {
-            // Moved to Picasso error callback. The thumbnail URL is impossible to be empty
-            // because it's a REST API URL.
+            /**
+             * Moved to Picasso/Volley error callback. The thumbnail URL is impossible to be empty
+             * because it's a REST API URL.
+             */
         }
         return false;
     }
@@ -216,7 +198,6 @@ public class CameraLayout extends LinearLayout {
 
             if (evercamCamera.loadingStatus == ImageLoadingStatus.not_started) {
                 if (evercamCamera.isOnline()) {
-                    //showAndSaveLiveSnapshot();
                 }
             } else if (evercamCamera.loadingStatus == ImageLoadingStatus.live_received) {
                 setLayoutForLiveImageReceived();
@@ -228,5 +209,22 @@ public class CameraLayout extends LinearLayout {
 
     private void showGreyImage() {
         snapshotImageView.setAlpha(0.5f);
+    }
+
+    /**
+     * Handle the error thumbnail image with {@link ImageResponseListener}
+     */
+    @Override
+    public void onNotFoundErrorImage(Bitmap bitmap) {
+        offlineImage.setVisibility(View.VISIBLE);
+        offlineImage.setImageBitmap(bitmap);
+
+        CameraLayout.this.evercamCamera.loadingStatus = ImageLoadingStatus.live_not_received;
+        handler.postDelayed(LoadImageRunnable, 0);
+    }
+
+    @Override
+    public void onValidImage(Bitmap bitmap) {
+        snapshotImageView.setImageBitmap(bitmap);
     }
 }
