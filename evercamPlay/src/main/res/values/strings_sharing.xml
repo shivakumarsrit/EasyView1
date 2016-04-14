@@ -10,6 +10,8 @@
 
     <string name="full_rights">Full Rights</string>
     <string name="read_only">Read Only</string>
+    <string name="owner">Owner</string>
+    <string name="owner_you">(you)</string>
     <string name="no_access">No Access</string>
     <string name="sharing_settings_title">Sharing Settings</string>
     <string name="pending">&#8230;pending</string>

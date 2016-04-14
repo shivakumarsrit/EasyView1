@@ -11,6 +11,7 @@ import java.util.List;
 
 import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
+import io.evercam.CameraShareOwner;
 import io.evercam.CameraShareRequest;
 import io.evercam.EvercamObject;
 import io.evercam.Right;
@@ -42,6 +43,8 @@ public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface> {
         TextView fullNameTextView = (TextView) view.findViewById(R.id.sharing_fullname_text_view);
         TextView emailTextView = (TextView) view.findViewById(R.id.sharing_email_text_view);
         TextView statusTextView = (TextView) view.findViewById(R.id.sharing_item_status_text_view);
+        TextView youTextView = (TextView) view.findViewById(R.id.sharing_you_text_view);
+        youTextView.setVisibility(View.GONE);
         statusTextView.setText("");
 
         CameraShareInterface cameraShareInterface = mCameraShareList.get(position);
@@ -57,6 +60,12 @@ public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface> {
                 fullNameTextView.setText(((CameraShareRequest) cameraShareInterface).getEmail());
                 emailTextView.setText(R.string.pending);
                 rights = ((CameraShareRequest) cameraShareInterface).getRights();
+            } else if (cameraShareInterface instanceof CameraShareOwner) {
+                CameraShareOwner owner = (CameraShareOwner) cameraShareInterface;
+                fullNameTextView.setText(owner.getFullName());
+                emailTextView.setText(owner.getEmail());
+                statusTextView.setText(R.string.owner);
+                youTextView.setVisibility(View.VISIBLE);
             }
 
             if (rights != null) {

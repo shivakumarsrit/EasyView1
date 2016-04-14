@@ -8,6 +8,7 @@ import java.util.ArrayList;
 
 import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
+import io.evercam.CameraShareOwner;
 import io.evercam.CameraShareRequest;
 import io.evercam.EvercamException;
 import io.evercam.androidapp.sharing.SharingActivity;
@@ -36,6 +37,18 @@ public class FetchShareListTask extends AsyncTask<Void, Void, ArrayList<CameraSh
             shareList.addAll(CameraShareRequest.get(cameraId, CameraShareRequest.STATUS_PENDING));
         } catch (EvercamException e) {
             Log.e(TAG, e.getMessage());
+        }
+
+        /**
+         * Append the owner details as the first item in sharing list
+         */
+        if(shareList.size() > 0) {
+            if(shareList.get(0) instanceof CameraShare) {
+                CameraShareOwner owner = ((CameraShare) shareList.get(0)).getOwner();
+                if(owner != null) {
+                    shareList.add(0, owner);
+                }
+            }
         }
 
         return shareList;
