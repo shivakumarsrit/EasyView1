@@ -102,7 +102,7 @@
         </activity>
         <activity
             android:name=".OnBoardingActivity"
-            android:configChanges="orientation|screenSize"/>
+            android:configChanges="orientation|screenSize" />
         <activity android:name=".MainActivity">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />

@@ -25,7 +25,7 @@ import io.evercam.androidapp.video.VideoActivity;
 
 public class LiveViewRunnable implements Runnable {
 
-    private final String TAG = "LiveViewRunnable";
+    private final static String TAG = "LiveViewRunnable";
     private final String HOST = "wss://media.evercam.io/socket/websocket";
     private final String ENVELOPE_KEY_TIMESTAMP = "timestamp";
     private final String ENVELOPE_KEY_IMAGE = "image";
@@ -162,7 +162,7 @@ public class LiveViewRunnable implements Runnable {
     }
 
     private String getHostWithAuth(String host) {
-        Uri.Builder url = Uri.parse(HOST).buildUpon();
+        Uri.Builder url = Uri.parse(host).buildUpon();
         url.appendQueryParameter("api_key", API.getUserKeyPair()[0]);
         url.appendQueryParameter("api_id", API.getUserKeyPair()[1]);
         return url.build().toString();

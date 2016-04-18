@@ -66,7 +66,7 @@
 
         </RelativeLayout>
 
-        <include layout="@layout/partial_offline"/>
+        <include layout="@layout/partial_offline" />
 
         <RelativeLayout
             android:id="@+id/video_gradient_layout"

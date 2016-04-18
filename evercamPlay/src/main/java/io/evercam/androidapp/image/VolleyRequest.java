@@ -35,11 +35,13 @@ public class VolleyRequest {
                 }, view.getWidth(), view.getHeight(), ImageView.ScaleType.CENTER_CROP, Bitmap.Config.RGB_565,
                 new Response.ErrorListener() {
                     public void onErrorResponse(VolleyError error) {
-                        int errorCode = error.networkResponse.statusCode;
-                        if (errorCode == 404) {
-                            byte[] data = error.networkResponse.data;
-                            Bitmap bitmap = Commons.decodeBitmapFromResource(data, view.getWidth());
-                            listener.onNotFoundErrorImage(bitmap);
+                        if(error.networkResponse != null) {
+                            int errorCode = error.networkResponse.statusCode;
+                            if (errorCode == 404) {
+                                byte[] data = error.networkResponse.data;
+                                Bitmap bitmap = Commons.decodeBitmapFromResource(data, view.getWidth());
+                                listener.onNotFoundErrorImage(bitmap);
+                            }
                         }
                     }
                 });
