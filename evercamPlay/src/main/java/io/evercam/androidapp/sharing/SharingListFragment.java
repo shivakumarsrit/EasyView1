@@ -15,6 +15,7 @@ import java.util.List;
 
 import io.evercam.CameraShare;
 import io.evercam.CameraShareInterface;
+import io.evercam.CameraShareOwner;
 import io.evercam.PatchCameraBuilder;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -45,7 +46,9 @@ public class SharingListFragment extends ListFragment {
         {
             CameraShareInterface shareInterface = mShareList.get(position - 1);
 
-            CustomedDialog.getRightsStatusDialog(this, shareInterface).show();
+            if(!(shareInterface instanceof CameraShareOwner)) {
+                CustomedDialog.getRightsStatusDialog(this, shareInterface).show();
+            }
         }
     }
 

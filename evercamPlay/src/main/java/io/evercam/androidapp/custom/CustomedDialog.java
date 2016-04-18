@@ -35,6 +35,7 @@ import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.sharing.SharingListFragment;
 import io.evercam.androidapp.sharing.SharingStatus;
 import io.evercam.androidapp.tasks.CreatePresetTask;
+import io.evercam.androidapp.tasks.ResendShareRequestTask;
 import io.evercam.androidapp.tasks.TransferOwnershipTask;
 import io.evercam.androidapp.video.VideoActivity;
 import io.evercam.network.discovery.Device;
@@ -157,13 +158,6 @@ public class CustomedDialog {
         AlertDialog dialog = dialogBuilder.create();
         dialog.setCanceledOnTouchOutside(false);
         return dialog;
-    }
-
-    public static AlertDialog getConfirmLogoutDialog(Activity activity,
-                                                     DialogInterface.OnClickListener listener) {
-        return new AlertDialog.Builder(activity)
-                .setMessage(R.string.msg_confirm_sign_out).setPositiveButton(R.string.yes,
-                        listener).setNegativeButton(R.string.no, null).create();
     }
 
     public static AlertDialog getConfirmCancelScanDialog(Activity activity,
@@ -374,8 +368,18 @@ public class CustomedDialog {
         }
         int selectedItemPosition = Arrays.asList(statusItems).indexOf(selectedItem);
 
-        return new AlertDialog.Builder(activity)
-                .setTitle(R.string.sharing_settings_title)
+        final AlertDialog.Builder dialogBuilder = new AlertDialog.Builder(activity);
+        Button resendButton = null;
+        if(shareInterface instanceof CameraShareRequest) {
+            LayoutInflater inflater = activity.getLayoutInflater();
+            View view = inflater.inflate(R.layout.partial_sharing_dialog_title, null);
+            resendButton = (Button) view.findViewById(R.id.sharing_dialog_resend_button);
+            dialogBuilder.setCustomTitle(view);
+        } else {
+            dialogBuilder.setTitle(R.string.sharing_settings_title);
+        }
+
+        final AlertDialog dialog = dialogBuilder
                 .setSingleChoiceItems(statusItems, selectedItemPosition, null)
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
@@ -384,7 +388,6 @@ public class CustomedDialog {
                         Object checkedItem = listView.getAdapter().getItem(listView.getCheckedItemPosition());
 
                         RightsStatus newRightStatus = new RightsStatus(activity, checkedItem.toString());
-
 
                         //If user selected 'No access', show warning dialog before delete the share
                         //or revoking the share request
@@ -396,6 +399,17 @@ public class CustomedDialog {
                         }
                     }
                 }).setNegativeButton(R.string.cancel, null).create();
+
+        if(resendButton != null) {
+            resendButton.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    dialog.dismiss();
+                    ResendShareRequestTask.launch(activity, (CameraShareRequest) shareInterface);
+                }
+            });
+        }
+        return dialog;
     }
 
     public static AlertDialog getConfirmRemoveShareDialog(Activity activity,

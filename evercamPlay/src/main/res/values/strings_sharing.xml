@@ -17,6 +17,7 @@
     <string name="pending">&#8230;pending</string>
     <string name="revoke">Revoke</string>
     <string name="transfer">Transfer</string>
+    <string name="resend">Resend</string>
 
     <string name="create_sharing_hint_username">Email or Username</string>
     <string name="create_sharing_hint_message">Message to send in Email (Optional)</string>
@@ -29,6 +30,7 @@
     <string name="msg_share_created">Camera successfully shared with user</string>
     <string name="msg_share_request_created">A notification Email has been sent to the specified Email address</string>
     <string name="msg_sharing">Sharing</string>
+    <string name="msg_share_resent">A notification email has been resent to the specified email address.</string>
     <string name="msg_confirm_remove_share">Are you sure you want to remove this share?</string>
     <string name="msg_confirm_revoke_share_request">Are you sure you want to revoke this share?</string>
     <string name="msg_transfer_success">Camera ownership has been successfully transferred.</string>

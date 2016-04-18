@@ -12,10 +12,7 @@
         android:layout_toRightOf="@+id/share_profile_image_view">
 
         <LinearLayout
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:orientation="horizontal"
-            android:gravity="center_vertical">
+            style="@style/SharingTextLineLayout">
 
             <TextView
                 android:id="@+id/sharing_fullname_text_view"
