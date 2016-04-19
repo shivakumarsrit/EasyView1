@@ -483,10 +483,14 @@ public class CustomedDialog {
                                     if (device != null) {
                                         message = "This is a camera:  " + device.toString() + " \n\nCamera model name: " + modelName;
                                     } else {
-                                        message = "I'd like to report a new camera model: " + modelName;
+                                        if(!modelName.isEmpty()) {
+                                            message = "I'd like to report a new camera model: " + modelName;
+                                        }
                                     }
-                                    IntercomSendMessageTask.launch(context, AppData
-                                            .defaultUser.getUsername(), message);
+                                    if(!message.isEmpty()) {
+                                        IntercomSendMessageTask.launch(context, AppData
+                                                .defaultUser.getUsername(), message);
+                                    }
                                 }
                             }
                         }).start();

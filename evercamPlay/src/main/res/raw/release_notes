@@ -1,8 +1,16 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.9.0</h5>
+<h5>1.9.1</h5>
 <ul>
-	<li>- Improved port check while adding camera<br/></li>
+	<li>- Added owner information in sharing list<br/></li>
+	<li>- Added resend option for unaccepted sharing invitation<br/></li>
+	<li>- Improved UI for offline cameras<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.9.0</b>
+<ul>
+	<li><br/>- Improved port check while adding camera<br/></li>
 	<li>- Fixed incorrect error for private IP address<br/></li>
 </ul>
 <br/>
