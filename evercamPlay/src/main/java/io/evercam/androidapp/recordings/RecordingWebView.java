@@ -49,7 +49,7 @@ public class RecordingWebView extends BaseWebView {
         /* private=false is ignored because it's pre-authenticated */
         String customHtml = "<html><body style='margin:0;padding:0;'><div " +
                 "evercam=\"snapshot-navigator" +
-                "\"></div><script type=\"text/javascript\" src=\"https://dashboard" +
+                "\"></div><script type=\"text/javascript\" src=\"https://dash" +
                 ".evercam.io/snapshot.navigator.js?camera=" + cameraId + "&private=false&api_id="
                 + API.getUserKeyPair()[1] +
                 "&api_key=" + API.getUserKeyPair()[0] +

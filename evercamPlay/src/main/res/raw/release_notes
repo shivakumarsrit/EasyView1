@@ -5,6 +5,7 @@
 	<li>- Added owner information in sharing list<br/></li>
 	<li>- Added resend option for unaccepted sharing invitation<br/></li>
 	<li>- Improved UI for offline cameras<br/></li>
+	<li>- Fixed the issue of unable to load cloud recording<br/></li>
 </ul>
 <br/>
 
