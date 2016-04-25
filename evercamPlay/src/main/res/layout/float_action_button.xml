@@ -11,8 +11,8 @@
         android:layout_alignParentBottom="true"
         android:layout_alignParentRight="true"
         android:layout_alignParentEnd="true"
-        fab:fab_addButtonColorNormal="@color/orange_red"
-        fab:fab_addButtonColorPressed="@color/orange_red_pressed"
+        fab:fab_addButtonColorNormal="@color/floating_button"
+        fab:fab_addButtonColorPressed="@color/floating_button_pressed"
         fab:fab_addButtonPlusIconColor="@color/white"
         fab:fab_labelStyle="@style/actionMenuLabelStyle"
         android:layout_marginBottom="16dp"
@@ -23,20 +23,20 @@
             android:id="@+id/add_action_button_manually"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/orange_red"
+            fab:fab_colorNormal="@color/floating_button"
             fab:fab_title="@string/add_camera_manually"
             fab:fab_icon="@drawable/ic_edit"
-            fab:fab_colorPressed="@color/orange_red_pressed"
+            fab:fab_colorPressed="@color/floating_button_pressed"
             fab:fab_size="mini" />
 
         <com.getbase.floatingactionbutton.FloatingActionButton
             android:id="@+id/add_action_button_scan"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            fab:fab_colorNormal="@color/orange_red"
+            fab:fab_colorNormal="@color/floating_button"
             fab:fab_title="@string/scan_for_cameras"
             fab:fab_icon="@drawable/ic_scan"
-            fab:fab_colorPressed="@color/orange_red_pressed"
+            fab:fab_colorPressed="@color/floating_button_pressed"
             fab:fab_size="mini" />
 
     </com.getbase.floatingactionbutton.FloatingActionsMenu>

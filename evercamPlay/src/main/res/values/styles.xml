@@ -6,10 +6,6 @@
         <item name="colorAccent">@color/colorAccent</item>
     </style>
 
-    <style name="LightProgressBarTheme" parent="AppTheme">
-        <item name="colorAccent">@color/white</item>
-    </style>
-
     <style name="SwitchButtonTheme" parent="Theme.AppCompat.NoActionBar">
         <!-- Active thumb color & Active track color(30% transparency) -->
         <item name="colorControlActivated">@color/light_gray_600</item>

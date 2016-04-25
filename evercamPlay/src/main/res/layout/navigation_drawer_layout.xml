@@ -203,7 +203,9 @@
                 <ListView
                     android:id="@+id/list_view_account_email"
                     android:layout_width="match_parent"
-                    android:layout_height="wrap_content" />
+                    android:layout_height="wrap_content"
+                    android:divider="@color/white"
+                    android:dividerHeight="0px"/>
 
                 <FrameLayout
                     android:id="@+id/drawer_account_items_add_layout"

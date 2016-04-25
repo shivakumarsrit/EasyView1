@@ -19,6 +19,8 @@
     <color name="mint_green">#80CBC4</color>
     <color name="evercam_blue">#428bca</color>
     <color name="evercam_blue_pressed">#337ab7</color>
+    <!-- The dark background color for AppCompat Dark Theme -->
+    <color name="dark_background">#303030</color>
 
     <!-- Material Theme colors-->
     <color name="colorPrimary">@color/evercam_dark_gray</color>
@@ -41,4 +43,7 @@
     <color name="nav_drawer_row_item_pressed">@color/light_gray_400</color>
     <color name="nav_drawer_row_item_selected">@color/light_gray_200</color>
 
+    <!-- Main screen -->
+    <color name="floating_button">@color/orange_red</color>
+    <color name="floating_button_pressed">@color/orange_red_pressed</color>
 </resources>

@@ -4,9 +4,10 @@
     android:gravity="center">
 
     <ProgressBar
-        style="?android:attr/indeterminateProgressStyle"
         android:layout_width="25dp"
         android:layout_height="25dp"
-        android:layout_gravity="center" />
+        android:layout_gravity="center"
+        android:indeterminateTint="@color/white"
+        android:indeterminateTintMode="src_in"/>
 
 </FrameLayout>
