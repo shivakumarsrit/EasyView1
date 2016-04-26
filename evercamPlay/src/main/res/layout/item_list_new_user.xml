@@ -5,6 +5,7 @@
     <ImageView
         android:id="@+id/menu_icon"
         style="@style/AccountItemImage"
+        android:tint="@color/account_icon_tint"
         android:src="@drawable/ic_add" />
 
     <TextView

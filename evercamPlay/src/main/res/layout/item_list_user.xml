@@ -4,6 +4,7 @@
     <ImageView
         android:id="@+id/account_icon"
         style="@style/AccountItemImage"
+        android:tint="@color/account_icon_tint"
         android:src="@drawable/ic_user" />
 
     <LinearLayout

@@ -160,11 +160,6 @@ public class ParentAppCompatActivity extends AppCompatActivity {
         }
     }
 
-    protected void setActivityBackgroundColor(int color) {
-        View view = this.getWindow().getDecorView();
-        view.setBackgroundColor(color);
-    }
-
     protected boolean isPlayServicesAvailable() {
         return GooglePlayServicesUtil.isGooglePlayServicesAvailable(this) == ConnectionResult.SUCCESS;
     }

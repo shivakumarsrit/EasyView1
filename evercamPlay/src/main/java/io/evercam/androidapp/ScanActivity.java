@@ -79,14 +79,12 @@ public class ScanActivity extends ParentAppCompatActivity {
 
         setUpDefaultToolbar();
 
-        setActivityBackgroundColor(Color.WHITE);
-
         scanProgressView = findViewById(R.id.scan_status_layout);
         scanResultListView = findViewById(R.id.scan_result_layout);
         scanResultNoCameraView = findViewById(R.id.scan_result_no_camera_layout);
         progressBar = (ProgressBar) findViewById(R.id.horizontal_progress_bar);
         progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color
-                .orange_red), PorterDuff.Mode.SRC_IN);
+                .colorAccent), PorterDuff.Mode.SRC_IN);
 
         cameraListView = (ListView) findViewById(R.id.scan_result_list);
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);

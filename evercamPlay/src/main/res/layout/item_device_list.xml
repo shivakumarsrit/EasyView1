@@ -41,6 +41,6 @@
         android:background="@drawable/border_button_selector"
         android:clickable="true"
         android:layout_alignParentRight="true"
-        android:textColor="@color/orange_red" />
+        android:textColor="@color/colorAccent" />
 
 </RelativeLayout>

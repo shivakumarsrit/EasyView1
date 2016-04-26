@@ -29,11 +29,13 @@
 
     <color name="offline_text">@color/light_gray_400</color>
 
-    <!-- Login / Sign Up-->
+    <!-- General buttons & texts-->
     <color name="link_text">@color/secondaryText</color>
     <color name="link_text_pressed">@color/evercam_blue</color>
     <color name="button_inactive">@color/evercam_blue</color>
     <color name="button_active">@color/evercam_blue_pressed</color>
+    <color name="text_button_on">@color/light_gray_400</color>
+    <color name="text_button_off">@color/colorAccent</color>
 
     <!-- Navigation Drawer -->
     <color name="navigation_drawer_background">@color/white</color>
@@ -46,4 +48,5 @@
     <!-- Main screen -->
     <color name="floating_button">@color/orange_red</color>
     <color name="floating_button_pressed">@color/orange_red_pressed</color>
+    <color name="account_icon_tint">@color/light_gray_600</color>
 </resources>

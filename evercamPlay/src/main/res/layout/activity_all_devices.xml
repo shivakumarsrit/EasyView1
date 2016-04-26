@@ -20,7 +20,7 @@
             android:id="@+id/all_device_list"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:divider="@drawable/divider_with_margin"></ListView>
+            android:divider="@drawable/divider_with_margin"/>
     </RelativeLayout>
 
 </RelativeLayout>
