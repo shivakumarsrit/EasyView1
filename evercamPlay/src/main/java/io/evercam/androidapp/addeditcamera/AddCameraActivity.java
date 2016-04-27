@@ -98,7 +98,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
         mProgressBar = (ProgressBar) findViewById(R.id.add_camera_progress_bar);
         mProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color
-                .orange_red), PorterDuff.Mode.SRC_IN);
+                .colorAccent), PorterDuff.Mode.SRC_IN);
         mProgressBar.setProgress(33);
 
         if (savedInstanceState != null) {

@@ -41,9 +41,9 @@
                     android:id="@+id/add_id_txt_view"
                     android:layout_width="fill_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="5sp"
-                    android:textColor="@color/white"
-                    android:textSize="17sp" />
+                    android:layout_marginLeft="5dp"
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout style="@style/AddEditCameraItemRowLayout">
@@ -257,14 +257,15 @@
                     android:hint="@string/hint_username"
                     android:inputType="text"
                     android:singleLine="true"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
 
                 <TextView
                     android:id="@+id/add_colon"
                     android:layout_width="wrap_content"
                     android:layout_height="20sp"
                     android:text="@string/colon"
-                    android:textSize="17sp" />
+                    android:textColor="@color/primaryText"
+                    android:textSize="16sp" />
 
                 <EditText
                     android:id="@+id/add_password_edit"
@@ -272,31 +273,32 @@
                     android:layout_height="wrap_content"
                     android:hint="@string/hint_camera_password"
                     android:singleLine="true"
-                    android:textSize="17sp" />
+                    android:textSize="16sp" />
             </LinearLayout>
 
             <LinearLayout
                 style="@style/AddEditCameraItemRowLayout"
-                android:layout_marginBottom="10sp"
-                android:layout_marginTop="30dp">
+                android:layout_marginBottom="10dp"
+                android:layout_marginTop="20dp">
 
                 <Button
                     android:id="@+id/button_add_edit_camera"
+                    style="@style/ButtonLight"
+                    android:layout_marginLeft="5dp"
+                    android:layout_marginTop="10dp"
                     android:layout_width="0sp"
-                    android:layout_height="40dp"
-                    android:layout_weight=".75"
-                    android:background="@drawable/signup_btn_selector"
-                    android:textColor="@drawable/signup_btn_txt_selector" />
+                    android:layout_height="@dimen/button_height"
+                    android:layout_weight=".75" />
 
                 <Button
                     android:id="@+id/button_test_snapshot"
+                    style="@style/ButtonRegular"
                     android:layout_width="0sp"
-                    android:layout_height="40dp"
-                    android:layout_marginLeft="10sp"
+                    android:layout_height="@dimen/button_height"
+                    android:layout_marginLeft="10dp"
+                    android:layout_marginTop="10dp"
                     android:layout_weight=".25"
-                    android:background="@drawable/btn_selector"
-                    android:text="@string/test"
-                    android:textColor="@color/white" />
+                    android:text="@string/test" />
             </LinearLayout>
         </LinearLayout>
 

@@ -152,7 +152,7 @@
                     style="@style/ViewCameraTitleItemText"
                     android:text="@string/external_title" />
 
-                <include layout="@layout/divider_with_margin"/>
+                <View style="@style/DividerWithMargin"/>
 
                 <LinearLayout style="@style/ViewCameraItemRowLayout">
 
@@ -195,7 +195,7 @@
                     style="@style/ViewCameraTitleItemText"
                     android:text="@string/internal_title" />
 
-                <include layout="@layout/divider_with_margin"/>
+                <View style="@style/DividerWithMargin"/>
 
                 <LinearLayout style="@style/ViewCameraItemRowLayout">
 

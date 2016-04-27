@@ -1,6 +1,7 @@
 <resources>
 
-    <color name="primaryText">#212121</color>
+    <!-- 65% transparent black as primary text color on white background-->
+    <color name="primaryText">#B3000000</color>
     <color name="secondaryText">#727272</color>
     <color name="lightGray">#F1F1F1</color>
     <color name="midGray">#DBDBDB</color>

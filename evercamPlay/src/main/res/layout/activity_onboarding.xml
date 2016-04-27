@@ -21,8 +21,8 @@
             android:layout_marginRight="15dp"
             android:text="@string/welcome_create_account"
             android:id="@+id/btn_welcome_signup"
-            android:background="@drawable/signup_btn_selector"
-            android:textColor="@drawable/signup_btn_txt_selector" />
+            android:background="@drawable/light_btn_selector"
+            android:textColor="@drawable/light_btn_txt_selector" />
 
         <Button
             android:text="@string/welcome_sign_in"

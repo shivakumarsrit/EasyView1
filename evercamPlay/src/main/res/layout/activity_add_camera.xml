@@ -50,12 +50,11 @@
 
                 <Button
                     android:id="@+id/model_selector_view_next_button"
-                    android:layout_width="match_parent"
-                    android:layout_height="40dp"
+                    style="@style/ButtonRegular"
                     android:layout_below="@id/add_camera_model_selector_fragment"
-                    android:layout_marginLeft="10dp"
-                    android:layout_marginRight="10dp"
-                    android:background="@drawable/btn_selector"
+                    android:layout_marginLeft="20dp"
+                    android:layout_marginRight="20dp"
+                    android:textAllCaps="true"
                     android:text="@string/next_connect_camera" />
 
                 <TextView
@@ -85,7 +84,7 @@
                         android:layout_gravity="center_vertical"
                         android:text="@string/unknown"
                         android:maxWidth="250dp"
-                        android:textColor="@android:color/white"
+                        android:textColor="@color/primaryText"
                         android:textSize="17sp"
                         android:textStyle="bold" />
 
@@ -94,6 +93,7 @@
                         android:layout_width="35dp"
                         android:layout_height="35dp"
                         android:layout_marginLeft="5dp"
+                        android:tint="@color/primaryText"
                         android:background="?attr/selectableItemBackgroundBorderless"
                         android:padding="7dp"
                         android:src="@drawable/ic_edit" />
@@ -124,7 +124,7 @@
 
                         <android.support.design.widget.TextInputLayout
                             android:id="@+id/input_layout_ip"
-                            style="@style/TextInputLayoutDark">
+                            style="@style/TextInputLayoutLight">
 
                             <io.evercam.androidapp.custom.PortCheckEditText
                                 android:id="@+id/external_ip_float_edit_text"
@@ -143,7 +143,7 @@
                             android:paddingLeft="5dp"
                             android:paddingRight="5dp"
                             android:src="@drawable/ic_cancel"
-                            android:tint="@color/light_gray_400" />
+                            android:tint="@color/primaryText" />
                     </RelativeLayout>
 
                     <LinearLayout style="@style/PortAndPathLineLayout">
@@ -152,7 +152,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_http"
-                                style="@style/TextInputLayoutDark">
+                                style="@style/TextInputLayoutLight">
 
                                 <io.evercam.androidapp.custom.PortCheckEditText
                                     android:id="@+id/http_float_edit_text"
@@ -186,7 +186,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_snapshot_path"
-                                style="@style/TextInputLayoutDark"
+                                style="@style/TextInputLayoutLight"
                                 android:hint="@string/add_camera_snapshot_path">
 
                                 <EditText
@@ -202,7 +202,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_rtsp"
-                                style="@style/TextInputLayoutDark">
+                                style="@style/TextInputLayoutLight">
 
                                 <io.evercam.androidapp.custom.PortCheckEditText
                                     android:id="@+id/rtsp_float_edit_text"
@@ -235,7 +235,7 @@
 
                             <android.support.design.widget.TextInputLayout
                                 android:id="@+id/input_layout_rtsp_path"
-                                style="@style/TextInputLayoutDark"
+                                style="@style/TextInputLayoutLight"
                                 android:hint="@string/add_camera_stream_path">
 
                                 <EditText
@@ -260,6 +260,7 @@
                             android:id="@+id/required_auth_text"
                             android:layout_width="wrap_content"
                             android:layout_height="wrap_content"
+                            android:textColor="@color/primaryText"
                             android:text="@string/requires_auth" />
                     </LinearLayout>
 
@@ -276,7 +277,7 @@
                             android:layout_width="0dp"
                             android:layout_weight="0.47"
                             app:errorTextAppearance="@style/EditTextError"
-                            style="@style/TextInputLayoutDark"
+                            style="@style/TextInputLayoutLight"
                             android:hint="@string/hint_cam_username">
 
                             <EditText
@@ -294,7 +295,7 @@
                             android:layout_weight="0.49"
                             app:errorTextAppearance="@style/EditTextError"
                             android:id="@+id/input_layout_cam_password"
-                            style="@style/TextInputLayoutDark"
+                            style="@style/TextInputLayoutLight"
                             android:hint="@string/hint_cam_password">
 
                             <EditText
@@ -306,9 +307,8 @@
                     <Button
                         android:id="@+id/check_snapshot_button"
                         style="@style/CheckSnapshotButtonPlaceholder"
-                        android:textColor="@drawable/signup_btn_txt_selector"
-                        android:background="@drawable/signup_btn_selector"
-                        android:text="@string/check_for_snapshot" />
+                        android:text="@string/check_for_snapshot"
+                        android:layout_marginBottom="10dp"/>
 
                     <RelativeLayout
                         android:id="@+id/snapshot_button_indicator_layout"
@@ -361,7 +361,7 @@
 
                     <android.support.design.widget.TextInputLayout
                         android:id="@+id/input_layout_camera_name"
-                        style="@style/TextInputLayoutDark">
+                        style="@style/TextInputLayoutLight">
 
                         <EditText
                             android:id="@+id/cam_name_float_edit_text"
@@ -371,10 +371,8 @@
 
                     <Button
                         android:id="@+id/create_camera_button"
-                        android:layout_width="match_parent"
+                        style="@style/ButtonRegular"
                         android:layout_marginTop="30dp"
-                        android:layout_height="40dp"
-                        android:background="@drawable/btn_selector"
                         android:text="@string/done" />
 
                 </LinearLayout>

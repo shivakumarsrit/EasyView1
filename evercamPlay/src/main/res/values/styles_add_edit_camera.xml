@@ -9,14 +9,15 @@
         <item name="android:layout_marginBottom">10dp</item>
     </style>
 
-    <style name="TextAppearance.AppCompat.LightGray">
-        <item name="android:textColor">@color/light_gray</item>
+    <style name="TextAppearance.AppCompat.Gray">
+        <item name="android:textColor">@color/secondaryText</item>
     </style>
 
     <style name="SingleLineEditText">
         <item name="android:layout_width">fill_parent</item>
         <item name="android:layout_height">wrap_content</item>
         <item name="android:textSize">16sp</item>
+        <item name="android:textColor">@color/primaryText</item>
         <item name="android:singleLine">true</item>
     </style>
 
@@ -28,19 +29,17 @@
         <item name="android:inputType">number</item>
     </style>
 
-    <style name="TextInputLayoutDark">
+    <style name="TextInputLayoutLight">
         <item name="android:layout_width">match_parent</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="hintTextAppearance">@style/TextAppearance.AppCompat.LightGray</item>
+        <item name="hintTextAppearance">@style/TextAppearance.AppCompat.Gray</item>
     </style>
 
-    <style name="EditTextError" parent="@style/TextAppearance.AppCompat.LightGray">
+    <style name="EditTextError" parent="@style/TextAppearance.AppCompat.Gray">
         <item name="android:textSize">12sp</item>
     </style>
 
-    <style name="CheckSnapshotButtonPlaceholder">
-        <item name="android:layout_width">match_parent</item>
-        <item name="android:layout_height">40dp</item>
+    <style name="CheckSnapshotButtonPlaceholder" parent="ButtonLight">
         <item name="android:layout_marginTop">20dp</item>
         <item name="android:layout_marginLeft">5dp</item>
         <item name="android:layout_marginRight">5dp</item>
@@ -72,7 +71,7 @@
         <item name="android:layout_marginBottom">6dp</item>
         <item name="android:layout_marginLeft">2dp</item>
         <item name="android:layout_marginRight">2dp</item>
-        <item name="android:textColor">@color/white</item>
+        <item name="android:textColor">@color/primaryText</item>
         <item name="android:textSize">17sp</item>
     </style>
 
@@ -86,7 +85,7 @@
     <style name="AddEditCameraItemRowItemText">
         <item name="android:layout_width">100sp</item>
         <item name="android:layout_height">wrap_content</item>
-        <item name="android:textSize">17sp</item>
+        <item name="android:textSize">16sp</item>
         <item name="android:layout_gravity">center</item>
     </style>
 
