@@ -17,7 +17,6 @@
     <color name="light_gray_600">#696969</color>
     <color name="evercam_text_dark">#333333</color>
     <color name="black_semi_transparent">#B2000000</color>
-    <color name="mint_green">#80CBC4</color>
     <color name="evercam_blue">#428bca</color>
     <color name="evercam_blue_pressed">#337ab7</color>
     <!-- The dark background color for AppCompat Dark Theme -->

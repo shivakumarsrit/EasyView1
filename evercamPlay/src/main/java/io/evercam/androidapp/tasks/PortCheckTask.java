@@ -10,9 +10,13 @@ import com.squareup.okhttp.OkHttpClient;
 import com.squareup.okhttp.Request;
 import com.squareup.okhttp.Response;
 
+import org.json.JSONException;
+import org.json.JSONObject;
+
 import java.io.IOException;
 import java.lang.ref.WeakReference;
 
+import io.evercam.API;
 import io.evercam.androidapp.R;
 
 public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
@@ -67,7 +71,7 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
             if (statusView != null) {
                 statusView.setVisibility(View.VISIBLE);
                 statusView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
-                statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.mint_green) :
+                statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.evercam_blue) :
                         mContext.getResources().getColor(R.color.orange_red));
             }
         }
@@ -102,8 +106,10 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
 
         try {
             Response response = client.newCall(request).execute();
-            String responseString = response.body().string();
-            return isResponseIndicatePortOpen(responseString);
+            if(response.isSuccessful()) {
+                String responseString = response.body().string();
+                return isResponseIndicatePortOpen(responseString);
+            }
         } catch (IOException e) {
             e.printStackTrace();
         }
@@ -111,12 +117,19 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
     }
 
     private static String getUrl(String ip, String port) {
-        //return "http://tuq.in/tools/port.txt?ip=" + ip + "&port=" + port;
-        return "http://api.predator.wtf/pcheck/?arguments=" + ip + "&port=" + port;
+        String apiKey = API.getUserKeyPair()[0];
+        String apiId = API.getUserKeyPair()[1];
+        return API.MEDIA_URL + "cameras/port-check?address=" + ip + "&port=" + port
+                + "&api_key=" + apiKey + "&api_id=" + apiId;
     }
 
     private static boolean isResponseIndicatePortOpen(String responseString) {
-        //return responseString.equalsIgnoreCase("true");
-        return responseString.contains("is open on");
+        try {
+            JSONObject jsonObject = new JSONObject(responseString);
+            return jsonObject.getBoolean("open");
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        return false;
     }
 }
