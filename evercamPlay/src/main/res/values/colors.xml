@@ -36,6 +36,7 @@
     <color name="button_active">@color/evercam_blue_pressed</color>
     <color name="text_button_on">@color/light_gray_400</color>
     <color name="text_button_off">@color/colorAccent</color>
+    <color name="divider_regular">@color/midGray</color>
 
     <!-- Navigation Drawer -->
     <color name="navigation_drawer_background">@color/white</color>

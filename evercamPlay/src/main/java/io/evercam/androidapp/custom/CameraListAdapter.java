@@ -1,9 +1,11 @@
 package io.evercam.androidapp.custom;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
+import android.widget.CheckedTextView;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 
@@ -33,6 +35,10 @@ public class CameraListAdapter extends ArrayAdapter<String> {
         View view = super.getView(position, convertView, parent);
         ImageView offlineIcon = (ImageView) view.findViewById(R.id.spinner_offline_icon);
         offlineIcon.setVisibility(View.GONE);
+
+        //Title text should be white
+        CheckedTextView titleTextView = (CheckedTextView) view.findViewById(R.id.spinner_camera_name_text);
+        titleTextView.setTextColor(Color.WHITE);
 
         //Make spinner text fit landscape too
         RelativeLayout layout = (RelativeLayout) view.findViewById(R.id.list_spinner_layout);

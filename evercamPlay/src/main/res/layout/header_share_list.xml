@@ -9,6 +9,7 @@
         <ImageView
             android:id="@+id/share_status_icon_image_view"
             style="@style/SharingListItemImage"
+            android:tint="@color/account_icon_tint"
             android:src="@drawable/ic_fontawsome_users" />
 
         <LinearLayout
@@ -27,11 +28,11 @@
         </LinearLayout>
     </RelativeLayout>
 
-    <View
+    <include layout="@layout/divider_with_margin"
         android:layout_width="match_parent"
         android:layout_height="0.5dp"
-        android:layout_alignParentBottom="true"
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
-        android:background="@color/evercam_dark_gray" />
+        android:layout_alignParentBottom="true"/>
+
 </RelativeLayout>

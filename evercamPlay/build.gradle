@@ -125,7 +125,7 @@ dependencies {
     }
 
     //WebSocket for JPG live view
-    compile 'com.github.eoinsha:JavaPhoenixChannels:master-SNAPSHOT'
+    compile 'com.github.eoinsha:JavaPhoenixChannels:79212a532a'
     compile 'com.google.android.exoplayer:exoplayer:r1.5.7'
     compile 'de.hdodenhof:circleimageview:2.0.0'
 

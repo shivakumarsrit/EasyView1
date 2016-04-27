@@ -3,7 +3,7 @@
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    android:background="#000000">
+    android:background="@color/dark_background">
 
     <RelativeLayout
         android:id="@+id/camera_view_layout"
@@ -59,6 +59,8 @@
                 android:layout_width="60dp"
                 android:layout_height="60dp"
                 android:padding="12dp"
+                android:indeterminateTint="@color/white"
+                android:indeterminateTintMode="src_in"
                 android:layout_alignLeft="@+id/play_pause_image_view"
                 android:layout_alignRight="@+id/play_pause_image_view"
                 android:layout_alignTop="@+id/play_pause_image_view"
