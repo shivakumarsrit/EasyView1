@@ -1,11 +1,19 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.9.1</h5>
+<h5>1.9.2</h5>
 <ul>
-	<li>- Added owner information in sharing list<br/></li>
-	<li>- Added resend option for unaccepted sharing invitation<br/></li>
-	<li>- Improved UI for offline cameras<br/></li>
-	<li>- Fixed the issue of unable to load cloud recording<br/></li>
+	<li>- Changed app color theme, added more material design<br/></li>
+	<li>- Bug fix around port check always showing port closed<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.9.1</b>
+<ul>
+	<li><br/>- Added owner information in sharing list<br/></li>
+	<li>- Fixed incorrect error for private IP address<br/></li>
+		<li>- Added resend option for unaccepted sharing invitation<br/></li>
+    	<li>- Improved UI for offline cameras<br/></li>
+    	<li>- Fixed the issue of unable to load cloud recording<br/></li>
 </ul>
 <br/>
 
