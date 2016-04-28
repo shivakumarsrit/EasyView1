@@ -30,7 +30,7 @@
 
     <PreferenceCategory android:title="@string/title_about">
 
-        <ListPreference
+        <Preference
             android:key="prefsVersion"
             android:title="@string/title_version" />
         <Preference

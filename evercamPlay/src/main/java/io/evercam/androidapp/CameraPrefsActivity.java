@@ -146,7 +146,7 @@ public class CameraPrefsActivity extends AppCompatActivity {
         }
 
         private void showAppVersion() {
-            ListPreference aboutPrefs = (ListPreference)
+            Preference aboutPrefs = (Preference)
                     getPreferenceManager().findPreference(PrefsManager.KEY_VERSION);
             aboutPrefs.setSummary("v" + new DataCollector(getActivity().getApplicationContext()).getAppVersionName());
         }

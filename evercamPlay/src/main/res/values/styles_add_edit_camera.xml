@@ -120,6 +120,7 @@
         <item name="android:layout_height">25dp</item>
         <item name="android:padding">3dp</item>
         <item name="android:src">@drawable/ic_question</item>
+        <item name="android:tint">@color/secondaryText</item>
         <item name="android:layout_marginLeft">3dp</item>
         <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
     </style>
