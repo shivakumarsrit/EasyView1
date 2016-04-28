@@ -5,8 +5,6 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.res.Configuration;
-import android.graphics.Color;
-import android.graphics.PorterDuff;
 import android.graphics.drawable.Drawable;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -83,8 +81,6 @@ public class ScanActivity extends ParentAppCompatActivity {
         scanResultListView = findViewById(R.id.scan_result_layout);
         scanResultNoCameraView = findViewById(R.id.scan_result_no_camera_layout);
         progressBar = (ProgressBar) findViewById(R.id.horizontal_progress_bar);
-        progressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color
-                .colorAccent), PorterDuff.Mode.SRC_IN);
 
         cameraListView = (ListView) findViewById(R.id.scan_result_list);
         Button addManuallyButton = (Button) findViewById(R.id.button_add_camera_manually);

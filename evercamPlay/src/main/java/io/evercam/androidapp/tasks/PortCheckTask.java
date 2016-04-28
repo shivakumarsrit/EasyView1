@@ -1,6 +1,7 @@
 package io.evercam.androidapp.tasks;
 
 import android.content.Context;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.view.View;
 import android.widget.ProgressBar;
@@ -72,7 +73,7 @@ public class PortCheckTask extends AsyncTask<Void, Void, Boolean> {
                 statusView.setVisibility(View.VISIBLE);
                 statusView.setText(isPortOpen ? R.string.port_is_open : R.string.port_is_closed);
                 statusView.setTextColor(isPortOpen ? mContext.getResources().getColor(R.color.evercam_blue) :
-                        mContext.getResources().getColor(R.color.orange_red));
+                        Color.RED);
             }
         }
     }

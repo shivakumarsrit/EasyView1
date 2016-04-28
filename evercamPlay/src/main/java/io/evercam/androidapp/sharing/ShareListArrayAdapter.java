@@ -17,7 +17,6 @@ import io.evercam.EvercamObject;
 import io.evercam.Right;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.dto.AppData;
-import io.evercam.androidapp.dto.AppUser;
 
 public class ShareListArrayAdapter extends ArrayAdapter<CameraShareInterface> {
     private List<CameraShareInterface> mCameraShareList;

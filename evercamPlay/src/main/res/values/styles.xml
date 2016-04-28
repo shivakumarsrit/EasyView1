@@ -78,8 +78,7 @@
         <item name="android:layout_width">60dp</item>
         <item name="android:layout_height">60dp</item>
         <item name="android:scaleType">fitCenter</item>
-        <!-- Background with ripple animation-->
-        <item name="android:background">?attr/selectableItemBackgroundBorderless</item>
+        <item name="android:background">@drawable/play_button_background_selector</item>
     </style>
 
     <!-- The menu label style for float action button -->
@@ -202,7 +201,7 @@
         <item name="android:layout_height">0.5dp</item>
         <item name="android:layout_marginLeft">10dp</item>
         <item name="android:layout_marginRight">10dp</item>
-        <item name="android:background">@color/midGray</item>
+        <item name="android:background">@color/divider_regular</item>
     </style>
 
 </resources>

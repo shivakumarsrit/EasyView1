@@ -3,14 +3,10 @@
     <!-- 65% transparent black as primary text color on white background-->
     <color name="primaryText">#B3000000</color>
     <color name="secondaryText">#727272</color>
-    <color name="lightGray">#F1F1F1</color>
     <color name="midGray">#DBDBDB</color>
 
-    <color name="orange_red">#dc4c3f</color>
-    <color name="orange_red_pressed">#ad3328</color>
     <color name="evercam_dark_gray">#404142</color>
     <color name="dark_gray_background">#34393d</color>
-    <color name="light_gray_background">#40464b</color>
     <color name="custom_light_gray">#ccc</color>
     <color name="light_gray_200">#eeeeee</color>
     <color name="light_gray_400">#bdbdbd</color>
@@ -47,7 +43,7 @@
     <color name="nav_drawer_row_item_selected">@color/light_gray_200</color>
 
     <!-- Main screen -->
-    <color name="floating_button">@color/orange_red</color>
-    <color name="floating_button_pressed">@color/orange_red_pressed</color>
+    <color name="floating_button">@color/evercam_blue</color>
+    <color name="floating_button_pressed">@color/evercam_blue_pressed</color>
     <color name="account_icon_tint">@color/light_gray_600</color>
 </resources>

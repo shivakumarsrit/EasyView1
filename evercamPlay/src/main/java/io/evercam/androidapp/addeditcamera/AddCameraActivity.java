@@ -1,6 +1,5 @@
 package io.evercam.androidapp.addeditcamera;
 
-import android.graphics.PorterDuff;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -97,8 +96,6 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
         mProgressBar = (ProgressBar) findViewById(R.id.add_camera_progress_bar);
-        mProgressBar.getProgressDrawable().setColorFilter(getResources().getColor(R.color
-                .colorAccent), PorterDuff.Mode.SRC_IN);
         mProgressBar.setProgress(33);
 
         if (savedInstanceState != null) {
@@ -118,13 +115,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
         if (savedInstanceState != null) {
             int flipperPosition = savedInstanceState.getInt(KEY_FLIPPER_POSITION);
-            if (flipperPosition == 0) {
-                showModelSelectorView();
-            } else if (flipperPosition == 1) {
-                showConnectCameraView();
-            } else if (flipperPosition == 2) {
-                showCameraNameView();
-            }
+            showPageAtPosition(flipperPosition);
         }
     }
 
@@ -152,7 +143,17 @@ public class AddCameraActivity extends AddCameraParentActivity {
         if (selectedPage == 0) {
             quitAddCamera();
         } else {
-            mViewFlipper.setDisplayedChild(selectedPage - 1);
+            showPageAtPosition(selectedPage - 1);
+        }
+    }
+
+    private void showPageAtPosition(int flipperPosition) {
+        if (flipperPosition == 0) {
+            showModelSelectorView();
+        } else if (flipperPosition == 1) {
+            showConnectCameraView();
+        } else if (flipperPosition == 2) {
+            showCameraNameView();
         }
     }
 
