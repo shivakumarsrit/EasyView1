@@ -359,6 +359,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mAccountListView = (ListView) findViewById(R.id.list_view_account_email);
         FrameLayout offlineLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_offline_layout);
         final SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
+        offlineSwitch.setChecked(PrefsManager.showOfflineCameras(this));
 
         offlineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
