@@ -16,7 +16,6 @@ import android.support.v4.content.ContextCompat;
 import android.support.v4.view.GravityCompat;
 import android.support.v4.widget.DrawerLayout;
 import android.support.v7.app.ActionBarDrawerToggle;
-import android.support.v7.widget.SwitchCompat;
 import android.util.Log;
 import android.view.Display;
 import android.view.Menu;
@@ -25,6 +24,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.View.OnClickListener;
 import android.widget.AdapterView;
+import android.widget.CheckBox;
 import android.widget.CompoundButton;
 import android.widget.FrameLayout;
 import android.widget.ImageView;
@@ -358,7 +358,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
         mCircleImageView = (CircleImageView) findViewById(R.id.navigation_drawer_account_profile_image);
         mAccountListView = (ListView) findViewById(R.id.list_view_account_email);
         FrameLayout offlineLayout = (FrameLayout) findViewById(R.id.navigation_drawer_items_offline_layout);
-        final SwitchCompat offlineSwitch = (SwitchCompat) findViewById(R.id.switch_compat_offline);
+        final CheckBox offlineSwitch = (CheckBox) findViewById(R.id.checkbox_offline);
         offlineSwitch.setChecked(PrefsManager.showOfflineCameras(this));
 
         offlineSwitch.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
