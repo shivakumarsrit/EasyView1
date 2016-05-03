@@ -7,7 +7,7 @@ import android.util.Log;
 import io.evercam.Camera;
 import io.evercam.CameraDetail;
 import io.evercam.EvercamException;
-import io.evercam.androidapp.AddEditCameraActivity;
+import io.evercam.androidapp.EditCameraActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomSnackbar;
@@ -48,7 +48,7 @@ public class PatchCameraTask extends AsyncTask<Void, Void, EvercamCamera> {
     protected void onPostExecute(EvercamCamera evercamCamera) {
         customProgressDialog.dismiss();
         if (evercamCamera != null) {
-            if (activity instanceof AddEditCameraActivity) {
+            if (activity instanceof EditCameraActivity) {
                 /**
                  * Successfully updated camera, update saved camera, show camera
                  * live view, and finish edit camera activity

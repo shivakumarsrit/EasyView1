@@ -47,7 +47,6 @@
     <!-- Menu -->
     <string name="menu_live_support">Live support</string>
     <string name="menu_refresh">Refresh All</string>
-    <string name="title_activity_add_camera">Add Camera</string>
     <string name="title_activity_accounts">Accounts</string>
     <string name="title_choose_model">Step 1 - Vendor &amp; Model</string>
     <string name="title_connect_camera">Step 2 - Connect Camera</string>

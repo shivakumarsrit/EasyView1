@@ -30,6 +30,7 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import java.io.InputStream;
 import java.util.ArrayList;
 
+import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
@@ -136,7 +137,7 @@ public class ScanActivity extends ParentAppCompatActivity {
         addManuallyButton.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                startActivityForResult(new Intent(ScanActivity.this, AddEditCameraActivity.class)
+                startActivityForResult(new Intent(ScanActivity.this, AddCameraActivity.class)
                         , Constants.REQUEST_CODE_ADD_CAMERA);
             }
         });
@@ -229,7 +230,7 @@ public class ScanActivity extends ParentAppCompatActivity {
     }
 
     private void launchAddCameraPage(DiscoveredCamera camera) {
-        Intent intentAddCamera = new Intent(ScanActivity.this, AddEditCameraActivity.class);
+        Intent intentAddCamera = new Intent(ScanActivity.this, AddCameraActivity.class);
         intentAddCamera.putExtra("camera", camera);
         startActivityForResult(intentAddCamera, Constants.REQUEST_CODE_ADD_CAMERA);
     }

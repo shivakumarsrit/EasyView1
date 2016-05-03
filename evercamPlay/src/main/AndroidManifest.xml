@@ -132,8 +132,8 @@
             android:label="@string/title_settings" />
 
         <activity
-            android:name=".AddEditCameraActivity"
-            android:label="@string/title_activity_add_camera"
+            android:name=".EditCameraActivity"
+            android:label="@string/title_edit_camera"
             android:windowSoftInputMode="stateHidden" />
         <activity
             android:name=".addeditcamera.AddCameraActivity"

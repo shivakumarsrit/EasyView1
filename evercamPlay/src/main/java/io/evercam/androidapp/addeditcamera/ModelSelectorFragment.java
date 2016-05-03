@@ -25,7 +25,7 @@ import java.util.TreeMap;
 import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.Vendor;
-import io.evercam.androidapp.AddEditCameraActivity;
+import io.evercam.androidapp.EditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -187,9 +187,9 @@ public class ModelSelectorFragment extends Fragment {
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner);
 
         int selectedPosition = 0;
-        if (isAddEditActivity()) {
-            if (getAddEditActivity().isFromDiscoverAndHasVendor()) {
-                String vendorId = getAddEditActivity().getDiscoveredCamera().getVendor();
+        if (isAddActivity()) {
+            if (getAddActivity().isFromDiscoverAndHasVendor()) {
+                String vendorId = getAddActivity().getDiscoveredCamera().getVendor();
                 String vendorName = vendorMapIdAsKey.get(vendorId);
                 selectedPosition = spinnerArrayAdapter.getPosition(vendorName);
             }
@@ -327,11 +327,11 @@ public class ModelSelectorFragment extends Fragment {
     }
 
     private boolean isAddEditActivity() {
-        return getActivity() instanceof AddEditCameraActivity;
+        return getActivity() instanceof EditCameraActivity;
     }
 
-    private AddEditCameraActivity getAddEditActivity() {
-        return ((AddEditCameraActivity) getActivity());
+    private EditCameraActivity getAddEditActivity() {
+        return ((EditCameraActivity) getActivity());
     }
 
     private boolean isAddActivity() {

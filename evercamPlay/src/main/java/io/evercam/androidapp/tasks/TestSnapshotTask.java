@@ -10,7 +10,7 @@ import java.net.URL;
 
 import io.evercam.Camera;
 import io.evercam.Snapshot;
-import io.evercam.androidapp.AddEditCameraActivity;
+import io.evercam.androidapp.EditCameraActivity;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
@@ -40,7 +40,7 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPreExecute() {
-        if (activity instanceof AddEditCameraActivity) {
+        if (activity instanceof EditCameraActivity) {
             customProgressDialog = new CustomProgressDialog(activity);
             customProgressDialog.show(activity.getString(R.string.retrieving_snapshot));
         } else if (activity instanceof AddCameraActivity) {
@@ -77,7 +77,7 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
 
     @Override
     protected void onPostExecute(Bitmap bitmap) {
-        if (activity instanceof AddEditCameraActivity) {
+        if (activity instanceof EditCameraActivity) {
             customProgressDialog.dismiss();
         } else if (activity instanceof AddCameraActivity) {
             ((AddCameraActivity) activity).showTestSnapshotProgress(false);

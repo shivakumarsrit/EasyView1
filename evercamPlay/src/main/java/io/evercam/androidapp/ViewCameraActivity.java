@@ -246,7 +246,7 @@ public class ViewCameraActivity extends ParentAppCompatActivity {
     }
 
     private void linkToEditCamera() {
-        Intent intent = new Intent(ViewCameraActivity.this, AddEditCameraActivity.class);
+        Intent intent = new Intent(ViewCameraActivity.this, EditCameraActivity.class);
         intent.putExtra(Constants.KEY_IS_EDIT, true);
         startActivityForResult(intent, Constants.REQUEST_CODE_PATCH_CAMERA);
     }

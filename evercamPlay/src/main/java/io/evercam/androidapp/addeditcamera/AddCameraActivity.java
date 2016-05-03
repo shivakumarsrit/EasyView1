@@ -6,6 +6,7 @@ import android.os.Handler;
 import android.support.annotation.NonNull;
 import android.support.design.widget.TextInputLayout;
 import android.support.v4.app.FragmentManager;
+import android.util.Log;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
@@ -27,7 +28,8 @@ import io.evercam.Defaults;
 import io.evercam.EvercamException;
 import io.evercam.Model;
 import io.evercam.Vendor;
-import io.evercam.androidapp.AddEditCameraActivity;
+import io.evercam.androidapp.EditCameraActivity;
+import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -37,12 +39,19 @@ import io.evercam.androidapp.tasks.AddCameraTask;
 import io.evercam.androidapp.tasks.PortCheckTask;
 import io.evercam.androidapp.tasks.TestSnapshotTask;
 import io.evercam.androidapp.utils.DataCollector;
+import io.evercam.network.discovery.DiscoveredCamera;
 import io.intercom.android.sdk.Intercom;
 
 public class AddCameraActivity extends AddCameraParentActivity {
     private final String TAG = "AddCameraActivity";
     private final String KEY_FLIPPER_POSITION = "flipperPosition";
     private final String KEY_SELECTED_MODEL = "selectedModel";
+
+    /**
+     * The object for camera from discovery passed by intent
+     * If it's not null, the camera details should be auto populated in the form
+     */
+    private DiscoveredCamera mDiscoveredCamera;
 
     private ViewFlipper mViewFlipper;
     private ProgressBar mProgressBar;
@@ -94,6 +103,10 @@ public class AddCameraActivity extends AddCameraParentActivity {
         setUpDefaultToolbar();
         setHomeIconAsCancel();
 
+        initDiscoveredCamera();
+
+        EvercamPlayApplication.sendScreenAnalytics(this, getString(R.string.screen_add_camera));
+
         mViewFlipper = (ViewFlipper) findViewById(R.id.add_camera_view_flipper);
         mProgressBar = (ProgressBar) findViewById(R.id.add_camera_progress_bar);
         mProgressBar.setProgress(33);
@@ -112,6 +125,8 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
         /** Init UI for camera name view */
         initCameraNameView();
+
+        fillDiscoveredCameraDetails(mDiscoveredCamera);
 
         if (savedInstanceState != null) {
             int flipperPosition = savedInstanceState.getInt(KEY_FLIPPER_POSITION);
@@ -154,6 +169,38 @@ public class AddCameraActivity extends AddCameraParentActivity {
             showConnectCameraView();
         } else if (flipperPosition == 2) {
             showCameraNameView();
+        }
+    }
+
+    private void initDiscoveredCamera() {
+        Bundle bundle = getIntent().getExtras();
+        if (bundle != null) {
+            mDiscoveredCamera = (DiscoveredCamera) getIntent().getSerializableExtra("camera");
+        }
+    }
+
+    private void fillDiscoveredCameraDetails(DiscoveredCamera camera) {
+        if (camera != null) {
+            Log.d(TAG, camera.toString());
+            if (camera.hasExternalIp()) {
+                mPublicIpEditText.setText(camera.getExternalIp());
+            }
+            if (camera.hasExternalHttp()) {
+                mHttpEditText.setText(String.valueOf(camera.getExthttp()));
+            }
+            if (camera.hasExternalRtsp()) {
+                mRtspEditText.setText(String.valueOf(camera.getExtrtsp()));
+            }
+            if (camera.hasName()) {
+                //The maximum camera name length is 24
+                String cameraName = camera.getName();
+                if (cameraName.length() > 24) {
+                    cameraName = cameraName.substring(0, 23);
+                }
+                mCameraNameEditText.setText(cameraName);
+            } else {
+                mCameraNameEditText.setText((camera.getVendor() + " " + camera.getModel()).toUpperCase());
+            }
         }
     }
 
@@ -249,10 +296,10 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
                     if (mSelectedModel != null) {
                         if (!mSelectedModel.isUnknown()) {
-                            jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
+                            jpgUrl = EditCameraActivity.buildUrlEndingWithSlash(mSelectedModel.getDefaultJpgUrl());
                         } else {
                             final String jpgPath = mSnapshotPathEditText.getText().toString();
-                            jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgPath);
+                            jpgUrl = EditCameraActivity.buildUrlEndingWithSlash(jpgPath);
                         }
                     }
 
@@ -381,10 +428,11 @@ public class AddCameraActivity extends AddCameraParentActivity {
             public void onClick(View v) {
                 CameraBuilder cameraBuilder = buildCamera(mSelectedModel);
                 if (cameraBuilder != null) {
+                    boolean isFromScan = mDiscoveredCamera != null;
                     //Set camera status to be online as a temporary fix for #133
                     cameraBuilder.setOnline(true);
                     new AddCameraTask(cameraBuilder.build(), AddCameraActivity.this,
-                            false).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            isFromScan).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         });
@@ -438,7 +486,19 @@ public class AddCameraActivity extends AddCameraParentActivity {
     }
 
     public void buildSpinnerOnModelListResult(ArrayList<Model> modelList) {
-        mModelSelectorFragment.buildModelSpinner(modelList, null);
+        String autoPopulatedModel = null;
+        if (mDiscoveredCamera != null && mDiscoveredCamera.hasModel()) {
+            autoPopulatedModel = mDiscoveredCamera.getModel();
+        }
+        mModelSelectorFragment.buildModelSpinner(modelList, autoPopulatedModel);
+    }
+
+    public boolean isFromDiscoverAndHasVendor() {
+        return mDiscoveredCamera != null && mDiscoveredCamera.hasVendor();
+    }
+
+    public DiscoveredCamera getDiscoveredCamera() {
+        return mDiscoveredCamera;
     }
 
     private void onAuthCheckedChange(boolean isChecked) {
@@ -548,8 +608,8 @@ public class AddCameraActivity extends AddCameraParentActivity {
                     jpgUrl = mSnapshotPathEditText.getText().toString();
                     rtspUrl = mRtspPathEditText.getText().toString();
                 } else {
-                    jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
-                    rtspUrl = AddEditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
+                    jpgUrl = EditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultJpgUrl());
+                    rtspUrl = EditCameraActivity.buildUrlEndingWithSlash(selectedModel.getDefaultRtspUrl());
                 }
 
                 if (!jpgUrl.isEmpty()) {
@@ -569,6 +629,23 @@ public class AddCameraActivity extends AddCameraParentActivity {
             String password = mCamPasswordEditText.getText().toString();
             if (!password.isEmpty()) {
                 cameraBuilder.setCameraPassword(password);
+            }
+
+            //Attach additional info for discovered camera
+            if (mDiscoveredCamera != null) {
+                cameraBuilder.setInternalHost(mDiscoveredCamera.getIP());
+
+                if (mDiscoveredCamera.hasMac()) {
+                    cameraBuilder.setMacAddress(mDiscoveredCamera.getMAC());
+                }
+
+                if (mDiscoveredCamera.hasHTTP()) {
+                    cameraBuilder.setInternalHttpPort(mDiscoveredCamera.getHttp());
+                }
+
+                if (mDiscoveredCamera.hasRTSP()) {
+                    cameraBuilder.setInternalRtspPort(mDiscoveredCamera.getRtsp());
+                }
             }
 
             return cameraBuilder;
@@ -617,6 +694,8 @@ public class AddCameraActivity extends AddCameraParentActivity {
                         autoPopulateDefaultPorts(mHttpEditText, mRtspEditText);
                     }
                 }.executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+            } else {
+                autoPopulateDefaultPorts(mHttpEditText, mRtspEditText);
             }
         }
     }
@@ -629,9 +708,13 @@ public class AddCameraActivity extends AddCameraParentActivity {
         if (httpEditText.getText().toString().isEmpty()) {
             httpEditText.setText("80");
             checkPort(PortCheckTask.PortType.HTTP);
+        } else {
+            checkPort(PortCheckTask.PortType.HTTP);
         }
         if (rtspEditText.getText().toString().isEmpty()) {
             rtspEditText.setText("554");
+            checkPort(PortCheckTask.PortType.RTSP);
+        } else {
             checkPort(PortCheckTask.PortType.RTSP);
         }
     }

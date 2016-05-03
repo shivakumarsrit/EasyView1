@@ -14,7 +14,7 @@ import io.evercam.Camera;
 import io.evercam.CameraDetail;
 import io.evercam.EvercamException;
 import io.evercam.Snapshot;
-import io.evercam.androidapp.AddEditCameraActivity;
+import io.evercam.androidapp.EditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
@@ -164,7 +164,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
         final String password = cameraDetail.getCameraPassword();
         String jpgUrlString = cameraDetail.getJpgUrl();
 
-        final String jpgUrl = AddEditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
+        final String jpgUrl = EditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
 
         if (externalHost != null && !externalHost.isEmpty()) {
             String portString = String.valueOf(cameraDetail.getExternalHttpPort());

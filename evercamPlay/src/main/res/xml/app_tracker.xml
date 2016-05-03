@@ -51,7 +51,7 @@
     <screenName name="io.evercam.androidapp.LocalStorageActivity">
         Local Storage
     </screenName>
-    <screenName name="io.evercam.androidapp.AddEditCameraActivity">
+    <screenName name="io.evercam.androidapp.EditCameraActivity">
         Add/Edit Camera
     </screenName>
     <screenName name="io.evercam.androidapp.recordings.RecordingWebView">
