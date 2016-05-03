@@ -11,7 +11,7 @@
     <dimen name="nav_drawer_logo_height">22dp</dimen>
     <dimen name="nav_drawer_vertical_spacing_listing_divider_top">7dp</dimen>
     <dimen name="nav_drawer_vertical_spacing_listing_divider_bottom">8dp</dimen>
-    <dimen name="nav_drawer_item_row_icon_size">24dp</dimen>
+    <dimen name="nav_drawer_item_row_icon_size">22dp</dimen>
     <dimen name="nav_drawer_vertical_keyline_text_left">72dp</dimen>
     <dimen name="nav_drawer_item_row_height_scroll">48dp</dimen>
     <dimen name="nav_drawer_item_row_height_account">60dp</dimen>
