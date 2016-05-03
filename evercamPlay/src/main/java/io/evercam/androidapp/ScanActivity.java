@@ -34,6 +34,7 @@ import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
+import io.evercam.androidapp.scan.AllDeviceAdapter;
 import io.evercam.androidapp.scan.AllDevicesActivity;
 import io.evercam.androidapp.scan.ScanResultAdapter;
 import io.evercam.androidapp.tasks.CheckInternetTask;
@@ -334,6 +335,9 @@ public class ScanActivity extends ParentAppCompatActivity {
             @Override
             public void run() {
                 nonCameraDevices.add(device);
+                if(AllDevicesActivity.getAdapter() != null) {
+                    AllDevicesActivity.getAdapter().notifyDataSetChanged();
+                }
             }
         });
     }

@@ -14,6 +14,7 @@ import io.evercam.network.discovery.DeviceInterface;
 
 public class AllDevicesActivity extends ParentAppCompatActivity {
     private static ArrayList<DeviceInterface> mAllDevices = new ArrayList<>();
+    private static AllDeviceAdapter allDeviceAdapter;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +26,8 @@ public class AllDevicesActivity extends ParentAppCompatActivity {
         setHomeIconAsCancel();
 
         ListView deviceListView = (ListView) findViewById(R.id.all_device_list);
-        AllDeviceAdapter deviceAdapter = new AllDeviceAdapter(this, R.layout.item_scan_list, mAllDevices);
-        deviceListView.setAdapter(deviceAdapter);
+        allDeviceAdapter = new AllDeviceAdapter(this, R.layout.item_scan_list, mAllDevices);
+        deviceListView.setAdapter(allDeviceAdapter);
     }
 
     @Override
@@ -38,6 +39,10 @@ public class AllDevicesActivity extends ParentAppCompatActivity {
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    public static AllDeviceAdapter getAdapter() {
+        return allDeviceAdapter;
     }
 
     public static void showAllDevices(Activity fromActivity, ArrayList<DeviceInterface> allDevices) {
