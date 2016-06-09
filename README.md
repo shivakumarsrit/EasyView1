@@ -1,5 +1,5 @@
 
-# Evercam for Android [![Build Status][travis-image]][travis-url] [![API][api-image]][api-url] [![Dependency Status][dependency-status-image]][dependency-status-url]  [![Join the chat][gitter-image]][gitter-url]  
+# Evercam for Android [![Build Status][travis-image]][travis-url] [![API][api-image]][api-url] [![Dependency Status][dependency-status-image]][dependency-status-url]  
 
 Evercam allows connect your own IP cameras, public webcams and any Android devices that you use as an IP camera. It connects you to Evercam dashboard so that you can see all your cameras on your desktop as well. 
 
@@ -41,12 +41,6 @@ The code should follow [the naming convention](https://github.com/ribot/android-
 For any bugs and discussions, please use [Github Issues](https://github.com/evercam/evercam-android/issues).
 
 Any questions or suggestions around Evercam, drop us a line: http://www.evercam.io/contact
-
-[gitter-url]: https://gitter.im/evercam/evercam-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
-[gitter-image]: https://badges.gitter.im/Join%20Chat.svg
-
-[waffle-url]: https://waffle.io/evercam/evercam-android
-[waffle-image]: https://badge.waffle.io/evercam/evercam-android.png?label=ready&title=Ready
 
 [travis-url]: https://travis-ci.org/evercam/evercam-android
 [travis-image]: https://travis-ci.org/evercam/evercam-android.svg?branch=master
