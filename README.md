@@ -38,18 +38,18 @@ The code should follow [the naming convention](https://github.com/ribot/android-
 
 ## Contact
 
-For any bugs and discussions, please use [Github Issues](https://github.com/evercam/evercam-play-android/issues).
+For any bugs and discussions, please use [Github Issues](https://github.com/evercam/evercam-android/issues).
 
 Any questions or suggestions around Evercam, drop us a line: http://www.evercam.io/contact
 
-[gitter-url]: https://gitter.im/evercam/evercam-play-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
+[gitter-url]: https://gitter.im/evercam/evercam-android?utm_source=badge&utm_medium=badge&utm_campaign=pr-badge&utm_content=badge
 [gitter-image]: https://badges.gitter.im/Join%20Chat.svg
 
-[waffle-url]: https://waffle.io/evercam/evercam-play-android
-[waffle-image]: https://badge.waffle.io/evercam/evercam-play-android.png?label=ready&title=Ready
+[waffle-url]: https://waffle.io/evercam/evercam-android
+[waffle-image]: https://badge.waffle.io/evercam/evercam-android.png?label=ready&title=Ready
 
 [travis-url]: https://travis-ci.org/evercam/evercam-android
-[travis-image]: https://travis-ci.org/evercam/evercam-play-android.svg?branch=master
+[travis-image]: https://travis-ci.org/evercam/evercam-android.svg?branch=master
 
 [api-url]: https://android-arsenal.com/api?level=14
 [api-image]: https://img.shields.io/badge/API-14%2B-blue.svg?style=flat
