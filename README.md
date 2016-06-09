@@ -48,7 +48,7 @@ Any questions or suggestions around Evercam, drop us a line: http://www.evercam.
 [waffle-url]: https://waffle.io/evercam/evercam-play-android
 [waffle-image]: https://badge.waffle.io/evercam/evercam-play-android.png?label=ready&title=Ready
 
-[travis-url]: https://travis-ci.org/evercam/evercam-play-android
+[travis-url]: https://travis-ci.org/evercam/evercam-android
 [travis-image]: https://travis-ci.org/evercam/evercam-play-android.svg?branch=master
 
 [api-url]: https://android-arsenal.com/api?level=14
