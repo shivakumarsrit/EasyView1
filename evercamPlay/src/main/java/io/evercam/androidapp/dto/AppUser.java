@@ -1,7 +1,9 @@
 package io.evercam.androidapp.dto;
 
-import io.evercam.EvercamException;
-import io.evercam.User;
+import org.json.JSONException;
+
+import io.evercam.androidapp.WrapperClasses.EvercamException;
+import io.evercam.androidapp.WrapperClasses.User;
 
 public class AppUser {
     private int id;
@@ -21,8 +23,16 @@ public class AppUser {
     public AppUser(User user) throws EvercamException {
         setUsername(user.getUsername());
         setEmail(user.getEmail());
-        setFirstName(user.getFirstName());
-        setLastName(user.getLastName());
+        try {
+            setFirstName(user.getFirstName());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
+        try {
+            setLastName(user.getLastName());
+        } catch (JSONException e) {
+            e.printStackTrace();
+        }
         setCountry(user.getCountry());
     }
 

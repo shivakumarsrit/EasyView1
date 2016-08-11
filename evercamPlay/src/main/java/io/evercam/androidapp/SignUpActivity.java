@@ -12,9 +12,9 @@ import android.widget.EditText;
 
 import io.evercam.API;
 import io.evercam.ApiKeyPair;
-import io.evercam.EvercamException;
-import io.evercam.User;
-import io.evercam.UserDetail;
+import io.evercam.androidapp.WrapperClasses.EvercamException;
+import io.evercam.androidapp.WrapperClasses.User;
+import io.evercam.androidapp.WrapperClasses.UserDetail;
 import io.evercam.androidapp.account.AccountUtils;
 import io.evercam.androidapp.account.UserProfile;
 import io.evercam.androidapp.authentication.EvercamAccount;
@@ -248,7 +248,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
 
         @Override
         protected void onPostExecute(String message) {
-            if (message == null) {
+            if (message == null || message.trim().isEmpty()) {
                 EvercamPlayApplication.sendEventAnalytics(SignUpActivity.this,
                         R.string.category_sign_up, R.string.action_signup_success,
                         R.string.label_signup_successful);
@@ -274,6 +274,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
             }
         }
 
+
         @Override
         protected void onPreExecute() {
             hideSoftKeyboard();
@@ -284,10 +285,25 @@ public class SignUpActivity extends ParentAppCompatActivity {
         protected String doInBackground(Void... args) {
             try {
                 User.create(userDetail);
-                ApiKeyPair userKeyPair = API.requestUserKeyPairFromEvercam(userDetail.getUsername
-                        (), userDetail.getPassword());
-                String userApiKey = userKeyPair.getApiKey();
-                String userApiId = userKeyPair.getApiId();
+                ApiKeyPair userKeyPair = null;
+                try {
+                    userKeyPair = API.requestUserKeyPairFromEvercam(userDetail.getUsername
+                            (), userDetail.getPassword());
+                } catch (io.evercam.EvercamException e) {
+                    e.printStackTrace();
+                }
+                String userApiKey = null;
+                try {
+                    userApiKey = userKeyPair.getApiKey();
+                } catch (io.evercam.EvercamException e) {
+                    e.printStackTrace();
+                }
+                String userApiId = null;
+                try {
+                    userApiId = userKeyPair.getApiId();
+                } catch (io.evercam.EvercamException e) {
+                    e.printStackTrace();
+                }
                 API.setUserKeyPair(userApiKey, userApiId);
                 User evercamUser = new User(userDetail.getUsername());
 
