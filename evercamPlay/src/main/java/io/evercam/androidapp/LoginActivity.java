@@ -182,7 +182,8 @@ public class LoginActivity extends ParentAppCompatActivity {
                 try {
                     userKeyPair = API.requestUserKeyPairFromEvercam(username, password);
                 } catch (io.evercam.EvercamException e) {
-                    e.printStackTrace();
+                    errorMessage = e.getMessage();
+                    return false;
                 }
                 String userApiKey = null;
                 try {
