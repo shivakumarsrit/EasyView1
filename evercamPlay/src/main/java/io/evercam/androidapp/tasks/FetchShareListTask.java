@@ -35,6 +35,7 @@ public class FetchShareListTask extends AsyncTask<Void, Void, ArrayList<CameraSh
         try {
             shareList.addAll(CameraShare.getByCamera(cameraId));
             shareList.addAll(CameraShareRequest.get(cameraId, CameraShareRequest.STATUS_PENDING));
+
         } catch (EvercamException e) {
             Log.e(TAG, e.getMessage());
         }
@@ -49,8 +50,12 @@ public class FetchShareListTask extends AsyncTask<Void, Void, ArrayList<CameraSh
                     shareList.add(0, owner);
                 }
             }
-        }
+            CameraShare cameraShare =  ((CameraShare) shareList.get(1));
 
+            if (cameraShare.toString().equals("{}")) {
+                shareList.remove(1);
+            }
+        }
         return shareList;
     }
 

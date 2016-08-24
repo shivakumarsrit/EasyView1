@@ -18,8 +18,8 @@ import android.widget.TextView;
 
 import io.evercam.API;
 import io.evercam.ApiKeyPair;
-import io.evercam.androidapp.WrapperClasses.EvercamException;
-import io.evercam.androidapp.WrapperClasses.User;
+import io.evercam.EvercamException;
+import io.evercam.User;
 import io.evercam.androidapp.authentication.EvercamAccount;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
@@ -178,25 +178,9 @@ public class LoginActivity extends ParentAppCompatActivity {
         @Override
         protected Boolean doInBackground(Void... params) {
             try {
-                ApiKeyPair userKeyPair = null;
-                try {
-                    userKeyPair = API.requestUserKeyPairFromEvercam(username, password);
-                } catch (io.evercam.EvercamException e) {
-                    errorMessage = e.getMessage();
-                    return false;
-                }
-                String userApiKey = null;
-                try {
-                    userApiKey = userKeyPair.getApiKey();
-                } catch (io.evercam.EvercamException e) {
-                    e.printStackTrace();
-                }
-                String userApiId = null;
-                try {
-                    userApiId = userKeyPair.getApiId();
-                } catch (io.evercam.EvercamException e) {
-                    e.printStackTrace();
-                }
+                ApiKeyPair userKeyPair = API.requestUserKeyPairFromEvercam(username, password);
+                String userApiKey = userKeyPair.getApiKey();
+                String userApiId = userKeyPair.getApiId();
                 API.setUserKeyPair(userApiKey, userApiId);
                 User evercamUser = new User(username);
                 newUser = new AppUser(evercamUser);
