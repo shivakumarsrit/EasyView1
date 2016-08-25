@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.os.AsyncTask;
 import android.provider.Settings;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.widget.Button;
@@ -29,6 +30,7 @@ import io.evercam.Right;
 import io.evercam.androidapp.R;
 import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.dto.AppData;
+import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.feedback.IntercomSendMessageTask;
 import io.evercam.androidapp.sharing.RightsStatus;
 import io.evercam.androidapp.sharing.SharingActivity;
@@ -357,11 +359,13 @@ public class CustomedDialog {
 
     public static AlertDialog getRightsStatusDialog(final SharingListFragment fragment
             , final CameraShareInterface shareInterface) {
+
         final Activity activity = fragment.getActivity();
 
         final CharSequence[] statusItems = RightsStatus.getFullItems(activity);
 
         String selectedItem = fragment.getString(R.string.read_only);
+
         Right rights = EvercamObject.getRightsFrom(shareInterface);
         if (rights != null && rights.isFullRight()) {
             selectedItem = fragment.getString(R.string.full_rights);
@@ -384,6 +388,7 @@ public class CustomedDialog {
                 .setPositiveButton(R.string.save, new DialogInterface.OnClickListener() {
                     @Override
                     public void onClick(DialogInterface dialog, int which) {
+
                         ListView listView = ((AlertDialog) dialog).getListView();
                         Object checkedItem = listView.getAdapter().getItem(listView.getCheckedItemPosition());
 
@@ -395,7 +400,14 @@ public class CustomedDialog {
                             CustomedDialog.getConfirmRemoveShareDialog(activity, shareInterface,
                                     newRightStatus).show();
                         } else {
-                            newRightStatus.updateOnShare(shareInterface);
+                            AppUser defaultUser = AppData.defaultUser;
+                            String LoggedInEmail = defaultUser.getEmail();
+                            String currentUserEmail = ((CameraShare) shareInterface).getUserEmail();
+                            if (LoggedInEmail.equals(currentUserEmail)){
+                                CustomedDialog.showCannotChangeRightsDialog(activity, shareInterface).show();
+                            }else{
+                                newRightStatus.updateOnShare(shareInterface);
+                            }
                         }
                     }
                 }).setNegativeButton(R.string.cancel, null).create();
@@ -432,6 +444,24 @@ public class CustomedDialog {
                 newRightStatus.updateOnShare(shareInterface);
             }
         }, messageTextId, positiveButtonTextId);
+    }
+
+    public static AlertDialog showCannotChangeRightsDialog(Activity activity,
+                                                          final CameraShareInterface shareInterface) {
+//        int positiveButtonTextId = R.string.ok;
+        int messageTextId = R.string.msg_cannot_change_rights;
+
+        if (((CameraShare) shareInterface).getUserId().equals(AppData.defaultUser.getUsername())) {
+            messageTextId = R.string.msg_cannot_change_rights;
+        }
+        return new AlertDialog.Builder(activity).setMessage(messageTextId).setCancelable(true).create();
+//        new AlertDialog.Builder(activity)
+//                .setMessage(messageTextId).setPositiveButton("").setNegativeButton(R.string.cancel, null).create();
+//        return getConfirmDialog(activity, new DialogInterface.OnClickListener() {
+//            @Override
+//            public void onClick(DialogInterface dialog, int which) {
+//            }
+//        }, messageTextId, positiveButtonTextId);
     }
 
     public static AlertDialog getSelectNewOwnerDialog(final Activity activity, final ArrayList<String> usernameList) {
