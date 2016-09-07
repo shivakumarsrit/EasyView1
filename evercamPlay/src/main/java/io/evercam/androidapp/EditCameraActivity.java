@@ -17,6 +17,11 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import java.util.Iterator;
+
+import com.mashape.unirest.http.JsonNode;
+
+import org.json.JSONException;
 
 import java.util.ArrayList;
 

@@ -130,7 +130,7 @@ dependencies {
 
     // explicitly depend on RxJava's latest version for bug fixes and new features.
     compile 'io.reactivex:rxjava:1.1.5'
-    compile files('libs/evercam-java-1.1.7-android.jar')
+    compile files('libs/evercam-java-1.1.8-android.jar')
 }
 
 def props = new Properties()
