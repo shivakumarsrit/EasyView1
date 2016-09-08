@@ -188,13 +188,14 @@ public class LoginActivity extends ParentAppCompatActivity {
                 return true;
             } catch (EvercamException e) {
                 Log.e(TAG, e.toString());
+                errorMessage = e.getMessage();
 
-                if (e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
+/*                if (e.getMessage().contains(getString(R.string.prefix_invalid)) || e.getMessage()
                         .contains(getString(R.string.prefix_no_user))) {
                     errorMessage = e.getMessage();
                 } else {
                     unExpectedMessage = e.getMessage();
-                }
+                }*/
             }
             return false;
         }
