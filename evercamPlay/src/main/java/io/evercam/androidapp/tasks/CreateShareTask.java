@@ -62,8 +62,20 @@ public class CreateShareTask extends AsyncTask<Void, Void, CameraShareInterface>
                 activity.finish();
             }
         } else {
-            CustomToast.showInCenterLong(activity, errorMessage);
+            if( !empty( errorMessage ) ){
+                CustomToast.showInCenterLong(activity, errorMessage);
+            }else {
+                CustomToast.showInCenterLong(activity, "Share request sent successfully.");
+                if (activity instanceof CreateShareActivity) {
+                    activity.finish();
+                }
+            }
         }
+    }
+
+    public static boolean empty( final String s ) {
+        // Null-safe, short-circuit evaluation.
+        return s == null || s.trim().isEmpty();
     }
 
     public static void launch(Activity activity, String userId, String cameraId, String rights, String message) {

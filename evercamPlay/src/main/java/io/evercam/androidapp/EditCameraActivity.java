@@ -18,6 +18,10 @@ import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.TextView;
 
+import com.mashape.unirest.http.JsonNode;
+
+import org.json.JSONException;
+
 import java.util.ArrayList;
 
 import io.evercam.Auth;

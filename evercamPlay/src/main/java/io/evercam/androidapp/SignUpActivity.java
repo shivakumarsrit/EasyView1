@@ -153,7 +153,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
             CustomToast.showInCenter(this, R.string.error_email_required);
             focusView = emailEdit;
             return null;
-        } else if (!email.contains("@")) {
+        } else if (!isValidEmailAddress(email)){
             CustomToast.showInCenter(this, R.string.invalidEmail);
             focusView = emailEdit;
             return null;
@@ -184,6 +184,13 @@ public class SignUpActivity extends ParentAppCompatActivity {
             user.setCountrycode(countryCode);
         }
         return user;
+    }
+
+    public boolean isValidEmailAddress(String email) {
+        String ePattern = "^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@((\\[[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\])|(([a-zA-Z\\-0-9]+\\.)+[a-zA-Z]{2,}))$";
+        java.util.regex.Pattern p = java.util.regex.Pattern.compile(ePattern);
+        java.util.regex.Matcher m = p.matcher(email);
+        return m.matches();
     }
 
     private void readFromAccount() {
