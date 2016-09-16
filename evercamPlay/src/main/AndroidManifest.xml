@@ -175,7 +175,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="FABRIC API KEY" />
+            android:value="70e87b744f3bc2c7db518b88faf93411823b45b2" />
 
         <activity
             android:name=".photoview.ViewPagerActivity"
