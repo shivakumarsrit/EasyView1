@@ -455,13 +455,6 @@ public class CustomedDialog {
             messageTextId = R.string.msg_cannot_change_rights;
         }
         return new AlertDialog.Builder(activity).setMessage(messageTextId).setCancelable(true).create();
-//        new AlertDialog.Builder(activity)
-//                .setMessage(messageTextId).setPositiveButton("").setNegativeButton(R.string.cancel, null).create();
-//        return getConfirmDialog(activity, new DialogInterface.OnClickListener() {
-//            @Override
-//            public void onClick(DialogInterface dialog, int which) {
-//            }
-//        }, messageTextId, positiveButtonTextId);
     }
 
     public static AlertDialog getSelectNewOwnerDialog(final Activity activity, final ArrayList<String> usernameList) {

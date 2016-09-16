@@ -149,17 +149,6 @@ public class SignUpActivity extends ParentAppCompatActivity {
             user.setUsername(username);
         }
 
-       /* if (TextUtils.isEmpty(email)) {
-            CustomToast.showInCenter(this, R.string.error_email_required);
-            focusView = emailEdit;
-            return null;
-        } else if (!email.contains("@")) {
-            CustomToast.showInCenter(this, R.string.invalidEmail);
-            focusView = emailEdit;
-            return null;
-        } else {
-            user.setEmail(email);
-        }*/
         if (TextUtils.isEmpty(email)) {
             CustomToast.showInCenter(this, R.string.error_email_required);
             focusView = emailEdit;
