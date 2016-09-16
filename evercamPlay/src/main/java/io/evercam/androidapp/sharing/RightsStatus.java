@@ -34,6 +34,7 @@ public class RightsStatus {
     }
 
     public String getRightString() {
+
         return rightString;
     }
 
