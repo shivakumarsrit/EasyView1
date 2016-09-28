@@ -6,6 +6,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
 import android.util.Log;
+import android.widget.Button;
 
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -18,6 +19,7 @@ import io.evercam.androidapp.EditCameraActivity;
 import io.evercam.androidapp.EvercamPlayApplication;
 import io.evercam.androidapp.ParentAppCompatActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
@@ -38,11 +40,13 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
     private boolean isReachableExternally = false;
     private Boolean readyToCreateCamera = null;
     private boolean isFromScan;
+    private Button createCamButton;
 
-    public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan) {
+    public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan, Button createCamButton) {
         this.cameraDetail = cameraDetail;
         this.activity = activity;
         this.isFromScan = isFromScan;
+        this.createCamButton  = createCamButton;
     }
 
     @Override
@@ -94,6 +98,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
             activity.finish();
         } else {
             if (errorMessage != null) {
+                createCamButton.setEnabled(true);
                 CustomToast.showInCenterLong(activity, errorMessage);
             }
         }
@@ -163,6 +168,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
         final String username = cameraDetail.getCameraUsername();
         final String password = cameraDetail.getCameraPassword();
         String jpgUrlString = cameraDetail.getJpgUrl();
+        final  String vendor_id = cameraDetail.getVendor();
 
         final String jpgUrl = EditCameraActivity.buildUrlEndingWithSlash(jpgUrlString);
 
@@ -171,7 +177,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
             String externalUrl = buildHttpUrl(externalHost, portString);
 
             try {
-                Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password);
+                Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password,vendor_id);
 
                 if (snapshot != null) {
                     byte[] snapshotData = snapshot.getData();

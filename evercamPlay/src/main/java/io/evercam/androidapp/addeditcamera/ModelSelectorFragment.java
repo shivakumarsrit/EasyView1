@@ -45,6 +45,7 @@ public class ModelSelectorFragment extends Fragment {
     private TreeMap<String, String> vendorMap;
     private TreeMap<String, String> vendorMapIdAsKey;
     private TreeMap<String, String> modelMap;
+    private ArrayList<Model> modelListGlobal;
 
     @Nullable
     @Override
@@ -121,8 +122,21 @@ public class ModelSelectorFragment extends Fragment {
                         getAddActivity().onDefaultsLoaded(null);
                     }
                 } else {
-                    new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
-                            .THREAD_POOL_EXECUTOR);
+                    for (Model model : modelListGlobal) {
+
+                            if (model.getId().equals(modelId)){
+                                int objectIndex =  modelListGlobal.indexOf(model);
+                                if (isAddEditActivity()) {
+                                    getAddEditActivity().fillDefaults(modelListGlobal.get(objectIndex));
+                                } else if (isAddActivity()) {
+                                    getAddActivity().onDefaultsLoaded(modelListGlobal.get(objectIndex));
+                                }
+
+                            }
+                    }
+
+//                    new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
+//                            .THREAD_POOL_EXECUTOR);
                 }
 
                 //For all situations, the logo & thumbnail should update when selected
@@ -370,6 +384,7 @@ public class ModelSelectorFragment extends Fragment {
         @Override
         protected void onPostExecute(ArrayList<Model> modelList) {
             if (modelList != null) {
+                modelListGlobal = modelList;
                 buildModelList(modelList);
             }
         }

@@ -1,8 +1,15 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.9.7</h5>
+<h5>1.9.8</h5>
 <ul>
-	<li>- Fixed sharing related issues<br/></li>
+	<li>- Fixed multiple camera addition<br/></li>
+	<li>- Fixed snapshot error for some camera models<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.9.7</b>
+<ul>
+	<li><br/>- Fixed sharing related issues<br/></li>
 	<li>- Replace welcome screen video<br/></li>
 </ul>
 <br/>
