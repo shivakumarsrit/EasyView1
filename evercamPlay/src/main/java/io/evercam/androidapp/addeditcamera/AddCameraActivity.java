@@ -20,6 +20,7 @@ import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.ViewFlipper;
+import android.view.KeyEvent;
 
 import java.util.ArrayList;
 
@@ -157,10 +158,11 @@ public class AddCameraActivity extends AddCameraParentActivity {
         int selectedPage = mViewFlipper.getDisplayedChild();
         if (selectedPage == 0) {
             quitAddCamera();
-        } else {
+        }else {
             showPageAtPosition(selectedPage - 1);
         }
     }
+
 
     private void showPageAtPosition(int flipperPosition) {
         if (flipperPosition == 0) {
@@ -306,7 +308,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
                     String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
                     new TestSnapshotTask(externalUrl, jpgUrl, username, password,
-                            AddCameraActivity.this).executeOnExecutor(AsyncTask
+                            AddCameraActivity.this,mModelSelectorFragment.getVendorIdFromSpinner()).executeOnExecutor(AsyncTask
                             .THREAD_POOL_EXECUTOR);
                 }
             }
@@ -421,7 +423,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
 
     public void initCameraNameView() {
         mCameraNameEditText = (EditText) findViewById(R.id.cam_name_float_edit_text);
-        Button createCameraButton = (Button) findViewById(R.id.create_camera_button);
+        final Button createCameraButton = (Button) findViewById(R.id.create_camera_button);
 
         createCameraButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -431,8 +433,9 @@ public class AddCameraActivity extends AddCameraParentActivity {
                     boolean isFromScan = mDiscoveredCamera != null;
                     //Set camera status to be online as a temporary fix for #133
                     cameraBuilder.setOnline(true);
+                    createCameraButton.setEnabled(false);
                     new AddCameraTask(cameraBuilder.build(), AddCameraActivity.this,
-                            isFromScan).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+                            isFromScan,createCameraButton).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
                 }
             }
         });
@@ -655,6 +658,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
     }
 
     private void quitAddCamera() {
+
         CustomedDialog.getConfirmCancelAddCameraDialog(this).show();
     }
 
