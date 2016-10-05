@@ -1,14 +1,17 @@
 package io.evercam.androidapp.account;
 
+import android.Manifest;
 import android.accounts.Account;
 import android.accounts.AccountManager;
 import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
+import android.content.pm.PackageManager;
 import android.database.Cursor;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.ContactsContract;
+import android.support.v4.app.ActivityCompat;
 import android.telephony.TelephonyManager;
 import android.util.Patterns;
 
@@ -37,6 +40,7 @@ public class AccountUtils {
      *                and name
      * @return a list of the possible user's email address and name
      */
+
     private static UserProfile getUserProfileOnGingerbreadDevice(Context context) {
         // Other that using Patterns (API level 8) this works on devices down to
         // API level 5
@@ -59,6 +63,7 @@ public class AccountUtils {
 
         return user_profile;
     }
+
 
     /**
      * Retrieves the user profile information in a manner supported by Ice Cream

@@ -463,11 +463,13 @@ public class EditCameraActivity extends AddCameraParentActivity {
             final String externalHttp = externalHttpEdit.getText().toString();
             final String jpgUrlString = jpgUrlEdit.getText().toString();
             final String jpgUrl = buildUrlEndingWithSlash(jpgUrlString);
+            final String camera_exid = cameraEdit.getCameraId();
+
 
             String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
             new TestSnapshotTask(externalUrl, jpgUrl, username, password,
-                    EditCameraActivity.this,modelSelectorFragment.getVendorIdFromSpinner()).executeOnExecutor(AsyncTask
+                    EditCameraActivity.this,modelSelectorFragment.getVendorIdFromSpinner(),camera_exid).executeOnExecutor(AsyncTask
                     .THREAD_POOL_EXECUTOR);
         }
     }
