@@ -308,7 +308,7 @@ public class AddCameraActivity extends AddCameraParentActivity {
                     String externalUrl = getString(R.string.prefix_http) + externalHost + ":" + externalHttp;
 
                     new TestSnapshotTask(externalUrl, jpgUrl, username, password,
-                            AddCameraActivity.this,mModelSelectorFragment.getVendorIdFromSpinner()).executeOnExecutor(AsyncTask
+                            AddCameraActivity.this,mModelSelectorFragment.getVendorIdFromSpinner(),"").executeOnExecutor(AsyncTask
                             .THREAD_POOL_EXECUTOR);
                 }
             }

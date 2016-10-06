@@ -177,7 +177,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
             String externalUrl = buildHttpUrl(externalHost, portString);
 
             try {
-                Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password,vendor_id);
+                Snapshot snapshot = Camera.testSnapshot(externalUrl, jpgUrl, username, password,vendor_id,"");
 
                 if (snapshot != null) {
                     byte[] snapshotData = snapshot.getData();

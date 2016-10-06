@@ -30,14 +30,17 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
     private CustomProgressDialog customProgressDialog;
     private String errorMessage = null;
     private String vendor_id;
+    private String camera_exId;
+    
 
-    public TestSnapshotTask(String url, String ending, String username, String password, Activity activity, String vendor_id) {
+    public TestSnapshotTask(String url, String ending, String username, String password, Activity activity, String vendor_id, String camera_exId) {
         this.url = url;
-        this.ending = ending;
-        this.username = username;
-        this.password = password;
-        this.activity = activity;
-        this.vendor_id = vendor_id;
+        this.ending         = ending;
+        this.username       = username;
+        this.password       = password;
+        this.activity       = activity;
+        this.vendor_id      = vendor_id;
+        this.camera_exId    = camera_exId;
     }
 
     @Override
@@ -66,7 +69,7 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
         }
 
         try {
-            Snapshot snapshot = Camera.testSnapshot(url, ending, username, password,vendor_id);
+            Snapshot snapshot = Camera.testSnapshot(url, ending, username, password,vendor_id,camera_exId);
             if (snapshot != null) {
                 byte[] snapshotData = snapshot.getData();
                 return BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length);
