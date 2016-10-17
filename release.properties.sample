@@ -2,6 +2,6 @@ keyStore=release.keystore
 
 keyStorePassword=mysecretpassword
 
-keyAlias=myapp-release
+keyAlias=release
 
 keyAliasPassword=mysecretpassword

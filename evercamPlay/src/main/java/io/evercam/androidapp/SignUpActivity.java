@@ -28,6 +28,7 @@ import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.DataCollector;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class SignUpActivity extends ParentAppCompatActivity {
     private final String TAG = "SignUpActivity";
@@ -47,6 +48,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
     private View signUpStatusView;
     private CreateUserTask createUserTask;
     private View focusView = null;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -256,9 +258,19 @@ public class SignUpActivity extends ParentAppCompatActivity {
         @Override
         protected void onPostExecute(String message) {
             if (message == null) {
+
+                //Calling firebase analytics
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(SignUpActivity.this);
+                Bundle bundle = new Bundle();
+                bundle.putString("Evercam_User_Name", newUser.getUsername());
+                bundle.putString("Evercam_Email", newUser.getEmail());
+                mFirebaseAnalytics.logEvent("Signed_Up", bundle);
+
+                //Calling google analytics
                 EvercamPlayApplication.sendEventAnalytics(SignUpActivity.this,
                         R.string.category_sign_up, R.string.action_signup_success,
                         R.string.label_signup_successful);
+
 
                 new NewUserFeedbackItem(SignUpActivity.this, newUser.getUsername(),
                         newUser.getEmail()).sendToKeenIo(KeenHelper.getClient(SignUpActivity.this));
@@ -268,6 +280,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
                 getMixpanel().sendEvent(R.string.mixpanel_event_sign_up, null);
 
                 registerUserWithIntercom(newUser);
+
 
                 new EvercamAccount(SignUpActivity.this).add(newUser);
                 AppData.defaultUser = newUser;

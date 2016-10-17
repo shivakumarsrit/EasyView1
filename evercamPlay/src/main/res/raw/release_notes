@@ -1,8 +1,21 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>1.9.8</h5>
+<h5>2.0.0</h5>
 <ul>
-	<li>- Fixed multiple camera addition<br/></li>
+	<li>- Firebase analytics issues fixed<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.9.9</b>
+<ul>
+	<li><br/>- Firebase analytics implementation<br/></li>
+	<li>- Update test snapshot function<br/></li>
+</ul>
+<br/>
+
+<b>Version 1.9.8</b>
+<ul>
+	<li><br/>- Fixed multiple camera addition<br/></li>
 	<li>- Fixed snapshot error for some camera models<br/></li>
 </ul>
 <br/>
