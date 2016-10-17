@@ -1,10 +1,12 @@
 package io.evercam.androidapp.tasks;
 
+import android.app.Activity;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.os.AsyncTask;
+import android.os.Bundle;
 import android.util.Log;
 import android.widget.Button;
 
@@ -30,6 +32,7 @@ import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.NewCameraFeedbackItem;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
     private final String TAG = "AddCameraTask";
@@ -41,6 +44,7 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
     private Boolean readyToCreateCamera = null;
     private boolean isFromScan;
     private Button createCamButton;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     public AddCameraTask(CameraDetail cameraDetail, ParentAppCompatActivity activity, boolean isFromScan, Button createCamButton) {
         this.cameraDetail = cameraDetail;
@@ -62,11 +66,26 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
             NewCameraFeedbackItem newCameraItem = new NewCameraFeedbackItem(activity,
                     AppData.defaultUser.getUsername(), evercamCamera.getCameraId());
             if (isFromScan) {
+                //Calling firebase analytics
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.activity.getApplicationContext());
+                Bundle bundle = new Bundle();
+                bundle.putString("Camera_Addition_Type", "Scanned");
+                bundle.putString("Camera_Addition_Status", "Successfully added scanned camera.");
+                mFirebaseAnalytics.logEvent("Add_Camera", bundle);
+
+                //Google Analytics
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_scan,
                         R.string.label_addcamera_successful_scan);
                 newCameraItem.setIsFromDiscovery(true);
             } else {
+                //Calling firebase analytics
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(this.activity.getApplicationContext());
+                Bundle bundle = new Bundle();
+                bundle.putString("Camera_Addition_Type", "Manually");
+                bundle.putString("Camera_Addition_Status", "Successfully added new camera manually.");
+                mFirebaseAnalytics.logEvent("Add_Camera", bundle);
+
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_manual, R.string.label_addcamera_successful_manual);
             }

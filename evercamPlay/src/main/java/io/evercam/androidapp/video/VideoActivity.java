@@ -111,6 +111,7 @@ import rx.Subscriber;
 import rx.Subscription;
 import rx.android.schedulers.AndroidSchedulers;
 import rx.schedulers.Schedulers;
+import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class VideoActivity extends ParentAppCompatActivity
         implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
@@ -184,6 +185,7 @@ public class VideoActivity extends ParentAppCompatActivity
     private OnSwipeTouchListener swipeTouchListener;
 
     private Subscription mSubscription;
+    private FirebaseAnalytics mFirebaseAnalytics;
 
     @Override
     public void onCreate(Bundle savedInstanceState) {
@@ -527,6 +529,13 @@ public class VideoActivity extends ParentAppCompatActivity
                 SnapshotManager.showSnapshotsForCamera(this, evercamCamera.getCameraId());
             } else if (itemId == R.id.video_menu_create_shortcut) {
                 if (evercamCamera != null) {
+
+                    //Calling firebase analytics
+                    mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+                    Bundle bundle = new Bundle();
+                    bundle.putString("Evercam_Shortcut_Creation", "Home shortcut created successfully");
+                    mFirebaseAnalytics.logEvent("Home_Shortcut", bundle);
+
                     Bitmap bitmap = getBitmapFromImageView(imageView);
                     HomeShortcut.create(getApplicationContext(), evercamCamera, bitmap);
                     CustomSnackbar.showShort(this, R.string.msg_shortcut_created);
@@ -692,6 +701,13 @@ public class VideoActivity extends ParentAppCompatActivity
     private void readShortcutCameraId() {
         Intent liveViewIntent = this.getIntent();
         if (liveViewIntent != null && liveViewIntent.getExtras() != null) {
+
+            //Calling firebase analytics
+            mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
+            Bundle bundle = new Bundle();
+            bundle.putString("Evercam_Shortcut_Used", "Use shortcut from Home");
+            mFirebaseAnalytics.logEvent("Home_Shortcut", bundle);
+
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut,
                     R.string.action_shortcut_use, R.string.label_shortcut_use);
 
@@ -1328,6 +1344,12 @@ public class VideoActivity extends ParentAppCompatActivity
                 showImageView(false);
                 startTimeCounter();
 
+                //Calling firebase analytics
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(VideoActivity.this);
+                Bundle bundle = new Bundle();
+                bundle.putString("RTSP_Stream_Played", "Successfully played RTSP stream");
+                mFirebaseAnalytics.logEvent("RTSP_Streaming", bundle);
+
                 //And send to Google Analytics
                 EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
                         R.string.category_streaming_rtsp,
@@ -1357,6 +1379,13 @@ public class VideoActivity extends ParentAppCompatActivity
         Log.d(TAG, "onVideoLoadFailed()");
         runOnUiThread(new Runnable() {
             public void run() {
+
+                //Calling firebase analytics
+                mFirebaseAnalytics = FirebaseAnalytics.getInstance(VideoActivity.this);
+                Bundle bundle = new Bundle();
+                bundle.putString("RTSP_Stream_Failed", "Failed to play RTSP stream while the camera is online and has a valid RTSP URL.");
+                mFirebaseAnalytics.logEvent("RTSP_Streaming", bundle);
+
                 EvercamPlayApplication.sendEventAnalytics(VideoActivity.this, R.string
                         .category_streaming_rtsp, R.string.action_streaming_rtsp_failed, R.string
                         .label_streaming_rtsp_failed);
@@ -1520,6 +1549,12 @@ public class VideoActivity extends ParentAppCompatActivity
         showProgressView(false);
 
         startTimeCounter();
+
+        //Calling firebase analytics
+        mFirebaseAnalytics = FirebaseAnalytics.getInstance(VideoActivity.this);
+        Bundle bundle = new Bundle();
+        bundle.putString("JPG_Stream_Played", "Successfully played JPG stream");
+        mFirebaseAnalytics.logEvent("JPG_Streaming", bundle);
 
         EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
                 R.string.category_streaming_jpg,

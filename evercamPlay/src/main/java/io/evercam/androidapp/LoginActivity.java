@@ -29,6 +29,7 @@ import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.tasks.CheckInternetTask;
 import io.evercam.androidapp.utils.Constants;
 
+
 public class LoginActivity extends ParentAppCompatActivity {
     private EditText usernameEdit;
     private EditText passwordEdit;
@@ -204,7 +205,6 @@ public class LoginActivity extends ParentAppCompatActivity {
         protected void onPostExecute(final Boolean success) {
             loginTask = null;
             customProgressDialog.dismiss();
-
             if (success) {
                 AppData.defaultUser = newUser;
                 new EvercamAccount(LoginActivity.this).add(newUser);
