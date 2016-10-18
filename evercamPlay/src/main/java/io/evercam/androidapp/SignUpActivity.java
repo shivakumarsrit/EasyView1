@@ -185,8 +185,8 @@ public class SignUpActivity extends ParentAppCompatActivity {
         if (countryCode != null && !countryCode.isEmpty()) {
             user.setCountrycode(countryCode);
         }
-        return null;
-//        return user;
+        
+        return user;
     }
 
     public boolean isValidEmailAddress(String email) {
