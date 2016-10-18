@@ -119,20 +119,20 @@ public class SignUpActivity extends ParentAppCompatActivity {
         String password = passwordEdit.getText().toString();
         String repassword = repasswordEdit.getText().toString();
 
-        if (TextUtils.isEmpty(firstname)) {
+        if (firstname == null || firstname.trim().isEmpty()) {
             CustomToast.showInCenter(this, R.string.error_firstname_required);
             focusView = firstnameEdit;
             return null;
         } else {
-            user.setFirstname(firstname);
+            user.setFirstname(firstname.trim());
         }
 
-        if (TextUtils.isEmpty(lastname)) {
+        if (lastname == null || lastname.trim().isEmpty()) {
             CustomToast.showInCenter(this, R.string.error_lastname_required);
             focusView = lastnameEdit;
             return null;
         } else {
-            user.setLastname(lastname);
+            user.setLastname(lastname.trim());
         }
 
         if (TextUtils.isEmpty(username)) {
@@ -185,7 +185,8 @@ public class SignUpActivity extends ParentAppCompatActivity {
         if (countryCode != null && !countryCode.isEmpty()) {
             user.setCountrycode(countryCode);
         }
-        return user;
+        return null;
+//        return user;
     }
 
     public boolean isValidEmailAddress(String email) {
