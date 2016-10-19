@@ -75,7 +75,8 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
                 return BitmapFactory.decodeByteArray(snapshotData, 0, snapshotData.length);
             }
         } catch (Exception e) {
-//            errorMessage = e.toString();
+            errorMessage = e.getMessage();
+            Log.e(TAG, e.getMessage());
             Log.e(TAG, e.toString());
         }
         return null;
