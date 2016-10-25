@@ -134,7 +134,6 @@ public class ModelSelectorFragment extends Fragment {
 
                             }
                     }
-
 //                    new RequestDefaultsTask(vendorId, modelName).executeOnExecutor(AsyncTask
 //                            .THREAD_POOL_EXECUTOR);
                 }
@@ -248,12 +247,30 @@ public class ModelSelectorFragment extends Fragment {
                 }
             }
         }
+
         Collection<String> modelNameCollection = modelMap.values();
 
         String[] fullModelArray = Commons.joinStringArray(new String[]{getResources().getString(R
                 .string.select_model)}, modelNameCollection.toArray(new String[0]));
+
         ArrayAdapter<String> spinnerArrayAdapter = new ArrayAdapter<String>(getActivity(),
                 android.R.layout.simple_spinner_item, fullModelArray);
+
+        int defaultObjectIndex = spinnerArrayAdapter.getPosition(getString(R.string
+                .model_default));
+
+        if (defaultObjectIndex >= 0){
+
+            String defaultObject = fullModelArray[defaultObjectIndex];
+
+            for (int i = (defaultObjectIndex - 1); i >= 0; i--) {
+
+                fullModelArray[i+1] = fullModelArray[i];
+            }
+
+            fullModelArray[1] = defaultObject;
+
+        }
         spinnerArrayAdapter.setDropDownViewResource(R.layout.spinner);
         modelSpinner.setAdapter(spinnerArrayAdapter);
 

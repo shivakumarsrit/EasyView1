@@ -411,7 +411,7 @@ public class EditCameraActivity extends AddCameraParentActivity {
                 passwordEdit.setText(basicAuth.getPassword());
             }
             jpgUrlEdit.setText(defaults.getJpgURL());
-            rtspUrlEdit.setText(defaults.getH264URL());
+//            rtspUrlEdit.setText(defaults.getH264URL());
 
             if (!model.getName().equals(Model.DEFAULT_MODEL_NAME)
                     && !jpgUrlEdit.getText().toString().isEmpty()) {
@@ -434,7 +434,7 @@ public class EditCameraActivity extends AddCameraParentActivity {
             usernameEdit.setText("");
             passwordEdit.setText("");
         }
-        jpgUrlEdit.setText("");
+//        jpgUrlEdit.setText("");
         rtspUrlEdit.setText("");
 
         //Make it editable when defaults are cleared

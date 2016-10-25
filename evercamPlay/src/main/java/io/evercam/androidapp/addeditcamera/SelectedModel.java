@@ -25,7 +25,7 @@ public class SelectedModel implements Serializable {
         if (defaults != null) {
             try {
                 setDefaultJpgUrl(defaults.getJpgURL());
-                setDefaultRtspUrl(defaults.getH264URL());
+//                setDefaultRtspUrl(defaults.getH264URL());
 
                 Auth auth = defaults.getAuth(Auth.TYPE_BASIC);
                 if (auth != null) {
