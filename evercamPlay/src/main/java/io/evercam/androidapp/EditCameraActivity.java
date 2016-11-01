@@ -372,6 +372,14 @@ public class EditCameraActivity extends AddCameraParentActivity {
             patchCameraBuilder.setVendor(vendorId);
 
             String modelName = modelSelectorFragment.getModelIdFromSpinner();
+
+            if (vendorId.equals("other") && modelName.equals("")){
+                modelName = "other_default";
+            }else if (vendorId.equals("") && modelName.equals("")){
+                vendorId    = "other";
+                modelName   = "other_default";
+            }
+
             patchCameraBuilder.setModel(modelName);
 
             String username = usernameEdit.getText().toString();
