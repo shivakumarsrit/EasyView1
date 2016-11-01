@@ -600,8 +600,19 @@ public class AddCameraActivity extends AddCameraParentActivity {
                 }
 
                 String modelId = selectedModel.getModelId();
+
                 if (!modelId.isEmpty()) {
+
                     cameraBuilder.setModel(modelId);
+
+                }else if (vendorId.equals("other") && modelId.equals("")){
+
+                    cameraBuilder.setModel("other_default");
+
+                }else if (vendorId.equals("") && modelId.equals("")){
+
+                    cameraBuilder.setVendor("other");
+                    cameraBuilder.setModel("other_default");
                 }
 
                 String jpgUrl;

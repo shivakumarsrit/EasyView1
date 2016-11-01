@@ -83,6 +83,7 @@ public class ModelSelectorFragment extends Fragment {
             public void onItemSelected(AdapterView<?> parentView, View selectedItemView, int
                     position, long id) {
                 if (position == 0) {
+                    //User selected Unknown/Other
                     vendorLogoImageView.setImageResource(android.R.color.transparent);
                     buildModelSpinner(new ArrayList<Model>(), null);
                 } else {
@@ -97,7 +98,10 @@ public class ModelSelectorFragment extends Fragment {
                         new RequestModelListTask(vendorId).executeOnExecutor(AsyncTask
                                 .THREAD_POOL_EXECUTOR);
                     } else {
-                        modelSpinner.setEnabled(false);
+                        //User selected Other
+                        vendorLogoImageView.setImageResource(android.R.color.transparent);
+                        buildModelSpinner(new ArrayList<Model>(), null);
+//                        modelSpinner.setEnabled(false);
                     }
                 }
             }

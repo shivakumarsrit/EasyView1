@@ -1,8 +1,24 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.0</h5>
+<h5>2.0.2</h5>
 <ul>
-	<li>- Firebase analytics issues fixed<br/></li>
+    <li>- Fabric analytics updated<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.1</b>
+<ul>
+    <li><br/>- Fixed "default" value will be at top when selecting camera model<br/></li>
+    <li>- Fixed h264 url when camera model & vendor specified<br/></li>
+    <li>- Fixed Test snapshop error message handling<br/></li>
+	<li>- Fixed sign up null string error<br/></li>
+	<li>- Fixed edit camera screen bugs<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.0</b>
+<ul>
+	<li><br/>- Firebase analytics issues fixed<br/></li>
 </ul>
 <br/>
 
