@@ -185,6 +185,8 @@ public class SignUpActivity extends ParentAppCompatActivity {
         if (countryCode != null && !countryCode.isEmpty()) {
             user.setCountrycode(countryCode);
         }
+
+        user.setAndroidtoken("android16c48f51");
         
         return user;
     }
@@ -267,10 +269,12 @@ public class SignUpActivity extends ParentAppCompatActivity {
                 bundle.putString("Evercam_Email", newUser.getEmail());
                 mFirebaseAnalytics.logEvent("Signed_Up", bundle);
 
+                /*
                 //Calling google analytics
                 EvercamPlayApplication.sendEventAnalytics(SignUpActivity.this,
                         R.string.category_sign_up, R.string.action_signup_success,
                         R.string.label_signup_successful);
+                */
 
 
                 new NewUserFeedbackItem(SignUpActivity.this, newUser.getUsername(),

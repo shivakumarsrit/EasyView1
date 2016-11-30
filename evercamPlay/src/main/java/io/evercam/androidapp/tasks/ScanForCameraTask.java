@@ -106,7 +106,7 @@ public class ScanForCameraTask extends AsyncTask<Void, DiscoveredCamera, ArrayLi
 
                                 //Iterate UPnP device list and publish the UPnP details if matches
                                 EvercamDiscover.mergeUpnpDevicesToCamera(camera, upnpDeviceList);
-
+//                                camera.setModel(camera.getModel().toLowerCase());
                                 publishProgress(camera);
                             }
 
@@ -234,6 +234,7 @@ public class ScanForCameraTask extends AsyncTask<Void, DiscoveredCamera, ArrayLi
                     if (discoveredCamera.getIP().equals(upnpDevice.getIp())) {
                         DiscoveredCamera publishCamera = new DiscoveredCamera(discoveredCamera.getIP());
                         EvercamDiscover.mergeSingleUpnpDeviceToCamera(upnpDevice, publishCamera);
+//                        publishCamera.setModel(upnpDevice.getModel().toLowerCase());
                         publishProgress(publishCamera);
                         break;
                     }

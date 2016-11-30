@@ -1,8 +1,21 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.2</h5>
+<h5>2.0.4</h5>
 <ul>
-    <li>- Fabric analytics updated<br/></li>
+    <li>- Updated sign up process<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.3</b>
+<ul>
+    <li><br/>- Google analytics bug fixed<br/></li>
+    <li>- Fixed vendor and model selection bug<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.2</b>
+<ul>
+    <li><br/>- Fabric analytics updated<br/></li>
 </ul>
 <br/>
 
