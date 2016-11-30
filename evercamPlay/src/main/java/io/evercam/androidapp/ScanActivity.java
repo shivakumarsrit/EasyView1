@@ -22,6 +22,7 @@ import android.widget.Button;
 import android.widget.ListView;
 import android.widget.ProgressBar;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.badoo.mobile.util.WeakHandler;
 import com.mashape.unirest.http.Unirest;
@@ -231,6 +232,8 @@ public class ScanActivity extends ParentAppCompatActivity {
 
     private void launchAddCameraPage(DiscoveredCamera camera) {
         Intent intentAddCamera = new Intent(ScanActivity.this, AddCameraActivity.class);
+        String lowerCaseModel = camera.getModel().toLowerCase();
+        camera.setModel(lowerCaseModel);
         intentAddCamera.putExtra("camera", camera);
         startActivityForResult(intentAddCamera, Constants.REQUEST_CODE_ADD_CAMERA);
     }
@@ -485,6 +488,9 @@ public class ScanActivity extends ParentAppCompatActivity {
         @Override
         protected void onPreExecute() {
             //Check is Wifi connected or not first
+//            showConnectWifiButton(false);
+//            showAllDeviceButton(true);
+
             DataCollector dataCollector = new DataCollector(ScanActivity.this);
             if (dataCollector.isConnectedMobile() && !dataCollector.isConnectedWifi()) {
                 //if (true) {

@@ -211,9 +211,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             Bundle bundle = new Bundle();
             bundle.putString("Refresh", "Refresh Camera List");
             mFirebaseAnalytics.logEvent("Menu", bundle);
-
+/*
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_refresh, R.string.label_list_refresh);
-
+*/
             if (refresh != null) refresh.setActionView(R.layout.partial_actionbar_progress);
 
             startCameraLoadingTask();
@@ -454,9 +454,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             Bundle bundle = new Bundle();
             bundle.putString("Settings", "Click on setting menu");
             mFirebaseAnalytics.logEvent("Menu", bundle);
-
+/*
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_settings, R.string.label_settings);
-
+*/
             startActivityForResult(new Intent(CamerasActivity.this, CameraPrefsActivity.class),
                     Constants.REQUEST_CODE_SHOW_GUIDE);
         } else if (view == mNavFeedbackItemLayout) {
@@ -474,8 +474,9 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             Bundle bundle = new Bundle();
             bundle.putString("Manage Account", "Click on manage account");
             mFirebaseAnalytics.logEvent("Menu", bundle);
-
+/*
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_menu, R.string.action_manage_account, R.string.label_account);
+            */
             startActivityForResult(new Intent(CamerasActivity.this, ManageAccountsActivity.class), Constants.REQUEST_CODE_MANAGE_ACCOUNT);
         }
     }
@@ -543,11 +544,11 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 Bundle bundle = new Bundle();
                 bundle.putString("Add Camera", "Click on add camera in menu, and choose manually.");
                 mFirebaseAnalytics.logEvent("Menu", bundle);
-
+/*
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string
                         .label_add_camera_manually);
-
+*/
                 //TODO: Make the decision of using which design for adding camera
                 startActivityForResult(new Intent(CamerasActivity.this, AddCameraActivity
                         .class), Constants.REQUEST_CODE_ADD_CAMERA);
@@ -565,10 +566,10 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 Bundle bundle = new Bundle();
                 bundle.putString("Add Camera", "Click on add camera in menu, and choose scan.");
                 mFirebaseAnalytics.logEvent("Menu", bundle);
-
+/*
                 EvercamPlayApplication.sendEventAnalytics(CamerasActivity.this, R.string
                         .category_menu, R.string.action_add_camera, R.string.label_add_camera_scan);
-
+*/
                 startActivityForResult(new Intent(CamerasActivity.this, ScanActivity.class),
                         Constants.REQUEST_CODE_ADD_CAMERA);
 

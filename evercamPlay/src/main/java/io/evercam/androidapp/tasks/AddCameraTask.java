@@ -72,11 +72,12 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
                 bundle.putString("Camera_Addition_Type", "Scanned");
                 bundle.putString("Camera_Addition_Status", "Successfully added scanned camera.");
                 mFirebaseAnalytics.logEvent("Add_Camera", bundle);
-
+/*
                 //Google Analytics
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_scan,
                         R.string.label_addcamera_successful_scan);
+                */
                 newCameraItem.setIsFromDiscovery(true);
             } else {
                 //Calling firebase analytics
@@ -85,9 +86,10 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
                 bundle.putString("Camera_Addition_Type", "Manually");
                 bundle.putString("Camera_Addition_Status", "Successfully added new camera manually.");
                 mFirebaseAnalytics.logEvent("Add_Camera", bundle);
-
+/*
                 EvercamPlayApplication.sendEventAnalytics(activity, R.string.category_add_camera,
                         R.string.action_addcamera_success_manual, R.string.label_addcamera_successful_manual);
+                */
             }
 
             try {

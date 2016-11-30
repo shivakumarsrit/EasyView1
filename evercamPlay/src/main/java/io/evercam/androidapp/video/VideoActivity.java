@@ -539,8 +539,9 @@ public class VideoActivity extends ParentAppCompatActivity
                     Bitmap bitmap = getBitmapFromImageView(imageView);
                     HomeShortcut.create(getApplicationContext(), evercamCamera, bitmap);
                     CustomSnackbar.showShort(this, R.string.msg_shortcut_created);
+                    /*
                     EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut, R.string.action_shortcut_create, R.string.label_shortcut_create);
-
+*/
                     new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), evercamCamera.getCameraId(),
                             ShortcutFeedbackItem.ACTION_TYPE_CREATE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS).sendToKeenIo(client);
                     getMixpanel().sendEvent(R.string.mixpanel_event_create_shortcut, new
@@ -707,9 +708,10 @@ public class VideoActivity extends ParentAppCompatActivity
             Bundle bundle = new Bundle();
             bundle.putString("Evercam_Shortcut_Used", "Use shortcut from Home");
             mFirebaseAnalytics.logEvent("Home_Shortcut", bundle);
-
+/*
             EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut,
                     R.string.action_shortcut_use, R.string.label_shortcut_use);
+            */
 
             try {
                 if (evercamCamera != null) {
@@ -1350,11 +1352,13 @@ public class VideoActivity extends ParentAppCompatActivity
                 bundle.putString("RTSP_Stream_Played", "Successfully played RTSP stream");
                 mFirebaseAnalytics.logEvent("RTSP_Streaming", bundle);
 
+                /*
                 //And send to Google Analytics
                 EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
                         R.string.category_streaming_rtsp,
                         R.string.action_streaming_rtsp_success,
                         R.string.label_streaming_rtsp_success);
+                */
 
                 StreamFeedbackItem successItem = new StreamFeedbackItem(VideoActivity
                         .this, AppData.defaultUser.getUsername(), true);
@@ -1385,10 +1389,11 @@ public class VideoActivity extends ParentAppCompatActivity
                 Bundle bundle = new Bundle();
                 bundle.putString("RTSP_Stream_Failed", "Failed to play RTSP stream while the camera is online and has a valid RTSP URL.");
                 mFirebaseAnalytics.logEvent("RTSP_Streaming", bundle);
-
+/*
                 EvercamPlayApplication.sendEventAnalytics(VideoActivity.this, R.string
                         .category_streaming_rtsp, R.string.action_streaming_rtsp_failed, R.string
                         .label_streaming_rtsp_failed);
+                */
                 StreamFeedbackItem failedItem = new StreamFeedbackItem
                         (VideoActivity.this, AppData.defaultUser.getUsername(),
                                 false);
@@ -1555,11 +1560,12 @@ public class VideoActivity extends ParentAppCompatActivity
         Bundle bundle = new Bundle();
         bundle.putString("JPG_Stream_Played", "Successfully played JPG stream");
         mFirebaseAnalytics.logEvent("JPG_Streaming", bundle);
-
+/*
         EvercamPlayApplication.sendEventAnalytics(VideoActivity.this,
                 R.string.category_streaming_jpg,
                 R.string.action_streaming_jpg_success,
                 R.string.label_streaming_jpg_success);
+        */
         StreamFeedbackItem successItem = new StreamFeedbackItem
                 (VideoActivity.this, AppData.defaultUser.getUsername
                         (), true);
