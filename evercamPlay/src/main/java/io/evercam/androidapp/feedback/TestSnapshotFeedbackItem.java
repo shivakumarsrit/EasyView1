@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 
 import io.evercam.androidapp.utils.Constants;
-import io.keen.client.java.KeenClient;
+
 
 public class TestSnapshotFeedbackItem extends FeedbackItem {
     private String snapshot_url = "";
@@ -47,19 +47,4 @@ public class TestSnapshotFeedbackItem extends FeedbackItem {
         return map;
     }
 
-    @Override
-    public void sendToKeenIo(final KeenClient client) {
-        if (client != null) {
-            final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    client.addEvent(Constants.KEEN_COLLECTION_TEST_SNAPSHOT, feedbackItem
-                            .toHashMap());
-
-                }
-            }).start();
-        }
-    }
 }

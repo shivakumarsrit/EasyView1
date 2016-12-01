@@ -58,7 +58,6 @@ import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.dto.EvercamCamera;
 import io.evercam.androidapp.dto.ImageLoadingStatus;
-import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.LoadTimeFeedbackItem;
 import io.evercam.androidapp.publiccameras.PublicCamerasWebActivity;
 import io.evercam.androidapp.tasks.CheckInternetTask;
@@ -69,7 +68,6 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.intercom.android.sdk.Intercom;
 import io.intercom.com.squareup.picasso.Picasso;
-import io.keen.client.java.KeenClient;
 import uk.co.deanwild.materialshowcaseview.IShowcaseListener;
 import uk.co.deanwild.materialshowcaseview.MaterialShowcaseView;
 
@@ -115,7 +113,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
      */
     private Date startTime;
     private float databaseLoadTime = 0;
-    private KeenClient client;
 
     private enum InternetCheckType {
         START, RESTART
@@ -821,8 +818,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private void initDataCollectionObjects() {
         startTime = new Date();
-
-        client = KeenHelper.getClient(this);
     }
 
     /**
@@ -842,8 +837,6 @@ public class CamerasActivity extends ParentAppCompatActivity implements
             LoadTimeFeedbackItem feedbackItem = new LoadTimeFeedbackItem(this,
                     username, databaseLoadTime, timeDifferenceFloat);
             databaseLoadTime = 0;
-
-            feedbackItem.sendToKeenIo(client);
         }
     }
 

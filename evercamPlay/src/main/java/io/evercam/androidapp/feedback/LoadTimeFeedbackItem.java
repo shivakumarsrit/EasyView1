@@ -9,7 +9,7 @@ import org.json.JSONObject;
 import java.util.HashMap;
 
 import io.evercam.androidapp.utils.Constants;
-import io.keen.client.java.KeenClient;
+
 
 public class LoadTimeFeedbackItem extends FeedbackItem {
     private final String TAG = "LoadTimeFeedbackItem";
@@ -46,20 +46,5 @@ public class LoadTimeFeedbackItem extends FeedbackItem {
         event.put("database_load_time", database_load_time);
         event.put("evercam_load_time", evercam_load_time);
         return event;
-    }
-
-    @Override
-    public void sendToKeenIo(final KeenClient client) {
-        if (client != null) {
-            final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    client.addEvent(Constants.KEEN_COLLECTION_LIST_LOADING_TIME, feedbackItem.toHashMap());
-
-                }
-            }).start();
-        }
     }
 }

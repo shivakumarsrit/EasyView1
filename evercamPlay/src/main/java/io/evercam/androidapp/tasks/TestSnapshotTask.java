@@ -16,9 +16,7 @@ import io.evercam.androidapp.addeditcamera.AddCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
-import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.TestSnapshotFeedbackItem;
-import io.keen.client.java.KeenClient;
 
 public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
     private final String TAG = "TestSnapshotTask";
@@ -90,13 +88,10 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
             ((AddCameraActivity) activity).showTestSnapshotProgress(false);
         }
 
-        KeenClient client = KeenHelper.getClient(activity);
 
         if (bitmap != null) {
             CustomedDialog.getSnapshotDialog(activity, bitmap).show();
 
-            new TestSnapshotFeedbackItem(activity, AppData.defaultUser.getUsername(), true, true)
-                    .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
         } else {
             String username = "";
             if (AppData.defaultUser != null) {
@@ -109,12 +104,10 @@ public class TestSnapshotTask extends AsyncTask<Void, Void, Bitmap> {
                     messageResourceId = R.string.msg_snapshot_test_failed_new;
                 }
                 CustomedDialog.showMessageDialog(activity, messageResourceId);
-                new TestSnapshotFeedbackItem(activity, username, false, true)
-                        .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
+
             } else {
                 CustomedDialog.showMessageDialog(activity, errorMessage);
-                new TestSnapshotFeedbackItem(activity, username, false, false)
-                        .setSnapshot_url(url).setCam_username(username).setCam_password(password).sendToKeenIo(client);
+
             }
         }
     }

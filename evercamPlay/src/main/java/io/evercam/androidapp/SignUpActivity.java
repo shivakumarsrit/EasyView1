@@ -22,7 +22,6 @@ import io.evercam.androidapp.custom.CustomToast;
 import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
-import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.NewUserFeedbackItem;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.tasks.CheckInternetTask;
@@ -275,10 +274,6 @@ public class SignUpActivity extends ParentAppCompatActivity {
                         R.string.category_sign_up, R.string.action_signup_success,
                         R.string.label_signup_successful);
                 */
-
-
-                new NewUserFeedbackItem(SignUpActivity.this, newUser.getUsername(),
-                        newUser.getEmail()).sendToKeenIo(KeenHelper.getClient(SignUpActivity.this));
 
                 getMixpanel().identifyNewUser(newUser);
                 getMixpanel().identifyUser(newUser.getUsername());

@@ -28,7 +28,6 @@ import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.EvercamCamera;
-import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.NewCameraFeedbackItem;
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.video.VideoActivity;
@@ -100,8 +99,6 @@ public class AddCameraTask extends AsyncTask<Void, Boolean, EvercamCamera> {
                 e.printStackTrace();
                 EvercamPlayApplication.sendCaughtException(activity, e);
             }
-
-            newCameraItem.sendToKeenIo(KeenHelper.getClient(activity));
 
             /**
              * Successfully added a camera, so refresh camera list.
