@@ -81,7 +81,6 @@ import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.dto.EvercamCamera;
-import io.evercam.androidapp.feedback.KeenHelper;
 import io.evercam.androidapp.feedback.ShortcutFeedbackItem;
 import io.evercam.androidapp.feedback.StreamFeedbackItem;
 import io.evercam.androidapp.permission.Permission;
@@ -104,7 +103,6 @@ import io.evercam.androidapp.utils.Constants;
 import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.evercam.androidapp.utils.RxUtils;
-import io.keen.client.java.KeenClient;
 import rx.Observable;
 import rx.Observer;
 import rx.Subscriber;
@@ -180,7 +178,6 @@ public class VideoActivity extends ParentAppCompatActivity
     private TimeCounter timeCounter;
 
     private Date startTime;
-    private KeenClient client;
 
     private OnSwipeTouchListener swipeTouchListener;
 
@@ -416,15 +413,11 @@ public class VideoActivity extends ParentAppCompatActivity
                     } else {
                         CustomToast.showInCenterLong(this, getString(R
                                 .string.msg_can_not_access_camera) + " - " + username);
-                        new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
-                                ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_FAILED)
-                                .sendToKeenIo(client);
+
                         navigateBackToCameraList();
                     }
                 } else {
-                    new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), startingCameraID,
-                            ShortcutFeedbackItem.ACTION_TYPE_USE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS)
-                            .sendToKeenIo(client);
+
                 }
             }
         } else {
@@ -466,7 +459,6 @@ public class VideoActivity extends ParentAppCompatActivity
     }
 
     private void initAnalyticsObjects() {
-        client = KeenHelper.getClient(this);
     }
 
     private int getSleepTime() {
@@ -542,8 +534,7 @@ public class VideoActivity extends ParentAppCompatActivity
                     /*
                     EvercamPlayApplication.sendEventAnalytics(this, R.string.category_shortcut, R.string.action_shortcut_create, R.string.label_shortcut_create);
 */
-                    new ShortcutFeedbackItem(this, AppData.defaultUser.getUsername(), evercamCamera.getCameraId(),
-                            ShortcutFeedbackItem.ACTION_TYPE_CREATE, ShortcutFeedbackItem.RESULT_TYPE_SUCCESS).sendToKeenIo(client);
+
                     getMixpanel().sendEvent(R.string.mixpanel_event_create_shortcut, new
                             JSONObject().put("Camera ID", evercamCamera.getCameraId()));
                 }
@@ -1373,7 +1364,6 @@ public class VideoActivity extends ParentAppCompatActivity
                     startTime = null;
                 }
 
-                successItem.sendToKeenIo(client);
             }
         });
     }
@@ -1400,8 +1390,6 @@ public class VideoActivity extends ParentAppCompatActivity
                 failedItem.setCameraId(evercamCamera.getCameraId());
                 failedItem.setUrl(evercamCamera.getHlsUrl());
                 failedItem.setType(StreamFeedbackItem.TYPE_HLS);
-
-                failedItem.sendToKeenIo(client);
 
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
                 showJpgView = true;
@@ -1571,7 +1559,6 @@ public class VideoActivity extends ParentAppCompatActivity
                         (), true);
         successItem.setCameraId(evercamCamera.getCameraId());
         successItem.setType(StreamFeedbackItem.TYPE_JPG);
-        successItem.sendToKeenIo(client);
     }
 
     private MyExoPlayer.RendererBuilder getRendererBuilder() {

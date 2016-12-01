@@ -184,7 +184,6 @@ public class ScanForCameraTask extends AsyncTask<Void, DiscoveredCamera, ArrayLi
         if (AppData.defaultUser != null) {
             username = AppData.defaultUser.getUsername();
         }
-        new ScanFeedbackItem(getScanActivity(), username, scanningTime, cameraList).sendToKeenIo();
     }
 
     private float getPerDevicePercent() {

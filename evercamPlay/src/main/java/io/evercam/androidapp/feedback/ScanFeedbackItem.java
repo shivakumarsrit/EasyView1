@@ -7,7 +7,7 @@ import java.util.HashMap;
 
 import io.evercam.androidapp.utils.Constants;
 import io.evercam.network.discovery.DiscoveredCamera;
-import io.keen.client.java.KeenClient;
+
 
 public class ScanFeedbackItem extends FeedbackItem {
     private Float scan_time;
@@ -47,43 +47,5 @@ public class ScanFeedbackItem extends FeedbackItem {
         map.put("timestamp", timestamp);
 
         return map;
-    }
-
-    @Override
-    public void sendToKeenIo(KeenClient client) {
-        //Overload this method with the one without param
-    }
-
-    public void sendToKeenIo() {
-        final KeenClient client = KeenHelper.getClient(context);
-
-        if (client != null) {
-            final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    client.addEvent(Constants.KEEN_COLLECTION_SCANNING_METRIC, feedbackItem.toHashMap());
-
-                    try {
-                        if (cameraList.size() != 0) {
-                            for (DiscoveredCamera camera : cameraList) {
-                                client.addEvent(Constants.KEEN_COLLECTION_DISCOVERED_CAMERAS, toCameraHashMap(camera));
-
-                            }
-                        }
-                    } catch (Exception e) {
-                        //Don't crash when exception happens
-                        e.printStackTrace();
-                    }
-
-                    if (cameraList.size() != 0) {
-                        for (DiscoveredCamera camera : cameraList) {
-                            client.addEvent(Constants.KEEN_COLLECTION_DISCOVERED_CAMERAS, toCameraHashMap(camera));
-                        }
-                    }
-                }
-            }).start();
-        }
     }
 }

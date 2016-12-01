@@ -5,7 +5,7 @@ import android.content.Context;
 import java.util.HashMap;
 
 import io.evercam.androidapp.utils.Constants;
-import io.keen.client.java.KeenClient;
+
 
 public class ShortcutFeedbackItem extends FeedbackItem {
     public static final String ACTION_TYPE_CREATE = "created";
@@ -35,19 +35,4 @@ public class ShortcutFeedbackItem extends FeedbackItem {
         return map;
     }
 
-    @Override
-    public void sendToKeenIo(final KeenClient client) {
-        if (client != null) {
-            final FeedbackItem feedbackItem = this;
-            new Thread(new Runnable() {
-
-                @Override
-                public void run() {
-                    client.addEvent(Constants.KEEN_COLLECTION_HOME_SHORTCUT, feedbackItem
-                            .toHashMap());
-
-                }
-            }).start();
-        }
-    }
 }
