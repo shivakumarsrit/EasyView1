@@ -2,6 +2,8 @@ package io.evercam.androidapp.tasks;
 
 import android.os.AsyncTask;
 
+import java.util.ArrayList;
+
 import io.evercam.PTZException;
 import io.evercam.PTZPreset;
 import io.evercam.androidapp.R;
@@ -33,7 +35,12 @@ public class CreatePresetTask extends AsyncTask<Void, Void, Boolean> {
         try {
             PTZPreset.create(cameraId, presetName);
 
-            activity.presetList = PTZPreset.getAllPresets(cameraId);
+            ArrayList<PTZPreset> allPresets = PTZPreset.getAllPresets(cameraId);
+            ArrayList<PTZPreset> customPresets = removeSystemPresetsFrom(allPresets);
+
+            if (customPresets.size() > 0) {
+                activity.presetList = customPresets;
+            }
 
             return true;
         } catch (PTZException e) {
@@ -47,5 +54,19 @@ public class CreatePresetTask extends AsyncTask<Void, Void, Boolean> {
         customProgressDialog.dismiss();
         CustomToast.showInCenter(activity, success ? activity.getString(R.string
                 .msg_preset_created) : errorMessage);
+    }
+
+    private ArrayList<PTZPreset> removeSystemPresetsFrom(ArrayList<PTZPreset> allPresets) {
+        ArrayList<PTZPreset> customPresets = new ArrayList<>();
+        if (allPresets.size() > 0) {
+            //Exclude presets with token >= 33 and only keep those user defined presets
+            for (PTZPreset preset : allPresets) {
+                int tokenInt = Integer.valueOf(preset.getToken());
+                if (tokenInt < 33) {
+                    customPresets.add(preset);
+                }
+            }
+        }
+        return customPresets;
     }
 }
