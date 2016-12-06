@@ -1038,7 +1038,6 @@ public class VideoActivity extends ParentAppCompatActivity
         presetsImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                if (presetList.size() > 0) {
                     final AlertDialog listDialog = new AlertDialog.Builder(VideoActivity.this)
                             .setNegativeButton(R.string.cancel, null).create();
                     LayoutInflater mInflater = LayoutInflater.from(getApplicationContext());
@@ -1068,7 +1067,6 @@ public class VideoActivity extends ParentAppCompatActivity
                     });
 
                     listDialog.show();
-                }
             }
         });
 
