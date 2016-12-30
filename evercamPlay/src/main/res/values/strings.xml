@@ -6,6 +6,8 @@
     <string name="user_agent_suffix">io.evercam.androidapp/1.0</string>
     <string name="demo_camera_id">evercam-remembrance-camera</string>
 
+    <string name="google_api_key_maps">AIzaSyAXwqGkwI87v4YoSGCq0FStNXr0_Gy_qj8</string>
+
     <!-- General -->
     <string name="cancel">Cancel</string>
     <string name="yes">Yes</string>
@@ -56,9 +58,9 @@
     <string name="title_settings">Settings</string>
     <string name="title_all_devices">All Devices</string>
     <string name="title_saved_images">Saved Images</string>
-    <string name="menu_delete_camera">Delete Camera</string>
+    <string name="menu_delete_camera">Remove Camera</string>
     <string name="menu_edit_camera">Edit Camera</string>
-    <string name="menu_camera_settings">Camera Settings</string>
+    <string name="menu_camera_settings">Camera Details</string>
     <string name="menu_share">Sharing</string>
     <string name="menu_view_snapshot">Saved Images</string>
     <string name="menu_create_shortcut">Add to homescreen</string>
@@ -69,6 +71,8 @@
     <string name="menu_create_share">Share with</string>
     <string name="menu_transfer">Transfer</string>
     <string name="menu_action_share">Share</string>
+    <string name="edit_camera_location">Edit Location</string>
+    <string name="save_camera_location">Save Location</string>
 
     <!-- Intent action data-->
     <string name="data_scheme">evercam</string>

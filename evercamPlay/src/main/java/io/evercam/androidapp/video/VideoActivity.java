@@ -218,6 +218,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
             startPlay();
 
+
             if (showCameraCreated) {
                 CustomSnackbar.showLong(this, R.string.create_success);
                 showCameraCreated = false;
@@ -484,7 +485,7 @@ public class VideoActivity extends ParentAppCompatActivity
     public boolean onPrepareOptionsMenu(Menu menu) {
         MenuItem shortcutItem = menu.findItem(R.id.video_menu_create_shortcut);
         MenuItem sharingItem = menu.findItem(R.id.video_menu_share);
-        MenuItem removeItem = menu.findItem(R.id.video_menu_remove_camera);
+//        MenuItem removeItem = menu.findItem(R.id.video_menu_remove_camera);
 
         if (evercamCamera != null) {
             //Only show the shortcut menu if camera is online
@@ -495,7 +496,7 @@ public class VideoActivity extends ParentAppCompatActivity
             sharingItem.setVisible(right.isFullRight());
 
             //Only show item 'Remove Camera' when it's a shared camera
-            removeItem.setVisible(!evercamCamera.isOwned());
+//            removeItem.setVisible(!evercamCamera.isOwned());
         } else {
             Log.e(TAG, "EvercamCamera is null");
         }
@@ -546,17 +547,18 @@ public class VideoActivity extends ParentAppCompatActivity
 
                     startActivityForResult(recordingIntent, Constants.REQUEST_CODE_RECORDING);
                 }
-            } else if (itemId == R.id.video_menu_remove_camera) {
-                if (evercamCamera != null) {
-                    CustomedDialog.getConfirmDialog(VideoActivity.this, new DialogInterface.OnClickListener() {
-                        @Override
-                        public void onClick(DialogInterface dialog, int which) {
-                            new DeleteCameraTask(evercamCamera.getCameraId(), VideoActivity.this,
-                                    EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
-                        }
-                    }, R.string.msg_confirm_remove_camera, R.string.remove).show();
-                }
             }
+//            else if (itemId == R.id.video_menu_remove_camera) {
+//                if (evercamCamera != null) {
+//                    CustomedDialog.getConfirmDialog(VideoActivity.this, new DialogInterface.OnClickListener() {
+//                        @Override
+//                        public void onClick(DialogInterface dialog, int which) {
+//                            new DeleteCameraTask(evercamCamera.getCameraId(), VideoActivity.this,
+//                                    EnumConstants.DeleteType.DELETE_SHARE).executeOnExecutor(AsyncTask.THREAD_POOL_EXECUTOR);
+//                        }
+//                    }, R.string.msg_confirm_remove_camera, R.string.remove).show();
+//                }
+//            }
         } catch (JSONException e) {
             Log.e(TAG, e.toString() + "::" + Log.getStackTraceString(e));
         }
@@ -1467,6 +1469,7 @@ public class VideoActivity extends ParentAppCompatActivity
                 }
 
                 evercamCamera = cameraList.get(position);
+
 
                 startingCameraID = evercamCamera.getCameraId();
 

@@ -14,7 +14,7 @@ import io.evercam.androidapp.utils.PropertyReader;
 import io.intercom.android.sdk.Intercom;
 
 public class EvercamPlayApplication extends MultiDexApplication {
-    private static final String PROPERTY_ID = "UA-52483995-1";
+    private static final String PROPERTY_ID = "UA-52483995-9";
 
     private static final String TAG = "EvercamPlayApplication";
 

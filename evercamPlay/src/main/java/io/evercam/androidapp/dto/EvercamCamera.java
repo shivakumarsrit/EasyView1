@@ -1,5 +1,6 @@
 package io.evercam.androidapp.dto;
 
+import android.location.Location;
 import android.util.Log;
 
 import java.net.MalformedURLException;
@@ -10,6 +11,7 @@ import java.util.Locale;
 
 import io.evercam.Camera;
 import io.evercam.EvercamException;
+
 
 public class EvercamCamera {
     public ImageLoadingStatus loadingStatus = ImageLoadingStatus.not_started;
@@ -52,6 +54,8 @@ public class EvercamCamera {
 
     private boolean isPublic;
     private boolean isDiscoverable;
+    private double latitude;
+    private double longitude;
 
     public EvercamCamera() {
 
@@ -60,6 +64,7 @@ public class EvercamCamera {
     public EvercamCamera convertFromEvercam(io.evercam.Camera camera) {
         this.camera = camera;
         try {
+            //location":{"lng":-6.0426519,"lat":52.9679717},
             cameraId = camera.getId();
             name = camera.getName();
             if (AppData.defaultUser != null) {
@@ -92,6 +97,9 @@ public class EvercamCamera {
             externalRtsp = camera.getExternalRtspPort();
             thumbnailUrl = camera.getThumbnailUrl();
             hlsUrl = camera.getProxyUrl().getHls();
+
+            latitude        =       camera.getLocation().getLat();
+            longitude       =       camera.getLocation().getLng();
 
             isDiscoverable = camera.isDiscoverable();
             isPublic = camera.isPublic();
@@ -437,6 +445,22 @@ public class EvercamCamera {
 
     public boolean isOwned() {
         return getRealOwner().equals(getUser());
+    }
+
+    public void setLatitude(double latitude){
+        this.latitude = latitude;
+    }
+
+    public  void setLongitude (double longitude){
+        this.longitude = longitude;
+    }
+
+    public double getLatitude(){
+        return latitude;
+    }
+
+    public  double getLongitude(){
+        return longitude;
     }
 
     @Override

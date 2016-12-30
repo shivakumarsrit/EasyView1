@@ -37,6 +37,10 @@ public class DbCamera extends DatabaseMaster {
     private final String KEY_IS_ONLINE = "isOnline";
     private final String KEY_HAS_CREDENTIAL = "hasCredential";
 
+    //Location
+    private final String KEY_LATITUDE = "latitude";
+    private final String KEY_LONGITUDE = "longitude";
+
     // Fields for edit camera
     private final String KEY_INTERNAL_HOST = "internalHost";
     private final String KEY_EXTERNAL_HOST = "externalHost";
@@ -74,7 +78,9 @@ public class DbCamera extends DatabaseMaster {
                 "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" +
                 "," + KEY_CAN_DELETE + " TEXT NULL" + "," + KEY_RIGHTS + " TEXT NULL" +
                 "," + KEY_DISCOVERABLE + " INTEGER NULL" + "," + KEY_PUBLIC + " INTEGER NULL" + "," +
-                "" + KEY_MODEL_NAME + " TEXT NULL" + ")";
+                "" + KEY_MODEL_NAME + " TEXT NULL" + "," +
+                "" + KEY_LATITUDE + " FLOAT NULL" + "," +
+                "" + KEY_LONGITUDE + " FLOAT NULL" + ")";
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
@@ -194,6 +200,8 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_DISCOVERABLE, evercamCamera.getDiscoverableInt());
         values.put(KEY_PUBLIC, evercamCamera.getPublicInt());
         values.put(KEY_MODEL_NAME, evercamCamera.getModelName());
+        values.put(KEY_LATITUDE, evercamCamera.getLatitude());
+        values.put(KEY_LONGITUDE, evercamCamera.getLongitude());
 
         return values;
     }
@@ -253,6 +261,8 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setIsDiscoverable(cursor.getInt(28) == 1);
         evercamCamera.setIsPublic(cursor.getInt(29) == 1);
         evercamCamera.setModelName(cursor.getString(30));
+        evercamCamera.setLatitude(cursor.getFloat(31));
+        evercamCamera.setLongitude(cursor.getFloat(32));
 
         return evercamCamera;
     }
