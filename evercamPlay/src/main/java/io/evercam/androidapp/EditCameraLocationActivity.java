@@ -1,6 +1,5 @@
 package io.evercam.androidapp;
 
-import android.content.DialogInterface;
 import android.content.pm.PackageManager;
 import android.location.Criteria;
 import android.location.Location;
@@ -13,11 +12,8 @@ import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.Button;
 import android.widget.LinearLayout;
 
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.OnMapReadyCallback;
@@ -32,28 +28,18 @@ import com.mashape.unirest.http.exceptions.UnirestException;
 import org.json.JSONException;
 import org.json.JSONObject;
 import io.evercam.PatchCameraBuilder;
-import io.evercam.androidapp.addeditcamera.ValidateHostInput;
-import io.evercam.androidapp.custom.CustomedDialog;
 import io.evercam.androidapp.dto.EvercamCamera;
-import io.evercam.androidapp.tasks.DeleteCameraTask;
 import io.evercam.androidapp.tasks.PatchCameraTask;
-import io.evercam.androidapp.utils.EnumConstants;
-import io.intercom.android.sdk.Intercom;
 
 public class EditCameraLocationActivity extends ParentAppCompatActivity implements OnMapReadyCallback{
 
-        protected GoogleApiClient mGoogleApiClient;
+
         private GoogleMap mMap;
         Location location;
         LatLng tappedLatLng;
-        double lat =53.350140, lng=-6.266155;
         public final static int PERMISSIONS_CODE = 56022;
 
-        private LocationManager locManager;
-        private LocationListener myLocationListener;
         private EvercamCamera cameraToUpdate;
-
-        private ValidateHostInput mValidateHostInput;
 
 
         @Override
@@ -91,19 +77,6 @@ public class EditCameraLocationActivity extends ParentAppCompatActivity implemen
                 mMap.setMyLocationEnabled(true);
                 addMarkerOnMap();
                 addMyLocationButtonClickListner();
-
-//                locationManager.requestLocationUpdates(provider, 2000, 1, (android.location.LocationListener) this);
-
-//                locManager = (LocationManager) getSystemService(LOCATION_SERVICE);
-
-
-//                mMap.addMarker(new MarkerOptions().position(latLng.latitude,location.getLongitude()))
-
-//                List providersList = locManager.getAllProviders();
-//                provider =locManager.getProvider(providersList.get(0));
-//                precision = provider.getAccuracy();
-//                req = new Criteria();
-//                req.setAccuracy(Criteria.ACCURACY_FINE);
             }
         }
 

@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.evercam.androidapp"
-    android:versionCode="216"
-    android:versionName="2.0.5">
+    android:versionCode="217"
+    android:versionName="2.0.6">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -184,7 +184,7 @@
 
         <meta-data
             android:name="io.fabric.ApiKey"
-            android:value="85f1113ef6081830ad7d2a9ecae01bb60dfb0462" />
+            android:value="70e87b744f3bc2c7db518b88faf93411823b45b2" />
 
         <activity
             android:name=".photoview.ViewPagerActivity"
@@ -202,6 +202,27 @@
             android:name=".EditCameraLocationActivity"
             android:label="@string/edit_camera_location" />
 
+        <activity
+            android:name=".DeepLinkedActivity"
+            ><!-- ATTENTION: This intent was auto-generated. Follow instructions at
+  https://g.co/AppIndexing/AndroidStudio to publish your URLs. -->
+            <intent-filter android:autoVerify="true">
+                <action android:name="android.intent.action.VIEW" />
+
+                <category android:name="android.intent.category.DEFAULT" />
+                <category android:name="android.intent.category.BROWSABLE" />
+                <!-- ATTENTION: This data URL was auto-generated. We recommend that you use the HTTP scheme.
+                  TODO: Change the host or pathPrefix as necessary. -->
+                <data
+                    android:host="evercam.io"
+                    android:pathPrefix="/gpocam"
+                    android:scheme="http" />
+                <data
+                    android:host="evercam.io"
+                    android:pathPrefix="/gpocam"
+                    android:scheme="https" />
+            </intent-filter>
+        </activity>
     </application>
 
 </manifest>

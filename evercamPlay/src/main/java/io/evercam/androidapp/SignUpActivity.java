@@ -185,7 +185,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
             user.setCountrycode(countryCode);
         }
 
-        user.setAndroidtoken("android16c48f5178d94e418d95c1617a7553b5");
+        user.setAndroidtoken("android16c48f51");
         
         return user;
     }

@@ -114,7 +114,7 @@ public class DbCamera extends DatabaseMaster {
                         KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_IS_ONLINE, KEY_HAS_CREDENTIAL,
                         KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                         KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
-                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME},
+                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME, KEY_LATITUDE, KEY_LONGITUDE},
                 KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
         if (cursor != null) {
