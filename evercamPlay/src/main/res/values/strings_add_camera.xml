@@ -69,7 +69,7 @@
     <string name="view_host">IP address:</string>
     <string name="view_http">HTTP Port:</string>
     <string name="view_rtsp">RTSP Port:</string>
-    <string name="button_text_edit">Edit</string>
+    <string name="button_text_edit">Edit Details</string>
 
     <!-- New add camera designs -->
     <string name="next_connect_camera">Next Step: Connect Camera</string>

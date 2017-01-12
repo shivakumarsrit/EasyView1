@@ -37,6 +37,10 @@ public class DbCamera extends DatabaseMaster {
     private final String KEY_IS_ONLINE = "isOnline";
     private final String KEY_HAS_CREDENTIAL = "hasCredential";
 
+    //Location
+    private final String KEY_LATITUDE = "latitude";
+    private final String KEY_LONGITUDE = "longitude";
+
     // Fields for edit camera
     private final String KEY_INTERNAL_HOST = "internalHost";
     private final String KEY_EXTERNAL_HOST = "externalHost";
@@ -74,7 +78,9 @@ public class DbCamera extends DatabaseMaster {
                 "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" +
                 "," + KEY_CAN_DELETE + " TEXT NULL" + "," + KEY_RIGHTS + " TEXT NULL" +
                 "," + KEY_DISCOVERABLE + " INTEGER NULL" + "," + KEY_PUBLIC + " INTEGER NULL" + "," +
-                "" + KEY_MODEL_NAME + " TEXT NULL" + ")";
+                "" + KEY_MODEL_NAME + " TEXT NULL" + "," +
+                "" + KEY_LATITUDE + " FLOAT NULL" + "," +
+                "" + KEY_LONGITUDE + " FLOAT NULL" + ")";
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
@@ -108,7 +114,7 @@ public class DbCamera extends DatabaseMaster {
                         KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_IS_ONLINE, KEY_HAS_CREDENTIAL,
                         KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                         KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
-                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME},
+                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME, KEY_LATITUDE, KEY_LONGITUDE},
                 KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
         if (cursor != null) {
@@ -194,6 +200,8 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_DISCOVERABLE, evercamCamera.getDiscoverableInt());
         values.put(KEY_PUBLIC, evercamCamera.getPublicInt());
         values.put(KEY_MODEL_NAME, evercamCamera.getModelName());
+        values.put(KEY_LATITUDE, evercamCamera.getLatitude());
+        values.put(KEY_LONGITUDE, evercamCamera.getLongitude());
 
         return values;
     }
@@ -253,6 +261,8 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setIsDiscoverable(cursor.getInt(28) == 1);
         evercamCamera.setIsPublic(cursor.getInt(29) == 1);
         evercamCamera.setModelName(cursor.getString(30));
+        evercamCamera.setLatitude(cursor.getFloat(31));
+        evercamCamera.setLongitude(cursor.getFloat(32));
 
         return evercamCamera;
     }

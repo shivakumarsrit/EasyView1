@@ -8,7 +8,9 @@ import io.evercam.Camera;
 import io.evercam.CameraDetail;
 import io.evercam.EvercamException;
 import io.evercam.androidapp.EditCameraActivity;
+import io.evercam.androidapp.EditCameraLocationActivity;
 import io.evercam.androidapp.R;
+import io.evercam.androidapp.ViewCameraActivity;
 import io.evercam.androidapp.custom.CustomProgressDialog;
 import io.evercam.androidapp.custom.CustomSnackbar;
 import io.evercam.androidapp.custom.CustomToast;
@@ -68,6 +70,12 @@ public class PatchCameraTask extends AsyncTask<Void, Void, EvercamCamera> {
                 ((SharingActivity) activity).sharingListFragment.updateSharingStatusUi(patchedStatus);
 
                 CustomSnackbar.showLong(activity, R.string.patch_success);
+            }else if (activity instanceof EditCameraLocationActivity){
+                Log.v("EditCameraLocation","Successfully done");
+//                ViewCameraActivity.startingCameraID = evercamCamera.getCameraId();
+                ViewCameraActivity.evercamCamera = evercamCamera;
+                activity.setResult(Constants.RESULT_TRUE);
+                activity.finish();
             }
         } else {
             CustomToast.showInCenterLong(activity, errorMessage);

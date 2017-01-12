@@ -36,6 +36,7 @@ public final class Constants {
     public static final int RESULT_TRANSFERRED = 5;
     public static final int RESULT_ACCESS_REMOVED = 6;
     public static final int RESULT_NO_ACCESS = 7;
+    public static final int REQUEST_CODE_EDIT_CAMERA_LOCATION = 14;
 
     /**
      * Bundle keys

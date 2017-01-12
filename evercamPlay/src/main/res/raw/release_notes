@@ -1,8 +1,23 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.4</h5>
+<h5>2.0.6</h5>
 <ul>
-    <li>- Updated sign up process<br/></li>
+    <li>- Added deep links<br/></li>
+    <li>- Updated camera detail page design<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.5</b>
+<ul>
+    <li><br/>- After scanning, automatically selecting camera model<br/></li>
+    <li>- Now shows dialogue in case zero preset<br/></li>
+    <li>- Fixed creating preset error<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.4</b>
+<ul>
+    <li><br/>- Updated sign up process<br/></li>
 </ul>
 <br/>
 
