@@ -19,7 +19,7 @@ public class DatabaseMaster extends SQLiteOpenHelper {
     // Version 13: Added model ID
     // Version 14: Replaced camera status with isOnline
     private static final String TAG = "DatabaseMaster";
-    private static final int DATABASE_VERSION = 14;
+    private static final int DATABASE_VERSION = 15;
     private static final String DATABASE_NAME = "evercamdata";
     private Context context = null;
 
@@ -30,6 +30,7 @@ public class DatabaseMaster extends SQLiteOpenHelper {
 
     @Override
     public void onCreate(SQLiteDatabase db) {
+
         new DbCamera(this.context).onCreateCustom(db);
     }
 

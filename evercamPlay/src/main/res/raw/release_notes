@@ -1,8 +1,14 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.6</h5>
+<h5>2.0.7</h5>
 <ul>
-    <li>- Added deep links<br/></li>
+    <li>- Fixed database crash bug<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.6</b>
+<ul>
+    <li><br/>- Added deep links<br/></li>
     <li>- Updated camera detail page design<br/></li>
 </ul>
 <br/>
