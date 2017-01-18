@@ -60,6 +60,7 @@ public class DbCamera extends DatabaseMaster {
     }
 
     public void onCreateCustom(SQLiteDatabase db) {
+
         String CREATE_TABLE_Cameras = "CREATE TABLE " + TABLE_CAMERA + "(" + KEY_ID + " INTEGER " +
                 "PRIMARY KEY autoincrement" + "," + KEY_CAMERA_ID + " TEXT NOT NULL" + "," +
                 "" + KEY_CAMERA_NAME + " TEXT NULL" + "," + KEY_OWNER + " TEXT  NOT NULL" + "," +
@@ -81,6 +82,29 @@ public class DbCamera extends DatabaseMaster {
                 "" + KEY_MODEL_NAME + " TEXT NULL" + "," +
                 "" + KEY_LATITUDE + " FLOAT NULL" + "," +
                 "" + KEY_LONGITUDE + " FLOAT NULL" + ")";
+
+/*
+        String CREATE_TABLE_Cameras = "CREATE TABLE " + TABLE_CAMERA + "(" + KEY_ID + " INTEGER " +
+                "PRIMARY KEY autoincrement" + "," + KEY_CAMERA_ID + " TEXT NOT NULL" + "," +
+                "" + KEY_CAMERA_NAME + " TEXT NULL" + "," + KEY_OWNER + " TEXT  NOT NULL" + "," +
+                "" + KEY_USERNAME + " TEXT NULL" + "," + KEY_PASSWORD + " TEXT NULL" + "," +
+                "" + KEY_TIMEZONE + " TEXT NULL" + "," + KEY_VENDOR + " TEXT NULL" + "," +
+                "" + KEY_MODEL_ID + " TEXT NULL" + "," + KEY_MAC + " TEXT NULL " + "," +
+                "" + KEY_EXTERNAL_JPG_URL + " TEXT NULL " + "," + KEY_INTERNAL_JPG_URL + " TEXT " +
+                "NULL " + "," + KEY_EXTERNAL_RTSP_URL + " TEXT NULL" + "," +
+                "" + KEY_INTERNAL_RTSP_URL + " TEXT NULL" + "," + KEY_IS_ONLINE + " TEXT NULL" + "," +
+                "" + KEY_HAS_CREDENTIAL + " INTEGER NULL" + "," + KEY_INTERNAL_HOST + " TEXT " +
+                "NULL" + "," + KEY_EXTERNAL_HOST + " TEXT NULL" + "," +
+                "" + KEY_INTERNAL_HTTP + " INTEGER NULL" + "," + KEY_EXTERNAL_HTTP + " INTEGER " +
+                "NULL" + "," + KEY_INTERNAL_RTSP + " INTEGER NULL" + "," +
+                "" + KEY_EXTERNAL_RTSP + " INTEGER NULL" + "," + KEY_THUMBNAIL_URL + " TEXT NULL" +
+                "," + KEY_HLS_URL + " TEXT NULL" +
+                "," + KEY_REAL_OWNER + " TEXT NULL" + "," + KEY_CAN_EDIT + " TEXT NULL" +
+                "," + KEY_CAN_DELETE + " TEXT NULL" + "," + KEY_RIGHTS + " TEXT NULL" +
+                "," + KEY_DISCOVERABLE + " INTEGER NULL" + "," + KEY_PUBLIC + " INTEGER NULL" + "," +
+                "" + KEY_MODEL_NAME + " TEXT NULL" + ")";
+                */
+
         db.execSQL(CREATE_TABLE_Cameras);
     }
 
@@ -115,6 +139,16 @@ public class DbCamera extends DatabaseMaster {
                         KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
                         KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
                         KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME, KEY_LATITUDE, KEY_LONGITUDE},
+
+/*
+        Cursor cursor = db.query(TABLE_CAMERA, new String[]{KEY_ID, KEY_CAMERA_ID,
+                        KEY_CAMERA_NAME, KEY_OWNER, KEY_USERNAME, KEY_PASSWORD, KEY_TIMEZONE, KEY_VENDOR,
+                        KEY_MODEL_ID, KEY_MAC, KEY_EXTERNAL_JPG_URL, KEY_INTERNAL_JPG_URL,
+                        KEY_EXTERNAL_RTSP_URL, KEY_INTERNAL_RTSP_URL, KEY_IS_ONLINE, KEY_HAS_CREDENTIAL,
+                        KEY_INTERNAL_HOST, KEY_EXTERNAL_HOST, KEY_INTERNAL_HTTP, KEY_EXTERNAL_HTTP,
+                        KEY_INTERNAL_RTSP, KEY_EXTERNAL_RTSP, KEY_THUMBNAIL_URL, KEY_HLS_URL, KEY_REAL_OWNER, KEY_CAN_EDIT,
+                        KEY_CAN_DELETE, KEY_RIGHTS, KEY_DISCOVERABLE, KEY_PUBLIC, KEY_MODEL_NAME},
+*/
                 KEY_ID + "=?", new String[]{String.valueOf(id)}, null, null,
                 null, null);
         if (cursor != null) {
@@ -203,6 +237,8 @@ public class DbCamera extends DatabaseMaster {
         values.put(KEY_LATITUDE, evercamCamera.getLatitude());
         values.put(KEY_LONGITUDE, evercamCamera.getLongitude());
 
+
+
         return values;
     }
 
@@ -261,9 +297,11 @@ public class DbCamera extends DatabaseMaster {
         evercamCamera.setIsDiscoverable(cursor.getInt(28) == 1);
         evercamCamera.setIsPublic(cursor.getInt(29) == 1);
         evercamCamera.setModelName(cursor.getString(30));
-        evercamCamera.setLatitude(cursor.getFloat(31));
-        evercamCamera.setLongitude(cursor.getFloat(32));
 
+        if (cursor.getColumnIndex(KEY_LATITUDE) != -1 || cursor.getColumnIndex(KEY_LONGITUDE) != -1){
+            evercamCamera.setLatitude(cursor.getFloat(31));
+            evercamCamera.setLongitude(cursor.getFloat(32));
+        }
         return evercamCamera;
     }
 }
