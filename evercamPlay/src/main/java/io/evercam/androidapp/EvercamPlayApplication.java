@@ -3,6 +3,12 @@ package io.evercam.androidapp;
 import android.app.Activity;
 import android.support.multidex.MultiDexApplication;
 
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.upstream.DefaultDataSourceFactory;
+import com.google.android.exoplayer2.upstream.DefaultHttpDataSourceFactory;
+import com.google.android.exoplayer2.upstream.HttpDataSource;
+import com.google.android.exoplayer2.util.Util;
 import com.google.android.gms.analytics.GoogleAnalytics;
 import com.google.android.gms.analytics.HitBuilders;
 import com.google.android.gms.analytics.Tracker;
@@ -18,6 +24,8 @@ public class EvercamPlayApplication extends MultiDexApplication {
 
     private static final String TAG = "EvercamPlayApplication";
 
+    protected String userAgent;
+
     public enum TrackerName {
         APP_TRACKER, // Tracker used only in this app.
         GLOBAL_TRACKER, // Tracker used by all the apps from a company.
@@ -32,6 +40,8 @@ public class EvercamPlayApplication extends MultiDexApplication {
     @Override
     public void onCreate() {
         super.onCreate();
+
+        userAgent = Util.getUserAgent(this, "Evercam");
 
         PropertyReader propertyReader = new PropertyReader(this);
 
@@ -104,5 +114,18 @@ public class EvercamPlayApplication extends MultiDexApplication {
                     .toString().replace("io.evercam.androidapp", e.toString())).setFatal(false).build
                     ());
         }
+    }
+
+    public DataSource.Factory buildDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
+        return new DefaultDataSourceFactory(this, bandwidthMeter,
+                buildHttpDataSourceFactory(bandwidthMeter));
+    }
+
+    public HttpDataSource.Factory buildHttpDataSourceFactory(DefaultBandwidthMeter bandwidthMeter) {
+        return new DefaultHttpDataSourceFactory(userAgent, bandwidthMeter);
+    }
+
+    public boolean useExtensionRenderers() {
+        return com.google.android.exoplayer2.BuildConfig.FLAVOR.equals("withExtensions");
     }
 }
