@@ -15,6 +15,7 @@ import android.graphics.Color;
 import android.graphics.SurfaceTexture;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.Drawable;
+import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.os.Handler;
@@ -41,13 +42,29 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
-import com.google.android.exoplayer.AspectRatioFrameLayout;
-import com.google.android.exoplayer.ExoPlaybackException;
-import com.google.android.exoplayer.ExoPlayer;
-import com.google.android.exoplayer.MediaCodecTrackRenderer;
-import com.google.android.exoplayer.MediaCodecUtil;
-import com.google.android.exoplayer.drm.UnsupportedDrmException;
-import com.google.android.exoplayer.util.Util;
+import com.google.android.exoplayer2.C;
+import com.google.android.exoplayer2.DefaultLoadControl;
+import com.google.android.exoplayer2.ExoPlaybackException;
+import com.google.android.exoplayer2.ExoPlayer;
+import com.google.android.exoplayer2.ExoPlayerFactory;
+import com.google.android.exoplayer2.SimpleExoPlayer;
+import com.google.android.exoplayer2.Timeline;
+import com.google.android.exoplayer2.drm.DrmSessionManager;
+import com.google.android.exoplayer2.drm.FrameworkMediaCrypto;
+import com.google.android.exoplayer2.mediacodec.MediaCodecRenderer;
+import com.google.android.exoplayer2.mediacodec.MediaCodecUtil;
+import com.google.android.exoplayer2.source.BehindLiveWindowException;
+import com.google.android.exoplayer2.source.MediaSource;
+import com.google.android.exoplayer2.source.TrackGroupArray;
+import com.google.android.exoplayer2.source.hls.HlsMediaSource;
+import com.google.android.exoplayer2.trackselection.AdaptiveVideoTrackSelection;
+import com.google.android.exoplayer2.trackselection.DefaultTrackSelector;
+import com.google.android.exoplayer2.trackselection.TrackSelection;
+import com.google.android.exoplayer2.trackselection.TrackSelectionArray;
+import com.google.android.exoplayer2.ui.AspectRatioFrameLayout;
+import com.google.android.exoplayer2.upstream.DataSource;
+import com.google.android.exoplayer2.upstream.DefaultBandwidthMeter;
+import com.google.android.exoplayer2.util.Util;
 import com.squareup.picasso.MemoryPolicy;
 import com.squareup.picasso.Picasso;
 
@@ -81,26 +98,21 @@ import io.evercam.androidapp.dal.DbCamera;
 import io.evercam.androidapp.dto.AppData;
 import io.evercam.androidapp.dto.AppUser;
 import io.evercam.androidapp.dto.EvercamCamera;
-import io.evercam.androidapp.feedback.ShortcutFeedbackItem;
 import io.evercam.androidapp.feedback.StreamFeedbackItem;
 import io.evercam.androidapp.permission.Permission;
 import io.evercam.androidapp.photoview.SnapshotManager;
 import io.evercam.androidapp.photoview.SnapshotManager.FileType;
 import io.evercam.androidapp.player.EventLogger;
-import io.evercam.androidapp.player.HlsRendererBuilder;
-import io.evercam.androidapp.player.MyExoPlayer;
 import io.evercam.androidapp.player.OnSwipeTouchListener;
 import io.evercam.androidapp.ptz.PresetsListAdapter;
 import io.evercam.androidapp.recordings.RecordingWebActivity;
 import io.evercam.androidapp.sharing.SharingActivity;
 import io.evercam.androidapp.tasks.CaptureSnapshotRunnable;
 import io.evercam.androidapp.tasks.CheckOnvifTask;
-import io.evercam.androidapp.tasks.DeleteCameraTask;
 import io.evercam.androidapp.tasks.LiveViewRunnable;
 import io.evercam.androidapp.tasks.PTZMoveTask;
 import io.evercam.androidapp.utils.Commons;
 import io.evercam.androidapp.utils.Constants;
-import io.evercam.androidapp.utils.EnumConstants;
 import io.evercam.androidapp.utils.PrefsManager;
 import io.evercam.androidapp.utils.RxUtils;
 import rx.Observable;
@@ -112,7 +124,7 @@ import rx.schedulers.Schedulers;
 import com.google.firebase.analytics.FirebaseAnalytics;
 
 public class VideoActivity extends ParentAppCompatActivity
-        implements MyExoPlayer.Listener, TextureView.SurfaceTextureListener {
+        implements ExoPlayer.EventListener, TextureView.SurfaceTextureListener,EventLogger.Listener {
     public static EvercamCamera evercamCamera;
 
     private final static String TAG = "VideoActivity";
@@ -130,12 +142,21 @@ public class VideoActivity extends ParentAppCompatActivity
     /**
      * ExoPlayer
      */
-    private EventLogger eventLogger;
     private AspectRatioFrameLayout videoFrame;
     private TextureView textureView;
     private Surface surface;
-    private MyExoPlayer player;
     private boolean playerNeedsPrepare;
+
+    //ExoPlayer 2
+    private static final DefaultBandwidthMeter BANDWIDTH_METER = new DefaultBandwidthMeter();
+
+    private DefaultTrackSelector trackSelector;
+    private EventLogger eventLogger;
+    private SimpleExoPlayer player;
+    private DataSource.Factory mediaDataSourceFactory;
+    private Handler mainHandler;
+    private int resumeWindow;
+    private long resumePosition;
 
     /**
      * UI elements
@@ -189,6 +210,8 @@ public class VideoActivity extends ParentAppCompatActivity
         try {
             super.onCreate(savedInstanceState);
 
+            clearResumePosition();
+
             getWindow().addFlags(WindowManager.LayoutParams.FLAG_KEEP_SCREEN_ON);
 
             initAnalyticsObjects();
@@ -211,6 +234,9 @@ public class VideoActivity extends ParentAppCompatActivity
             setSupportActionBar(mToolbar);
             getSupportActionBar().setDisplayHomeAsUpEnabled(true);
             mCameraListSpinner = (Spinner) findViewById(R.id.spinner_camera_list);
+
+            mediaDataSourceFactory = buildDataSourceFactory(true);
+            mainHandler = new Handler();
 
             initialPageElements();
 
@@ -333,6 +359,10 @@ public class VideoActivity extends ParentAppCompatActivity
     public void onPause() {
         super.onPause();
 
+        if (Util.SDK_INT <= 23) {
+            releasePlayer();
+        }
+
         if (!optionsActivityStarted) {
             this.paused = true;
         }
@@ -360,6 +390,7 @@ public class VideoActivity extends ParentAppCompatActivity
             timeCounter = null;
         }
     }
+
 
     @Override
     protected void onDestroy() {
@@ -571,10 +602,10 @@ public class VideoActivity extends ParentAppCompatActivity
     }
 
     /************************
-     * MyExoPlayer.Listener
+     * ExoPlayer2.Listener
      ************************/
     @Override
-    public void onStateChanged(boolean playWhenReady, int playbackState) {
+    public void onPlayerStateChanged(boolean playWhenReady, int playbackState) {
 
         String text = "playWhenReady=" + playWhenReady + ", playbackState=";
         switch (playbackState) {
@@ -587,9 +618,6 @@ public class VideoActivity extends ParentAppCompatActivity
             case ExoPlayer.STATE_IDLE:
                 text += "idle";
                 break;
-            case ExoPlayer.STATE_PREPARING:
-                text += "preparing";
-                break;
             case ExoPlayer.STATE_READY:
                 onVideoLoaded();
                 text += "ready";
@@ -601,43 +629,6 @@ public class VideoActivity extends ParentAppCompatActivity
         Log.d(TAG, "onStateChanged: " + text);
     }
 
-    @Override
-    public void onError(Exception e) {
-        Log.e(TAG, "onError");
-        onVideoLoadFailed();
-
-        String errorString = null;
-        if (e instanceof UnsupportedDrmException) {
-            // Special case DRM failures.
-            UnsupportedDrmException unsupportedDrmException = (UnsupportedDrmException) e;
-            errorString = getString(Util.SDK_INT < 18 ? R.string.error_drm_not_supported
-                    : unsupportedDrmException.reason == UnsupportedDrmException.REASON_UNSUPPORTED_SCHEME
-                    ? R.string.error_drm_unsupported_scheme : R.string.error_drm_unknown);
-        } else if (e instanceof ExoPlaybackException
-                && e.getCause() instanceof MediaCodecTrackRenderer.DecoderInitializationException) {
-            // Special case for decoder initialization failures.
-            MediaCodecTrackRenderer.DecoderInitializationException decoderInitializationException =
-                    (MediaCodecTrackRenderer.DecoderInitializationException) e.getCause();
-            if (decoderInitializationException.decoderName == null) {
-                if (decoderInitializationException.getCause() instanceof MediaCodecUtil.DecoderQueryException) {
-                    errorString = getString(R.string.error_querying_decoders);
-                } else if (decoderInitializationException.secureDecoderRequired) {
-                    errorString = getString(R.string.error_no_secure_decoder,
-                            decoderInitializationException.mimeType);
-                } else {
-                    errorString = getString(R.string.error_no_decoder,
-                            decoderInitializationException.mimeType);
-                }
-            } else {
-                errorString = getString(R.string.error_instantiating_decoder,
-                        decoderInitializationException.decoderName);
-            }
-        }
-        if (errorString != null) {
-            Log.e(TAG, errorString);
-        }
-        playerNeedsPrepare = true;
-    }
 
     @Override
     public void onVideoSizeChanged(int width, int height, int unappliedRotationDegrees, float pixelWidthAspectRatio) {
@@ -653,7 +644,7 @@ public class VideoActivity extends ParentAppCompatActivity
     public void onSurfaceTextureAvailable(SurfaceTexture surface, int width, int height) {
         this.surface = new Surface(surface);
         if (player != null) {
-            player.setSurface(new Surface(surface));
+            player.setVideoSurface(new Surface(surface));
         }
     }
 
@@ -665,7 +656,7 @@ public class VideoActivity extends ParentAppCompatActivity
     @Override
     public boolean onSurfaceTextureDestroyed(SurfaceTexture surface) {
         if (player != null) {
-            player.blockingClearSurface();
+//            player.blockingClearSurface();
         }
         return false;
     }
@@ -824,7 +815,7 @@ public class VideoActivity extends ParentAppCompatActivity
 
         if (camera.hasHlsUrl()) {
             Log.d(TAG, "HLS url: " + camera.getHlsUrl());
-            preparePlayer(true);
+            preparePlayer();
         } else {
             //If no HLS URL exists, start JPG view straight away
             releasePlayer();
@@ -833,36 +824,105 @@ public class VideoActivity extends ParentAppCompatActivity
         }
     }
 
-    private void preparePlayer(boolean playWhenReady) {
-        if (player == null) {
-            player = new MyExoPlayer(getRendererBuilder());
+    private void preparePlayer() {
+
+        if (player == null){
+
+            DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
+
+            @SimpleExoPlayer.ExtensionRendererMode int extensionRendererMode =
+                    ((EvercamPlayApplication) getApplication()).useExtensionRenderers()
+                            ? (false ? SimpleExoPlayer.EXTENSION_RENDERER_MODE_PREFER
+                            : SimpleExoPlayer.EXTENSION_RENDERER_MODE_ON)
+                            : SimpleExoPlayer.EXTENSION_RENDERER_MODE_OFF;
+
+            TrackSelection.Factory videoTrackSelectionFactory =
+                    new AdaptiveVideoTrackSelection.Factory(BANDWIDTH_METER);
+
+            trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
+            player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl(),
+                    drmSessionManager, extensionRendererMode);
             player.addListener(this);
-            playerNeedsPrepare = true;
-            eventLogger = new EventLogger();
-            eventLogger.startSession();
+
+            eventLogger = new EventLogger(trackSelector);
+            eventLogger.addListener(this);
             player.addListener(eventLogger);
-            player.setInfoListener(eventLogger);
-            player.setInternalErrorListener(eventLogger);
-        } else {
+//        player.setAudioDebugListener(eventLogger);
+            player.setVideoDebugListener(eventLogger);
+            player.setMetadataOutput(eventLogger);
+
+            Uri hlsUrl = Uri.parse(evercamCamera.getHlsUrl());
+
+            MediaSource mediaSource = new HlsMediaSource(hlsUrl, mediaDataSourceFactory, mainHandler, eventLogger);
+
+
+            boolean haveResumePosition = resumeWindow != C.INDEX_UNSET;
+            if (haveResumePosition) {
+                player.seekTo(resumeWindow, resumePosition);
+            }
+            player.prepare(mediaSource, !haveResumePosition, false);
+
+            player.setPlayWhenReady(true);
+            player.setVideoSurface(surface);
+
+        }else{
             releasePlayer();
-            preparePlayer(playWhenReady);
+            preparePlayer();
         }
 
-        if (playerNeedsPrepare) {
-            player.prepare();
-            playerNeedsPrepare = false;
-        }
-        player.setSurface(surface);
-        player.setPlayWhenReady(playWhenReady);
+
+        /*DrmSessionManager<FrameworkMediaCrypto> drmSessionManager = null;
+
+        @SimpleExoPlayer.ExtensionRendererMode int extensionRendererMode =
+                ((EvercamPlayApplication) getApplication()).useExtensionRenderers()
+                        ? (false ? SimpleExoPlayer.EXTENSION_RENDERER_MODE_PREFER
+                        : SimpleExoPlayer.EXTENSION_RENDERER_MODE_ON)
+                        : SimpleExoPlayer.EXTENSION_RENDERER_MODE_OFF;
+
+        TrackSelection.Factory videoTrackSelectionFactory =
+                new AdaptiveVideoTrackSelection.Factory(BANDWIDTH_METER);
+
+        trackSelector = new DefaultTrackSelector(videoTrackSelectionFactory);
+
+        player = ExoPlayerFactory.newSimpleInstance(this, trackSelector, new DefaultLoadControl(),
+                drmSessionManager, extensionRendererMode);
+        player.addListener(this);
+        eventLogger = new EventLogger(trackSelector);
+        eventLogger.addListener(this);
+        player.addListener(eventLogger);
+//        player.setAudioDebugListener(eventLogger);
+        player.setVideoDebugListener(eventLogger);
+        player.setMetadataOutput(eventLogger);
+        Uri hlsUrl = Uri.parse(evercamCamera.getHlsUrl());
+        MediaSource mediaSource = new HlsMediaSource(hlsUrl, mediaDataSourceFactory, mainHandler, eventLogger);
+
+        player.prepare(mediaSource);
+        player.setPlayWhenReady(true);
+        player.setVideoSurface(surface);*/
     }
 
     private void releasePlayer() {
         if (player != null) {
+            Log.e("EXOPlayer","EXO_PLAYER_RELEASED");
+            updateResumePosition();
             player.release();
             player = null;
-            eventLogger.endSession();
+            trackSelector = null;
             eventLogger = null;
         }
+    }
+
+
+    private void updateResumePosition() {
+        resumeWindow = player.getCurrentWindowIndex();
+        resumePosition = player.isCurrentWindowSeekable() ? Math.max(0, player.getCurrentPosition())
+                : C.TIME_UNSET;
+    }
+
+    private void clearResumePosition() {
+        resumeWindow = C.INDEX_UNSET;
+        resumePosition = C.TIME_UNSET;
     }
 
     private void pausePlayer() {
@@ -876,7 +936,7 @@ public class VideoActivity extends ParentAppCompatActivity
          * Restart the player for replay instead of calling setPlayWhenReady(true)
          * to make sure the resumed video is up to date.
          */
-        preparePlayer(true);
+        preparePlayer();
     }
 
     // when screen gets rotated
@@ -1040,35 +1100,35 @@ public class VideoActivity extends ParentAppCompatActivity
         presetsImageView.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
-                    final AlertDialog listDialog = new AlertDialog.Builder(VideoActivity.this)
-                            .setNegativeButton(R.string.cancel, null).create();
-                    LayoutInflater mInflater = LayoutInflater.from(getApplicationContext());
-                    final View view = mInflater.inflate(R.layout.dialog_preset_list, null);
-                    ListView listView = (ListView) view.findViewById(R.id.presets_list_view);
-                    View header = getLayoutInflater().inflate(R.layout.header_preset_list, null);
-                    listView.addHeaderView(header);
-                    listDialog.setView(view);
-                    listView.setAdapter(new PresetsListAdapter(getApplicationContext(), R.layout
-                            .item_preset_list, presetList));
-                    listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
-                        @Override
-                        public void onItemClick(AdapterView<?> parent, View view, int position,
-                                                long id) {
-                            if (position == 0) //Header clicked - Create preset
-                            {
-                                CustomedDialog.getCreatePresetDialog(VideoActivity.this,
-                                        evercamCamera.getCameraId()).show();
-                            } else {
-                                PTZPreset preset = presetList.get(position - 1);
-                                PTZMoveTask.launch(new PTZPresetControl(evercamCamera.getCameraId(),
-                                        preset.getToken()));
-                            }
-
-                            listDialog.cancel();
+                final AlertDialog listDialog = new AlertDialog.Builder(VideoActivity.this)
+                        .setNegativeButton(R.string.cancel, null).create();
+                LayoutInflater mInflater = LayoutInflater.from(getApplicationContext());
+                final View view = mInflater.inflate(R.layout.dialog_preset_list, null);
+                ListView listView = (ListView) view.findViewById(R.id.presets_list_view);
+                View header = getLayoutInflater().inflate(R.layout.header_preset_list, null);
+                listView.addHeaderView(header);
+                listDialog.setView(view);
+                listView.setAdapter(new PresetsListAdapter(getApplicationContext(), R.layout
+                        .item_preset_list, presetList));
+                listView.setOnItemClickListener(new AdapterView.OnItemClickListener() {
+                    @Override
+                    public void onItemClick(AdapterView<?> parent, View view, int position,
+                                            long id) {
+                        if (position == 0) //Header clicked - Create preset
+                        {
+                            CustomedDialog.getCreatePresetDialog(VideoActivity.this,
+                                    evercamCamera.getCameraId()).show();
+                        } else {
+                            PTZPreset preset = presetList.get(position - 1);
+                            PTZMoveTask.launch(new PTZPresetControl(evercamCamera.getCameraId(),
+                                    preset.getToken()));
                         }
-                    });
 
-                    listDialog.show();
+                        listDialog.cancel();
+                    }
+                });
+
+                listDialog.show();
             }
         });
 
@@ -1392,6 +1452,9 @@ public class VideoActivity extends ParentAppCompatActivity
                 failedItem.setType(StreamFeedbackItem.TYPE_HLS);
 
                 CustomSnackbar.showShort(VideoActivity.this, R.string.msg_switch_to_jpg);
+                releasePlayer();
+                showVideoView(false);
+                showImageView(true);
                 showJpgView = true;
                 launchJpgRunnable();
             }
@@ -1562,9 +1625,88 @@ public class VideoActivity extends ParentAppCompatActivity
         successItem.setType(StreamFeedbackItem.TYPE_JPG);
     }
 
-    private MyExoPlayer.RendererBuilder getRendererBuilder() {
-        String userAgent = Util.getUserAgent(this, "ExoPlayer");
+    @Override
+    public void onTimelineChanged(Timeline timeline, Object manifest) {
 
-        return new HlsRendererBuilder(this, userAgent, evercamCamera.getHlsUrl());
+    }
+
+    @Override
+    public void onTracksChanged(TrackGroupArray trackGroups, TrackSelectionArray trackSelections) {
+
+    }
+
+    @Override
+    public void onLoadingChanged(boolean isLoading) {
+
+    }
+
+    @Override
+    public void onPlayerError(ExoPlaybackException error) {
+        String errorString = null;
+        if (error.type == ExoPlaybackException.TYPE_RENDERER) {
+            Exception cause = error.getRendererException();
+            if (cause instanceof MediaCodecRenderer.DecoderInitializationException) {
+                // Special case for decoder initialization failures.
+                MediaCodecRenderer.DecoderInitializationException decoderInitializationException =
+                        (MediaCodecRenderer.DecoderInitializationException) cause;
+                if (decoderInitializationException.decoderName == null) {
+                    if (decoderInitializationException.getCause() instanceof MediaCodecUtil.DecoderQueryException) {
+                        errorString = getString(R.string.error_querying_decoders);
+                    } else if (decoderInitializationException.secureDecoderRequired) {
+                        errorString = getString(R.string.error_no_secure_decoder,
+                                decoderInitializationException.mimeType);
+                    } else {
+                        errorString = getString(R.string.error_no_decoder,
+                                decoderInitializationException.mimeType);
+                    }
+                } else {
+                    errorString = getString(R.string.error_instantiating_decoder,
+                            decoderInitializationException.decoderName);
+                }
+            }
+        }
+        if (errorString != null) {
+            Log.e(TAG, errorString);
+        }
+
+        if (isBehindLiveWindow(error)) {
+            clearResumePosition();
+            preparePlayer();
+        } else {
+            Log.e("VIDEO FAILED","VIDEO FAILED LOADING NEW ONE.");
+            updateResumePosition();
+            onVideoLoadFailed();
+        }
+
+
+
+/*        Log.e(TAG, "onError");
+        onVideoLoadFailed();
+        playerNeedsPrepare = true;*/
+
+    }
+
+    private static boolean isBehindLiveWindow(ExoPlaybackException e) {
+        if (e.type != ExoPlaybackException.TYPE_SOURCE) {
+            return false;
+        }
+        Throwable cause = e.getSourceException();
+        while (cause != null) {
+            if (cause instanceof BehindLiveWindowException) {
+                return true;
+            }
+            cause = cause.getCause();
+        }
+        return false;
+    }
+
+    @Override
+    public void onPositionDiscontinuity() {
+
+    }
+
+    private DataSource.Factory buildDataSourceFactory(boolean useBandwidthMeter) {
+
+        return ((EvercamPlayApplication) getApplication()).buildDataSourceFactory(useBandwidthMeter ? BANDWIDTH_METER : null);
     }
 }

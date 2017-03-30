@@ -1,8 +1,22 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.7</h5>
+<h5>2.0.9</h5>
 <ul>
-    <li>- Fixed database crash bug<br/></li>
+    <li>- Updated ExoPlayer version to 2.2.0<br/></li>
+</ul>
+<br/>
+
+
+<b>Version 2.0.8</b>
+<ul>
+    <li><br/>- Updated ExoPlayer version to 1.5.14<br/></li>
+    <li>- Updated Firebase to 10.0.1<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.7</b>
+<ul>
+    <li><br/>- Fixed database crash bug<br/></li>
 </ul>
 <br/>
 

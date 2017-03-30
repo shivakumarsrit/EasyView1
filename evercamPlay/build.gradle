@@ -93,11 +93,12 @@ dependencies {
     compile 'com.android.volley:volley:1.0.0'
     compile 'com.squareup.okhttp:okhttp:2.7.5'
     compile 'com.mixpanel.android:mixpanel-android:4.9.2'
-    compile 'com.google.android.gms:play-services-analytics:9.6.1'
-    compile 'com.google.android.gms:play-services-gcm:9.6.1'
-    compile 'com.google.android.gms:play-services-auth:9.6.1'
-    compile 'com.google.firebase:firebase-core:9.6.1'
-    compile 'com.google.firebase:firebase-crash:9.6.1'
+    compile 'com.google.android.gms:play-services-analytics:10.0.1'
+    compile 'com.google.android.gms:play-services-gcm:10.0.1'
+    compile 'com.google.android.gms:play-services-auth:10.0.1'
+    compile 'com.google.firebase:firebase-core:10.0.1'
+    compile 'com.google.firebase:firebase-crash:10.0.1'
+    compile 'com.google.firebase:firebase-appindexing:10.0.1'
     //Material floating action button
     compile 'com.getbase:floatingactionbutton:1.10.1'
     //The scroll view library to show/hide toolbar
@@ -129,7 +130,7 @@ dependencies {
     }
     //WebSocket for JPG live view
     compile 'com.github.eoinsha:JavaPhoenixChannels:79212a532a'
-    compile 'com.google.android.exoplayer:exoplayer:r1.5.9'
+    compile 'com.google.android.exoplayer:exoplayer:r2.2.0'
     compile 'de.hdodenhof:circleimageview:2.1.0'
     compile 'io.reactivex:rxandroid:1.2.1'
     // Because RxAndroid releases are few and far between, it is recommended to
@@ -137,8 +138,8 @@ dependencies {
     compile 'io.reactivex:rxjava:1.2.0'
     compile files('libs/evercam-java-1.1.8-android.jar')
 
-    compile 'com.google.android.gms:play-services-maps:9.6.1'
-    compile 'com.google.android.gms:play-services-location:9.6.1'
+    compile 'com.google.android.gms:play-services-maps:10.0.1'
+    compile 'com.google.android.gms:play-services-location:10.0.1'
 }
 
 apply plugin: 'com.google.gms.google-services'

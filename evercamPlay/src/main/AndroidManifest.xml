@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="io.evercam.androidapp"
-    android:versionCode="218"
-    android:versionName="2.0.7">
+    android:versionCode="220"
+    android:versionName="2.0.9">
 
     <uses-permission android:name="android.permission.INTERNET" />
     <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
@@ -84,6 +84,14 @@
             <meta-data
                 android:name="android.content.SyncAdapter"
                 android:resource="@xml/sync_adapter" />
+        </service>
+
+        <service android:name=".AppIndexingService"
+            android:exported="true"
+            android:permission="com.google.android.gms.permission.APPINDEXING">
+            <intent-filter>
+                <action android:name="com.google.firebase.appindexing.UPDATE_INDEX" />
+            </intent-filter>
         </service>
 
         <!-- Theme.Black.NoTitleBar previous value -->
@@ -204,6 +212,7 @@
 
         <activity
             android:name=".DeepLinkedActivity"
+            android:launchMode="singleTop"
             ><!-- ATTENTION: This intent was auto-generated. Follow instructions at
   https://g.co/AppIndexing/AndroidStudio to publish your URLs. -->
             <intent-filter android:autoVerify="true">
@@ -221,6 +230,14 @@
                     android:host="evercam.io"
                     android:pathPrefix="/gpocam"
                     android:scheme="https" />
+                <!--<data-->
+                    <!--android:host="evercam.io/public/cameras"-->
+                    <!--android:pathPattern="/.*"-->
+                    <!--android:scheme="http" />-->
+                <!--<data-->
+                    <!--android:host="evercam.io/public/cameras"-->
+                    <!--android:pathPattern="/.*"-->
+                    <!--android:scheme="https" />-->
             </intent-filter>
         </activity>
     </application>

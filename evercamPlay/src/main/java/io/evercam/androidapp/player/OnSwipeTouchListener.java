@@ -85,7 +85,6 @@ public abstract class OnSwipeTouchListener implements View.OnTouchListener {
             int topOffset = (int) (originalHeight - (originalHeight * scaleListener.scaleFactor));
             Log.e(TAG, "Offset: " + leftOffset + "," + topOffset);
 
-
             RelativeLayout.LayoutParams layoutParams = (RelativeLayout.LayoutParams) view.getLayoutParams();
             layoutParams.setMargins(leftOffset, topOffset, leftOffset, topOffset);
             view.setLayoutParams(layoutParams);
