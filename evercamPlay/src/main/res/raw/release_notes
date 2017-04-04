@@ -1,8 +1,17 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-<h5>2.0.9</h5>
+
+<h5>2.1.0</h5>
 <ul>
-    <li>- Updated ExoPlayer version to 2.2.0<br/></li>
+    <li>- Updated Evercam logo<br/></li>
+    <li>- By default camera per row will be 1 at application install<br/></li>
+    <li>- Show password button at sign in screen<br/></li>
+</ul>
+<br/>
+
+<b>Version 2.0.9</b>
+<ul>
+    <li><br/>- Updated ExoPlayer version to 2.2.0<br/></li>
 </ul>
 <br/>
 

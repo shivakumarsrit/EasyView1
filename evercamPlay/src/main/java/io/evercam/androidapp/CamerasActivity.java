@@ -78,7 +78,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
 
     private static final String TAG = "CamerasActivity";
 
-    public static int camerasPerRow = 2;
+    public static int camerasPerRow = 1;
     public boolean reloadCameraList = false;
     public static boolean reloadFromDatabase = false;
 
@@ -795,7 +795,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 PrefsManager.setCameraPerRow(this, 1);
                 return 1;
             } else {
-                return PrefsManager.getCameraPerRow(this, 2);
+                return PrefsManager.getCameraPerRow(this, 1);
             }
         } else {
             int screenWidth = readScreenWidth(this);
@@ -805,7 +805,7 @@ public class CamerasActivity extends ParentAppCompatActivity implements
                 maxCamerasPerRow = screenWidth / 350;
             }
 
-            int oldCamerasPerRow = PrefsManager.getCameraPerRow(this, 2);
+            int oldCamerasPerRow = PrefsManager.getCameraPerRow(this, 1);
             if (maxCamerasPerRow < oldCamerasPerRow && maxCamerasPerRow != 0) {
                 PrefsManager.setCameraPerRow(this, maxCamerasPerRow);
                 return maxCamerasPerRow;

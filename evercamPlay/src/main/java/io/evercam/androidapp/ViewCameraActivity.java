@@ -403,33 +403,9 @@ public class ViewCameraActivity extends ParentAppCompatActivity implements OnMap
     private void initialScreen() {
         canEditDetailLayout = (LinearLayout) findViewById(R.id.can_edit_detail_layout);
         editLocationButton  = (Button) findViewById(R.id.locationButton) ;
-//        editLinkButton = (Button) findViewById(R.id.button_edit_camera_link);
-
-//        cameraIdTextView = (TextView) findViewById(R.id.view_id_value);
         cameraNameTextView = (TextView) findViewById(R.id.view_name_value);
-//        cameraOwnerTextView = (TextView) findViewById(R.id.view_owner_value);
-//        cameraTimezoneTextView = (TextView) findViewById(R.id.view_timezone_value);
         cameraVendorTextView = (TextView) findViewById(R.id.view_vendor_value);
         cameraModelTextView = (TextView) findViewById(R.id.view_model_value);
-
-        //'Can edit' fields
-//        cameraUsernameTextView = (TextView) findViewById(R.id.view_username_value);
-//        cameraPasswordTextView = (TextView) findViewById(R.id.view_password_value);
-//        cameraSnapshotUrlTextView = (TextView) findViewById(R.id.view_jpg_url_value);
-//        cameraRtspUrlTextView = (TextView) findViewById(R.id.view_rtsp_url_value);
-//        cameraInternalHostTextView = (TextView) findViewById(R.id.view_internal_host_value);
-//        cameraInternalHttpTextView = (TextView) findViewById(R.id.view_internal_http_value);
-//        cameraInternalRtspTextView = (TextView) findViewById(R.id.view_internal_rtsp_value);
-//        cameraExternalHostTextView = (TextView) findViewById(R.id.view_external_host_value);
-//        cameraExternalHttpTextView = (TextView) findViewById(R.id.view_external_http_value);
-//        cameraExternalRtspTextView = (TextView) findViewById(R.id.view_external_rtsp_value);
-
-//        editLinkButton.setOnClickListener(new View.OnClickListener() {
-//            @Override
-//            public void onClick(View v) {
-//                linkToEditCamera();
-//            }
-//        });
 
         editLocationButton.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -441,10 +417,7 @@ public class ViewCameraActivity extends ParentAppCompatActivity implements OnMap
 
     private void fillCameraDetails(EvercamCamera camera) {
         if (camera != null) {
-//            cameraIdTextView.setText(camera.getCameraId());
             cameraNameTextView.setText(camera.getName());
-//            cameraOwnerTextView.setText(camera.getRealOwner());
-//            cameraTimezoneTextView.setText(camera.getTimezone());
             if (camera.getVendor().isEmpty()) {
                 setAsNotSpecified(cameraVendorTextView);
             } else {
@@ -466,70 +439,15 @@ public class ViewCameraActivity extends ParentAppCompatActivity implements OnMap
         if (camera.canEdit()) {
 //            editLinkButton.setVisibility(View.VISIBLE);
             canEditDetailLayout.setVisibility(View.VISIBLE);
-
-//            if (camera.getUsername().isEmpty()) {
-//                setAsNotSpecified(cameraUsernameTextView);
-//
-//            } else {
-//                cameraUsernameTextView.setText(camera.getUsername());
-//            }
-
-//            if (camera.getPassword().isEmpty()) {
-//                setAsNotSpecified(cameraPasswordTextView);
-//
-//            } else {
-//                cameraPasswordTextView.setText(camera.getPassword());
-//            }
-//
-//            if (camera.getJpgPath().isEmpty()) {
-//                setAsNotSpecified(cameraSnapshotUrlTextView);
-//            } else {
-//                cameraSnapshotUrlTextView.setText(camera.getJpgPath());
-//            }
-
-//            if (camera.getH264Path().isEmpty()) {
-//                setAsNotSpecified(cameraRtspUrlTextView);
-//            } else {
-//                cameraRtspUrlTextView.setText(camera.getH264Path());
-//            }
-
-//            if (camera.getExternalHost().isEmpty()) {
-//                setAsNotSpecified(cameraExternalHostTextView);
-//            } else {
-//                cameraExternalHostTextView.setText(camera.getExternalHost());
-//            }
-
-//            if (camera.getInternalHost().isEmpty()) {
-//                setAsNotSpecified(cameraInternalHostTextView);
-//            } else {
-//                cameraInternalHostTextView.setText(camera.getInternalHost());
-//            }
+            editLocationButton.setVisibility(View.VISIBLE);
 
             int externalHttp = camera.getExternalHttp();
             int externalRtsp = camera.getExternalRtsp();
             int internalHttp = camera.getInternalHttp();
             int internalRtsp = camera.getInternalRtsp();
 
-//            if (externalHttp != 0) {
-//                cameraExternalHttpTextView.setText(String.valueOf(externalHttp));
-//            } else {
-//                setAsNotSpecified(cameraExternalHttpTextView);
-//            }
-//            if (externalRtsp != 0) {
-//                cameraExternalRtspTextView.setText(String.valueOf(externalRtsp));
-//            } else {
-//                setAsNotSpecified(cameraExternalRtspTextView);
-//            }
-//            if (internalHttp != 0) {
-//                cameraInternalHttpTextView.setText(String.valueOf(camera.getInternalHttp()));
-//            } else {
-//                setAsNotSpecified(cameraInternalHttpTextView);
-//            }
-//            if (internalRtsp != 0) {
-//                cameraInternalRtspTextView.setText(String.valueOf(camera.getInternalRtsp()));
-//            } else {
-//                setAsNotSpecified(cameraInternalRtspTextView);
-//            }
+        }else{
+            editLocationButton.setVisibility(View.GONE);
         }
     }
 
