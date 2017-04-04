@@ -4,7 +4,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.content.res.Configuration;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
+import android.text.InputType;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.View;
@@ -52,6 +54,7 @@ public class LoginActivity extends ParentAppCompatActivity {
         setContentView(R.layout.activity_login);
 
         Button btnLogin = (Button) findViewById(R.id.btnLogin);
+        final Button showPasswordBtn = (Button) findViewById(R.id.passwordBtn) ;
 
         TextView signUpLink = (TextView) findViewById(R.id.signupLink);
         TextView forgotPasswordLink = (TextView) findViewById(R.id.forgetPasswordLink);
@@ -82,6 +85,21 @@ public class LoginActivity extends ParentAppCompatActivity {
                 aboutIntent.putExtra(Constants.BUNDLE_KEY_URL,
                         getString(R.string.forget_password_url));
                 startActivity(aboutIntent);
+            }
+        });
+
+        showPasswordBtn.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                if (passwordEdit.getInputType() == InputType.TYPE_CLASS_TEXT){
+                    showPasswordBtn.setBackgroundResource(R.drawable.ic_showpassword);
+                    passwordEdit.setInputType(InputType.TYPE_CLASS_TEXT | InputType.TYPE_TEXT_VARIATION_PASSWORD);
+
+                }else{
+                    passwordEdit.setInputType(InputType.TYPE_CLASS_TEXT);
+                    showPasswordBtn.setBackgroundResource(R.drawable.ic_hidepassword);
+                }
+
             }
         });
         hideLogoIfNecessary();

@@ -43,6 +43,15 @@
                 android:singleLine="true" />
 
             <Button
+                android:id="@+id/passwordBtn"
+                android:layout_width="30dp"
+                android:layout_height="30dp"
+                android:layout_gravity="right"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="-48dp"
+                android:background="@drawable/ic_showpassword" />
+
+            <Button
                 android:id="@+id/btnLogin"
                 style="@style/ButtonRegular.Lowercase"
                 android:layout_marginLeft="10dp"

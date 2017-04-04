@@ -5,7 +5,7 @@
         android:title="@string/title_general">
 
         <ListPreference
-            android:defaultValue="2"
+            android:defaultValue="1"
             android:key="lstgridcamerasperrow"
             android:title="@string/title_camera_per_row" />
 
