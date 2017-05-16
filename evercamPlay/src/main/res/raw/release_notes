@@ -1,9 +1,15 @@
 <h4>Evercam IP Camera Viewer</h4>
 
-
-<h5>2.1.0</h5>
+<h5>2.1.1</h5>
 <ul>
-    <li>- Updated Evercam logo<br/></li>
+    <li>- Sign up screen updated designs<br/></li>
+</ul>
+<br/>
+
+
+<b>Version 2.1.0</b>
+<ul>
+    <li><br/>- Updated Evercam logo<br/></li>
     <li>- By default camera per row will be 1 at application install<br/></li>
     <li>- Show password button at sign in screen<br/></li>
 </ul>
