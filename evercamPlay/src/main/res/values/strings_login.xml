@@ -16,6 +16,7 @@
     <string name="error_email_required">Email address required</string>
     <string name="error_confirmpassword_required">Please enter the same password again</string>
     <string name="create_account">Create Account</string>
+    <string name="term_of_use"><u>Terms of Use</u></string>
     <string name="username_too_short">The username you specified is too short</string>
     <string name="prefix_invalid">Invalid</string>
     <string name="prefix_no_user">No user</string>

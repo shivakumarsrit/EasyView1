@@ -41,6 +41,7 @@
     <string name="prefs_show_guide">Show app guide</string>
     <string name="title_activity_public_cameras">Public Cameras</string>
     <string name="forget_password_url">https://dash.evercam.io/v1/users/password-reset</string>
+    <string name="term_of_use_url">https://evercam.io/terms</string>
     <string name="title_activity_recording_web">Cloud Recordings</string>
     <string name="title_activity_about_web">About Evercam</string>
     <string name="title_sharing">Who has access</string>

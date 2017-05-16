@@ -1,6 +1,7 @@
 package io.evercam.androidapp;
 
 import android.content.Context;
+import android.content.Intent;
 import android.content.pm.PackageManager;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -41,7 +42,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
     private EditText usernameEdit;
     private EditText emailEdit;
     private EditText passwordEdit;
-    private EditText repasswordEdit;
+//    private EditText repasswordEdit;
 
     private View signUpFormView;
     private View signUpStatusView;
@@ -55,7 +56,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
 
         setContentView(R.layout.activity_sign_up);
 
-        setUpDefaultToolbar();
+//        setUpDefaultToolbar();
 
         initialPage();
 
@@ -94,17 +95,39 @@ public class SignUpActivity extends ParentAppCompatActivity {
         usernameEdit = (EditText) findViewById(R.id.username_edit);
         emailEdit = (EditText) findViewById(R.id.email_edit);
         passwordEdit = (EditText) findViewById(R.id.password_edit);
-        repasswordEdit = (EditText) findViewById(R.id.repassword_edit);
+//        repasswordEdit = (EditText) findViewById(R.id.repassword_edit);
 
         Button signupBtn = (Button) findViewById(R.id.sign_up_button);
 
+        Button termofuse = (Button) findViewById(R.id.term_of_Use);
+
+        Button backButton = (Button) findViewById(R.id.back_button);
+
         fillDefaultProfile();
+
+        backButton.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                finish();
+            }
+        });
 
         signupBtn.setOnClickListener(new OnClickListener() {
             @Override
             public void onClick(View v) {
                 new SignUpCheckInternetTask(SignUpActivity.this).executeOnExecutor(AsyncTask
                         .THREAD_POOL_EXECUTOR);
+            }
+        });
+
+        termofuse.setOnClickListener(new OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Intent aboutIntent = new Intent(SignUpActivity.this, SimpleWebActivity.class);
+                aboutIntent.putExtra(Constants.BUNDLE_KEY_URL,
+                        getString(R.string.term_of_use_url));
+                startActivity(aboutIntent);
+
             }
         });
     }
@@ -116,7 +139,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
         String username = usernameEdit.getText().toString();
         String email = emailEdit.getText().toString();
         String password = passwordEdit.getText().toString();
-        String repassword = repasswordEdit.getText().toString();
+//        String repassword = repasswordEdit.getText().toString();
 
         if (firstname == null || firstname.trim().isEmpty()) {
             CustomToast.showInCenter(this, R.string.error_firstname_required);
@@ -166,9 +189,11 @@ public class SignUpActivity extends ParentAppCompatActivity {
             CustomToast.showInCenter(this, R.string.error_password_required);
             focusView = passwordEdit;
             return null;
+        }else{
+            user.setPassword(password);
         }
 
-        if (TextUtils.isEmpty(repassword)) {
+        /*if (TextUtils.isEmpty(repassword)) {
             CustomToast.showInCenter(this, R.string.error_confirmpassword_required);
             focusView = repasswordEdit;
             return null;
@@ -177,7 +202,7 @@ public class SignUpActivity extends ParentAppCompatActivity {
             return null;
         } else {
             user.setPassword(password);
-        }
+        }*/
 
         //Append user country if available, but the country field will not be showing in sign up form
         String countryCode = DataCollector.getCountryCode(this);
